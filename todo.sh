@@ -195,6 +195,8 @@ PRESERVE_LINE_NUMBERS=1
 AUTO_ARCHIVE=1
 DATE_ON_ADD=0
 
+export VERBOSE PLAIN CFG_FILE FORCE PRESERVE_LINE_NUMBERS AUTO_ARCHIVE DATE_ON_ADD
+
 while getopts ":fhpnatvVd:" Option
 do
   case $Option in
@@ -660,7 +662,7 @@ note:  PRIORITY must be anywhere from A to Z."
     usage
     if [ -d "$HOME/.todo.actions.d" ]; then
         if [ -x "$HOME/.todo.actions.d/$action" ]; then
-            CFG_FILE="$CFG_FILE" "$HOME/.todo.actions.d/$action" "$@"
+            "$HOME/.todo.actions.d/$action" "$@"
         else
             usage
         fi
