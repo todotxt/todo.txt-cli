@@ -119,6 +119,12 @@ help()
 
 
       Options:
+        -@
+            Hide context names in list output. Use twice to show context
+            names (default).
+        -+
+            Hide project names in list output. Use twice to show project
+            names (default).
         -d CONFIG_FILE
             Use a configuration file other than the default ~/todo.cfg
         -f
@@ -127,6 +133,9 @@ help()
             Display this help message
         -p
             Plain mode turns off colors
+        -P
+            Hide priority labels in list output. Use twice to show
+            priority labels (default).
         -a
             Don't auto-archive tasks automatically on completion
         -n
@@ -195,9 +204,50 @@ PRESERVE_LINE_NUMBERS=1
 AUTO_ARCHIVE=1
 DATE_ON_ADD=0
 
-while getopts ":fhpnatvVd:" Option
+while getopts ":fhpnatvV+@Pd:" Option
 do
   case $Option in
+    '@' )
+	## HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
+	##   (true) the first time this flag is seen. Each time the flag
+	##   is seen after that, increment it again so that an even
+	##   number hides project names and an odd number shows project
+	##   names.
+	: $(( HIDE_CONTEXT_NAMES++ ))
+	if [ $(( $HIDE_CONTEXT_NAMES % 2 )) -eq 0 ]
+	then
+	    ## Zero or even value -- show context names
+	    unset HIDE_CONTEXTS_SUBSTITUTION
+	else
+	    ## One or odd value -- hide context names
+	    #
+	    ## Match: \(^\|[[:space:]]  beginning of line or a space
+	    ##	      @                literal context label
+	    ##	      [^[:space:]]\+   Anything besides whitespace one
+	    ##				 or more times
+	    HIDE_CONTEXTS_SUBSTITUTION="\(^\|[[:space:]]\)@[^[:space:]]\+"
+	fi
+	;;
+    '+' )
+	## HIDE_PROJECT_NAMES starts at zero (false); increment it to one
+	##   (true) the first time this flag is seen. Each time the flag
+	##   is seen after that, increment it again so that an even
+	##   number hides project names and an odd number shows project
+	##   names.
+	: $(( HIDE_PROJECT_NAMES++ ))
+	if [ $(( $HIDE_PROJECT_NAMES % 2 )) -eq 0 ]
+	then
+	    ## Zero or even value -- show project names
+	    unset HIDE_PROJECTS_SUBSTITUTION
+	else
+	    ## One or odd value -- hide project names
+	    ## Match: \(^\|[[:space:]]  beginning of line or a space
+	    ##	      @                literal context label
+	    ##	      [^[:space:]]\+   Anything besides whitespace one
+	    ##				 or more times
+	    HIDE_PROJECTS_SUBSTITUTION="\(^\|[[:space:]]\)+[^[:space:]]\+"
+	fi
+	;;
     a )
         AUTO_ARCHIVE=0
         ;;
@@ -215,6 +265,22 @@ do
         ;;
     p )
         PLAIN=1
+        ;;
+    P )
+        ## HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
+        ##   (true) the first time this flag is seen. Each time the flag
+        ##   is seen after that, increment it again so that an even
+        ##   number hides project names and an odd number shows project
+        ##   names.
+        : $(( HIDE_PRIORITY_LABELS++ ))
+        if [ $(( $HIDE_PRIORITY_LABELS % 2 )) -eq 0 ]
+        then
+            ## Zero or even value -- show priority labels
+            unset HIDE_PRIORITY_SUBSTITUTION
+        else
+            ## One or odd value -- hide priority labels
+            HIDE_PRIORITY_SUBSTITUTION="([A-Z])[[:space:]]"
+        fi
         ;;
     t )
         DATE_ON_ADD=1
@@ -414,8 +480,22 @@ case $action in
 "list" | "ls" )
     item=$2
     if [ -z "$item" ]; then
-        echo -e "`sed = "$TODO_FILE" | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /' | sed 's/^ /0/' | sort -f -k2 | sed '/^[0-9][0-9] x /!s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/'`"
         echo "--"
+	echo -e "$(                                             \
+	    sed = "$TODO_FILE"                                  \
+	    | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /'          \
+	    | sed 's/^ /0/'                                     \
+	    | sort -f -k2                                       \
+	    | sed '/^[0-9][0-9] x /! {
+		s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
+		s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
+		s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
+		s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/g;
+	      }'                                                \
+	    | sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
+	    | sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
+	    | sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'     \
+	)"
         NUMTASKS=$(wc -l "$TODO_FILE" | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
         echo "TODO: $NUMTASKS tasks in $TODO_FILE."
     else
@@ -445,7 +525,13 @@ case $action in
         do
             command=`echo "$command" | grep -i $i `
         done
-        command=`echo "$command" | sort -f -k2`
+	command=$(                                              \
+	    echo "$command"                                     \
+	    | sort -f -k2                                       \
+	    | sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
+	    | sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
+	    | sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'     \
+	)
         echo -e "$command"
     fi
     cleanup ;;
