@@ -248,7 +248,9 @@ TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
     fi
 }
 
-export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD
+TODOTXT_SH="$0"
+
+export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_SH
 
 # === SANITY CHECKS (thanks Karl!) ===
 [ -r "$TODOTXT_CFG_FILE" ] || die "Fatal error:  Cannot read configuration file $TODOTXT_CFG_FILE"
@@ -669,7 +671,6 @@ note:  PRIORITY must be anywhere from A to Z."
     cleanup;;
 
 * )
-    usage
     if [ -d "$HOME/.todo.actions.d" ]; then
         if [ -x "$HOME/.todo.actions.d/$action" ]; then
             "$HOME/.todo.actions.d/$action" "$@"
