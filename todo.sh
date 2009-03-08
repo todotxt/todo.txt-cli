@@ -328,7 +328,7 @@ action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 ## Run and quit if there's a actions script
 if [ -d "$HOME/.todo.actions.d" -a -x "$HOME/.todo.actions.d/$action" ]
 then
-    CFG_FILE="$CFG_FILE" "$HOME/.todo.actions.d/$action" "$@"
+    "$HOME/.todo.actions.d/$action" "$@"
     cleanup
 fi
 
