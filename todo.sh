@@ -220,12 +220,7 @@ do
 	    unset HIDE_CONTEXTS_SUBSTITUTION
 	else
 	    ## One or odd value -- hide context names
-	    #
-	    ## Match: \(^\|[[:space:]]  beginning of line or a space
-	    ##	      @                literal context label
-	    ##	      [^[:space:]]\+   Anything besides whitespace one
-	    ##				 or more times
-	    HIDE_CONTEXTS_SUBSTITUTION="\(^\|[[:space:]]\)@[^[:space:]]\+"
+	    HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[^[:space:]]\{1,\}'
 	fi
 	;;
     '+' )
@@ -241,11 +236,7 @@ do
 	    unset HIDE_PROJECTS_SUBSTITUTION
 	else
 	    ## One or odd value -- hide project names
-	    ## Match: \(^\|[[:space:]]  beginning of line or a space
-	    ##	      @                literal context label
-	    ##	      [^[:space:]]\+   Anything besides whitespace one
-	    ##				 or more times
-	    HIDE_PROJECTS_SUBSTITUTION="\(^\|[[:space:]]\)+[^[:space:]]\+"
+	    HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][^[:space:]]\{1,\}'
 	fi
 	;;
     a )
@@ -484,7 +475,6 @@ else
     "list" | "ls" )
 	item=$2
 	if [ -z "$item" ]; then
-	    echo "--"
 	    echo -e "$(                                             \
 		sed = "$TODO_FILE"                                  \
 		| sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /'          \
@@ -494,23 +484,42 @@ else
 		    s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
 		    s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
 		    s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
-		    s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/g;
+		    s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
 		  }'                                                \
 		| sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
 		| sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
 		| sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'     \
 	    )"
+	    echo "--"
 	    NUMTASKS=$(wc -l "$TODO_FILE" | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
 	    echo "TODO: $NUMTASKS tasks in $TODO_FILE."
 	else
-	    command=`sed = "$TODO_FILE" | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /' | sed 's/^ /0/' | sort -f -k2 | sed '/^[0-9][0-9] x /!s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/' | grep -i $item `
+	    command=$( 
+		sed = "$TODO_FILE" 				    \
+		| sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /' 	    \
+		| sed 's/^ /0/' 				    \
+		| sort -f -k2 					    \
+		| sed '/^[0-9][0-9] x /! {
+		    s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
+		    s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
+		    s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
+		    s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
+		  }'                                                \
+		| grep -i $item
+	    )
 	    shift
 	    shift
 	    for i in $*
 	    do
 		command=`echo "$command" | grep -i $i `
 	    done
-	    command=`echo "$command" | sort -f -k2`
+	    command=$(                                              \
+		echo "$command"                                     \
+		| sort -f -k2                                       \
+		| sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
+		| sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
+		| sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'     \
+	    )
 	    echo -e "$command"
 	fi
 	cleanup ;;
@@ -529,13 +538,7 @@ else
 	    do
 		command=`echo "$command" | grep -i $i `
 	    done
-	    command=$(                                              \
-		echo "$command"                                     \
-		| sort -f -k2                                       \
-		| sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
-		| sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
-		| sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'     \
-	    )
+	    command=`echo "$command" | sort -f -k2`
 	    echo -e "$command"
 	fi
 	cleanup ;;
