@@ -1,78 +1,272 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-2" />
+  <meta name="description" content="Track your tasks and projects in a plain text file, todo.txt.  A todo.txt is software and operating system agnostic; it's searchable, portable, lightweight and easily manipulated." />
+  <meta name="keywords" content="Todo.txt, To do list" />
+  <meta name="robots" content="all,follow" /> 
+  <meta name="author" content="Gina Trapani | ginatrapani@gmail.com" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+<script type="text/javascript" src="/js/prototype.js"></script>
 
-	<title>Todo.txt CLI @ GitHub</title>
-	
-	<style type="text/css">
-		body {
-  		margin-top: 1.0em;
-  		background-color: #CCC;
-		  font-family: "helvetica"; 
-  		color: #000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-		h1 { font-size: 3.8em; color: #5b3cf6; margin-bottom: 3px; }
-		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #5b3cf6; }
-    h3 { text-align: center; color: #5b3cf6; }
-    a { color: #5b3cf6; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-		pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-	</style>
-	
+<script type="text/javascript" src="/js/scriptaculous.js?load=effects"></script>
+<script type="text/javascript" src="/js/lightbox.js"></script>
+<link rel="stylesheet" href="/css/lightbox.css" type="text/css" media="screen" />
+  <title>Todo.txt Command Line Interface - Task tracking for CLI lovers</title>
+  
+  <link type="text/css" rel="stylesheet" href="/css/basic.css" title="Basic style" />
+
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml" />
+ 
 </head>
-
 <body>
-  <a href="http://github.com/ginatrapani/todo.txt-cli"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+
+<div id="page">
+
+  <div id="menu">
+	<a href="/" class="logo"><img src="http://todotxt.com/imgs/todotxt_logo.png" alt="" alt="Todo.txt" /></a>
+  <h1><a href="/" title="Task tracking for command line lovers">Todo.txt CLI</a></h1>  
   
-  <div id="container">
 
-    <div class="download">
-      <a href="http://github.com/ginatrapani/todo.txt-cli/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/ginatrapani/todo.txt-cli/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
-      
-    <h1><a href="http://github.com/ginatrapani/todo.txt-cli">Todo.txt CLI</a> </h1>
-
-    <div class="description">
-      A simple shell script for managing your todo.txt file.  See more information at <a href="http://todotxt.com">Todotxt.com</a>.
-    </div>
-
-    <h2>Contact</h2>
-<p>Join <a href="http://tech.groups.yahoo.com/group/todotxt/">the mailing list</a> for support or requests.
-<br/>      </p>
+<br /><br /><br /><br />
 
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/ginatrapani/todo.txt-cli/zipball/master">zip</a> or
-      <a href="http://github.com/ginatrapani/todo.txt-cli/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/ginatrapani/todo.txt-cli</pre>
-    </p>
-      
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/ginatrapani/todo.txt-cli">ginatrapani/todo.txt-cli</a>
-    </div>
-    
+
+<script type="text/javascript"><!--
+google_ad_client = "pub-3840844777251287";
+google_ad_width = 160;
+google_ad_height = 600;
+google_ad_format = "160x600_as";
+google_ad_type = "text";
+google_ad_channel ="";
+google_color_border = "CCCCCC";
+google_color_bg = "FFFFFF";
+google_color_link = "00008B";
+google_color_text = "000000";
+google_color_url = "00008B";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+
+  
   </div>
+  <div id="content">
 
-  
+<div id="wo">A plain text task manager</div>
+
+<h2>The Todo.txt Command Line Interface (CLI)</h2>
+
+<p>If you've got a file called <code>todo.txt</code> on your computer right now, you're in the right place. Countless software applications and web sites can manage your to-do list with all sorts of bells and whistles. But if you don't want to depend on someone else's data format or someone else's server, a plain text file is the way to go.</p>
+<p>Problem is, you don't want to launch a full-blown text editor every time you need to add an item to your to-do list, or mark one that's already there as complete. With a simple but powerful shell script called <code>todo.sh</code>, you can interact with <code>todo.txt</code> at the command line for quick and easy, Unix-y access.</p>
+
+<h2>Download and Install</h2>
+<ol>
+<li><strong><a href="http://github.com/ginatrapani/todo.txt-cli/zipball/master">Download the latest version of todo.sh</a></strong> from GitHub and extract it.<br /><div style="width:100%;text-align:center;margin-top:20px"><a class="logo"  href="http://github.com/ginatrapani/todo.txt-cli/zipball/master">
+        <img src="http://github.com/images/modules/download/zip.png" border="0" width="90" class="logo" ></a>
+      <a class="logo" href="http://github.com/ginatrapani/todo.txt-cli/tarball/master">
+        <img src="http://github.com/images/modules/download/tar.png" border="0" width="90"></a>
+</div></li>
+<li>Using the text editor of your choice, edit the section of the <code>todo.cfg</code> file that reads:<br />
+
+<pre># Your todo.txt directory
+TODO_DIR="/Users/gina/Documents/todo"  
+</pre>
+Replace "/Users/gina/Documents/todo" to wherever your <code>todo.txt</code> file lives.</li>
+<li>Make the todo.sh script exectuable:<br />
+<pre>$ chmod +x todo.sh</pre>
+</li>
+<li>Move the todo.cfg configuration file to your home directory:<br />
+<pre>mv todo.cfg ~/.</pre>
+</li>
+
+<li>Type <code>./todo.sh</code> to see the <a href="/library/todo.sh/todotxt-cli-latest-usage.txt">usage message</a>.</li>
+</ol>  
+<!--
+<li><strong><a href="/library/todo_completer.sh/">Todo.sh Tab Completion</a></strong> <br />
+A bash completion script that completes todo.sh actions, projects and contexts at the press of the Tab key.</li>
+
+<li><strong><a href="/library/birdseye.py/">Bird's Eye todo.txt Reporter</a></strong><br />
+A Python script reports your current progress broken down by project and context with ASCII graphs.  <a href="http://todotxt.com/library/birdseye.py/#htmlsummarizer">HTML version</a> now available, too.</li>
+<li><strong><a href="/library/todobot.pl/">Todo.txt AIM bot</a></strong> (latest version:  0.4)<br />
+A Perl-based AIM bot which accesses your todo.txt via todo.sh.  (Requires OSCAR.pm.)</li>
+<li><strong><a href="/library/todo_jabber_bot/">Todo.txt Jabber Bot</a></strong> (latest version:  0.4)<br />
+A Python-based Jabber bot which accesses your todo.txt via todo.sh.  (Requires xmpppy.)  Created and maintained by <a href="http://groups.yahoo.com/group/todotxt/message/82">Shiva KM</a>.</li>
+<li><strong><a href="http://code.google.com/p/todotxt/">Todo.txt on Google Code</a></strong><br />
+Download all the todo.txt scripts in one giant package from Google Code.</li>
+-->
+</ul>
+
+
+
+<h2>How It Works</h2>
+
+<p>Here's a screencast of <code>todo.sh</code> in action.</p>
+
+<p> <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="640" height="498" id="csSWF">
+                <param name="movie" value="http://todotxt.com/library/todo.sh/screencast/todotxt20_controller.swf" />
+                <param name="quality" value="best" />
+
+                <param name="bgcolor" value="#1a1a1a" />
+                <param name="allowfullscreen" value="true" />
+                <param name="scale" value="showall" />
+                <param name="allowscriptaccess" value="always" />
+                <param name="flashvars" value="autostart=false&thumb=FirstFrame.png&thumbscale=45&color=0x000000,0x000000" />
+
+                <!--[if !IE]>-->
+                <object type="application/x-shockwave-flash" data="http://todotxt.com/library/todo.sh/screencast/todotxt20_controller.swf" width="640" height="498">
+                    <param name="quality" value="best" />
+                    <param name="bgcolor" value="#1a1a1a" />
+
+                    <param name="allowfullscreen" value="true" />
+                    <param name="scale" value="showall" />
+                    <param name="allowscriptaccess" value="always" />
+                    <param name="flashvars" value="autostart=false&thumb=FirstFrame.png&thumbscale=45&color=0x000000,0x000000" />
+
+                <!--<![endif]-->
+                    <div id="noUpdate">
+                        <p>The Camtasia Studio video content presented here requires a more recent version of the Adobe Flash Player. If you are you using a browser with JavaScript disabled please enable it now. Otherwise, please update your version of the free Flash Player by <a href="http://www.adobe.com/go/getflashplayer">downloading here</a>.</p>
+
+                    </div>
+                <!--[if !IE]>-->
+                </object>
+                <!--<![endif]-->
+
+            </object></p>
+
+
+<!--
+<h2>Mailing List contributions</h2>
+<p>Members of the mailing list often post code snippets to work with todo.txt.  A list:</p>
+<ul>
+<li><strong><a href="http://groups.yahoo.com/group/todotxt/message/108">Todo.txt Export to iPod Notes</a></strong>  Download <a href="http://groups.yahoo.com/group/todotxt/files/todo_ipod.rb">todo_ipod.rb</a> and <a href="http://groups.yahoo.com/group/todotxt/files/cfg.yml">cfg.yml</a>.</li>
+<li><strong><a href="http://groups.yahoo.com/group/todotxt/message/513">Todo.txt AppleScript for Mail.app</a></strong></li>
+<li><strong><a href="http://groups.yahoo.com/group/todotxt/message/509">AppleScript to start Todo.txt AIM bot</a></strong></li>
+</ul>
+-->
+
+<h2>Get Help</h2>
+
+
+<p><a href="http://groups.yahoo.com/group/todotxt/" title="Mailing List">Join the mailing list</a> for support or feature requests.</p>
+
+
+<h2>Tips and tricks</h2>
+
+<ul>
+<li><strong>Access <code>todo.sh</code> from anywhere in the file tree.</strong>  Add the following to your ~/.bashrc file (~/.bash_profile for Mac and Cygiwn users):<br />
+<blockquote><pre>
+PATH=$PATH:"/path/to/your/todo/scripts"
+</pre></blockquote></li>
+<li><strong>Avoid typing <code>todo.sh</code> every time</strong>.  Add the following to your ~/.bashrc file (~/.bash_profile for Mac and Cygwin users):<br />
+
+<blockquote><pre>
+alias t='todo.sh -d /path/to/your/todo.cfg'
+</pre></blockquote><br />
+Then you simply type <code>t add laundry</code> from anywhere in your file tree to add a task.</li>
+<li><strong>Display your todo list on your desktop.</strong>  Windows users, <a href="http://lifehacker.com/software/plain-text/download-of-the-day-samurize-189273.php">Samurize gets the job done.</a>  Mac users will want <a href="http://www.lifehacker.com/software/top/download-of-the-day--geektool-185802.php">GeekTool</a>.<br /><br />
+
+<table><tr><td>
+<a href="/images/samurize-todotxt-full.jpg" rel="lightbox" title="Displaying todo.txt on the Windows desktop with Samurize"><img src="/images/samurize-todotxt-thumb.jpg" alt="Displaying todo.txt on the Windows desktop with Samurize" /></a>
+</td><td>
+<a href="/images/geektool-fulldesktop1.jpg" rel="lightbox" title="Displaying a system log, the output of todo.sh listpri and a remind calendar on the Mac OS X Desktop using GeekTool"><img src="/images/geektool-fulldesktop1-thumb.jpg" alt="Displaying a system log, the output of todo.sh listpri and a remind calendar on the Mac OS X Desktop using GeekTool" /></a>
+</td></tr></table><br />
+</li>
+<li><strong>Hide the configuration file</strong> by renaming it <code>.todo.cfg</code>.</li>
+<!--<li><strong>IM your todo.txt.</strong>  Use the <a href="/library/todobot.pl/">todobot.pl</a> to instant message your <code>todo.sh</code> commands from any AIM client.</li>-->
+
+<li><strong>Access your remote server's todo.txt via ssh.</strong>  If you have a shell account on remote.server.com, alias your <code>todo.sh</code> commands to do the same thing as usual but prepend "ssh username@remote.server.com" to them. Something like:<br />
+
+<code>ssh username@remote.server.com todo.sh list</code><br />
+Which displays the remote todo list.</li>
+<li><strong>Set up a tickler system to work with todo.txt.</strong>  Mailing list member Tannie wrote an <a href="http://www.tanniespace.com/2006/07/tickler_files_and_todosh.html">tickler.sh script</a> which moves items you have to do in the future to todo.txt.</li>
+
+<li><strong>Integrate todo.txt with a calendar</strong> using the Unix program <a href="http://www.lifehacker.com/software/top/geek-to-live--keep-your-calendar-in-plain-text-with-remind-186661.php">remind</a>.</li>
+
+<li><strong>Get your todo's via email</strong> using <a href="http://www.tanniespace.com/2006/06/using_postfix_to_get_my_shoppi.html">postfix</a>.</li>
+</ul>
+
+<h2>Platform compatibility</h2>
+<p><code>todo.sh</code> has been tested on:</p>
+<ul>
+<li><strong><a href="http://cygwin.com">Cygwin</a> for Windows</strong></li>
+
+<li><strong>Mac OS X 10.4+ Terminal</strong></li>
+<li><strong><a href="http://groups.yahoo.com/group/todotxt/message/15?l=1">Ubuntu 5.10</a></strong> / Sed 4.1.4 / Grep 2.5.1 / Cat 5.2.1 / wc 5.2.1</li>
+</ul>
+
+<p><a href="http://groups.yahoo.com/group/todotxt/">Let us know</a> if you're using <code>todo.sh</code> successfully anywhere else.</p>
+
+
+<h2>Why plain text?</h2>
+
+<p><strong>Plain text</strong> is software and operating system agnostic. It's searchable, portable, lightweight and easily manipulated. It's unstructured. It works when someone else's web server is down or your Outlook .PST file is corrupt. Since it's been around since the dawn of computing, it's safe to say it's completely future-proof. There's no exporting and importing, no databases or tags or flags or stars or prioritizing or [Insert company name here]-induced rules on what you can and can't do with it.</p>
+<p><strong>Todo.txt</strong> is a flat text file that contains one task per line, each optionally associated with a context, project and priority for slicing, dicing and sorting.</p>
+
+<h2>The 3 axes of an effective todo list</h2>
+<p>Using special notation in todo.txt, you can create a list that's sliceable by 3 key axes.</p>
+
+<p><strong>Priority.</strong> Your todo list should be able to tell you what's the next most important thing for you to get done - either by project or by context or overall.</p>
+<p>Optionally assign tasks a priority that'll bubble them up to the top of the list.</p>
+<p>This is all possible inside todo.txt.</p>
+
+<p><strong>Project.</strong> The only way to move a big project forward is to tackle a small subtask associated with it.  Your todo.txt should be able to list out all the tasks specific to a project.</p>
+<p>In order to move along a project like "Cleaning out the garage," my task list should give me the next logical action to take in order to move that project along. "Clean out the garage" isn't a good todo item; but "Call Goodwill to schedule pickup" in the "Clean out garage" project is.</p>
+
+<p><strong>Context.</strong> <em>Getting Things Done</em> author David Allen suggests splitting up your task lists by context - ie, the place and situation where you'll work on the job. Messages that you need to send go in the "@email" context; calls to be made "@phone", household projects "@home."</p>
+
+<p>That way, when you've got a few minutes in the car with your cell phone, you can easily check your "@phone" tasks and make a call or two while you have the opportunity.</p>
+
+
+<h2>Suggested Todo.txt format</h2>
+
+<p>The beauty of todo.txt is that it's completely unstructured;  the fields you can attach to each task are only limited by your imagination.  To get started, use special notation to indicate task context (like <b>@phone</b>), project (like <b>+GarageSale</b>) and priority (like <b>(A)</b>).  So, a <code>todo.txt</code> file might look like this:</p>
+
+<p>
+<blockquote><pre>
+(A) @phone thank Mom for the meatballs
+(B) +GarageSale @phone schedule Goodwill pickup
++GarageSale @home post signs around the neighborhood
+@shopping Eskimo pies
+</pre> </blockquote>
+</p>
+<p>A script that perhaps slices out the @phone contextual items and emails them to your mobile phone, for instance, would just output:</p>
+<blockquote><pre>
+(A) @phone thank Mom for the meatballs
+(B) +GarageSale @phone schedule Goodwill pickup
+</pre> </blockquote>
+<p>A call to todo.sh to just see the garage sale project items would return:</p>
+<blockquote><pre>
+(B) +GarageSale @phone schedule Goodwill pickup
++GarageSale @home post signs around the neighborhood
+</pre> </blockquote>
+
+
+<h2>Other notations</h2>
+
+<p>With <code>todo.sh</code>, you can choose <strong>any unique keyword</strong> search by it.  For example, to indicate you're waiting on something to complete a task, append the word WAIT to the item in <code>todo.txt</code>.  Others like to add due dates to a task, DUE:2006-08-01.  It's completely up to you.  To view items by keyword, do <code>todo.sh list yourkeyword</code>.</p>
+
+<h2>Author</h2>
+
+<p>Unless otherwise noted, all the todo.txt scripts published herein are authored by <a href="http://ginatrapani.org/" title="Gina Trapani:  The Official Site">Gina Trapani</a> and licensed under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</a>.</p>
+<p>Scripts and text originally published as an ongoing series at <a href="http://lifehacker.com/tag/todo.txt/">Lifehacker.com</a>.  Special thanks to all the Lifehacker readers who <a href="http://lifehacker.com/software/top/geek-to-live--readerwritten-todotxt-manager-173018.php">contributed to Todo.sh</a> by fixing code, adding features, reporting bugs and making suggestions.</p>
+
+<p>All software comes as is with no warranty.  Do back up your todo.txt before you read another word.  Questions, support and help is available in the <a href="http://groups.yahoo.com/group/todotxt/">Todo.txt Mailing list</a>.</p>
+
+<div id="footer"><p>Copyright &copy; 2009 
+<a href="http://ginatrapani.org/" title="Gina Trapani:  The Official Site">Gina Trapani</a>.<br /><br />
+Design by <a href="http://www.jasnapaka.com/" title="Pavel Cvrcek: Homepage">Pavel Cvrcek</a>, author of the excellent <a href="http://mozbackup.jasnapaka.com">MozBackup</a>, used with permission.</p></div>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-436966-1";
+urchinTracker();
+</script>
+  </div>
+</div>
+
 </body>
 </html>
