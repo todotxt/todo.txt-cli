@@ -349,7 +349,6 @@ action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 if [ "$action" == command ]
 then
     shift
-    action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 elif [ -d "$HOME/.todo.actions.d" -a -x "$HOME/.todo.actions.d/$action" ]
 then
     "$HOME/.todo.actions.d/$action" "$@"
