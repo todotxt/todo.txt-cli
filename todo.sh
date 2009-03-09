@@ -49,6 +49,10 @@ help()
         archive
           Moves done items from todo.txt to done.txt and removes blank lines.
 
+        command [ACTIONS]
+          Runs the remaining arguments using only todo.sh builtins.
+          Will not call any .todo.actions.d scripts.
+
         del NUMBER [TERM]
         rm NUMBER [TERM]
           Deletes the item on line NUMBER in todo.txt.
@@ -158,7 +162,6 @@ help()
         TODOTXT_PLAIN=1                 is same as option -p
         TODOTXT_DATE_ON_ADD=1           is same as option -t
         TODOTXT_VERBOSE=1               is same as option -v
-        TODOTXT_UNDEF_CUSTOM_ACTIONS=1  disables .todo.actions.d
 EndHelp
 
     if [ -d "$HOME/.todo.actions.d" ]
@@ -296,7 +299,6 @@ TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
-TODOTXT_UNDEF_CUSTOM_ACTIONS=${TODOTXT_UNDEF_CUSTOM_ACTIONS:-0}
 
 [ -e "$TODOTXT_CFG_FILE" ] || {
     CFG_FILE_ALT="$HOME/.todo.cfg"
@@ -307,7 +309,7 @@ TODOTXT_UNDEF_CUSTOM_ACTIONS=${TODOTXT_UNDEF_CUSTOM_ACTIONS:-0}
     fi
 }
 
-export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_UNDEF_CUSTOM_ACTIONS
+export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD
 
 TODO_SH="$0"
 export TODO_SH
@@ -340,14 +342,22 @@ shopt -s extglob
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 
-## Run and quit if there's a actions script
-if [ $TODOTXT_UNDEF_CUSTOM_ACTIONS = 0 -a -d "$HOME/.todo.actions.d" -a -x "$HOME/.todo.actions.d/$action" ]
+## If the first argument is "command", run the rest of the arguments
+## using todo.sh builtins.
+## Else, run a actions script with the name of the command if it exists
+## or fallback to using a builtin
+if [ "$action" == command ]
+then
+    shift
+    action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
+elif [ -d "$HOME/.todo.actions.d" -a -x "$HOME/.todo.actions.d/$action" ]
 then
     "$HOME/.todo.actions.d/$action" "$@"
     cleanup
 fi
 
 ## Only run if $action isn't found in .todo.actions.d
+action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 case $action in
 "add" | "a")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
