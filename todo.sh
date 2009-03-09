@@ -158,6 +158,7 @@ help()
         TODOTXT_PLAIN=1                 is same as option -p
         TODOTXT_DATE_ON_ADD=1           is same as option -t
         TODOTXT_VERBOSE=1               is same as option -v
+        TODOTXT_UNDEF_CUSTOM_ACTIONS=1  disables .todo.actions.d
 EndHelp
 
     if [ -d "$HOME/.todo.actions.d" ]
@@ -209,37 +210,37 @@ while getopts ":fhpnatvV+@Pd:" Option
 do
   case $Option in
     '@' )
-	## HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
-	##   (true) the first time this flag is seen. Each time the flag
-	##   is seen after that, increment it again so that an even
-	##   number hides project names and an odd number shows project
-	##   names.
-	: $(( HIDE_CONTEXT_NAMES++ ))
-	if [ $(( $HIDE_CONTEXT_NAMES % 2 )) -eq 0 ]
-	then
-	    ## Zero or even value -- show context names
-	    unset HIDE_CONTEXTS_SUBSTITUTION
-	else
-	    ## One or odd value -- hide context names
-	    HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[^[:space:]]\{1,\}'
-	fi
-	;;
+        ## HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
+        ##   (true) the first time this flag is seen. Each time the flag
+        ##   is seen after that, increment it again so that an even
+        ##   number hides project names and an odd number shows project
+        ##   names.
+        : $(( HIDE_CONTEXT_NAMES++ ))
+        if [ $(( $HIDE_CONTEXT_NAMES % 2 )) -eq 0 ]
+        then
+            ## Zero or even value -- show context names
+            unset HIDE_CONTEXTS_SUBSTITUTION
+        else
+            ## One or odd value -- hide context names
+            HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[^[:space:]]\{1,\}'
+        fi
+        ;;
     '+' )
-	## HIDE_PROJECT_NAMES starts at zero (false); increment it to one
-	##   (true) the first time this flag is seen. Each time the flag
-	##   is seen after that, increment it again so that an even
-	##   number hides project names and an odd number shows project
-	##   names.
-	: $(( HIDE_PROJECT_NAMES++ ))
-	if [ $(( $HIDE_PROJECT_NAMES % 2 )) -eq 0 ]
-	then
-	    ## Zero or even value -- show project names
-	    unset HIDE_PROJECTS_SUBSTITUTION
-	else
-	    ## One or odd value -- hide project names
-	    HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][^[:space:]]\{1,\}'
-	fi
-	;;
+        ## HIDE_PROJECT_NAMES starts at zero (false); increment it to one
+        ##   (true) the first time this flag is seen. Each time the flag
+        ##   is seen after that, increment it again so that an even
+        ##   number hides project names and an odd number shows project
+        ##   names.
+        : $(( HIDE_PROJECT_NAMES++ ))
+        if [ $(( $HIDE_PROJECT_NAMES % 2 )) -eq 0 ]
+        then
+            ## Zero or even value -- show project names
+            unset HIDE_PROJECTS_SUBSTITUTION
+        else
+            ## One or odd value -- hide project names
+            HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][^[:space:]]\{1,\}'
+        fi
+        ;;
     a )
         TODOTXT_AUTO_ARCHIVE=0
         ;;
@@ -295,6 +296,7 @@ TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
+TODOTXT_UNDEF_CUSTOM_ACTIONS=${TODOTXT_UNDEF_CUSTOM_ACTIONS:-0}
 
 [ -e "$TODOTXT_CFG_FILE" ] || {
     CFG_FILE_ALT="$HOME/.todo.cfg"
@@ -305,7 +307,7 @@ TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
     fi
 }
 
-export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD
+export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_UNDEF_CUSTOM_ACTIONS
 
 TODO_SH="$0"
 export TODO_SH
@@ -339,7 +341,7 @@ shopt -s extglob
 action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 
 ## Run and quit if there's a actions script
-if [ -d "$HOME/.todo.actions.d" -a -x "$HOME/.todo.actions.d/$action" ]
+if [ $TODOTXT_UNDEF_CUSTOM_ACTIONS = 0 -a -d "$HOME/.todo.actions.d" -a -x "$HOME/.todo.actions.d/$action" ]
 then
     "$HOME/.todo.actions.d/$action" "$@"
     cleanup
