@@ -348,7 +348,10 @@ action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 ## or fallback to using a builtin
 if [ "$action" == command ]
 then
+    ## Get rid of "command" from arguments list
     shift
+    ## Reset action to new first argument
+    action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 elif [ -d "$HOME/.todo.actions.d" -a -x "$HOME/.todo.actions.d/$action" ]
 then
     "$HOME/.todo.actions.d/$action" "$@"
@@ -356,7 +359,6 @@ then
 fi
 
 ## Only run if $action isn't found in .todo.actions.d
-action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 case $action in
 "add" | "a")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
