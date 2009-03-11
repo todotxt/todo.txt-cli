@@ -49,6 +49,10 @@ help()
         archive
           Moves done items from todo.txt to done.txt and removes blank lines.
 
+        command [ACTIONS]
+          Runs the remaining arguments using only todo.sh builtins.
+          Will not call any .todo.actions.d scripts.
+
         del NUMBER [TERM]
         rm NUMBER [TERM]
           Deletes the item on line NUMBER in todo.txt.
@@ -119,6 +123,12 @@ help()
 
 
       Options:
+        -@
+            Hide context names in list output. Use twice to show context
+            names (default).
+        -+
+            Hide project names in list output. Use twice to show project
+            names (default).
         -d CONFIG_FILE
             Use a configuration file other than the default ~/todo.cfg
         -f
@@ -127,6 +137,9 @@ help()
             Display this help message
         -p
             Plain mode turns off colors
+        -P
+            Hide priority labels in list output. Use twice to show
+            priority labels (default).
         -a
             Don't auto-archive tasks automatically on completion
         -n
@@ -197,9 +210,41 @@ archive()
 
 
 # == PROCESS OPTIONS ==
-while getopts ":fhpnatvVd:" Option
+while getopts ":fhpnatvV+@Pd:" Option
 do
   case $Option in
+    '@' )
+        ## HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
+        ##   (true) the first time this flag is seen. Each time the flag
+        ##   is seen after that, increment it again so that an even
+        ##   number hides project names and an odd number shows project
+        ##   names.
+        : $(( HIDE_CONTEXT_NAMES++ ))
+        if [ $(( $HIDE_CONTEXT_NAMES % 2 )) -eq 0 ]
+        then
+            ## Zero or even value -- show context names
+            unset HIDE_CONTEXTS_SUBSTITUTION
+        else
+            ## One or odd value -- hide context names
+            HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[^[:space:]]\{1,\}'
+        fi
+        ;;
+    '+' )
+        ## HIDE_PROJECT_NAMES starts at zero (false); increment it to one
+        ##   (true) the first time this flag is seen. Each time the flag
+        ##   is seen after that, increment it again so that an even
+        ##   number hides project names and an odd number shows project
+        ##   names.
+        : $(( HIDE_PROJECT_NAMES++ ))
+        if [ $(( $HIDE_PROJECT_NAMES % 2 )) -eq 0 ]
+        then
+            ## Zero or even value -- show project names
+            unset HIDE_PROJECTS_SUBSTITUTION
+        else
+            ## One or odd value -- hide project names
+            HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][^[:space:]]\{1,\}'
+        fi
+        ;;
     a )
         TODOTXT_AUTO_ARCHIVE=0
         ;;
@@ -217,6 +262,22 @@ do
         ;;
     p )
         TODOTXT_PLAIN=1
+        ;;
+    P )
+        ## HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
+        ##   (true) the first time this flag is seen. Each time the flag
+        ##   is seen after that, increment it again so that an even
+        ##   number hides project names and an odd number shows project
+        ##   names.
+        : $(( HIDE_PRIORITY_LABELS++ ))
+        if [ $(( $HIDE_PRIORITY_LABELS % 2 )) -eq 0 ]
+        then
+            ## Zero or even value -- show priority labels
+            unset HIDE_PRIORITY_SUBSTITUTION
+        else
+            ## One or odd value -- hide priority labels
+            HIDE_PRIORITY_SUBSTITUTION="([A-Z])[[:space:]]"
+        fi
         ;;
     t )
         TODOTXT_DATE_ON_ADD=1
@@ -285,6 +346,23 @@ shopt -s extglob
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
 
+## If the first argument is "command", run the rest of the arguments
+## using todo.sh builtins.
+## Else, run a actions script with the name of the command if it exists
+## or fallback to using a builtin
+if [ "$action" == command ]
+then
+    ## Get rid of "command" from arguments list
+    shift
+    ## Reset action to new first argument
+    action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
+elif [ -d "$HOME/.todo.actions.d" -a -x "$HOME/.todo.actions.d/$action" ]
+then
+    "$HOME/.todo.actions.d/$action" "$@"
+    cleanup
+fi
+
+## Only run if $action isn't found in .todo.actions.d
 case $action in
 "add" | "a")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
@@ -433,19 +511,51 @@ case $action in
 "list" | "ls" )
     item=$2
     if [ -z "$item" ]; then
-        echo -e "`sed = "$TODO_FILE" | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /' | sed 's/^ /0/' | sort -f -k2 | sed '/^[0-9][0-9] x /!s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/'`"
+        echo -e "$(                                             \
+            sed = "$TODO_FILE"                                  \
+            | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /'          \
+            | sed 's/^ /0/'                                     \
+            | sort -f -k2                                       \
+            | sed '/^[0-9][0-9] x /! {
+                s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
+                s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
+                s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
+                s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
+              }'                                                \
+            | sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
+            | sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
+            | sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'     \
+        )"
         echo "--"
         NUMTASKS=$(wc -l "$TODO_FILE" | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
         echo "TODO: $NUMTASKS tasks in $TODO_FILE."
     else
-        command=`sed = "$TODO_FILE" | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /' | sed 's/^ /0/' | sort -f -k2 | sed '/^[0-9][0-9] x /!s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/' | grep -i $item `
+        command=$( 
+            sed = "$TODO_FILE"                              \
+            | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /'      \
+            | sed 's/^ /0/'                                 \
+            | sort -f -k2                                   \
+            | sed '/^[0-9][0-9] x /! {
+                s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
+                s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
+                s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
+                s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
+              }'                                            \
+            | grep -i $item
+        )
         shift
         shift
         for i in $*
         do
             command=`echo "$command" | grep -i $i `
         done
-        command=`echo "$command" | sort -f -k2`
+        command=$(                                              \
+            echo "$command"                                     \
+            | sort -f -k2                                       \
+            | sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
+            | sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
+            | sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'     \
+        )
         echo -e "$command"
     fi
     cleanup ;;
@@ -676,13 +786,6 @@ note:  PRIORITY must be anywhere from A to Z."
     cleanup;;
 
 * )
-    if [ -d "$HOME/.todo.actions.d" ]; then
-        if [ -x "$HOME/.todo.actions.d/$action" ]; then
-            "$HOME/.todo.actions.d/$action" "$@"
-        else
-            usage
-        fi
-    else
-        usage
-    fi
+    usage
+    ;;
 esac
