@@ -162,7 +162,6 @@ help()
         TODOTXT_PLAIN=1                 is same as option -p
         TODOTXT_DATE_ON_ADD=1           is same as option -t
         TODOTXT_VERBOSE=1               is same as option -v
-        TODOTXT_DEFAULT_ACTION="ls"     default action
 EndHelp
 
     if [ -d "$HOME/.todo.actions.d" ]
@@ -320,12 +319,7 @@ export TODO_SH
 
 . "$TODOTXT_CFG_FILE"
 
-## Run the default action if no action called on command line
-if [ -z "$1" ]
-then
-    exec $0 ${TODOTXT_DEFAULT_ACTION:-ls}
-fi
-
+[ -z "$1" ]         && usage
 [ -d "$TODO_DIR" ]  || die "Fatal Error: $TODO_DIR is not a directory"
 cd "$TODO_DIR"      || die "Fatal Error: Unable to cd to $TODO_DIR"
 
