@@ -339,6 +339,61 @@ fi
 # === HEAVY LIFTING ===
 shopt -s extglob
 
+_list-zero_padding() {
+    local LINES=$( wc -l $FILE_TO_NUMBER | sed 's/ .*//' )
+
+    local i=0
+    for i in $( seq 1 6 )
+    do
+	if [ $(( $LINES / 10 ** $i )) -gt 0 ]
+	then
+	    :
+	else
+	    break
+	fi
+    done
+
+    echo $i
+}
+
+
+_list-number_lines() {
+    local FILE_TO_NUMBER="$1"
+    local PADDING=$( _list-zero_padding "$FILE_TO_NUMBER" )
+
+    sed = "$FILE_TO_NUMBER"                                  \
+    | sed "N; s/^/  /; s/ *\(.\{$PADDING,\}\)\n/\1 /"          \
+    | sed '''
+	s/^     /00000/; 
+	s/^    /0000/;
+	s/^   /000/;
+	s/^  /00/;
+	s/^ /0/;
+      '''
+}
+
+_list-sort_alphabetically() {
+    sort -f -k2                                        
+}
+
+_list-add_priority_color() {
+    local FILE_TO_NUMBER="$1"
+    local PADDING=$( _list-zero_padding "$FILE_TO_NUMBER" )
+
+    sed '/^[0-9]\{'$PADDING'\} x /! {
+	s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
+	s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
+	s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
+	s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
+      }'                                                
+}
+
+_list-hide_priority_projects_contexts() {
+    sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
+    | sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
+    | sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'
+}
+
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 
@@ -508,35 +563,19 @@ case $action in
     item=$2
     if [ -z "$item" ]; then
         echo -e "$(                                             \
-            sed = "$TODO_FILE"                                  \
-            | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /'          \
-            | sed 's/^ /0/'                                     \
-            | sort -f -k2                                       \
-            | sed '/^[0-9][0-9] x /! {
-                s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
-                s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
-                s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
-                s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
-              }'                                                \
-            | sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
-            | sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
-            | sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'     \
+	    _list-number_lines "$TODO_FILE" \
+	    | _list-sort_alphabetically	\
+	    | _list-add_priority_color "$TODO_FILE" \
+	    | _list-hide_priority_projects_contexts \
         )"
         echo "--"
         NUMTASKS=$(wc -l "$TODO_FILE" | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
         echo "TODO: $NUMTASKS tasks in $TODO_FILE."
     else
         command=$( 
-            sed = "$TODO_FILE"                              \
-            | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /'      \
-            | sed 's/^ /0/'                                 \
-            | sort -f -k2                                   \
-            | sed '/^[0-9][0-9] x /! {
-                s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
-                s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
-                s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
-                s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
-              }'                                            \
+	    _list-number_lines "$TODO_FILE" \
+	    | _list-sort_alphabetically \
+	    | _list-add_priority_color "$TODO_FILE" \
             | grep -i $item
         )
         shift
@@ -547,10 +586,8 @@ case $action in
         done
         command=$(                                              \
             echo "$command"                                     \
-            | sort -f -k2                                       \
-            | sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
-            | sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
-            | sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'     \
+            | _list-sort_alphabetically                         \
+	    | _list-hide_priority_projects_contexts \
         )
         echo -e "$command"
     fi
@@ -561,9 +598,18 @@ case $action in
     cat "$TODO_FILE" "$DONE_FILE" > "$TMP_FILE"
 
     if [ -z "$item" ]; then
-        echo -e "`sed = "$TMP_FILE" | sed 'N; s/^/  /; s/ *\(.\{3,\}\)\n/\1 /' | sed 's/^  /00/' | sed 's/^ /0/' | sort -f -k2 | sed '/^[0-9][0-9][0-9] x /!s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g' | sed '/^[0-9][0-9][0-9] x /!s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g' | sed '/^[0-9][0-9][0-9] x /!s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g' | sed '/^[0-9][0-9][0-9] x /!s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/'`"
+        echo -e "$(
+	    _list-number_lines "$TMP_FILE" \
+	    | _list-sort_alphabetically \
+	    | _list-add_priority_color "$TMP_FILE" \
+	)"
     else
-        command=`sed = "$TMP_FILE" | sed 'N; s/^/  /; s/ *\(.\{3,\}\)\n/\1 /' | sed 's/^  /00/' | sed 's/^ /0/' | sort -f -k2 | sed '/^[0-9][0-9][0-9] x /!s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g' | sed '/^[0-9][0-9][0-9] x /!s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g' | sed '/^[0-9][0-9][0-9] x /!s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g' | sed '/^[0-9][0-9][0-9] x /!s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/' | grep -i $item `
+        command=$(
+	    _list-number_lines "$TMP_FILE" \
+	    | _list-sort_alphabetically \
+	    | _list-add_priority_color "$TMP_FILE" \
+	    | grep -i $item
+	)
         shift
         shift
         for i in $*
@@ -586,14 +632,23 @@ case $action in
     fi
     if [ -f "$src" ]; then
         if [ -z "$item" ]; then
-            echo -e "`sed = "$src" | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /' | sed 's/^ /0/' | sort -f -k2 | sed '/^[0-9][0-9] x /!s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/'`"
+            echo -e "$(
+		_list-number_lines "$src" \
+		| _list-sort_alphabetically \
+		| _list-add_priority_color "$src"
+	    )"
             if [ $TODOTXT_VERBOSE = 1 ]; then
                 echo "--"
                 NUMTASKS=$( sed '/./!d' "$src" | wc -l | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
                 echo "TODO: $NUMTASKS lines in $src."
             fi
         else
-            command=`sed = "$src" | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /' | sed 's/^ /0/' | sort -f -k2 | sed '/^[0-9][0-9] x /!s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/' | grep -i $item `
+            command=$(
+		_list-number_lines "$src" \
+		| _list-sort_alphabetically \
+		| _list-add_priority_color "$src" \
+		| grep -i $item
+	    )
             shift
             shift
             for i in $*
@@ -623,7 +678,12 @@ case $action in
 note:  PRIORITY must a single letter from A to Z."
 
     if [ -z "$pri" ]; then
-        echo -e "`sed = "$TODO_FILE" | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /' | sed 's/^ /0/' | sort -f -k2 |  sed 's/^ /0/' | sort -f -k2 | sed '/^[0-9][0-9] x /!s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/'`" | grep \([A-Z]\)
+        echo -e "$(
+	    _list-number_lines "$TODO_FILE" \
+	    | _list-sort_alphabetically \
+	    | _list-add_priority_color "$TODO_FILE" \
+	    | grep \([A-Z]\)
+	)"
         if [ $TODOTXT_VERBOSE = 1 ]; then
             echo "--"
             NUMTASKS=$(grep \([A-Z]\) "$TODO_FILE" | wc -l | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
@@ -632,7 +692,12 @@ note:  PRIORITY must a single letter from A to Z."
     else
         [[ "$pri" = +([A-Z]) ]] || die "$errmsg"
 
-        echo -e "`sed = "$TODO_FILE" | sed 'N; s/^/  /; s/ *\(.\{2,\}\)\n/\1 /' | sed 's/^ /0/' |  sort -f -k2 |  sed 's/^ /0/' | sort -f -k2 | sed '/^[0-9][0-9] x /!s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g' | sed '/^[0-9][0-9] x /!s/\(.*([A-Z]).*\)/'$PRI_X'\1'$DEFAULT'/'`" | grep \($pri\)
+        echo -e "$( 
+	    _list-number_lines "$TODO_FILE" \
+	    | _list-sort_alphabetically \
+	    | _list-add_priority_color "$TODO_FILE" \
+	    | grep \($pri\)
+	)"
         if [ $TODOTXT_VERBOSE = 1 ]; then
             echo "--"
             NUMTASKS=$(grep \($pri\) "$TODO_FILE" | wc -l | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
