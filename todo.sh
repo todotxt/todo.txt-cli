@@ -225,7 +225,7 @@ do
             unset HIDE_CONTEXTS_SUBSTITUTION
         else
             ## One or odd value -- hide context names
-            HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[^[:space:]]\{1,\}'
+            export HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[^[:space:]]\{1,\}'
         fi
         ;;
     '+' )
@@ -241,7 +241,7 @@ do
             unset HIDE_PROJECTS_SUBSTITUTION
         else
             ## One or odd value -- hide project names
-            HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][^[:space:]]\{1,\}'
+            export HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][^[:space:]]\{1,\}'
         fi
         ;;
     a )
@@ -275,7 +275,7 @@ do
             unset HIDE_PRIORITY_SUBSTITUTION
         else
             ## One or odd value -- hide priority labels
-            HIDE_PRIORITY_SUBSTITUTION="([A-Z])[[:space:]]"
+            export HIDE_PRIORITY_SUBSTITUTION="([A-Z])[[:space:]]"
         fi
         ;;
     t )
@@ -323,7 +323,7 @@ export TODO_SH
 [ -d "$TODO_DIR" ]  || die "Fatal Error: $TODO_DIR is not a directory"
 cd "$TODO_DIR"      || die "Fatal Error: Unable to cd to $TODO_DIR"
 
-echo '' > "$TMP_FILE" || die "Fatal Error:  Unable to write in $TODO_DIR"
+[ -w "$TMP_FILE"  ] || echo -n > $TMP_FILE || die "Fatal Error:  Unable to write to $TMP_FILE"
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"
 [ -f "$DONE_FILE" ] || cp /dev/null "$DONE_FILE"
 [ -f "$REPORT_FILE" ] || cp /dev/null "$REPORT_FILE"
@@ -338,61 +338,6 @@ fi
 
 # === HEAVY LIFTING ===
 shopt -s extglob
-
-_list-zero_padding() {
-    local LINES=$( wc -l $FILE_TO_NUMBER | sed 's/ .*//' )
-
-    local i=0
-    for i in $( seq 1 6 )
-    do
-	if [ $(( $LINES / 10 ** $i )) -gt 0 ]
-	then
-	    :
-	else
-	    break
-	fi
-    done
-
-    echo $i
-}
-
-
-_list-number_lines() {
-    local FILE_TO_NUMBER="$1"
-    local PADDING=$( _list-zero_padding "$FILE_TO_NUMBER" )
-
-    sed = "$FILE_TO_NUMBER"                                  \
-    | sed "N; s/^/  /; s/ *\(.\{$PADDING,\}\)\n/\1 /"          \
-    | sed '''
-	s/^     /00000/; 
-	s/^    /0000/;
-	s/^   /000/;
-	s/^  /00/;
-	s/^ /0/;
-      '''
-}
-
-_list-sort_alphabetically() {
-    sort -f -k2                                        
-}
-
-_list-add_priority_color() {
-    local FILE_TO_NUMBER="$1"
-    local PADDING=$( _list-zero_padding "$FILE_TO_NUMBER" )
-
-    sed '/^[0-9]\{'$PADDING'\} x /! {
-	s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
-	s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
-	s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
-	s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
-      }'                                                
-}
-
-_list-hide_priority_projects_contexts() {
-    sed 's/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g'     \
-    | sed 's/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g'     \
-    | sed 's/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g'
-}
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
@@ -560,108 +505,124 @@ case $action in
 
 
 "list" | "ls" )
-    item=$2
-    if [ -z "$item" ]; then
-        echo -e "$(                                             \
-	    _list-number_lines "$TODO_FILE" \
-	    | _list-sort_alphabetically	\
-	    | _list-add_priority_color "$TODO_FILE" \
-	    | _list-hide_priority_projects_contexts \
-        )"
-        echo "--"
-        NUMTASKS=$(wc -l "$TODO_FILE" | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
-        echo "TODO: $NUMTASKS tasks in $TODO_FILE."
-    else
-        command=$( 
-	    _list-number_lines "$TODO_FILE" \
-	    | _list-sort_alphabetically \
-	    | _list-add_priority_color "$TODO_FILE" \
-            | grep -i $item
-        )
-        shift
-        shift
-        for i in $*
-        do
-            command=`echo "$command" | grep -i $i `
-        done
-        command=$(                                              \
-            echo "$command"                                     \
-            | _list-sort_alphabetically                         \
-	    | _list-hide_priority_projects_contexts \
-        )
-        echo -e "$command"
-    fi
-    cleanup ;;
+    shift
+    exec "$TODO_SH" listfile "$TODO_FILE" "$@"
+    ;;
 
 "listall" | "lsa" )
-    item=$2
     cat "$TODO_FILE" "$DONE_FILE" > "$TMP_FILE"
-
-    if [ -z "$item" ]; then
-        echo -e "$(
-	    _list-number_lines "$TMP_FILE" \
-	    | _list-sort_alphabetically \
-	    | _list-add_priority_color "$TMP_FILE" \
-	)"
-    else
-        command=$(
-	    _list-number_lines "$TMP_FILE" \
-	    | _list-sort_alphabetically \
-	    | _list-add_priority_color "$TMP_FILE" \
-	    | grep -i $item
-	)
-        shift
-        shift
-        for i in $*
-        do
-            command=`echo "$command" | grep -i $i `
-        done
-        command=`echo "$command" | sort -f -k2`
-        echo -e "$command"
-    fi
-    cleanup ;;
-
+    shift
+    exec $TODO_SH listfile "$TMP_FILE" "$@"
+    ;;
 
 "listfile" | "lf" )
-    src="$TODO_DIR/$2"
-
-    if [ -z "$3" ]; then
-        item=""
+    ## If the file starts with a "/" use absolute path. Otherwise, make
+    ## it relative to $TODO_DIR
+    if [ "${2:0:1}" == / ]
+    then
+	## Absolute path
+	src="$2"
     else
-        item=$3
+	## Relative path
+	src="$TODO_DIR/$2"
     fi
-    if [ -f "$src" ]; then
-        if [ -z "$item" ]; then
-            echo -e "$(
-		_list-number_lines "$src" \
-		| _list-sort_alphabetically \
-		| _list-add_priority_color "$src"
-	    )"
-            if [ $TODOTXT_VERBOSE = 1 ]; then
-                echo "--"
-                NUMTASKS=$( sed '/./!d' "$src" | wc -l | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
-                echo "TODO: $NUMTASKS lines in $src."
-            fi
-        else
-            command=$(
-		_list-number_lines "$src" \
-		| _list-sort_alphabetically \
-		| _list-add_priority_color "$src" \
-		| grep -i $item
-	    )
-            shift
-            shift
-            for i in $*
-            do
-                command=`echo "$command" | grep -i $i `
-            done
-            command=`echo "$command" | sort -f -k2`
-            echo -e "$command"
-        fi
-    else
+
+    ## Ensure the file exits before proceeding
+    if [ ! -f $src ]
+    then
         echo "TODO: File $src does not exist."
     fi
-    cleanup ;;
+
+    ## Figure out how much padding we need to use
+    ## We need one level of padding for each power of 10 $LINES uses
+    LINES=$( wc -l "$src" | sed 's/ .*//' )
+    i=0
+    ## 6 places will pad tasks numbered less than 99,999, thus correctly
+    ## displaying up to 999,999 tasks. Anyone who's done a million tasks
+    ## should send me an email with your secret.
+    for i in $( seq 1 6 )
+    do
+	if [ ! $(( $LINES / 10 ** $i )) -gt 0 ]
+	then
+	    break
+	fi
+    done
+    PADDING=$i
+    unset i LINES
+
+    item="${3:-}"
+    if [ -z "$item" ]; then
+	## No search pattern specified, operate on whole file
+	echo -e "$(
+	    sed = "$src"                                  	\
+	    | sed "N; s/^/  /; s/ *\(.\{$PADDING,\}\)\n/\1 /"   \
+	    | sed '''
+		s/^     /00000/; 
+		s/^    /0000/;
+		s/^   /000/;
+		s/^  /00/;
+		s/^ /0/;
+	      ''' 						\
+	    | sort -f -k2 					\
+	    | sed '''
+		/^[0-9]\{'$PADDING'\} x /! {
+		    s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
+		    s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
+		    s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
+		    s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
+		    }
+		s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
+		s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
+		s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
+		''' 						\
+	)"
+	if [ $TODOTXT_VERBOSE = 1 ]; then
+	    echo "--"
+	    NUMTASKS=$( sed '/./!d' "$src" | wc -l | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
+	    echo "TODO: $NUMTASKS lines shown from $src"
+	fi
+    else
+	## Search pattern or patterns specified; parse the file and then
+	## grep for each pattern afterwords.
+	command=$(
+	    sed = "$src"                                  	\
+	    | sed "N; s/^/  /; s/ *\(.\{$PADDING,\}\)\n/\1 /"   \
+	    | sed '''
+		s/^     /00000/; 
+		s/^    /0000/;
+		s/^   /000/;
+		s/^  /00/;
+		s/^ /0/;
+	      ''' \
+	    | sort -f -k2 					\
+	    | sed '''
+		/^[0-9]\{'$PADDING'\} x /! {
+		    s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
+		    s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
+		    s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
+		    s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
+		}
+	      '''						\
+	    | grep -i "$item"
+	)
+	shift ## was "listfile"
+	shift ## was first search pattern
+	for i in "$@"
+	do
+	    command=`echo "$command" | grep -i "$i" `
+	done
+	command=$( echo "$command" \
+	    | sort -f -k2 \
+	    | sed '''
+		s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
+		s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
+		s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
+	      ''' \
+	)
+	echo -e "$command"
+    fi
+    cleanup 
+    ;;
 
 "listcon" | "lsc" )
     gawk '{for(i = 1; i <= NF; i++) print $i}' "$TODO_FILE" | grep '@' | sort | uniq
@@ -673,38 +634,21 @@ case $action in
 
 
 "listpri" | "lsp" )
-    pri=$( printf "%s\n" "$2" | tr 'a-z' 'A-Z' )
-    errmsg="usage: $0 listpri PRIORITY
-note:  PRIORITY must a single letter from A to Z."
-
-    if [ -z "$pri" ]; then
-        echo -e "$(
-	    _list-number_lines "$TODO_FILE" \
-	    | _list-sort_alphabetically \
-	    | _list-add_priority_color "$TODO_FILE" \
-	    | grep \([A-Z]\)
-	)"
-        if [ $TODOTXT_VERBOSE = 1 ]; then
-            echo "--"
-            NUMTASKS=$(grep \([A-Z]\) "$TODO_FILE" | wc -l | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
-            echo "TODO: $NUMTASKS prioritized tasks in $TODO_FILE."
-        fi
+    if [ "${2:-}" ]
+    then
+	pri=$( printf "%s\n" "$2" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
+	die "usage: $0 listpri PRIORITY
+	note:  PRIORITY must a single letter from A to Z."
+	}
     else
-        [[ "$pri" = +([A-Z]) ]] || die "$errmsg"
-
-        echo -e "$( 
-	    _list-number_lines "$TODO_FILE" \
-	    | _list-sort_alphabetically \
-	    | _list-add_priority_color "$TODO_FILE" \
-	    | grep \($pri\)
-	)"
-        if [ $TODOTXT_VERBOSE = 1 ]; then
-            echo "--"
-            NUMTASKS=$(grep \($pri\) "$TODO_FILE" | wc -l | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
-            echo "TODO: $NUMTASKS tasks prioritized $pri in $TODO_FILE."
-        fi
+	pri="[A-Z]"
     fi
-    cleanup;;
+    pri="($pri)"
+
+    shift ## was "listpri"
+    shift ## was priority
+    exec $TODO_SH listfile "$TODO_FILE" "$pri" "$@"
+    ;;
 
 "move" | "mv" )
     # replace moved line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
