@@ -362,11 +362,18 @@ _list() {
 
     ## Get our search arguments, if any
     shift ## was file name, new $1 is first search term
+
+    filter_command="${prefilter_command:-}"
+
     for search_term in "$@"
     do
         filter_command="${filter_command:-} ${filter_command:+|} \
             grep -i \"$search_term\" "
     done
+
+    [ -n "$postfilter_command" ] && {
+        filter_command="${filter_command:-}${filter_command:+ | }${postfilter_command:-}"
+    }
 
     ## Figure out how much padding we need to use
     ## We need one level of padding for each power of 10 $LINES uses
