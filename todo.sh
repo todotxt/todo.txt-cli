@@ -407,7 +407,7 @@ _list() {
     if [ $TODOTXT_VERBOSE == 1 ]; then
         NUMTASKS=$( echo -e "$command" | wc -l | sed 's/ .*//' )
         echo "--"
-        echo "TODO: $NUMTASKS of $LINES tasks shown from $src"
+        echo "TODO: $NUMTASKS of $LINES tasks shown from $FILE"
     fi
 }
 
