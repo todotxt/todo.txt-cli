@@ -411,6 +411,8 @@ _list() {
     fi
 }
 
+export -f _list
+
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
 
