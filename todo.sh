@@ -321,7 +321,7 @@ export TODO_SH
 
 [ -z "$1" ]         && usage
 [ -d "$TODO_DIR" ]  || die "Fatal Error: $TODO_DIR is not a directory"
-cd "$TODO_DIR"      || die "Fatal Error: Unable to cd to $TODO_DIR"
+( cd "$TODO_DIR" )  || die "Fatal Error: Unable to cd to $TODO_DIR"
 
 [ -w "$TMP_FILE"  ] || echo -n > $TMP_FILE || die "Fatal Error:  Unable to write to $TMP_FILE"
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"
@@ -338,6 +338,79 @@ fi
 
 # === HEAVY LIFTING ===
 shopt -s extglob
+
+_list() {
+    local FILE="$1"
+    ## If the file starts with a "/" use absolute path. Otherwise, 
+    ## try to find it in either $TODO_DIR or using a relative path
+    if [ "${1:0:1}" == / ]
+    then
+        ## Absolute path
+        src="$FILE"
+    elif [ -f "$TODO_DIR/$FILE" ]
+    then
+        ## Path relative to todo.sh directory
+        src="$TODO_DIR/$1"
+    elif [ -f "$FILE" ]
+    then
+	## Path relative to current working directory
+	src="$FILE"
+    else
+        echo "TODO: File $FILE does not exist."
+	exit 1
+    fi
+
+    ## Get our search arguments, if any
+    shift ## was file name, new $1 is first search term
+    for search_term in "$@"
+    do
+        filter_command="${filter_command:-} ${filter_command:+|} \
+            grep -i \"$search_term\" "
+    done
+
+    ## Figure out how much padding we need to use
+    ## We need one level of padding for each power of 10 $LINES uses
+    LINES=$( wc -l "$src" | sed 's/ .*//' )
+    PADDING=${#LINES}
+
+    ## Search pattern or patterns specified; parse the file and then
+    ## grep for each pattern afterwords.
+
+    command=$(
+        sed = "$src"                                        \
+        | sed "N; s/^/     /; s/ *\(.\{$PADDING,\}\)\n/\1 /"    \
+        | sed '''
+            s/^     /00000/; 
+            s/^    /0000/;
+            s/^   /000/;
+            s/^  /00/;
+            s/^ /0/;
+          ''' \
+        | sort -f -k2                                       \
+        | sed '''
+            /^[0-9]\{'$PADDING'\} x /! {
+                s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
+                s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
+                s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
+                s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
+            }
+          '''                                               \
+        | eval ${filter_command:-cat} \
+        | sort -f -k2 \
+        | sed '''
+            s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
+            s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
+            s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
+          ''' \
+    )
+    echo -e "$command"
+
+    if [ $TODOTXT_VERBOSE == 1 ]; then
+        NUMTASKS=$( echo -e "$command" | wc -l | sed 's/ .*//' )
+        echo "--"
+        echo "TODO: $NUMTASKS of $LINES tasks shown from $src"
+    fi
+}
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
@@ -505,86 +578,27 @@ case $action in
 
 
 "list" | "ls" )
-    shift
-    exec "$TODO_SH" listfile "$TODO_FILE" "$@"
+    shift  ## Was ls; new $1 is first search term
+    _list "$TODO_FILE" "$@"
+
+    cleanup 
     ;;
 
 "listall" | "lsa" )
+    shift  ## Was lsa; new $1 is first search term
+
     cat "$TODO_FILE" "$DONE_FILE" > "$TMP_FILE"
-    shift
-    exec $TODO_SH listfile "$TMP_FILE" "$@"
+    _list "$TMP_FILE" "$@"
+
+    cleanup 
     ;;
 
 "listfile" | "lf" )
-    shift ## was "listfile", new $1 is filename
+    shift  ## Was listfile, next $1 is file name
+    FILE="$1"
+    shift  ## Was filename; next $1 is first search term
 
-    ## If the file starts with a "/" use absolute path. Otherwise, make
-    ## it relative to $TODO_DIR
-    if [ "${1:0:1}" == / ]
-    then
-        ## Absolute path
-        src="$1"
-    else
-        ## Relative path
-        src="$TODO_DIR/$1"
-    fi
-
-    ## Ensure the file exits before proceeding
-    if [ ! -f $src ]
-    then
-        echo "TODO: File $src does not exist."
-    fi
-
-    ## Get our search arguments, if any
-    shift ## was file name, new $1 is first search term
-    for search_term in "$@"
-    do
-        filter_command="${filter_command:-} ${filter_command:+|} \
-            grep -i \"$search_term\" "
-    done
-
-    ## Figure out how much padding we need to use
-    ## We need one level of padding for each power of 10 $LINES uses
-    LINES=$( wc -l "$src" | sed 's/ .*//' )
-    PADDING=${#LINES}
-
-    ## Search pattern or patterns specified; parse the file and then
-    ## grep for each pattern afterwords.
-
-    command=$(
-        sed = "$src"                                        \
-        | sed "N; s/^/     /; s/ *\(.\{$PADDING,\}\)\n/\1 /"    \
-        | sed '''
-            s/^     /00000/; 
-            s/^    /0000/;
-            s/^   /000/;
-            s/^  /00/;
-            s/^ /0/;
-          ''' \
-        | sort -f -k2                                       \
-        | sed '''
-            /^[0-9]\{'$PADDING'\} x /! {
-                s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
-                s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
-                s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
-                s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
-            }
-          '''                                               \
-        | eval ${filter_command:-cat} \
-        | sort -f -k2 \
-        | sed '''
-            s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
-            s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
-            s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
-          ''' \
-    )
-    echo -e "$command"
-
-    if [ $TODOTXT_VERBOSE == 1 ]; then
-        NUMTASKS=$( echo -e "$command" | wc -l | sed 's/ .*//' )
-        echo "--"
-        echo "TODO: $NUMTASKS of $LINES tasks shown from $src"
-    fi
+    _list "$FILE" "$@"
 
     cleanup 
     ;;
@@ -599,20 +613,23 @@ case $action in
 
 
 "listpri" | "lsp" )
-    if [ "${2:-}" ]
+    shift ## was "listpri"
+
+    if [ "${1:-}" ]
     then
-	pri=$( printf "%s\n" "$2" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
+	## A priority was specified
+	pri=$( printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
 	die "usage: $0 listpri PRIORITY
 	note:  PRIORITY must a single letter from A to Z."
 	}
     else
+	## No priority specified; show all priority tasks
 	pri="[A-Z]"
     fi
     pri="($pri)"
-
-    shift ## was "listpri"
     shift ## was priority
-    exec $TODO_SH listfile "$TODO_FILE" "$pri" "$@"
+
+    _list "$TODO_FILE" "$pri" "$@"
     ;;
 
 "move" | "mv" )
