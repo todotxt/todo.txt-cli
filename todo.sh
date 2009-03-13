@@ -353,11 +353,11 @@ _list() {
         src="$TODO_DIR/$1"
     elif [ -f "$FILE" ]
     then
-	## Path relative to current working directory
-	src="$FILE"
+        ## Path relative to current working directory
+        src="$FILE"
     else
         echo "TODO: File $FILE does not exist."
-	exit 1
+        exit 1
     fi
 
     ## Get our search arguments, if any
@@ -373,11 +373,10 @@ _list() {
     LINES=$( wc -l "$src" | sed 's/ .*//' )
     PADDING=${#LINES}
 
-    ## Search pattern or patterns specified; parse the file and then
-    ## grep for each pattern afterwords.
-
+    ## Number, sort, and mangle the file, then run the filter command,
+    ## then mangle the file some more
     command=$(
-        sed = "$src"                                        \
+        sed = "$src"                                            \
         | sed "N; s/^/     /; s/ *\(.\{$PADDING,\}\)\n/\1 /"    \
         | sed '''
             s/^     /00000/; 
@@ -386,7 +385,7 @@ _list() {
             s/^  /00/;
             s/^ /0/;
           ''' \
-        | sort -f -k2                                       \
+        | sort -f -k2                                           \
         | sed '''
             /^[0-9]\{'$PADDING'\} x /! {
                 s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
@@ -394,7 +393,7 @@ _list() {
                 s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
                 s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
             }
-          '''                                               \
+          '''                                                   \
         | eval ${filter_command:-cat} \
         | sort -f -k2 \
         | sed '''
@@ -617,14 +616,14 @@ case $action in
 
     if [ "${1:-}" ]
     then
-	## A priority was specified
-	pri=$( printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
-	die "usage: $0 listpri PRIORITY
-	note:  PRIORITY must a single letter from A to Z."
-	}
+        ## A priority was specified
+        pri=$( printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
+        die "usage: $0 listpri PRIORITY
+        note:  PRIORITY must a single letter from A to Z."
+        }
     else
-	## No priority specified; show all priority tasks
-	pri="[A-Z]"
+        ## No priority specified; show all priority tasks
+        pri="[A-Z]"
     fi
     pri="($pri)"
     shift ## was priority
