@@ -516,15 +516,17 @@ case $action in
     ;;
 
 "listfile" | "lf" )
+    shift ## was "listfile", new $1 is filename
+
     ## If the file starts with a "/" use absolute path. Otherwise, make
     ## it relative to $TODO_DIR
-    if [ "${2:0:1}" == / ]
+    if [ "${1:0:1}" == / ]
     then
-	## Absolute path
-	src="$2"
+        ## Absolute path
+        src="$1"
     else
-	## Relative path
-	src="$TODO_DIR/$2"
+        ## Relative path
+        src="$TODO_DIR/$1"
     fi
 
     ## Ensure the file exits before proceeding
@@ -533,94 +535,62 @@ case $action in
         echo "TODO: File $src does not exist."
     fi
 
+    ## Get our search arguments, if any
+    shift ## was file name, new $1 is first search term
+    for search_term in "$@"
+    do
+        filter_command="${filter_command:-} ${filter_command:+|} \
+            grep -i \"$search_term\" "
+    done
+
     ## Figure out how much padding we need to use
     ## We need one level of padding for each power of 10 $LINES uses
     LINES=$( wc -l "$src" | sed 's/ .*//' )
-    i=0
-    ## 6 places will pad tasks numbered less than 99,999, thus correctly
-    ## displaying up to 999,999 tasks. Anyone who's done a million tasks
-    ## should send me an email with your secret.
-    for i in $( seq 1 6 )
-    do
-	if [ ! $(( $LINES / 10 ** $i )) -gt 0 ]
-	then
-	    break
-	fi
-    done
-    PADDING=$i
-    unset i LINES
+    PADDING=${#LINES}
 
-    item="${3:-}"
-    if [ -z "$item" ]; then
-	## No search pattern specified, operate on whole file
-	echo -e "$(
-	    sed = "$src"                                  	\
-	    | sed "N; s/^/  /; s/ *\(.\{$PADDING,\}\)\n/\1 /"   \
-	    | sed '''
-		s/^     /00000/; 
-		s/^    /0000/;
-		s/^   /000/;
-		s/^  /00/;
-		s/^ /0/;
-	      ''' 						\
-	    | sort -f -k2 					\
-	    | sed '''
-		/^[0-9]\{'$PADDING'\} x /! {
-		    s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
-		    s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
-		    s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
-		    s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
-		    }
-		s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
-		s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
-		s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
-		''' 						\
-	)"
-	if [ $TODOTXT_VERBOSE = 1 ]; then
-	    echo "--"
-	    NUMTASKS=$( sed '/./!d' "$src" | wc -l | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
-	    echo "TODO: $NUMTASKS lines shown from $src"
-	fi
-    else
-	## Search pattern or patterns specified; parse the file and then
-	## grep for each pattern afterwords.
-	command=$(
-	    sed = "$src"                                  	\
-	    | sed "N; s/^/  /; s/ *\(.\{$PADDING,\}\)\n/\1 /"   \
-	    | sed '''
-		s/^     /00000/; 
-		s/^    /0000/;
-		s/^   /000/;
-		s/^  /00/;
-		s/^ /0/;
-	      ''' \
-	    | sort -f -k2 					\
-	    | sed '''
-		/^[0-9]\{'$PADDING'\} x /! {
-		    s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
-		    s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
-		    s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
-		    s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
-		}
-	      '''						\
-	    | grep -i "$item"
-	)
-	shift ## was "listfile"
-	shift ## was first search pattern
-	for i in "$@"
-	do
-	    command=`echo "$command" | grep -i "$i" `
-	done
-	command=$( echo "$command" \
-	    | sort -f -k2 \
-	    | sed '''
-		s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
-		s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
-		s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
-	      ''' \
-	)
-	echo -e "$command"
+    ## Search pattern or patterns specified; parse the file and then
+    ## grep for each pattern afterwords.
+
+    command=$(
+        sed = "$src"                                        \
+        | sed "N; s/^/     /; s/ *\(.\{$PADDING,\}\)\n/\1 /"    \
+        | sed '''
+            s/^     /00000/; 
+            s/^    /0000/;
+            s/^   /000/;
+            s/^  /00/;
+            s/^ /0/;
+          ''' \
+        | sort -f -k2                                       \
+        | sed '''
+            /^[0-9]\{'$PADDING'\} x /! {
+                s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
+                s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
+                s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
+                s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
+            }
+          '''                                               \
+        | eval ${filter_command:-cat} \
+        | sort -f -k2 \
+        | sed '''
+            s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
+            s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
+            s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
+          ''' \
+    )
+    echo -e "$command"
+
+    if [ $TODOTXT_VERBOSE == 1 ]; then
+        echo "--"
+        NUMTASKS=$( 
+            sed '/^$/d' "$src" \
+            | eval ${filter_command:-cat} \
+            | wc -l \
+            | sed 's/^[[:space:]]*\([0-9]*\).*/\1/' \
+        )
+        echo "TODO: $NUMTASKS of $LINES tasks shown from $src"
     fi
+
     cleanup 
     ;;
 
