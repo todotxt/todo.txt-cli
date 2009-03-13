@@ -394,13 +394,13 @@ _list() {
                 s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
             }
           '''                                                   \
-        | eval ${filter_command:-cat} \
-        | sort -f -k2 \
+        | eval ${filter_command:-cat}                           \
+        | sort -f -k2                                           \
         | sed '''
             s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
             s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
             s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
-          ''' \
+          '''                                                   \
     )
     echo -e "$command"
 
