@@ -581,13 +581,8 @@ case $action in
     echo -e "$command"
 
     if [ $TODOTXT_VERBOSE == 1 ]; then
+        NUMTASKS=$( echo -e "$command" | wc -l | sed 's/ .*//' )
         echo "--"
-        NUMTASKS=$( 
-            sed '/^$/d' "$src" \
-            | eval ${filter_command:-cat} \
-            | wc -l \
-            | sed 's/^[[:space:]]*\([0-9]*\).*/\1/' \
-        )
         echo "TODO: $NUMTASKS of $LINES tasks shown from $src"
     fi
 
