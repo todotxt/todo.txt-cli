@@ -363,16 +363,31 @@ _list() {
     ## Get our search arguments, if any
     shift ## was file name, new $1 is first search term
 
-    filter_command="${prefilter_command:-}"
+    ## Prefix the filter_command with the pre_filter_command
+    filter_command="${pre_filter_command:-}"
 
     for search_term in "$@"
     do
-        filter_command="${filter_command:-} ${filter_command:+|} \
-            grep -i \"$search_term\" "
+	## See if the first character of $search_term is a dash
+	if [ ${search_term:0:1} != '-' ]
+	then
+	    ## First character isn't a dash: hide lines that don't match
+	    ## this $search_term
+	    filter_command="${filter_command:-} ${filter_command:+|} \
+		grep -i \"$search_term\" "
+	else
+	    ## First character is a dash: hide lines that match this
+	    ## $search_term
+	    #
+	    ## Remove the first character (-) before adding to our filter command
+	    filter_command="${filter_command:-} ${filter_command:+|} \
+		grep -v -i \"${search_term:1}\" "
+	fi
     done
 
-    [ -n "$postfilter_command" ] && {
-        filter_command="${filter_command:-}${filter_command:+ | }${postfilter_command:-}"
+    ## If post_filter_command is set, append it to the filter_command
+    [ -n "$post_hilter_command" ] && {
+        filter_command="${filter_command:-}${filter_command:+ | }${post_filter_command:-}"
     }
 
     ## Figure out how much padding we need to use
