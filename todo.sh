@@ -408,6 +408,7 @@ _list() {
             s/^ /0/;
           ''' \
         | sort -f -k2                                           \
+        | eval ${filter_command:-cat}                           \
         | sed '''
             /^[0-9]\{'$PADDING'\} x /! {
                 s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
@@ -416,7 +417,6 @@ _list() {
                 s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
             }
           '''                                                   \
-        | eval ${filter_command:-cat}                           \
         | sort -f -k2                                           \
         | sed '''
             s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
