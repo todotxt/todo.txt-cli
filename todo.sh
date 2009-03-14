@@ -368,21 +368,21 @@ _list() {
 
     for search_term in "$@"
     do
-	## See if the first character of $search_term is a dash
-	if [ ${search_term:0:1} != '-' ]
-	then
-	    ## First character isn't a dash: hide lines that don't match
-	    ## this $search_term
-	    filter_command="${filter_command:-} ${filter_command:+|} \
-		grep -i \"$search_term\" "
-	else
-	    ## First character is a dash: hide lines that match this
-	    ## $search_term
-	    #
-	    ## Remove the first character (-) before adding to our filter command
-	    filter_command="${filter_command:-} ${filter_command:+|} \
-		grep -v -i \"${search_term:1}\" "
-	fi
+        ## See if the first character of $search_term is a dash
+        if [ ${search_term:0:1} != '-' ]
+        then
+            ## First character isn't a dash: hide lines that don't match
+            ## this $search_term
+            filter_command="${filter_command:-} ${filter_command:+|} \
+                grep -i \"$search_term\" "
+        else
+            ## First character is a dash: hide lines that match this
+            ## $search_term
+            #
+            ## Remove the first character (-) before adding to our filter command
+            filter_command="${filter_command:-} ${filter_command:+|} \
+                grep -v -i \"${search_term:1}\" "
+        fi
     done
 
     ## If post_filter_command is set, append it to the filter_command
