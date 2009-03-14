@@ -392,7 +392,7 @@ _list() {
 
     ## Figure out how much padding we need to use
     ## We need one level of padding for each power of 10 $LINES uses
-    LINES=$( sed -ne '$ =' < "$src" )
+    LINES=$( sed -n '$ =' "$src" )
     PADDING=${#LINES}
 
     ## Number, sort, and mangle the file, then run the filter command,
@@ -424,10 +424,10 @@ _list() {
             s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
           '''                                                   \
     )
-    echo -e "$command"
+    echo -ne "$command${command:+\n}"
 
     if [ $TODOTXT_VERBOSE == 1 ]; then
-        NUMTASKS=$( echo -e "$command" | sed -ne '/^$/d' -e '$ =' )
+        NUMTASKS=$( echo -ne "$command" | sed -n '$ =' )
 
         echo "--"
         echo "TODO: ${NUMTASKS:-0} of $LINES tasks shown from $FILE"
@@ -472,7 +472,7 @@ case $action in
         input="$now $input"
     fi
     echo "$input" >> "$TODO_FILE"
-    TASKNUM=$(sed -ne "$ =" < "$TODO_FILE")
+    TASKNUM=$(sed -n '$ =' "$TODO_FILE")
     [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO: '$input' added on line $TASKNUM."
     cleanup;;
 
@@ -486,7 +486,7 @@ case $action in
 
     if [ -f "$dest" ]; then
         echo "$input" >> "$dest"
-        TASKNUM=$(sed -ne "$ =" < "$dest")
+        TASKNUM=$(sed -n '$ =' "$dest")
         [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO: '$input' added to $dest on line $TASKNUM."
     else
         echo "TODO:  Destination file $dest does not exist."
@@ -782,13 +782,13 @@ note:  PRIORITY must be anywhere from A to Z."
     sed '/^x /!d' "$TODO_FILE" >> "$DONE_FILE"
     sed -i.bak '/^x /d' "$TODO_FILE"
 
-    NUMLINES=$( sed -ne '$ =' < "$TODO_FILE" )
+    NUMLINES=$( sed -n '$ =' "$TODO_FILE" )
     if [ ${NUMLINES:-0} = "0" ]; then
          echo "datetime todos dones" >> "$REPORT_FILE"
     fi
     #now report
-    TOTAL=$( sed -ne '$ =' < "$TODO_FILE" )
-    TDONE=$( sed -ne '$ =' < "$DONE_FILE" )
+    TOTAL=$( sed -n '$ =' "$TODO_FILE" )
+    TDONE=$( sed -n '$ =' "$DONE_FILE" )
     TECHO=$(echo $(date +%Y-%m-%d-%T); echo ' '; echo ${TOTAL:-0}; echo ' ';
     echo ${TDONE:-0})
     echo $TECHO >> "$REPORT_FILE"
