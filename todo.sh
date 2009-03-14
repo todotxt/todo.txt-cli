@@ -386,7 +386,7 @@ _list() {
     done
 
     ## If post_filter_command is set, append it to the filter_command
-    [ -n "$post_hilter_command" ] && {
+    [ -n "$post_filter_command" ] && {
         filter_command="${filter_command:-}${filter_command:+ | }${post_filter_command:-}"
     }
 
