@@ -392,7 +392,7 @@ _list() {
 
     ## Figure out how much padding we need to use
     ## We need one level of padding for each power of 10 $LINES uses
-    LINES=$( wc -l "$src" | sed 's/ .*//' )
+    LINES=$( sed -ne '$ =' < "$src" )
     PADDING=${#LINES}
 
     ## Number, sort, and mangle the file, then run the filter command,
@@ -427,9 +427,10 @@ _list() {
     echo -e "$command"
 
     if [ $TODOTXT_VERBOSE == 1 ]; then
-        NUMTASKS=$( echo -e "$command" | wc -l | sed 's/ .*//' )
+        NUMTASKS=$( echo -e "$command" | sed -ne '/^$/d' -e '$ =' )
+
         echo "--"
-        echo "TODO: $NUMTASKS of $LINES tasks shown from $FILE"
+        echo "TODO: ${NUMTASKS:-0} of $LINES tasks shown from $FILE"
     fi
 }
 
@@ -471,7 +472,7 @@ case $action in
         input="$now $input"
     fi
     echo "$input" >> "$TODO_FILE"
-    TASKNUM=$(wc -l "$TODO_FILE" | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
+    TASKNUM=$(sed -ne "$ =" < "$TODO_FILE")
     [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO: '$input' added on line $TASKNUM."
     cleanup;;
 
@@ -485,7 +486,7 @@ case $action in
 
     if [ -f "$dest" ]; then
         echo "$input" >> "$dest"
-        TASKNUM=$(wc -l "$dest" | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
+        TASKNUM=$(sed -ne "$ =" < "$dest")
         [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO: '$input' added to $dest on line $TASKNUM."
     else
         echo "TODO:  Destination file $dest does not exist."
@@ -781,15 +782,15 @@ note:  PRIORITY must be anywhere from A to Z."
     sed '/^x /!d' "$TODO_FILE" >> "$DONE_FILE"
     sed -i.bak '/^x /d' "$TODO_FILE"
 
-    NUMLINES=$(wc -l "$TODO_FILE" | sed 's/^[[:space:]]*\([0-9]*\).*/\1/')
-    if [ $NUMLINES = "0" ]; then
+    NUMLINES=$( sed -ne '$ =' < "$TODO_FILE" )
+    if [ ${NUMLINES:-0} = "0" ]; then
          echo "datetime todos dones" >> "$REPORT_FILE"
     fi
     #now report
-    TOTAL=$(cat "$TODO_FILE" | wc -l | sed 's/^[ \t]*//')
-    TDONE=$(cat "$DONE_FILE" | wc -l | sed 's/^[ \t]*//')
-    TECHO=$(echo $(date +%Y-%m-%d-%T); echo ' '; echo $TOTAL; echo ' ';
-    echo $TDONE)
+    TOTAL=$( sed -ne '$ =' < "$TODO_FILE" )
+    TDONE=$( sed -ne '$ =' < "$DONE_FILE" )
+    TECHO=$(echo $(date +%Y-%m-%d-%T); echo ' '; echo ${TOTAL:-0}; echo ' ';
+    echo ${TDONE:-0})
     echo $TECHO >> "$REPORT_FILE"
     [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO:  Report file updated."
     cat "$REPORT_FILE"
