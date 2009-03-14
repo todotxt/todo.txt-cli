@@ -400,6 +400,7 @@ _list() {
     command=$(
         sed = "$src"                                            \
         | sed "N; s/^/     /; s/ *\(.\{$PADDING,\}\)\n/\1 /"    \
+        | eval ${filter_command:-cat}                           \
         | sed '''
             s/^     /00000/; 
             s/^    /0000/;
@@ -408,7 +409,6 @@ _list() {
             s/^ /0/;
           ''' \
         | sort -f -k2                                           \
-        | eval ${filter_command:-cat}                           \
         | sed '''
             /^[0-9]\{'$PADDING'\} x /! {
                 s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
@@ -417,7 +417,6 @@ _list() {
                 s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
             }
           '''                                                   \
-        | sort -f -k2                                           \
         | sed '''
             s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
             s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
