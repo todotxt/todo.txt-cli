@@ -6,7 +6,7 @@
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-2" />
   <meta name="description" content="Track your tasks and projects in a plain text file, todo.txt.  A todo.txt is software and operating system agnostic; it's searchable, portable, lightweight and easily manipulated." />
   <meta name="keywords" content="Todo.txt, To do list" />
-  <meta name="robots" content="all,follow" /> 
+  <meta name="robots" content="all,follow" />
   <meta name="author" content="Gina Trapani" />
   <link rel="shortcut icon" href="favicon.ico" />
 <script type="text/javascript" src="js/prototype.js"></script>
@@ -17,9 +17,9 @@
 <link type="text/css" rel="stylesheet" href="css/basic.css" title="Basic style" />
 
   <title>Todo.txt Command Line Interface - Task tracking for CLI lovers</title>
-  
 
- 
+
+
 </head>
 <body>
 
@@ -27,20 +27,20 @@
 
   <div id="menu">
 	<a href="http://ginatrapani.github.com/todo.txt-cli/" class="logo"><img src="images/todotxt_logo.png" alt="" alt="Todo.txt" /></a>
-  <h1><a href="http://ginatrapani.github.com/todo.txt-cli/" title="Task tracking for command line lovers">Todo.txt CLI</a></h1>  
-  
- 
+  <h1><a href="http://ginatrapani.github.com/todo.txt-cli/" title="Task tracking for command line lovers">Todo.txt CLI</a></h1>
+
+
   </div>
   <div id="content">
 
 <div id="wo">A plain text task manager</div>
 
-<h2>The Todo.txt Command Line Interface (CLI)</h2>
+<h2 id="intro">The Todo.txt Command Line Interface (CLI)</h2>
 
 <p>If you've got a file called <code>todo.txt</code> on your computer right now, you're in the right place. Countless software applications and web sites can manage your to-do list with all sorts of bells and whistles. But if you don't want to depend on someone else's data format or someone else's server, a plain text file is the way to go.</p>
 <p>Problem is, you don't want to launch a full-blown text editor every time you need to add an item to your to-do list, or mark one that's already there as complete. With a simple but powerful shell script called <code>todo.sh</code>, you can interact with <code>todo.txt</code> at the command line for quick and easy, Unix-y access.</p>
 
-<h2>Download and Install</h2>
+<h2 id="setup">Download and Install</h2>
 <ol>
 <li><strong><a href="http://github.com/ginatrapani/todo.txt-cli/zipball/master">Download the latest version of todo.sh</a></strong> from GitHub and extract it.<br /><div style="width:100%;text-align:center;margin-top:20px"><a class="logo"  href="http://github.com/ginatrapani/todo.txt-cli/zipball/master">
         <img src="http://github.com/images/modules/download/zip.png" border="0" width="90" class="logo" ></a>
@@ -50,7 +50,7 @@
 <li>Using the text editor of your choice, edit the section of the <code>todo.cfg</code> file that reads:<br />
 
 <pre># Your todo.txt directory
-TODO_DIR="/Users/gina/Documents/todo"  
+TODO_DIR="/Users/gina/Documents/todo"
 </pre>
 Replace "/Users/gina/Documents/todo" to wherever your <code>todo.txt</code> file lives.</li>
 <li>Make the todo.sh script exectuable:<br />
@@ -61,7 +61,7 @@ Replace "/Users/gina/Documents/todo" to wherever your <code>todo.txt</code> file
 </li>
 
 <li>Type <code>./todo.sh</code> to see the usage message.</li>
-</ol>  
+</ol>
 <!--
 <li><strong><a href="/library/birdseye.py/">Bird's Eye todo.txt Reporter</a></strong><br />
 A Python script reports your current progress broken down by project and context with ASCII graphs.  <a href="/library/birdseye.py/#htmlsummarizer">HTML version</a> now available, too.</li>
@@ -72,7 +72,7 @@ A Perl-based AIM bot which accesses your todo.txt via todo.sh.  (Requires OSCAR.
 
 
 
-<h2>How It Works</h2>
+<h2 id="screencast">How It Works</h2>
 
 <p>Here's a screencast of <code>todo.sh</code> in action.</p>
 
@@ -108,13 +108,13 @@ A Perl-based AIM bot which accesses your todo.txt via todo.sh.  (Requires OSCAR.
             </object></p>
 
 
-<h2>Get Help</h2>
+<h2 id="support">Get Help</h2>
 
 
 <p><a href="http://groups.yahoo.com/group/todotxt/" title="Mailing List">Join the mailing list</a> for support or feature requests.</p>
 
 
-<h2>Tips and tricks</h2>
+<h2 id="tips">Tips and Tricks</h2>
 
 <ul>
 <li><strong>Access <code>todo.sh</code> from anywhere in the file tree.</strong>  Add the following to your ~/.bashrc file (~/.bash_profile for Mac and Cygiwn users):<br />
@@ -149,7 +149,7 @@ Which displays the remote todo list.</li>
 <li><strong>Get your todo's via email</strong> using <a href="http://www.tanniespace.com/2006/06/using_postfix_to_get_my_shoppi.html">postfix</a>.</li>
 </ul>
 
-<h2>Platform compatibility</h2>
+<h2 id="platforms">Platform Compatibility</h2>
 <p><code>todo.sh</code> has been tested on:</p>
 <ul>
 <li><strong><a href="http://cygwin.com">Cygwin</a> for Windows</strong></li>
@@ -161,12 +161,12 @@ Which displays the remote todo list.</li>
 <p><a href="http://groups.yahoo.com/group/todotxt/">Let us know</a> if you're using <code>todo.sh</code> successfully anywhere else.</p>
 
 
-<h2>Why plain text?</h2>
+<h2 id="plaintext">Why plain text?</h2>
 
 <p><strong>Plain text</strong> is software and operating system agnostic. It's searchable, portable, lightweight and easily manipulated. It's unstructured. It works when someone else's web server is down or your Outlook .PST file is corrupt. Since it's been around since the dawn of computing, it's safe to say it's completely future-proof. There's no exporting and importing, no databases or tags or flags or stars or prioritizing or [Insert company name here]-induced rules on what you can and can't do with it.</p>
 <p><strong>Todo.txt</strong> is a flat text file that contains one task per line, each optionally associated with a context, project and priority for slicing, dicing and sorting.</p>
 
-<h2>The 3 axes of an effective todo list</h2>
+<h2 id="axes">The 3 axes of an effective todo list</h2>
 <p>Using special notation in todo.txt, you can create a list that's sliceable by 3 key axes.</p>
 
 <p><strong>Priority.</strong> Your todo list should be able to tell you what's the next most important thing for you to get done - either by project or by context or overall.</p>
@@ -181,7 +181,7 @@ Which displays the remote todo list.</li>
 <p>That way, when you've got a few minutes in the car with your cell phone, you can easily check your "@phone" tasks and make a call or two while you have the opportunity.</p>
 
 
-<h2>Suggested Todo.txt format</h2>
+<h2 id="format">Suggested Todo.txt format</h2>
 
 <p>The beauty of todo.txt is that it's completely unstructured;  the fields you can attach to each task are only limited by your imagination.  To get started, use special notation to indicate task context (like <b>@phone</b>), project (like <b>+GarageSale</b>) and priority (like <b>(A)</b>).  So, a <code>todo.txt</code> file might look like this:</p>
 
@@ -205,18 +205,18 @@ Which displays the remote todo list.</li>
 </pre> </blockquote>
 
 
-<h2>Other notations</h2>
+<h2 id="notations">Other notations</h2>
 
 <p>With <code>todo.sh</code>, you can choose <strong>any unique keyword</strong> search by it.  For example, to indicate you're waiting on something to complete a task, append the word WAIT to the item in <code>todo.txt</code>.  Others like to add due dates to a task, DUE:2006-08-01.  It's completely up to you.  To view items by keyword, do <code>todo.sh list yourkeyword</code>.</p>
 
-<h2>Author</h2>
+<h2 id="author">Author</h2>
 
 <p>Unless otherwise noted, all the todo.txt scripts published herein are authored by <a href="http://ginatrapani.org/" title="Gina Trapani:  The Official Site">Gina Trapani</a> and licensed under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</a>.</p>
 <p>Scripts and text originally published as an ongoing series at <a href="http://lifehacker.com/tag/todo.txt/">Lifehacker.com</a>.  Special thanks to all the Lifehacker readers who <a href="http://lifehacker.com/software/top/geek-to-live--readerwritten-todotxt-manager-173018.php">contributed to Todo.sh</a> by fixing code, adding features, reporting bugs and making suggestions.</p>
 
 <p>All software comes as is with no warranty.  Do back up your todo.txt before you read another word.  Questions, support and help is available in the <a href="http://groups.yahoo.com/group/todotxt/">Todo.txt Mailing list</a>.</p>
 
-<div id="footer"><p>Copyright &copy; 2009 
+<div id="footer"><p>Copyright &copy; 2009
 <a href="http://ginatrapani.org/" title="Gina Trapani:  The Official Site">Gina Trapani</a>.<br /><br />
 Design by <a href="http://www.jasnapaka.com/" title="Pavel Cvrcek: Homepage">Pavel Cvrcek</a>, author of the excellent <a href="http://mozbackup.jasnapaka.com">MozBackup</a>, used with permission.</p></div>
 
