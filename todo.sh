@@ -150,6 +150,8 @@ help()
             when it's added.
         -v
             Verbose mode turns on confirmation messages
+        -vv
+            Extra verbose mode prints some debugging information
         -V
             Displays version, license and credits
 
@@ -197,13 +199,13 @@ archive()
 {
     #defragment blank lines
     sed -i.bak -e '/./!d' "$TODO_FILE"
-    [[ $TODOTXT_VERBOSE = 1 ]] && grep "^x " "$TODO_FILE"
+    [ $TODOTXT_VERBOSE -gt 0 ] && grep "^x " "$TODO_FILE"
     grep "^x " "$TODO_FILE" >> "$DONE_FILE"
     sed -i.bak '/^x /d' "$TODO_FILE"
     cp "$TODO_FILE" "$TMP_FILE"
     sed -n 'G; s/\n/&&/; /^\([ -~]*\n\).*\n\1/d; s/\n//; h; P' "$TMP_FILE" > "$TODO_FILE"
-    #[[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO: Duplicate tasks have been removed."
-    [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO:  $TODO_FILE archived."
+    #[[ $TODOTXT_VERBOSE -gt 0 ]] && echo "TODO: Duplicate tasks have been removed."
+    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO:  $TODO_FILE archived."
     cleanup
 }
 
@@ -282,7 +284,7 @@ do
         TODOTXT_DATE_ON_ADD=1
         ;;
     v )
-        TODOTXT_VERBOSE=1
+        : $(( TODOTXT_VERBOSE++ ))
         ;;
     V )
         version
@@ -425,11 +427,15 @@ _list() {
     )
     echo -ne "$command${command:+\n}"
 
-    if [ $TODOTXT_VERBOSE == 1 ]; then
+    if [ $TODOTXT_VERBOSE -gt 0 ]; then
         NUMTASKS=$( echo -ne "$command" | sed -n '$ =' )
 
         echo "--"
         echo "TODO: ${NUMTASKS:-0} of $LINES tasks shown from $FILE"
+    fi
+    if [ $TODOTXT_VERBOSE -gt 1 ]
+    then
+	echo "TODO DEBUG: Filter Command was: ${filter_command:-cat}"
     fi
 }
 
@@ -472,7 +478,7 @@ case $action in
     fi
     echo "$input" >> "$TODO_FILE"
     TASKNUM=$(sed -n '$ =' "$TODO_FILE")
-    [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO: '$input' added on line $TASKNUM."
+    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$input' added on line $TASKNUM."
     cleanup;;
 
 "addto" )
@@ -486,7 +492,7 @@ case $action in
     if [ -f "$dest" ]; then
         echo "$input" >> "$dest"
         TASKNUM=$(sed -n '$ =' "$dest")
-        [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO: '$input' added to $dest on line $TASKNUM."
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$input' added to $dest on line $TASKNUM."
     else
         echo "TODO:  Destination file $dest does not exist."
     fi
@@ -508,7 +514,7 @@ case $action in
     fi
     if sed -i.bak $item" s|^.*|& $input|" "$TODO_FILE"; then
         newtodo=$(sed "$item!d" "$TODO_FILE")
-        [[ $TODOTXT_VERBOSE = 1 ]] && echo "$item: $newtodo"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
     else
         echo "TODO:  Error appending task $item."
     fi
@@ -543,7 +549,7 @@ case $action in
                     # leave blank line behind (preserves line numbers)
                     sed -i.bak -e $2"s/^.*//" "$TODO_FILE"
                 fi
-                [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO:  '$DELETEME' deleted."
+                [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO:  '$DELETEME' deleted."
                 cleanup
             else
                 echo "TODO:  No tasks were deleted."
@@ -553,7 +559,7 @@ case $action in
         fi
     else
         sed -i.bak -e $item"s/$3/ /g"  "$TODO_FILE"
-        [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO:  $3 removed from $item."
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO:  $3 removed from $item."
     fi ;;
 
 "depri" | "dp" )
@@ -570,8 +576,8 @@ case $action in
         #it's all good, continue
         sed -i.bak -e $2"s/^(.*) //" "$TODO_FILE"
         NEWTODO=$(sed "$2!d" "$TODO_FILE")
-        [[ $TODOTXT_VERBOSE = 1 ]] && echo -e "`echo "$item: $NEWTODO"`"
-        [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO: $item deprioritized."
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo -e "`echo "$item: $NEWTODO"`"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item deprioritized."
         cleanup
     else
         die "$errmsg"
@@ -591,8 +597,8 @@ case $action in
     sed -i.bak $item"s/^(.*) //" "$TODO_FILE"
     sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
     newtodo=$(sed "$item!d" "$TODO_FILE")
-    [[ $TODOTXT_VERBOSE = 1 ]] && echo "$item: $newtodo"
-    [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO: $item marked as done."
+    [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
+    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item marked as done."
 
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
         archive
@@ -636,23 +642,22 @@ case $action in
 
 
 "listpri" | "lsp" )
-    shift ## was "listpri"
+    shift ## was "listpri", new $1 is priority to list
 
     if [ "${1:-}" ]
     then
         ## A priority was specified
         pri=$( printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
-        die "usage: $0 listpri PRIORITY
-        note:  PRIORITY must a single letter from A to Z."
+	    die "usage: $0 listpri PRIORITY
+	    note:  PRIORITY must a single letter from A to Z."
         }
     else
         ## No priority specified; show all priority tasks
         pri="[A-Z]"
     fi
     pri="($pri)"
-    shift ## was priority
 
-    _list "$TODO_FILE" "$pri" "$@"
+    _list "$TODO_FILE" "$pri"
     ;;
 
 "move" | "mv" )
@@ -688,7 +693,7 @@ case $action in
                     fi
                     echo "$MOVEME" >> "$dest"
 
-                    [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO:  '$MOVEME' moved from '$src' to '$dest'."
+                    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO:  '$MOVEME' moved from '$src' to '$dest'."
                     cleanup
                 else
                     echo "TODO:  No tasks moved."
@@ -723,7 +728,7 @@ case $action in
 
     if sed -i.bak $item" s|^.*|$input &|" "$TODO_FILE"; then
         newtodo=$(sed "$item!d" "$TODO_FILE")
-        [[ $TODOTXT_VERBOSE = 1 ]] && echo "$item: $newtodo"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
     else
         echo "TODO:  Error prepending task $item."
     fi
@@ -746,8 +751,8 @@ note:  PRIORITY must be anywhere from A to Z."
         #it's all good, continue
         sed -i.bak -e $2"s/^(.*) //" -e $2"s/^/($newpri) /" "$TODO_FILE"
         NEWTODO=$(sed "$2!d" "$TODO_FILE")
-        [[ $TODOTXT_VERBOSE = 1 ]] && echo -e "`echo "$item: $NEWTODO"`"
-        [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO: $item prioritized ($newpri)."
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo -e "`echo "$item: $NEWTODO"`"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item prioritized ($newpri)."
         cleanup
     else
         die "$errmsg"
@@ -771,9 +776,9 @@ note:  PRIORITY must be anywhere from A to Z."
     fi
 
     sed -i.bak $item" s|^.*|$input|" "$TODO_FILE"
-    [[ $TODOTXT_VERBOSE = 1 ]] && NEWTODO=$(head -$item "$TODO_FILE" | tail -1)
-    [[ $TODOTXT_VERBOSE = 1 ]] && echo "replaced with"
-    [[ $TODOTXT_VERBOSE = 1 ]] && echo "$item: $NEWTODO"
+    [ $TODOTXT_VERBOSE -gt 0 ] && NEWTODO=$(head -$item "$TODO_FILE" | tail -1)
+    [ $TODOTXT_VERBOSE -gt 0 ] && echo "replaced with"
+    [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $NEWTODO"
     cleanup;;
 
 "report" )
@@ -791,7 +796,7 @@ note:  PRIORITY must be anywhere from A to Z."
     TECHO=$(echo $(date +%Y-%m-%d-%T); echo ' '; echo ${TOTAL:-0}; echo ' ';
     echo ${TDONE:-0})
     echo $TECHO >> "$REPORT_FILE"
-    [[ $TODOTXT_VERBOSE = 1 ]] && echo "TODO:  Report file updated."
+    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO:  Report file updated."
     cat "$REPORT_FILE"
     cleanup;;
 
