@@ -325,7 +325,7 @@ export TODO_SH
 [ -d "$TODO_DIR" ]  || die "Fatal Error: $TODO_DIR is not a directory"
 ( cd "$TODO_DIR" )  || die "Fatal Error: Unable to cd to $TODO_DIR"
 
-[ -w "$TMP_FILE"  ] || echo -n > $TMP_FILE || die "Fatal Error:  Unable to write to $TMP_FILE"
+[ -w "$TMP_FILE"  ] || echo -n > "$TMP_FILE" || die "Fatal Error:  Unable to write to $TMP_FILE"
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"
 [ -f "$DONE_FILE" ] || cp /dev/null "$DONE_FILE"
 [ -f "$REPORT_FILE" ] || cp /dev/null "$REPORT_FILE"
