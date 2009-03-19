@@ -16,10 +16,12 @@ EndVersion
     exit 1
 }
 
+oneline_usage="todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]"
+
 usage()
 {
     sed -e 's/^    //' <<EndUsage
-    Usage: todo.sh  [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+    Usage: $oneline_usage
     Try 'todo.sh -h' for more information.
 EndUsage
     exit 1
@@ -29,7 +31,7 @@ EndUsage
 help()
 {
     sed -e 's/^    //' <<EndHelp
-      Usage:  todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+      Usage: $oneline_usage
 
       Actions:
         add "THING I NEED TO DO +project @context"
