@@ -164,6 +164,7 @@ help()
         TODOTXT_PLAIN=1                 is same as option -p
         TODOTXT_DATE_ON_ADD=1           is same as option -t
         TODOTXT_VERBOSE=1               is same as option -v
+        TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 EndHelp
 
     if [ -d "$HOME/.todo.actions.d" ]
@@ -301,6 +302,7 @@ TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
+TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
 
 [ -e "$TODOTXT_CFG_FILE" ] || {
     CFG_FILE_ALT="$HOME/.todo.cfg"
@@ -321,7 +323,9 @@ export TODO_SH
 
 . "$TODOTXT_CFG_FILE"
 
-[ -z "$1" ]         && usage
+ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
+
+[ -z "$ACTION" ]    && usage
 [ -d "$TODO_DIR" ]  || die "Fatal Error: $TODO_DIR is not a directory"
 ( cd "$TODO_DIR" )  || die "Fatal Error: Unable to cd to $TODO_DIR"
 
@@ -442,7 +446,7 @@ _list() {
 export -f _list
 
 # == HANDLE ACTION ==
-action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
+action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
 
 ## If the first argument is "command", run the rest of the arguments
 ## using todo.sh builtins.
