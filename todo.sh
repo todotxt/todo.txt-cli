@@ -407,6 +407,7 @@ _list() {
     command=$(
         sed = "$src"                                            \
         | sed "N; s/^/     /; s/ *\(.\{$PADDING,\}\)\n/\1 /"    \
+	| grep -v "^[0-9]\+ *$"                                   \
         | eval ${filter_command:-cat}                           \
         | sed '''
             s/^     /00000/; 
