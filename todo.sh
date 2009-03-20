@@ -27,6 +27,37 @@ EndUsage
     exit 1
 }
 
+shorthelp()
+{
+    sed -e 's/^    //' <<EndHelp
+      Usage: $oneline_usage
+
+      Actions:
+        add|a "THING I NEED TO DO +project @context"
+        addto DEST "TEXT TO ADD"
+        append|app NUMBER "TEXT TO APPEND"
+        archive
+        command [ACTIONS]
+        del|rm NUMBER [TERM]
+        dp|depri NUMBER
+        do NUMBER
+        help
+        list|ls [TERM...]
+        listall|lsa [TERM...]
+        listcon|lsc
+        listfile|lf SRC [TERM...]
+        listpri|lsp [PRIORITY]
+        listproj|lsprj
+        move|mv NUMBER DEST [SRC]
+        prepend|prep NUMBER "TEXT TO PREPEND"
+        pri|p NUMBER PRIORITY
+        replace NUMBER "UPDATED TODO"
+        report
+
+      See "help" for more details.
+EndHelp
+    exit 0
+}
 
 help()
 {
@@ -68,6 +99,9 @@ help()
 
         do NUMBER
           Marks item on line NUMBER as done in todo.txt.
+
+        help
+	  Display this help message.
 
         list [TERM...]
         ls [TERM...]
@@ -137,7 +171,7 @@ help()
         -f
             Forces actions without confirmation or interactive input
         -h
-            Display this help message
+            Display a short help message
         -p
             Plain mode turns off colors
         -P
@@ -260,7 +294,7 @@ do
         TODOTXT_FORCE=1
         ;;
     h )
-        help
+        shorthelp
         ;;
     n )
         TODOTXT_PRESERVE_LINE_NUMBERS=0
@@ -613,6 +647,9 @@ case $action in
     fi
     cleanup ;;
 
+"help" )
+    help
+    ;;
 
 "list" | "ls" )
     shift  ## Was ls; new $1 is first search term
