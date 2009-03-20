@@ -4,13 +4,14 @@
 # Place the todo.cfg file in your home directory or use the -d option for a custom location.
 
 version() { sed -e 's/^    //' <<EndVersion
-        TODO.TXT Manager
-        Version 2.1
-        Author:  Gina Trapani (ginatrapani@gmail.com)
-        Last updated:  2/23/2009
-        Release date:  5/11/2006
-        License:  GPL, http://www.gnu.org/copyleft/gpl.html
+        TODO.TXT Command Line Interface
+        Latest version: http://github.com/ginatrapani/todo.txt-cli/tree/master
+        First release: 5/11/2006
+        Conceived and released by: Gina Trapani (http://ginatrapani.org)
+        Contributors: http://github.com/ginatrapani/todo.txt-cli/network
+        License: GPL, http://www.gnu.org/copyleft/gpl.html
         More information and mailing list at http://todotxt.com
+        To submit patches, fork the repository at http://github.com/ginatrapani/todo.txt-cli/tree/master
 EndVersion
     exit 1
 }
