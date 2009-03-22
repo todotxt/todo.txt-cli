@@ -3,8 +3,10 @@
 # NOTE:  Todo.sh requires the todo.cfg configuration file to run.
 # Place the todo.cfg file in your home directory or use the -d option for a custom location.
 
+[ -f VERSION-FILE ] && . VERSION-FILE || VERSION="@DEV_VERSION@"
 version() { sed -e 's/^    //' <<EndVersion
-        TODO.TXT Command Line Interface
+        TODO.TXT Command Line Interface v$VERSION
+        
         Latest version: http://github.com/ginatrapani/todo.txt-cli/tree/master
         First release: 5/11/2006
         Conceived and released by: Gina Trapani (http://ginatrapani.org)

@@ -13,12 +13,13 @@ VERSION-FILE: .FORCE-VERSION-FILE
 todo.sh: VERSION-FILE
 
 # For packaging
-DISTFILES := README todo.cfg todo.sh
+DISTFILES := README todo.cfg
 
 DISTNAME=todo.sh-$(VERSION)
 dist: $(DISTFILES) todo.sh
 	mkdir -p $(DISTNAME)
 	cp -f $(DISTFILES) $(DISTNAME)/
+	sed -e 's/@DEV_VERSION@/'$(VERSION)'/' todo.sh > $(DISTNAME)/todo.sh
 	tar cf $(DISTNAME).tar $(DISTNAME)/
 	gzip -f -9 $(DISTNAME).tar
 	zip -9r $(DISTNAME).zip $(DISTNAME)/
