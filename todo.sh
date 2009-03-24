@@ -438,13 +438,20 @@ _list() {
     LINES=$( sed -n '$ =' "$src" )
     PADDING=${#LINES}
 
-    ## Number, sort, and mangle the file, then run the filter command,
-    ## then mangle the file some more
-    command=$(
+    ## Number the file, then run the filter command,
+    ## then sort and mangle output some more
+    items=$(
         sed = "$src"                                            \
         | sed "N; s/^/     /; s/ *\(.\{$PADDING,\}\)\n/\1 /"    \
-	| grep -v "^[0-9]\+ *$"                                   \
-        | eval ${filter_command:-cat}                           \
+	| grep -v "^[0-9]\+ *$"
+    )
+    if [ "${filter_command}" ]; then 
+        filtered_items=$(echo -ne "$items" | eval ${filter_command})
+    else
+        filtered_items=$items
+    fi
+    filtered_items=$(
+        echo -ne "$filtered_items"                              \
         | sed '''
             s/^     /00000/; 
             s/^    /0000/;
@@ -467,13 +474,14 @@ _list() {
             s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
           '''                                                   \
     )
-    echo -ne "$command${command:+\n}"
+    echo -ne "$filtered_items${filtered_items:+\n}"
 
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
-        NUMTASKS=$( echo -ne "$command" | sed -n '$ =' )
+        NUMTASKS=$( echo -ne "$filtered_items" | sed -n '$ =' )
+        TOTALTASKS=$( echo -ne "$items" | sed -n '$ =' )
 
         echo "--"
-        echo "TODO: ${NUMTASKS:-0} of $LINES tasks shown from $FILE"
+        echo "TODO: ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown from $FILE"
     fi
     if [ $TODOTXT_VERBOSE -gt 1 ]
     then
