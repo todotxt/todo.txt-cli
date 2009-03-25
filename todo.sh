@@ -102,7 +102,7 @@ help()
           Marks item on line NUMBER as done in todo.txt.
 
         help
-	  Display this help message.
+          Display this help message.
 
         list [TERM...]
         ls [TERM...]
@@ -244,7 +244,7 @@ archive()
     cp "$TODO_FILE" "$TMP_FILE"
     sed -n 'G; s/\n/&&/; /^\([ -~]*\n\).*\n\1/d; s/\n//; h; P' "$TMP_FILE" > "$TODO_FILE"
     #[[ $TODOTXT_VERBOSE -gt 0 ]] && echo "TODO: Duplicate tasks have been removed."
-    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO:  $TODO_FILE archived."
+    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $TODO_FILE archived."
     cleanup
 }
 
@@ -357,7 +357,7 @@ TODO_SH="$0"
 export TODO_SH
 
 # === SANITY CHECKS (thanks Karl!) ===
-[ -r "$TODOTXT_CFG_FILE" ] || die "Fatal error:  Cannot read configuration file $TODOTXT_CFG_FILE"
+[ -r "$TODOTXT_CFG_FILE" ] || die "Fatal error: Cannot read configuration file $TODOTXT_CFG_FILE"
 
 . "$TODOTXT_CFG_FILE"
 
@@ -367,7 +367,7 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 [ -d "$TODO_DIR" ]  || die "Fatal Error: $TODO_DIR is not a directory"
 ( cd "$TODO_DIR" )  || die "Fatal Error: Unable to cd to $TODO_DIR"
 
-[ -w "$TMP_FILE"  ] || echo -n > "$TMP_FILE" || die "Fatal Error:  Unable to write to $TMP_FILE"
+[ -w "$TMP_FILE"  ] || echo -n > "$TMP_FILE" || die "Fatal Error: Unable to write to $TMP_FILE"
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"
 [ -f "$DONE_FILE" ] || cp /dev/null "$DONE_FILE"
 [ -f "$REPORT_FILE" ] || cp /dev/null "$REPORT_FILE"
@@ -385,7 +385,7 @@ shopt -s extglob
 
 _list() {
     local FILE="$1"
-    ## If the file starts with a "/" use absolute path. Otherwise, 
+    ## If the file starts with a "/" use absolute path. Otherwise,
     ## try to find it in either $TODO_DIR or using a relative path
     if [ "${1:0:1}" == / ]
     then
@@ -444,9 +444,9 @@ _list() {
     items=$(
         sed = "$src"                                            \
         | sed "N; s/^/     /; s/ *\(.\{$PADDING,\}\)\n/\1 /"    \
-	| grep -v "^[0-9]\+ *$"
+        | grep -v "^[0-9]\+ *$"
     )
-    if [ "${filter_command}" ]; then 
+    if [ "${filter_command}" ]; then
         filtered_items=$(echo -ne "$items" | eval ${filter_command})
     else
         filtered_items=$items
@@ -454,7 +454,7 @@ _list() {
     filtered_items=$(
         echo -ne "$filtered_items"                              \
         | sed '''
-            s/^     /00000/; 
+            s/^     /00000/;
             s/^    /0000/;
             s/^   /000/;
             s/^  /00/;
@@ -486,7 +486,7 @@ _list() {
     fi
     if [ $TODOTXT_VERBOSE -gt 1 ]
     then
-	echo "TODO DEBUG: Filter Command was: ${filter_command:-cat}"
+        echo "TODO DEBUG: Filter Command was: ${filter_command:-cat}"
     fi
 }
 
@@ -545,7 +545,7 @@ case $action in
         TASKNUM=$(sed -n '$ =' "$dest")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$input' added to $dest on line $TASKNUM."
     else
-        echo "TODO:  Destination file $dest does not exist."
+        echo "TODO: Destination file $dest does not exist."
     fi
     cleanup;;
 
@@ -556,7 +556,7 @@ case $action in
     [ -z "$item" ] && die "$errmsg"
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
     todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item:  No such todo."
+    [ -z "$todo" ] && die "$item: No such todo."
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Append: "
         read input
@@ -567,7 +567,7 @@ case $action in
         newtodo=$(sed "$item!d" "$TODO_FILE")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
     else
-        echo "TODO:  Error appending task $item."
+        echo "TODO: Error appending task $item."
     fi
     cleanup;;
 
@@ -600,17 +600,17 @@ case $action in
                     # leave blank line behind (preserves line numbers)
                     sed -i.bak -e $2"s/^.*//" "$TODO_FILE"
                 fi
-                [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO:  '$DELETEME' deleted."
+                [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$DELETEME' deleted."
                 cleanup
             else
-                echo "TODO:  No tasks were deleted."
+                echo "TODO: No tasks were deleted."
             fi
         else
             echo "$item: No such todo."
         fi
     else
         sed -i.bak -e $item"s/$3/ /g"  "$TODO_FILE"
-        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO:  $3 removed from $item."
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $3 removed from $item."
     fi ;;
 
 "depri" | "dp" )
@@ -618,7 +618,7 @@ case $action in
     errmsg="usage: $0 depri ITEM#"
 
     todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item:  No such todo."
+    [ -z "$todo" ] && die "$item: No such todo."
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
     sed -e $item"s/^(.*) //" "$TODO_FILE" > /dev/null 2>&1
@@ -641,7 +641,7 @@ case $action in
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
     todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item:  No such todo."
+    [ -z "$todo" ] && die "$item: No such todo."
 
     now=`date '+%Y-%m-%d'`
     # remove priority once item is done
@@ -664,7 +664,7 @@ case $action in
     shift  ## Was ls; new $1 is first search term
     _list "$TODO_FILE" "$@"
 
-    cleanup 
+    cleanup
     ;;
 
 "listall" | "lsa" )
@@ -673,7 +673,7 @@ case $action in
     cat "$TODO_FILE" "$DONE_FILE" > "$TMP_FILE"
     _list "$TMP_FILE" "$@"
 
-    cleanup 
+    cleanup
     ;;
 
 "listfile" | "lf" )
@@ -683,7 +683,7 @@ case $action in
 
     _list "$FILE" "$@"
 
-    cleanup 
+    cleanup
     ;;
 
 "listcon" | "lsc" )
@@ -702,8 +702,8 @@ case $action in
     then
         ## A priority was specified
         pri=$( printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
-	    die "usage: $0 listpri PRIORITY
-	    note:  PRIORITY must a single letter from A to Z."
+            die "usage: $0 listpri PRIORITY
+            note: PRIORITY must a single letter from A to Z."
         }
     else
         ## No priority specified; show all priority tasks
@@ -747,16 +747,16 @@ case $action in
                     fi
                     echo "$MOVEME" >> "$dest"
 
-                    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO:  '$MOVEME' moved from '$src' to '$dest'."
+                    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$MOVEME' moved from '$src' to '$dest'."
                     cleanup
                 else
-                    echo "TODO:  No tasks moved."
+                    echo "TODO: No tasks moved."
                 fi
             else
                 echo "$item: No such item in $src."
             fi
         else
-            echo "TODO:  Destination file $dest does not exist."
+            echo "TODO: Destination file $dest does not exist."
         fi
     else
         echo "TODO: Source file $src does not exist."
@@ -771,7 +771,7 @@ case $action in
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
     todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item:  No such todo."
+    [ -z "$todo" ] && die "$item: No such todo."
 
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Prepend: "
@@ -784,7 +784,7 @@ case $action in
         newtodo=$(sed "$item!d" "$TODO_FILE")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
     else
-        echo "TODO:  Error prepending task $item."
+        echo "TODO: Error prepending task $item."
     fi
     cleanup;;
 
@@ -793,7 +793,7 @@ case $action in
     newpri=$( printf "%s\n" "$3" | tr 'a-z' 'A-Z' )
 
     errmsg="usage: $0 pri ITEM# PRIORITY
-note:  PRIORITY must be anywhere from A to Z."
+note: PRIORITY must be anywhere from A to Z."
 
     [ "$#" -ne 3 ] && die "$errmsg"
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
@@ -820,7 +820,7 @@ note:  PRIORITY must be anywhere from A to Z."
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
     todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item:  No such todo."
+    [ -z "$todo" ] && die "$item: No such todo."
 
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Replacement: "
@@ -850,7 +850,7 @@ note:  PRIORITY must be anywhere from A to Z."
     TECHO=$(echo $(date +%Y-%m-%d-%T); echo ' '; echo ${TOTAL:-0}; echo ' ';
     echo ${TDONE:-0})
     echo $TECHO >> "$REPORT_FILE"
-    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO:  Report file updated."
+    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
     cat "$REPORT_FILE"
     cleanup;;
 
