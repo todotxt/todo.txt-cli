@@ -687,11 +687,11 @@ case $action in
     ;;
 
 "listcon" | "lsc" )
-    gawk '{for(i = 1; i <= NF; i++) print $i}' "$TODO_FILE" | grep '@' | sort | uniq
+    grep -w -o '@[^ ]\+' "$TODO_FILE" | sort -u
     cleanup ;;
 
 "listproj" | "lsprj" )
-    gawk '{for(i = 1; i <= NF; i++) print $i}' "$TODO_FILE" | grep '+' | sort | uniq
+    grep -w -o '+[^ ]\+' "$TODO_FILE" | sort -u
     cleanup ;;
 
 
