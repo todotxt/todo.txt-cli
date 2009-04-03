@@ -13,9 +13,9 @@ VERSION-FILE: .FORCE-VERSION-FILE
 todo.sh: VERSION-FILE
 
 # For packaging
-DISTFILES := README todo.cfg
+DISTFILES := todo.cfg
 
-DISTNAME=todo.sh-$(VERSION)
+DISTNAME=todo.txt_cli-$(VERSION)
 dist: $(DISTFILES) todo.sh
 	mkdir -p $(DISTNAME)
 	cp -f $(DISTFILES) $(DISTNAME)/

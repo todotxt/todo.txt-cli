@@ -7,13 +7,12 @@
 version() { sed -e 's/^    //' <<EndVersion
         TODO.TXT Command Line Interface v$VERSION
         
-        Latest version: http://github.com/ginatrapani/todo.txt-cli/tree/master
         First release: 5/11/2006
-        Conceived and released by: Gina Trapani (http://ginatrapani.org)
+        Original conception by: Gina Trapani (http://ginatrapani.org)
         Contributors: http://github.com/ginatrapani/todo.txt-cli/network
         License: GPL, http://www.gnu.org/copyleft/gpl.html
         More information and mailing list at http://todotxt.com
-        To submit patches, fork the repository at http://github.com/ginatrapani/todo.txt-cli/tree/master
+        Code repository: http://github.com/ginatrapani/todo.txt-cli/tree/master
 EndVersion
     exit 1
 }
