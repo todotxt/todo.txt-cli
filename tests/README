@@ -1,0 +1,219 @@
+todo.sh tests
+=============
+
+This directory holds test scripts for todo.sh.  The
+first part of this short document describes how to run the tests
+and read their output.
+
+When fixing the tools or adding enhancements, you are strongly
+encouraged to add tests in this directory to cover what you are
+trying to fix or enhance.  The later part of this short document
+describes how your test scripts should be organized.
+
+
+Running Tests
+-------------
+
+The easiest way to run tests is to say "make test" from the top-level.
+This runs all the tests.
+
+    rm -rf tests/test-results "tests/trash directory"*
+    cd tests && sh t0000-config.sh 
+    *   ok 1: no config file
+    *   ok 2: config file (default location 1)
+    *   ok 3: config file (default location 2)
+    *   ok 4: config file (command line)
+    *   ok 5: config file (env variable)
+    * passed all 5 test(s)
+    cd tests && sh t0001-null.sh 
+    *   ok 1: null ls
+    * passed all 1 test(s)
+    rm -rf tests/test-results
+
+Or you can run each test individually from command line, like
+this:
+
+    $ ./t0001-null.sh 
+    *   ok 1: null ls
+    * passed all 1 test(s)
+
+You can pass --verbose (or -v), --debug (or -d), and --immediate
+(or -i) command line argument to the test, or by setting GIT_TEST_OPTS
+appropriately before running "make".
+
+--verbose::
+	This makes the test more verbose.  Specifically, the
+	command being run and their output if any are also
+	output.
+
+--debug::
+	This may help the person who is developing a new test.
+	It causes the command defined with test_debug to run.
+
+--immediate::
+	This causes the test to immediately exit upon the first
+	failed test.
+
+--long-tests::
+	This causes additional long-running tests to be run (where
+	available), for more exhaustive testing.
+
+--tee::
+	In addition to printing the test output to the terminal,
+	write it to files named 't/test-results/$TEST_NAME.out'.
+	As the names depend on the tests' file names, it is safe to
+	run the tests with this option in parallel.
+
+Skipping Tests
+--------------
+
+In some environments, certain tests have no way of succeeding
+due to platform limitation, such as lack of 'unzip' program, or
+filesystem that do not allow arbitrary sequence of non-NUL bytes
+as pathnames.
+
+You should be able to say something like
+
+    $ SKIP_TESTS=t0000.2 sh ./t0000-config.sh
+
+and even:
+
+    $ SKIP_TESTS='t[0-4]??? t91?? t9200.8' make
+
+to omit such tests.  The value of the environment variable is a
+SP separated list of patterns that tells which tests to skip,
+and either can match the "t[0-9]{4}" part to skip the whole
+test, or t[0-9]{4} followed by ".$number" to say which
+particular test to skip.
+
+Note that some tests in the existing test suite rely on previous
+test item, so you cannot arbitrarily disable one and expect the
+remainder of test to check what the test originally was intended
+to check.
+
+
+Naming Tests
+------------
+
+The test files are named as:
+
+	tNNNN-commandname-details.sh
+
+where N is a decimal digit.
+
+First digit tells the family:
+
+	0 - the absolute basics and global stuff
+	1 - basic every-day usage
+        2 - add ins
+
+Second digit tells the particular command we are testing.
+
+Third digit (optionally) tells the particular switch or group of switches
+we are testing.
+
+If you create files under tests/ directory (i.e. here) that is not
+the top-level test script, never name the file to match the above
+pattern.  The Makefile here considers all such files as the
+top-level test script and tries to run all of them.  A care is
+especially needed if you are creating a common test library
+file, similar to test-lib.sh, because such a library file may
+not be suitable for standalone execution.
+
+
+Writing Tests
+-------------
+
+The test script is written as a shell script.  It should start
+with the standard "#!/bin/sh" with copyright notices, and an
+assignment to variable 'test_description', like this:
+
+	#!/bin/sh
+	#
+	# Copyright (c) 2005 Junio C Hamano
+	#
+
+	test_description='xxx test (option --frotz)
+
+	This test registers the following structure in the cache
+	and tries to run git-ls-files with option --frotz.'
+
+
+Source 'test-lib.sh'
+--------------------
+
+After assigning test_description, the test script should source
+test-lib.sh like this:
+
+	. ./test-lib.sh
+
+This test harness library does the following things:
+
+ - If the script is invoked with command line argument --help
+   (or -h), it shows the test_description and exits.
+
+ - Creates an empty test directory with an empty todo file
+   database and chdir(2) into it.  This directory is 't/trash directory'
+   if you must know, but I do not think you care.
+
+ - Defines standard test helper functions for your scripts to
+   use.  These functions are designed to make all scripts behave
+   consistently when command line arguments --verbose (or -v),
+   --debug (or -d), and --immediate (or -i) is given.
+
+
+End with test_done
+------------------
+
+Your script will be a sequence of tests, using helper functions
+from the test harness library.  At the end of the script, call
+'test_done'.
+
+
+Test harness library
+--------------------
+
+There are a handful helper functions defined in the test harness
+library for your script to use.
+
+ - test_expect_success <message> <script>
+
+   This takes two strings as parameter, and evaluates the
+   <script>.  If it yields success, test is considered
+   successful.  <message> should state what it is testing.
+
+   Example:
+
+	test_expect_success \
+	    'git-write-tree should be able to write an empty tree.' \
+	    'tree=$(git-write-tree)'
+
+ - test_expect_failure <message> <script>
+
+   This is NOT the opposite of test_expect_success, but is used
+   to mark a test that demonstrates a known breakage.  Unlike
+   the usual test_expect_success tests, which say "ok" on
+   success and "FAIL" on failure, this will say "FIXED" on
+   success and "still broken" on failure.  Failures from these
+   tests won't cause -i (immediate) to stop.
+
+ - test_debug <script>
+
+   This takes a single argument, <script>, and evaluates it only
+   when the test script is started with --debug command line
+   argument.  This is primarily meant for use during the
+   development of a new test script.
+
+ - test_done
+
+   Your test script must have test_done at the end.  Its purpose
+   is to summarize successes and failures in the test script and
+   exit with an appropriate error code.
+
+
+Credits
+-------
+
+This test framework was derived from the framework used by
+git itself, written originally by Junio Hamano and licensed
+for use under the GPL.
