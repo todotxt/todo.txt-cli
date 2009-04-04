@@ -36,6 +36,9 @@ VISUAL=:
 # CDPATH into the environment
 unset CDPATH
 
+# Protect ourselves from using predefined TODOTXT_CFG_FILE
+unset TODOTXT_CFG_FILE
+
 # Each test should start with something like this, after copyright notices:
 #
 # test_description='Description of this test...
