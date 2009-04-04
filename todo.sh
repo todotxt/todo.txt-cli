@@ -203,7 +203,7 @@ help()
         TODOTXT_DATE_ON_ADD=1           is same as option -t
         TODOTXT_VERBOSE=1               is same as option -v
         TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
-	TODOTXT_SORT_COMMAND="sort ..." customize list output
+        TODOTXT_SORT_COMMAND="sort ..." customize list output
 EndHelp
 
     if [ -d "$HOME/.todo.actions.d" ]
@@ -353,7 +353,7 @@ TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
     fi
 }
 
-export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD  TODOTXT_SORT_COMMAND
+export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_SORT_COMMAND
 
 TODO_SH="$0"
 export TODO_SH
