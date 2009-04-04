@@ -1,8 +1,9 @@
     TODO.TXT Command Line Interface
-    Latest version: http://github.com/ginatrapani/todo.txt-cli/tree/master
+
+    Latest stable release: http://github.com/ginatrapani/todo.txt-cli/downloads
     First release: 5/11/2006
-    Conceived and released by: Gina Trapani (http://ginatrapani.org)
+    Original conception by: Gina Trapani (http://ginatrapani.org)
     Contributors: http://github.com/ginatrapani/todo.txt-cli/network
     License: GPL, http://www.gnu.org/copyleft/gpl.html
     More information and mailing list at http://todotxt.com
-    To submit patches, fork the repository at http://github.com/ginatrapani/todo.txt-cli/tree/master
+    To contribute, fork the repository at http://github.com/ginatrapani/todo.txt-cli/tree/master
