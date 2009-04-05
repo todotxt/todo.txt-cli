@@ -833,6 +833,7 @@ note: PRIORITY must be anywhere from A to Z."
 
     sed -i.bak $item" s|^.*|$input|" "$TODO_FILE"
     [ $TODOTXT_VERBOSE -gt 0 ] && NEWTODO=$(head -$item "$TODO_FILE" | tail -1)
+    [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $todo"
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "replaced with"
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $NEWTODO"
     cleanup;;
