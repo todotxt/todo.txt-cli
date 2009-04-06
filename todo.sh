@@ -344,6 +344,34 @@ TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
 TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 
+export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_SORT_COMMAND
+
+# Default color map
+export NONE=''
+export BLACK='\\033[0;30m'
+export RED='\\033[0;31m'
+export GREEN='\\033[0;32m'
+export BROWN='\\033[0;33m'
+export BLUE='\\033[0;34m'
+export PURPLE='\\033[0;35m'
+export CYAN='\\033[0;36m'
+export LIGHT_GREY='\\033[0;37m'
+export DARK_GREY='\\033[1;30m'
+export LIGHT_RED='\\033[1;31m'
+export LIGHT_GREEN='\\033[1;32m'
+export YELLOW='\\033[1;33m'
+export LIGHT_BLUE='\\033[1;34m'
+export LIGHT_PURPLE='\\033[1;35m'
+export LIGHT_CYAN='\\033[1;36m'
+export WHITE='\\033[1;37m'
+export DEFAULT='\\033[0m'
+
+# Default priority->color map.
+export PRI_A=$YELLOW        # color for A priority
+export PRI_B=$GREEN         # color for B priority
+export PRI_C=$LIGHT_BLUE    # color for C priority
+export PRI_X=$WHITE         # color for rest of them
+
 [ -e "$TODOTXT_CFG_FILE" ] || {
     CFG_FILE_ALT="$HOME/.todo.cfg"
 
@@ -352,8 +380,6 @@ TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
         TODOTXT_CFG_FILE="$CFG_FILE_ALT"
     fi
 }
-
-export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_SORT_COMMAND
 
 if [ -z "$TODO_ACTIONS_DIR" -o ! -d "$TODO_ACTIONS_DIR" ]
 then
