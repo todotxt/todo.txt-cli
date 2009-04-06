@@ -4,9 +4,10 @@ action=$1
 shift
 
 [ "$action" = "usage" ] && {
-  echo "  Customized add:"
-  echo "    addx  \"THING I DID +project @context\""
-  echo "      add an item and mark it as done in one step"
+  echo "  Add and do:"
+  curcmd=`basename $0`
+  echo "    $curcmd \"THING I DID +project @context\""
+  echo "      Add an item and mark it as done in one step"
   echo ""
   exit
 }
