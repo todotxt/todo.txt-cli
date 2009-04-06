@@ -206,10 +206,10 @@ help()
         TODOTXT_SORT_COMMAND="sort ..." customize list output
 EndHelp
 
-    if [ -d "$HOME/.todo.actions.d" ]
+    if [ -d "$TODO_ACTIONS_DIR" ]
     then
         echo ""
-        for action in $HOME/.todo.actions.d/*
+        for action in "$TODO_ACTIONS_DIR/*"
         do
             if [ -x $action ]
             then
@@ -354,6 +354,12 @@ TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 }
 
 export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_SORT_COMMAND
+
+if [ -z "$TODO_ACTIONS_DIR" -o ! -d "$TODO_ACTIONS_DIR" ]
+then
+    TODO_ACTIONS_DIR="$HOME/.todo.actions.d"
+    export TODO_ACTIONS_DIR
+fi
 
 TODO_SH="$0"
 export TODO_SH
@@ -507,9 +513,9 @@ then
     shift
     ## Reset action to new first argument
     action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
-elif [ -d "$HOME/.todo.actions.d" -a -x "$HOME/.todo.actions.d/$action" ]
+elif [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
 then
-    "$HOME/.todo.actions.d/$action" "$@"
+    "$TODO_ACTIONS_DIR/$action" "$@"
     cleanup
 fi
 
