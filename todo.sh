@@ -471,10 +471,10 @@ _list() {
         | ${TODOTXT_SORT_COMMAND}                                        \
         | sed '''
             /^[0-9]\{'$PADDING'\} x /! {
-                s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
-                s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
-                s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
-                s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
+                s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g;
+                s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g;
+                s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g;
+                s/\(.*([D-Z]).*\)/'$PRI_X'\1'$DEFAULT'/g;
             }
           '''                                                   \
         | sed '''
