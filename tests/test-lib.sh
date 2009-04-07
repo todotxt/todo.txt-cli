@@ -471,7 +471,7 @@ test_tick () {
 test_todo_session () {
     test "$#" = 1 ||
     error "bug in the test script: extra args to test_todo_session"
-    subnum=0
+    subnum=1
     cmd=""
     status=0
     > expect
@@ -511,6 +511,18 @@ test_todo_session () {
 	    test_expect_success "$1 $subnum" "$cmd > output || test $? = $status && test_cmp expect output"
 	fi
     fi
+}
+
+test_shell () {
+	trap - EXIT
+	export PS1='$(ret_val=$?; [ "$ret_val" != "0" ] && echo -e "=== $ret_val\n\n>>> "||echo "\n>>> ")'
+	cat <<EOF
+Do your tests session here and
+don't forget to replace the hardcoded path with \$HOME in the transcript:
+$HOME/todo.txt => \$HOME/todo.txt
+EOF
+	bash --noprofile --norc
+	exit 0
 }
 
 test_init_todo "$test"
