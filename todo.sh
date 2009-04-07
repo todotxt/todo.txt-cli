@@ -592,7 +592,7 @@ case $action in
 
         [[ "$item" = +([0-9]) ]] || die "$errmsg"
         if sed -ne "$item p" "$TODO_FILE" | grep "^."; then
-            DELETEME=$(sed "$2!d" "$TODO_FILE")
+            DELETEME=$(sed "$item!d" "$TODO_FILE")
 
             if  [ $TODOTXT_FORCE = 0 ]; then
                 echo "Delete '$DELETEME'?  (y/n)"
@@ -603,10 +603,10 @@ case $action in
             if [ "$ANSWER" = "y" ]; then
                 if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
                     # delete line (changes line numbers)
-                    sed -i.bak -e $2"s/^.*//" -e '/./!d' "$TODO_FILE"
+                    sed -i.bak -e $item"s/^.*//" -e '/./!d' "$TODO_FILE"
                 else
                     # leave blank line behind (preserves line numbers)
-                    sed -i.bak -e $2"s/^.*//" "$TODO_FILE"
+                    sed -i.bak -e $item"s/^.*//" "$TODO_FILE"
                 fi
                 [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$DELETEME' deleted."
                 cleanup
@@ -633,8 +633,8 @@ case $action in
 
     if [ "$?" -eq 0 ]; then
         #it's all good, continue
-        sed -i.bak -e $2"s/^(.) //" "$TODO_FILE"
-        NEWTODO=$(sed "$2!d" "$TODO_FILE")
+        sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
+        NEWTODO=$(sed "$item!d" "$TODO_FILE")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo -e "`echo "$item: $NEWTODO"`"
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item deprioritized."
         cleanup
@@ -811,8 +811,8 @@ note: PRIORITY must be anywhere from A to Z."
 
     if [ "$?" -eq 0 ]; then
         #it's all good, continue
-        sed -i.bak -e $2"s/^(.) //" -e $2"s/^/($newpri) /" "$TODO_FILE"
-        NEWTODO=$(sed "$2!d" "$TODO_FILE")
+        sed -i.bak -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE"
+        NEWTODO=$(sed "$item!d" "$TODO_FILE")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo -e "`echo "$item: $NEWTODO"`"
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item prioritized ($newpri)."
         cleanup
