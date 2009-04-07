@@ -209,7 +209,7 @@ EndHelp
     if [ -d "$TODO_ACTIONS_DIR" ]
     then
         echo ""
-        for action in "$TODO_ACTIONS_DIR/*"
+        for action in "$TODO_ACTIONS_DIR"/*
         do
             if [ -x "$action" ]
             then
