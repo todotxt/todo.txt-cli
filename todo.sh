@@ -633,7 +633,7 @@ case $action in
 
     if [ "$?" -eq 0 ]; then
         #it's all good, continue
-        sed -i.bak -e $2"s/^([^)]*) //" "$TODO_FILE"
+        sed -i.bak -e $2"s/^(.) //" "$TODO_FILE"
         NEWTODO=$(sed "$2!d" "$TODO_FILE")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo -e "`echo "$item: $NEWTODO"`"
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item deprioritized."
