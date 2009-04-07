@@ -211,9 +211,9 @@ EndHelp
         echo ""
         for action in "$TODO_ACTIONS_DIR/*"
         do
-            if [ -x $action ]
+            if [ -x "$action" ]
             then
-                $action usage
+                "$action" usage
             fi
         done
         echo ""
