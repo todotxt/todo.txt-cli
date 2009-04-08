@@ -831,7 +831,7 @@ note: PRIORITY must be anywhere from A to Z."
 
     [ "$#" -ne 3 ] && die "$errmsg"
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
-    [[ "$newpri" = +([A-Z]) ]] || die "$errmsg"
+    [[ "$newpri" = @([A-Z]) ]] || die "$errmsg"
 
     sed -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE" > /dev/null 2>&1
 
