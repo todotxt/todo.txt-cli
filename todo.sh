@@ -495,7 +495,7 @@ _list() {
             s/^  /00/;
             s/^ /0/;
           ''' \
-        | ${TODOTXT_SORT_COMMAND}                                        \
+        | eval ${TODOTXT_SORT_COMMAND}                                        \
         | sed '''
             /^[0-9]\{'$PADDING'\} x /! {
                 s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g;
