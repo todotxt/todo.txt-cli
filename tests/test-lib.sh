@@ -434,6 +434,60 @@ test_init_todo () {
 	cd "$owd"
 }
 
+# Generate and run a series of tests based on a transcript.
+# Usage: test_todo_session "description" <<EOF
+# >>> command
+# output1
+# output2
+# >>> command
+# === exit status
+# output3
+# output4
+# EOF
+test_todo_session () {
+    test "$#" = 1 ||
+    error "bug in the test script: extra args to test_todo_session"
+    subnum=0
+    cmd=""
+    status=0
+    > expect
+    while read line
+    do
+	case $line in
+	">>> "*)
+	    test -z "$cmd" || error "bug in the test script: missing blank line separator in test_todo_session"
+	    cmd=${line#>>> }
+	    ;;
+	"=== "*)
+	    status=${line#=== }
+	    ;;
+	"")
+	    if [ ! -z "$cmd" ]; then
+		if [ $status = 0 ]; then
+		    test_expect_success "$1 $subnum" "$cmd > output && test_cmp expect output"
+		else
+		    test_expect_success "$1 $subnum" "$cmd > output || test $? = $status && test_cmp expect output"
+		fi
+
+		subnum=$(($subnum + 1))
+		cmd=""
+		status=0
+		> expect
+	    fi
+	    ;;
+	*)
+	    echo $line >> expect
+	    ;;
+	esac
+    done
+    if [ ! -z "$cmd" ]; then
+	if [ $status = 0 ]; then
+	    test_expect_success "$1 $subnum" "$cmd > output && test_cmp expect output"
+	else
+	    test_expect_success "$1 $subnum" "$cmd > output || test $? = $status && test_cmp expect output"
+	fi
+    fi
+}
 
 test_init_todo "$test"
 # Use -P to resolve symlinks in our working directory so that the cwd
