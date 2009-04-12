@@ -1,0 +1,28 @@
+h1. TODO.TXT Command Line Interface
+
+A simple and extensible shell script for managing your todo.txt file.
+
+h2. "Downloads":http://github.com/ginatrapani/todo.txt-cli/downloads
+
+"Download the latest stable release":http://github.com/ginatrapani/todo.txt-cli/downloads for use on your desktop or server.
+
+h2. "User Documentation":http://wiki.github.com/ginatrapani/todo.txt-cli/user-documentation
+
+Find out "how to install and use Todo.txt CLI":http://wiki.github.com/ginatrapani/todo.txt-cli/user-documentation, and get tips and tricks.
+
+h2. "Developer Documentation":http://wiki.github.com/ginatrapani/todo.txt-cli/developer-documentation
+
+"Contribute to Todo.txt CLI":http://wiki.github.com/ginatrapani/todo.txt-cli/developer-documentation and build your own custom add-ons.
+
+h2. "Mailing List":http://groups.yahoo.com/group/todotxt/
+
+Get support and ask questions.
+
+h2. Quick Links
+
+* Original anemic release by "Gina Trapani":http://ginatrapani.org on 5/11/2006.
+* Raised to great heights by "brainy and dedicated volunteers":http://github.com/ginatrapani/todo.txt-cli/network.
+* Licensed under the "GPL":http://www.gnu.org/copyleft/gpl.html
+* "Add-on Directory":http://wiki.github.com/ginatrapani/todo.txt-cli/todosh-add-on-directory
+* "Changelog":http://wiki.github.com/ginatrapani/todo.txt-cli/todosh-changelog
+* "Known Bugs":http://wiki.github.com/ginatrapani/todo.txt-cli/known-bugs
