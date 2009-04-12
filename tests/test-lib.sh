@@ -407,9 +407,8 @@ test_done () {
 	esac
 }
 
-# Make sure we are testing the latest version.
+# Record our location for reference.
 TEST_DIRECTORY=$(pwd)
-PATH=$TEST_DIRECTORY/..:$PATH
 
 # Test repository
 test="trash directory.$(basename "$0" .sh)"
@@ -431,7 +430,32 @@ test_init_todo () {
 	cd "$root" || error "Cannot setup todo dir in $root"
         # Initialize the configuration file. Carefully quoted.
         sed -e 's|TODO_DIR=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' $TEST_DIRECTORY/../todo.cfg > todo.cfg
+
+	# Install latest todo.sh
+	mkdir bin
+	ln -s "$TEST_DIRECTORY/../todo.sh" bin/todo.sh
+
+	# Initialize a hack date script
+	TODO_TEST_REAL_DATE=$(which date)
+	TODO_TEST_TIME=1234500000
+	export PATH TODO_TEST_REAL_DATE TODO_TEST_TIME
+	cat > bin/date <<-EOF
+	#!/bin/sh
+	# Assumes GNU date.
+	exec "$TODO_TEST_REAL_DATE" -d @\$TODO_TEST_TIME \$@
+	EOF
+	chmod 755 bin/date
+
+	# Ensure a correct PATH for testing.
+	PATH=$owd/$root/bin:$PATH
+	export PATH
+
 	cd "$owd"
+}
+
+# Usage: test_tick [increment]
+test_tick () {
+	TODO_TEST_TIME=$(($TODO_TEST_TIME + ${1:-86400}))
 }
 
 # Generate and run a series of tests based on a transcript.
