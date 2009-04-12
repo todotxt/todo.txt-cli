@@ -209,11 +209,11 @@ EndHelp
     if [ -d "$TODO_ACTIONS_DIR" ]
     then
         echo ""
-        for action in "$TODO_ACTIONS_DIR/*"
+        for action in "$TODO_ACTIONS_DIR"/*
         do
-            if [ -x $action ]
+            if [ -x "$action" ]
             then
-                $action usage
+                "$action" usage
             fi
         done
         echo ""
@@ -344,6 +344,34 @@ TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
 TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 
+export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_SORT_COMMAND
+
+# Default color map
+export NONE=''
+export BLACK='\\033[0;30m'
+export RED='\\033[0;31m'
+export GREEN='\\033[0;32m'
+export BROWN='\\033[0;33m'
+export BLUE='\\033[0;34m'
+export PURPLE='\\033[0;35m'
+export CYAN='\\033[0;36m'
+export LIGHT_GREY='\\033[0;37m'
+export DARK_GREY='\\033[1;30m'
+export LIGHT_RED='\\033[1;31m'
+export LIGHT_GREEN='\\033[1;32m'
+export YELLOW='\\033[1;33m'
+export LIGHT_BLUE='\\033[1;34m'
+export LIGHT_PURPLE='\\033[1;35m'
+export LIGHT_CYAN='\\033[1;36m'
+export WHITE='\\033[1;37m'
+export DEFAULT='\\033[0m'
+
+# Default priority->color map.
+export PRI_A=$YELLOW        # color for A priority
+export PRI_B=$GREEN         # color for B priority
+export PRI_C=$LIGHT_BLUE    # color for C priority
+export PRI_X=$WHITE         # color for rest of them
+
 [ -e "$TODOTXT_CFG_FILE" ] || {
     CFG_FILE_ALT="$HOME/.todo.cfg"
 
@@ -352,8 +380,6 @@ TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
         TODOTXT_CFG_FILE="$CFG_FILE_ALT"
     fi
 }
-
-export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_SORT_COMMAND
 
 if [ -z "$TODO_ACTIONS_DIR" -o ! -d "$TODO_ACTIONS_DIR" ]
 then
@@ -471,10 +497,10 @@ _list() {
         | ${TODOTXT_SORT_COMMAND}                                        \
         | sed '''
             /^[0-9]\{'$PADDING'\} x /! {
-                s/\(.*(A).*\)/'$PRI_A'\1 '$DEFAULT'/g;
-                s/\(.*(B).*\)/'$PRI_B'\1 '$DEFAULT'/g;
-                s/\(.*(C).*\)/'$PRI_C'\1 '$DEFAULT'/g;
-                s/\(.*([D-Z]).*\)/'$PRI_X'\1 '$DEFAULT'/g;
+                s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g;
+                s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g;
+                s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g;
+                s/\(.*([D-Z]).*\)/'$PRI_X'\1'$DEFAULT'/g;
             }
           '''                                                   \
         | sed '''
@@ -592,7 +618,7 @@ case $action in
 
         [[ "$item" = +([0-9]) ]] || die "$errmsg"
         if sed -ne "$item p" "$TODO_FILE" | grep "^."; then
-            DELETEME=$(sed "$2!d" "$TODO_FILE")
+            DELETEME=$(sed "$item!d" "$TODO_FILE")
 
             if  [ $TODOTXT_FORCE = 0 ]; then
                 echo "Delete '$DELETEME'?  (y/n)"
@@ -603,10 +629,10 @@ case $action in
             if [ "$ANSWER" = "y" ]; then
                 if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
                     # delete line (changes line numbers)
-                    sed -i.bak -e $2"s/^.*//" -e '/./!d' "$TODO_FILE"
+                    sed -i.bak -e $item"s/^.*//" -e '/./!d' "$TODO_FILE"
                 else
                     # leave blank line behind (preserves line numbers)
-                    sed -i.bak -e $2"s/^.*//" "$TODO_FILE"
+                    sed -i.bak -e $item"s/^.*//" "$TODO_FILE"
                 fi
                 [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$DELETEME' deleted."
                 cleanup
@@ -629,12 +655,12 @@ case $action in
     [ -z "$todo" ] && die "$item: No such todo."
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
-    sed -e $item"s/^(.*) //" "$TODO_FILE" > /dev/null 2>&1
+    sed -e $item"s/^(.) //" "$TODO_FILE" > /dev/null 2>&1
 
     if [ "$?" -eq 0 ]; then
         #it's all good, continue
-        sed -i.bak -e $2"s/^(.*) //" "$TODO_FILE"
-        NEWTODO=$(sed "$2!d" "$TODO_FILE")
+        sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
+        NEWTODO=$(sed "$item!d" "$TODO_FILE")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo -e "`echo "$item: $NEWTODO"`"
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item deprioritized."
         cleanup
@@ -653,7 +679,7 @@ case $action in
 
     now=`date '+%Y-%m-%d'`
     # remove priority once item is done
-    sed -i.bak $item"s/^(.*) //" "$TODO_FILE"
+    sed -i.bak $item"s/^(.) //" "$TODO_FILE"
     sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
     newtodo=$(sed "$item!d" "$TODO_FILE")
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
@@ -805,14 +831,14 @@ note: PRIORITY must be anywhere from A to Z."
 
     [ "$#" -ne 3 ] && die "$errmsg"
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
-    [[ "$newpri" = +([A-Z]) ]] || die "$errmsg"
+    [[ "$newpri" = @([A-Z]) ]] || die "$errmsg"
 
-    sed -e $item"s/^(.*) //" -e $item"s/^/($newpri) /" "$TODO_FILE" > /dev/null 2>&1
+    sed -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE" > /dev/null 2>&1
 
     if [ "$?" -eq 0 ]; then
         #it's all good, continue
-        sed -i.bak -e $2"s/^(.*) //" -e $2"s/^/($newpri) /" "$TODO_FILE"
-        NEWTODO=$(sed "$2!d" "$TODO_FILE")
+        sed -i.bak -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE"
+        NEWTODO=$(sed "$item!d" "$TODO_FILE")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo -e "`echo "$item: $NEWTODO"`"
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item prioritized ($newpri)."
         cleanup
