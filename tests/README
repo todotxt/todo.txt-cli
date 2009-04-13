@@ -176,6 +176,23 @@ Test harness library
 There are a handful helper functions defined in the test harness
 library for your script to use.
 
+ - test_todo_session <message> < transcript
+
+   This takes a single string as a parameter, which is treated
+   as a base description of what is being tested, and then
+   reads from standard input a transcript of todo.sh commands
+   and expected output.  Each command is run in the current
+   test environment and the output is compared with the
+   expected output.  (See below for how to generate transcripts
+   easily.)
+
+ - test_tick [interval]
+
+   The test harness has an internal view of time which is
+   implemented by wrapping the date command.  This takes a single
+   optional positive integer parameter which indicates how much
+   to advance the internal time.  The default value is one day.
+
  - test_expect_success <message> <script>
 
    This takes two strings as parameter, and evaluates the
@@ -211,9 +228,31 @@ library for your script to use.
    exit with an appropriate error code.
 
 
+Generating test transcripts
+---------------------------
+
+You can generate test scripts from screenshots as following:
+
+    $ ./testshell.sh
+
+You'll be in a special test environment with an empty todo.txt
+and the dates and timestamps will be artificially fixed.
+
+Then the session can be used to make a unit test thanks to
+test_todo_session, see the existing tests as examples.
+
+Be careful to replace all occurences of the full path to the test
+directory by $HOME as testshell.sh will explain you when you execute it
+otherwise the tests will work properly only on your own computer.
+
+Don't use "script" as this would log every keystroke, not only what's
+visible!!
+
+
 Credits
 -------
 
 This test framework was derived from the framework used by
 git itself, written originally by Junio Hamano and licensed
-for use under the GPL.
+for use under the GPL.  It was specialized for todo.txt-cli
+by Emil Sit and Philippe Teuwen.
