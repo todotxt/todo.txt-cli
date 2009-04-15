@@ -6,7 +6,7 @@ h2. "Downloads":http://github.com/ginatrapani/todo.txt-cli/downloads
 
 "Download the latest stable release":http://github.com/ginatrapani/todo.txt-cli/downloads for use on your desktop or server.
 
-h2. Documentation
+h2. "Documentation":http://wiki.github.com/ginatrapani/todo.txt-cli
 
 * "User Documentation":http://wiki.github.com/ginatrapani/todo.txt-cli/user-documentation - Find out "how to install and use Todo.txt CLI":http://wiki.github.com/ginatrapani/todo.txt-cli/user-documentation, and get tips and tricks.
 
