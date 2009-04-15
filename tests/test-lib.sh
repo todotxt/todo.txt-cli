@@ -450,21 +450,21 @@ test_init_todo () {
 	#date --version
 	#date (GNU coreutils) 6.10
 	#...
-	if date --version 2>&1 |grep -q "GNU"; then
+	if date --version 2>&1 | grep -q "GNU"; then
 		DATE_STYLE=GNU
 	# on Mac OS X 10.5:
 	#date --version
 	#date: illegal option -- -
 	#usage: date [-jnu] [-d dst] [-r seconds] [-t west] [-v[+|-]val[ymwdHMS]] ...
 	#[-f fmt date | [[[mm]dd]HH]MM[[cc]yy][.ss]] [+format]
-	elif date --version 2>&1 | grep -q "\-jnu"; then
+	elif date --version 2>&1 | grep -q -e "-jnu"; then
 		DATE_STYLE=Mac10.5
 	# on Mac OS X 10.4:
 	#date --version
 	#date: illegal option -- -
 	#usage: date [-nu] [-r seconds] [+format]
 	#       date [[[[[cc]yy]mm]dd]hh]mm[.ss]
-	elif date --version 2>&1 |grep -q "\-nu"; then
+	elif date --version 2>&1 | grep -q -e "-nu"; then
 		DATE_STYLE=Mac10.4
 	fi
 
