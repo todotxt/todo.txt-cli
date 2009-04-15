@@ -439,12 +439,58 @@ test_init_todo () {
 	TODO_TEST_REAL_DATE=$(which date)
 	TODO_TEST_TIME=1234500000
 	export PATH TODO_TEST_REAL_DATE TODO_TEST_TIME
-	cat > bin/date <<-EOF
-	#!/bin/sh
-	# Assumes GNU date.
-	exec "$TODO_TEST_REAL_DATE" -d @\$TODO_TEST_TIME \$@
-	EOF
-	chmod 755 bin/date
+
+	# Trying to detect the version of "date" on current system
+	DATE_STYLE=unknown
+	# on GNU systems (versions may vary):
+	#date --version
+	#date (GNU coreutils) 6.10
+	#...
+	if date --version 2>&1 |grep -q "GNU"; then
+		DATE_STYLE=GNU
+	# on Mac OS X 10.5:
+	#date --version
+	#date: illegal option -- -
+	#usage: date [-jnu] [-d dst] [-r seconds] [-t west] [-v[+|-]val[ymwdHMS]] ...
+	#[-f fmt date | [[[mm]dd]HH]MM[[cc]yy][.ss]] [+format]
+	elif date --version 2>&1 | grep -q "\-jnu"; then
+		DATE_STYLE=Mac10.5
+	# on Mac OS X 10.4:
+	#date --version
+	#date: illegal option -- -
+	#usage: date [-nu] [-r seconds] [+format]
+	#       date [[[[[cc]yy]mm]dd]hh]mm[.ss]
+	elif date --version 2>&1 |grep -q "\-nu"; then
+		DATE_STYLE=Mac10.4
+	fi
+
+	case $DATE_STYLE in
+		GNU)
+			cat > bin/date <<-EOF
+			#!/bin/sh
+			exec "$TODO_TEST_REAL_DATE" -d @\$TODO_TEST_TIME \$@
+			EOF
+			chmod 755 bin/date
+		;;
+		Mac10.5)
+			cat > bin/date <<-EOF
+			#!/bin/sh
+			exec "$TODO_TEST_REAL_DATE" -j -f %s \$TODO_TEST_TIME \$@
+			EOF
+			chmod 755 bin/date
+		;;
+		Mac10.4)
+			cat > bin/date <<-EOF
+			#!/bin/sh
+			exec "$TODO_TEST_REAL_DATE" -r \$TODO_TEST_TIME \$@
+			EOF
+			chmod 755 bin/date
+		;;
+		*)
+			echo "WARNING: Current date executable not recognized"
+			echo "So today date will be used, expect false negative tests..."
+		;;
+	esac
 
 	# Ensure a correct PATH for testing.
 	PATH=$owd/$root/bin:$PATH
