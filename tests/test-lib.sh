@@ -407,6 +407,10 @@ test_done () {
 	esac
 }
 
+# Use -P to resolve symlinks in our working directory so that the pwd
+# in subprocesses equals our $PWD (for pathname comparisons).
+cd -P .
+
 # Record our location for reference.
 TEST_DIRECTORY=$(pwd)
 
@@ -572,7 +576,7 @@ EOF
 }
 
 test_init_todo "$test"
-# Use -P to resolve symlinks in our working directory so that the cwd
+# Use -P to resolve symlinks in our working directory so that the pwd
 # in subprocesses equals our $PWD (for pathname comparisons).
 cd -P "$test" || exit 1
 
