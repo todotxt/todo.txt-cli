@@ -6,7 +6,7 @@ test_description='basic priority functionality
 
 test_todo_session 'priority usage' <<EOF
 >>> todo.sh pri B B
-usage: $HOME/bin/todo.sh pri ITEM# PRIORITY
+usage: todo.sh pri ITEM# PRIORITY
 note: PRIORITY must be anywhere from A to Z.
 === 1
 EOF

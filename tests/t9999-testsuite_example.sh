@@ -92,7 +92,7 @@ TODO: Report file updated.
 2009-02-13-04:40:00 5 1
 
 >>> todo.sh append g a
-usage: $HOME/bin/todo.sh append ITEM# "TEXT TO APPEND"
+usage: todo.sh append ITEM# "TEXT TO APPEND"
 === 1
 
 >>> todo.sh append 2 and think
