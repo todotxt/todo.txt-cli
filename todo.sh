@@ -208,6 +208,7 @@ help()
         TODOTXT_VERBOSE=1               is same as option -v
         TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
         TODOTXT_SORT_COMMAND="sort ..." customize list output
+        TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
 EndHelp
 
     if [ -d "$TODO_ACTIONS_DIR" ]
@@ -347,8 +348,9 @@ TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
 TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
+TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
 
-export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_SORT_COMMAND
+export TODOTXT_VERBOSE TODOTXT_PLAIN TODOTXT_CFG_FILE TODOTXT_FORCE TODOTXT_PRESERVE_LINE_NUMBERS TODOTXT_AUTO_ARCHIVE TODOTXT_DATE_ON_ADD TODOTXT_SORT_COMMAND TODOTXT_FINAL_FILTER
 
 # Default color map
 export NONE=''
@@ -509,6 +511,7 @@ _list() {
             s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
             s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
           '''                                                   \
+        | eval ${TODOTXT_FINAL_FILTER}                          \
     )
     echo -ne "$filtered_items${filtered_items:+\n}"
 
