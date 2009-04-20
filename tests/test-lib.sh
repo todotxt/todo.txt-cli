@@ -37,7 +37,9 @@ VISUAL=:
 unset CDPATH
 
 # Protect ourselves from using predefined TODOTXT_CFG_FILE
-unset TODOTXT_CFG_FILE
+unset TODOTXT_CFG_FILE $(set|sed '/^TODOTXT_/!d;s/=.*//')
+# To prevent any damage if someone has still those exported somehow in his env:
+unset TODO_FILE DONE_FILE REPORT_FILE TMP_FILE
 
 # Each test should start with something like this, after copyright notices:
 #
