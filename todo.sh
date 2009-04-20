@@ -571,9 +571,9 @@ case $action in
     cleanup;;
 
 "addto" )
-    [ -z "$2" ] && die "usage: $TODO_SH0 addto DEST \"TODO ITEM\""
+    [ -z "$2" ] && die "usage: $TODO_SH addto DEST \"TODO ITEM\""
     dest="$TODO_DIR/$2"
-    [ -z "$3" ] && die "usage: $TODO_SH0 addto DEST \"TODO ITEM\""
+    [ -z "$3" ] && die "usage: $TODO_SH addto DEST \"TODO ITEM\""
     shift
     shift
     input=$*
