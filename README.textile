@@ -23,4 +23,4 @@ h2. Quick Links
 * Licensed under the "GPL":http://www.gnu.org/copyleft/gpl.html
 * "Add-on Directory":http://wiki.github.com/ginatrapani/todo.txt-cli/todosh-add-on-directory
 * "Changelog":http://wiki.github.com/ginatrapani/todo.txt-cli/todosh-changelog
-* "Known Bugs":http://wiki.github.com/ginatrapani/todo.txt-cli/known-bugs
+* "Known Bugs":http://github.com/ginatrapani/todo.txt-cli/issues
