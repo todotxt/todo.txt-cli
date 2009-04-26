@@ -6,17 +6,15 @@ h2. "Downloads":http://github.com/ginatrapani/todo.txt-cli/downloads
 
 "Download the latest stable release":http://github.com/ginatrapani/todo.txt-cli/downloads for use on your desktop or server.
 
-h2. "User Documentation":http://wiki.github.com/ginatrapani/todo.txt-cli/user-documentation
+h2. "Documentation":http://wiki.github.com/ginatrapani/todo.txt-cli
 
-Find out "how to install and use Todo.txt CLI":http://wiki.github.com/ginatrapani/todo.txt-cli/user-documentation, and get tips and tricks.
+* "User Documentation":http://wiki.github.com/ginatrapani/todo.txt-cli/user-documentation - Find out "how to install and use Todo.txt CLI":http://wiki.github.com/ginatrapani/todo.txt-cli/user-documentation, and get tips and tricks.
 
-h2. "Developer Documentation":http://wiki.github.com/ginatrapani/todo.txt-cli/developer-documentation
-
-"Contribute to Todo.txt CLI":http://wiki.github.com/ginatrapani/todo.txt-cli/developer-documentation and build your own custom add-ons.
+* "Developer Documentation":http://wiki.github.com/ginatrapani/todo.txt-cli/developer-documentation - "Contribute to Todo.txt CLI":http://wiki.github.com/ginatrapani/todo.txt-cli/developer-documentation and build your own custom add-ons.
 
 h2. "Mailing List":http://groups.yahoo.com/group/todotxt/
 
-Get support and ask questions.
+Get support from users and developers on the "mailing list":http://groups.yahoo.com/group/todotxt/.
 
 h2. Quick Links
 
