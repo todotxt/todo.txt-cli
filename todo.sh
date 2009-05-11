@@ -726,11 +726,11 @@ case $action in
     ;;
 
 "listcon" | "lsc" )
-    grep -w -o '@[^ ]\+' "$TODO_FILE" | sort -u
+    grep -o '[^ ]*@[^ ]\+' "$TODO_FILE" | grep '^@' | sort -u
     cleanup ;;
 
 "listproj" | "lsprj" )
-    grep -w -o '+[^ ]\+' "$TODO_FILE" | sort -u
+    grep -o '[^ ]*+[^ ]\+' "$TODO_FILE" | grep '^+' | sort -u
     cleanup ;;
 
 
