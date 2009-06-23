@@ -10,7 +10,7 @@ to find it somewhere else.
 
 # Remove the pre-created todo.cfg to test behavior in its absence
 rm -f todo.cfg
-echo "Fatal error: Cannot read configuration file $HOME/todo.cfg" > expect
+echo "Fatal error: Cannot read configuration file $HOME/.todo/config" > expect
 test_expect_success 'no config file' '
     todo.sh > output 2>&1 || test_cmp expect output
 '
@@ -32,6 +32,15 @@ EOF
 
 rm -f used_config
 test_expect_success 'config file (default location 1)' '
+    mkdir .todo
+    cp test.cfg .todo/config
+    todo.sh > output;
+    test_cmp expect output && test -f used_config &&
+        rm -rf .todo
+'
+
+rm -f used_config
+test_expect_success 'config file (default location 2)' '
     cp test.cfg todo.cfg
     todo.sh > output;
     test_cmp expect output && test -f used_config &&
@@ -39,7 +48,7 @@ test_expect_success 'config file (default location 1)' '
 '
 
 rm -f used_config
-test_expect_success 'config file (default location 2)' '
+test_expect_success 'config file (default location 3)' '
     cp test.cfg .todo.cfg
     todo.sh > output;
     test_cmp expect output && test -f used_config &&
