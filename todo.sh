@@ -675,27 +675,32 @@ case $action in
 
 "do" )
     errmsg="usage: $TODO_SH do ITEM#"
-    item=$2
-    [ -z "$item" ] && die "$errmsg"
-    [[ "$item" = +([0-9]) ]] || die "$errmsg"
+		# shift so we get arguments to the do request
+		shift;
 
-    todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item: No such todo."
+		# Split multiple do's, if comma seperated change to whitespace sepereated
+		# Loop the 'do' function for each item
+		for item in `echo $* | tr ',' ' '`; do 
+    	[ -z "$item" ] && die "$errmsg"
+    	[[ "$item" = +([0-9]) ]] || die "$errmsg"
+		
+    	todo=$(sed "$item!d" "$TODO_FILE")
+    	[ -z "$todo" ] && die "$item: No such todo."
 
-    now=`date '+%Y-%m-%d'`
-    # remove priority once item is done
-    sed -i.bak $item"s/^(.) //" "$TODO_FILE"
-    sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
-    newtodo=$(sed "$item!d" "$TODO_FILE")
-    [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
-    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item marked as done."
-
+    	now=`date '+%Y-%m-%d'`
+    	# remove priority once item is done
+    	sed -i.bak $item"s/^(.) //" "$TODO_FILE"
+    	sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
+    	newtodo=$(sed "$item!d" "$TODO_FILE")
+    	[ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
+    	[ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item marked as done."
+		done
+	
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
         archive
     fi
     cleanup ;;
 
- 
 "help" )
     help
     ;;
