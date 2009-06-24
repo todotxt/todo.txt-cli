@@ -62,6 +62,17 @@ replaced with
 4: collect the eggs
 EOF
 
+test_todo_session 'replace with priority' <<EOF
+>>> todo.sh pri 4 a
+4: (A) collect the eggs
+TODO: 4 prioritized (A).
+
+>>> todo.sh replace 4 "collect the bread"
+4: (A) collect the eggs
+replaced with
+4: (A) collect the bread
+EOF
+
 test_todo_session 'replace error' << EOF
 >>> todo.sh replace 10 "hej!"
 === 1
