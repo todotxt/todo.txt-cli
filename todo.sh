@@ -695,6 +695,7 @@ case $action in
     fi
     cleanup ;;
 
+ 
 "help" )
     help
     ;;
@@ -877,6 +878,11 @@ note: PRIORITY must be anywhere from A to Z."
     todo=$(sed "$item!d" "$TODO_FILE")
     [ -z "$todo" ] && die "$item: No such todo."
 
+    # Test for then set priority
+    if [ `sed "$item!d" "$TODO_FILE"|grep -c "^(\\w)"` -eq 1 ]; then
+      priority=$(sed "$item!d" "$TODO_FILE" | awk -F '\\(|\\)' '{print $2}')
+    fi
+
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Replacement: "
         read input
@@ -884,7 +890,12 @@ note: PRIORITY must be anywhere from A to Z."
         input=$*
     fi
 
-    sed -i.bak $item" s|^.*|$input|" "$TODO_FILE"
+    # If priority isn't set replace, if it is remove priority, replace then add priority again
+    if [ -z $priority ]; then
+      sed -i.bak $item" s|^.*|$input|" "$TODO_FILE"
+    else
+      sed -i.bak -e "$item s/^(.) //" -e "$item s|^.*|\($priority\) $1|" "$TODO_FILE"
+    fi
     [ $TODOTXT_VERBOSE -gt 0 ] && NEWTODO=$(head -$item "$TODO_FILE" | tail -1)
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $todo"
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "replaced with"
