@@ -818,13 +818,29 @@ case $action in
     else
         input=$*
     fi
+		
+		# Test for then set priority
+		if [ `sed "$item!d" "$TODO_FILE"|grep -c "^(\\w)"` -eq 1 ]; then
+			priority=$(sed "$item!d" "$TODO_FILE" | awk -F '\\(|\\)' '{print $2}')
+		fi
 
-    if sed -i.bak $item" s|^.*|$input &|" "$TODO_FILE"; then
-        newtodo=$(sed "$item!d" "$TODO_FILE")
+		# If priority isn't set prepend
+		if [ -z $priority ]; then 
+    	if sed -i.bak $item" s|^.*|$input &|" "$TODO_FILE"; then
+       	newtodo=$(sed "$item!d" "$TODO_FILE")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
-    else
-        echo "TODO: Error prepending task $item."
-    fi
+    	else
+       	echo "TODO: Error prepending task $item."
+			fi
+		# If priority is set, remove priority, prepend and add back priority
+		else
+			if sed -i.bak -e "$item s/^(.) //" -e "$item s|^.*|\($priority\) $1 &|" "$TODO_FILE"; then
+        newtodo=$(sed "$item!d" "$TODO_FILE")
+       	[ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
+    	else
+       	echo "TODO: Error prepending task $item."
+    	fi
+		fi
     cleanup;;
 
 "pri" | "p" )
