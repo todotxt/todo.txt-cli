@@ -248,7 +248,7 @@ archive()
     grep "^x " "$TODO_FILE" >> "$DONE_FILE"
     sed -i.bak '/^x /d' "$TODO_FILE"
     cp "$TODO_FILE" "$TMP_FILE"
-    sed -n 'G; s/\n/&&/; /^\([ -~]*\n\).*\n\1/d; s/\n//; h; P' "$TMP_FILE" > "$TODO_FILE"
+    sed -n 'G; s/\n/&&/; /^\([ ~-]*\n\).*\n\1/d; s/\n//; h; P' "$TMP_FILE" > "$TODO_FILE"
     #[[ $TODOTXT_VERBOSE -gt 0 ]] && echo "TODO: Duplicate tasks have been removed."
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $TODO_FILE archived."
     cleanup
