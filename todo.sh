@@ -102,8 +102,8 @@ help()
           Deprioritizes (removes the priority) from the item
           on line NUMBER in todo.txt.
 
-        do NUMBER
-          Marks item on line NUMBER as done in todo.txt.
+        do NUMBER[, NUMBER, NUMBER, ...]
+          Marks item(s) on line NUMBER as done in todo.txt.
 
         help
           Display this help message.
