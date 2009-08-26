@@ -675,21 +675,27 @@ case $action in
 
 "do" )
     errmsg="usage: $TODO_SH do ITEM#"
-    item=$2
-    [ -z "$item" ] && die "$errmsg"
-    [[ "$item" = +([0-9]) ]] || die "$errmsg"
+		# shift so we get arguments to the do request
+		shift;
 
-    todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item: No such todo."
+		# Split multiple do's, if comma seperated change to whitespace sepereated
+		# Loop the 'do' function for each item
+		for item in `echo $* | tr ',' ' '`; do 
+    	[ -z "$item" ] && die "$errmsg"
+    	[[ "$item" = +([0-9]) ]] || die "$errmsg"
+		
+    	todo=$(sed "$item!d" "$TODO_FILE")
+    	[ -z "$todo" ] && die "$item: No such todo."
 
-    now=`date '+%Y-%m-%d'`
-    # remove priority once item is done
-    sed -i.bak $item"s/^(.) //" "$TODO_FILE"
-    sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
-    newtodo=$(sed "$item!d" "$TODO_FILE")
-    [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
-    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item marked as done."
-
+    	now=`date '+%Y-%m-%d'`
+    	# remove priority once item is done
+    	sed -i.bak $item"s/^(.) //" "$TODO_FILE"
+    	sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
+    	newtodo=$(sed "$item!d" "$TODO_FILE")
+    	[ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
+    	[ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item marked as done."
+		done
+	
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
         archive
     fi
@@ -818,13 +824,29 @@ case $action in
     else
         input=$*
     fi
+		
+		# Test for then set priority
+		if [ `sed "$item!d" "$TODO_FILE"|grep -c "^(\\w)"` -eq 1 ]; then
+			priority=$(sed "$item!d" "$TODO_FILE" | awk -F '\\(|\\)' '{print $2}')
+		fi
 
-    if sed -i.bak $item" s|^.*|$input &|" "$TODO_FILE"; then
-        newtodo=$(sed "$item!d" "$TODO_FILE")
+		# If priority isn't set prepend
+		if [ -z $priority ]; then 
+    	if sed -i.bak $item" s|^.*|$input &|" "$TODO_FILE"; then
+       	newtodo=$(sed "$item!d" "$TODO_FILE")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
-    else
-        echo "TODO: Error prepending task $item."
-    fi
+    	else
+       	echo "TODO: Error prepending task $item."
+			fi
+		# If priority is set, remove priority, prepend and add back priority
+		else
+			if sed -i.bak -e "$item s/^(.) //" -e "$item s|^.*|\($priority\) $1 &|" "$TODO_FILE"; then
+        newtodo=$(sed "$item!d" "$TODO_FILE")
+       	[ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
+    	else
+       	echo "TODO: Error prepending task $item."
+    	fi
+		fi
     cleanup;;
 
 "pri" | "p" )
@@ -861,6 +883,11 @@ note: PRIORITY must be anywhere from A to Z."
     todo=$(sed "$item!d" "$TODO_FILE")
     [ -z "$todo" ] && die "$item: No such todo."
 
+    # Test for then set priority
+    if [ `sed "$item!d" "$TODO_FILE"|grep -c "^(\\w)"` -eq 1 ]; then
+      priority=$(sed "$item!d" "$TODO_FILE" | awk -F '\\(|\\)' '{print $2}')
+    fi
+
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Replacement: "
         read input
@@ -868,7 +895,12 @@ note: PRIORITY must be anywhere from A to Z."
         input=$*
     fi
 
-    sed -i.bak $item" s|^.*|$input|" "$TODO_FILE"
+    # If priority isn't set replace, if it is remove priority, replace then add priority again
+    if [ -z $priority ]; then
+      sed -i.bak $item" s|^.*|$input|" "$TODO_FILE"
+    else
+      sed -i.bak -e "$item s/^(.) //" -e "$item s|^.*|\($priority\) $1|" "$TODO_FILE"
+    fi
     [ $TODOTXT_VERBOSE -gt 0 ] && NEWTODO=$(head -$item "$TODO_FILE" | tail -1)
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $todo"
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "replaced with"
