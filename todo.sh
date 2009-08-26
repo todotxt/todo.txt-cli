@@ -1,7 +1,7 @@
 #! /bin/bash
 
-# NOTE:  Todo.sh requires the todo.cfg configuration file to run.
-# Place the todo.cfg file in your home directory or use the -d option for a custom location.
+# NOTE:  Todo.sh requires the .todo/config configuration file to run.
+# Place the .todo/config file in your home directory or use the -d option for a custom location.
 
 [ -f VERSION-FILE ] && . VERSION-FILE || VERSION="@DEV_VERSION@"
 version() { sed -e 's/^    //' <<EndVersion
@@ -172,7 +172,7 @@ help()
             Hide project names in list output. Use twice to show project
             names (default).
         -d CONFIG_FILE
-            Use a configuration file other than the default ~/todo.cfg
+            Use a configuration file other than the default ~/.todo/config
         -f
             Forces actions without confirmation or interactive input
         -h
@@ -341,7 +341,7 @@ shift $(($OPTIND - 1))
 # defaults if not yet defined
 TODOTXT_VERBOSE=${TODOTXT_VERBOSE:-1}
 TODOTXT_PLAIN=${TODOTXT_PLAIN:-0}
-TODOTXT_CFG_FILE=${TODOTXT_CFG_FILE:-$HOME/todo.cfg}
+TODOTXT_CFG_FILE=${TODOTXT_CFG_FILE:-$HOME/.todo/config}
 TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
@@ -380,6 +380,15 @@ export PRI_C=$LIGHT_BLUE    # color for C priority
 export PRI_X=$WHITE         # color for rest of them
 
 [ -e "$TODOTXT_CFG_FILE" ] || {
+    CFG_FILE_ALT="$HOME/todo.cfg"
+
+    if [ -e "$CFG_FILE_ALT" ]
+    then
+        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
+    fi
+}
+
+[ -e "$TODOTXT_CFG_FILE" ] || {
     CFG_FILE_ALT="$HOME/.todo.cfg"
 
     if [ -e "$CFG_FILE_ALT" ]
@@ -390,9 +399,18 @@ export PRI_X=$WHITE         # color for rest of them
 
 if [ -z "$TODO_ACTIONS_DIR" -o ! -d "$TODO_ACTIONS_DIR" ]
 then
-    TODO_ACTIONS_DIR="$HOME/.todo.actions.d"
+    TODO_ACTIONS_DIR="$HOME/.todo/actions"
     export TODO_ACTIONS_DIR
 fi
+
+[ -d "$TODO_ACTIONS_DIR" ] || {
+    TODO_ACTIONS_DIR_ALT="$HOME/.todo.actions.d"
+
+    if [ -d "$TODO_ACTIONS_DIR_ALT" ]
+    then
+        TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
+    fi
+}
 
 # === SANITY CHECKS (thanks Karl!) ===
 [ -r "$TODOTXT_CFG_FILE" ] || die "Fatal error: Cannot read configuration file $TODOTXT_CFG_FILE"
