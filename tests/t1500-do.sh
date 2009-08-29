@@ -69,4 +69,12 @@ TODO: $HOME/todo.txt archived.
 TODO: 3 of 3 tasks shown from $HOME/todo.txt
 EOF
 
+test_todo_session 'fail multiple do attempts' <<EOF
+>>> todo.sh -a do 3
+3: x 2009-02-13 stop
+TODO: 3 marked as done.
+
+>>> todo.sh -a do 3
+3 is already marked done
+EOF
 test_done

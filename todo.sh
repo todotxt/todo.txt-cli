@@ -705,13 +705,18 @@ case $action in
     	todo=$(sed "$item!d" "$TODO_FILE")
     	[ -z "$todo" ] && die "$item: No such todo."
 
-    	now=`date '+%Y-%m-%d'`
-    	# remove priority once item is done
-    	sed -i.bak $item"s/^(.) //" "$TODO_FILE"
-    	sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
-    	newtodo=$(sed "$item!d" "$TODO_FILE")
-    	[ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
-    	[ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item marked as done."
+      # Check if this item has already been done
+      if [ `echo $todo | grep -c "^x "` -eq 0 ] ; then
+        now=`date '+%Y-%m-%d'`
+        # remove priority once item is done
+        sed -i.bak $item"s/^(.) //" "$TODO_FILE"
+        sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
+        newtodo=$(sed "$item!d" "$TODO_FILE")
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $item marked as done."
+      else
+        echo "$item is already marked done"
+      fi
 		done
 	
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
