@@ -196,6 +196,8 @@ help()
             Extra verbose mode prints some debugging information
         -V
             Displays version, license and credits
+        -x
+            Disables TODOTXT_FINAL_FILTER
 
 
       Environment variables:
@@ -256,7 +258,7 @@ archive()
 
 
 # == PROCESS OPTIONS ==
-while getopts ":fhpnatvV+@Pd:" Option
+while getopts ":fhpnatvVx+@Pd:" Option
 do
   case $Option in
     '@' )
@@ -333,6 +335,9 @@ do
         ;;
     V )
         version
+        ;;
+    x )
+        TODOTXT_DISABLE_FILTER=1
         ;;
   esac
 done
@@ -497,6 +502,9 @@ _list() {
 
     ## Number the file, then run the filter command,
     ## then sort and mangle output some more
+    if [[ $TODOTXT_DISABLE_FILTER = 1 ]]; then
+        TODOTXT_FINAL_FILTER="cat"
+    fi
     items=$(
         sed = "$src"                                            \
         | sed "N; s/^/     /; s/ *\(.\{$PADDING,\}\)\n/\1 /"    \

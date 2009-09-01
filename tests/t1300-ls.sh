@@ -54,7 +54,34 @@ TODO: 3 of 3 tasks shown from $HOME/todo.txt
 EOF
 
 #
-# check the  p command line option
+# check the x command line option
+#
+TEST_TODO3_=todo3.cfg
+sed -e "s%^.*export TODOTXT_FINAL_FILTER=.*$%export TODOTXT_FINAL_FILTER=\"grep -v xxx\"%" "${TEST_TODO_}" > "${TEST_TODO3_}"
+
+cat > todo.txt <<EOF
+foo
+bar xxx
+baz
+EOF
+
+test_todo_session 'final filter suppression' <<EOF
+>>> todo.sh -d "$TEST_TODO3_" ls
+3 baz
+1 foo
+--
+TODO: 2 of 3 tasks shown from $HOME/todo.txt
+
+>>> todo.sh -d "$TEST_TODO3_" -x ls
+2 bar xxx
+3 baz
+1 foo
+--
+TODO: 3 of 3 tasks shown from $HOME/todo.txt
+EOF
+
+#
+# check the p command line option
 #
 cat > todo.txt <<EOF
 (A) @con01 +prj01 -- Some project 01 task, pri A
