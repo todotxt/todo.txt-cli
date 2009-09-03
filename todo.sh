@@ -242,6 +242,13 @@ cleanup()
     exit 0
 }
 
+cleaninput()
+{
+    # Cleanup the input
+    # Replace newlines with spaces
+    input=`echo $input | tr -d '\n'`
+}
+
 archive()
 {
     #defragment blank lines
@@ -587,6 +594,7 @@ case $action in
         shift
         input=$*
     fi
+    cleaninput $input
 
     if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
         now=`date '+%Y-%m-%d'`
@@ -628,6 +636,8 @@ case $action in
     else
         input=$*
     fi
+    cleaninput $input
+
     if sed -i.bak $item" s|^.*|& $input|" "$TODO_FILE"; then
         newtodo=$(sed "$item!d" "$TODO_FILE")
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $newtodo"
@@ -855,7 +865,8 @@ case $action in
     else
         input=$*
     fi
-		
+    cleaninput $input
+
 		# Test for then set priority
 		if [ `sed "$item!d" "$TODO_FILE"|grep -c "^(\\w)"` -eq 1 ]; then
 			priority=$(sed "$item!d" "$TODO_FILE" | awk -F '\\(|\\)' '{print $2}')
@@ -925,6 +936,7 @@ note: PRIORITY must be anywhere from A to Z."
     else
         input=$*
     fi
+    cleaninput $input
 
     # If priority isn't set replace, if it is remove priority, replace then add priority again
     if [ -z $priority ]; then
