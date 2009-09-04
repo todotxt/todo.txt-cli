@@ -8,7 +8,7 @@ test_description='Multi-line functionality'
 # Create the expected file
 echo "1: smell the cheese
 replaced with
-1: eat apples eat oranges">$HOME/expect.multi
+1: eat apples eat oranges drink milk">$HOME/expect.multi
 
 test_expect_success 'multiline item replace' '
 (
@@ -18,7 +18,8 @@ cat /dev/null > $HOME/todo.txt
 
 # Run replace
 "$HOME/bin/todo.sh" replace 1 "eat apples
-eat oranges" > $HOME/output.multi
+eat oranges
+drink milk" > $HOME/output.multi
 
 # Test output against expected
 diff "$HOME/output.multi" "$HOME/expect.multi"
@@ -32,7 +33,7 @@ fi
 
 ## Add test
 # Create the expected file
-echo "TODO: 'eat apples eat oranges' added on line 2.">$HOME/expect.multi
+echo "TODO: 'eat apples eat oranges drink milk' added on line 2.">$HOME/expect.multi
 
 test_expect_success 'multiline item add' '
 (
@@ -42,7 +43,8 @@ cat /dev/null > $HOME/todo.txt
 
 # Run add
 "$HOME/bin/todo.sh" add "eat apples
-eat oranges" > $HOME/output.multi
+eat oranges
+drink milk" > $HOME/output.multi
 
 # Test output against expected
 diff "$HOME/output.multi" "$HOME/expect.multi"
@@ -56,7 +58,7 @@ fi
 
 ## Append test
 # Create the expected file
-echo "1: smell the cheese eat apples eat oranges">$HOME/expect.multi
+echo "1: smell the cheese eat apples eat oranges drink milk">$HOME/expect.multi
 
 test_expect_success 'multiline item append' '
 (
@@ -66,7 +68,8 @@ cat /dev/null > $HOME/todo.txt
 
 # Run append
 "$HOME/bin/todo.sh" append 1 "eat apples
-eat oranges" > $HOME/output.multi
+eat oranges
+drink milk" > $HOME/output.multi
 
 # Test output against expected
 diff "$HOME/output.multi" "$HOME/expect.multi"
@@ -80,7 +83,7 @@ fi
 
 ## Prepend test
 # Create the expected file
-echo "1: eat apples eat oranges smell the cheese">$HOME/expect.multi
+echo "1: eat apples eat oranges drink milk smell the cheese">$HOME/expect.multi
 
 test_expect_success 'multiline item prepend' '
 (
@@ -90,7 +93,8 @@ cat /dev/null > $HOME/todo.txt
 
 # Run prepend
 "$HOME/bin/todo.sh" prepend 1 "eat apples
-eat oranges" > $HOME/output.multi
+eat oranges
+drink milk" > $HOME/output.multi
 
 # Test output against expected
 diff "$HOME/output.multi" "$HOME/expect.multi"

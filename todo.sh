@@ -244,7 +244,7 @@ cleaninput()
 {
     # Cleanup the input
     # Replace newlines with spaces
-    input=`echo $input | tr -d '\n'`
+    input=`echo $input | tr -d '\r|\n'`
 }
 
 archive()
