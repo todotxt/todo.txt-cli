@@ -17,9 +17,10 @@ EndVersion
     exit 1
 }
 
-# Set script name early.
+# Set script name and full path early.
 TODO_SH=$(basename "$0")
-export TODO_SH
+TODO_FULL_SH="$0"
+export TODO_SH TODO_FULL_SH
 
 oneline_usage="$TODO_SH [-fhpantvV] [-d todo_config] action [task_number] [task_description]"
 
