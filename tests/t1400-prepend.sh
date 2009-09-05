@@ -52,4 +52,9 @@ TODO: 3 of 3 tasks shown from $HOME/todo.txt
 
 EOF
 
+test_todo_session 'prepend with &' <<EOF
+>>> todo.sh prepend 3 "no running & jumping now"
+3: no running & jumping now stop
+EOF
+
 test_done
