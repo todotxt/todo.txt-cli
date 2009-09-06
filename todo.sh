@@ -623,7 +623,7 @@ case $action in
         input=$*
     fi
 
-    # Set InternalField Seperator as newline so we can 
+    # Set Internal Field Seperator as newline so we can 
     # loop across multiple lines
     SAVEIFS=$IFS
     IFS=$'\n'
