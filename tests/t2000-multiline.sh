@@ -10,7 +10,7 @@ echo "1: smell the cheese
 replaced with
 1: eat apples eat oranges drink milk">$HOME/expect.multi
 
-test_expect_success 'multiline item replace' '
+test_expect_success 'multiline squash item replace' '
 (
 # Prepare single line todo file
 cat /dev/null > $HOME/todo.txt
@@ -35,7 +35,7 @@ fi
 # Create the expected file
 echo "TODO: 'eat apples eat oranges drink milk' added on line 2.">$HOME/expect.multi
 
-test_expect_success 'multiline item add' '
+test_expect_success 'multiline squash item add' '
 (
 # Prepare single line todo file
 cat /dev/null > $HOME/todo.txt
@@ -60,7 +60,7 @@ fi
 # Create the expected file
 echo "1: smell the cheese eat apples eat oranges drink milk">$HOME/expect.multi
 
-test_expect_success 'multiline item append' '
+test_expect_success 'multiline squash item append' '
 (
 # Prepare single line todo file
 cat /dev/null > $HOME/todo.txt
@@ -85,7 +85,7 @@ fi
 # Create the expected file
 echo "1: eat apples eat oranges drink milk smell the cheese">$HOME/expect.multi
 
-test_expect_success 'multiline item prepend' '
+test_expect_success 'multiline squash item prepend' '
 (
 # Prepare single line todo file
 cat /dev/null > $HOME/todo.txt
@@ -93,6 +93,27 @@ cat /dev/null > $HOME/todo.txt
 
 # Run prepend
 "$HOME/bin/todo.sh" prepend 1 "eat apples
+eat oranges
+drink milk" > $HOME/output.multi
+
+# Test output against expected
+diff "$HOME/output.multi" "$HOME/expect.multi"
+if [ $? -ne 0 ]; then
+  exit 1
+else
+  exit 0
+fi
+)
+'
+
+## Multiple line addition
+# Create the expected file
+echo  -e "TODO: 'eat apples' added on line 2.\nTODO: 'eat oranges' added on line 3.\nTODO: 'drink milk' added on line 4.">$HOME/expect.multi
+
+test_expect_success 'actual multiline add' '
+(
+# Run addm
+"$HOME/bin/todo.sh" addm "eat apples
 eat oranges
 drink milk" > $HOME/output.multi
 
