@@ -72,6 +72,12 @@ TODO: 4 prioritized (A).
 replaced with
 4: (A) collect the bread
 EOF
+test_todo_session 'replace with &' << EOF
+>>> todo.sh replace 3 "thrash the hay & thresh the wheat"
+3: jump on hay
+replaced with 
+3: thrash the hay & thresh the wheat
+EOF
 
 test_todo_session 'replace error' << EOF
 >>> todo.sh replace 10 "hej!"

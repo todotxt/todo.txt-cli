@@ -55,4 +55,18 @@ TODO: 'smell the uppercase Roses' added on line 3.
 TODO: 2 of 3 tasks shown from $HOME/todo.txt
 EOF
 
+test_todo_session 'add with &' <<EOF
+>>> todo.sh add "dig the garden & water the flowers"
+TODO: 'dig the garden & water the flowers' added on line 4.
+
+>>> todo.sh list
+4 dig the garden & water the flowers
+1 notice the daisies
+2 smell the roses
+3 smell the uppercase Roses
+--
+TODO: 4 of 4 tasks shown from $HOME/todo.txt
+
+EOF
+
 test_done

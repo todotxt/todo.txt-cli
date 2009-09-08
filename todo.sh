@@ -246,8 +246,14 @@ cleanup()
 cleaninput()
 {
     # Cleanup the input
-    # Replace newlines with spaces
+    # Replace newlines with spaces Always
     input=`echo $input | tr -d '\r|\n'`
+		
+    # Check which action we are being used in as this affects what cleaning we do
+    if [[ $action =~ ^(append|app|prepend|prep|replace)$ ]]; then
+        # These actions use sed and & as the matched string so escape it
+        input=`echo $input | sed 's/\&/\\\&/g'`
+		fi
 }
 
 archive()
