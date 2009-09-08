@@ -41,6 +41,8 @@ shorthelp()
       Actions:
         add|a "THING I NEED TO DO +project @context"
         addto DEST "TEXT TO ADD"
+        addm "THINGS I NEED TO DO
+              MORE THINGS I NEED TO DO"
         append|app NUMBER "TEXT TO APPEND"
         archive
         command [ACTIONS]
@@ -74,6 +76,13 @@ help()
         add "THING I NEED TO DO +project @context"
         a "THING I NEED TO DO +project @context"
           Adds THING I NEED TO DO to your todo.txt file on its own line.
+          Project and context notation optional.
+          Quotes optional.
+
+        addm "FIRST THING I NEED TO DO +project1 @context
+        SECOND THING I NEED TO DO +project2 @context"
+          Adds FIRST THING I NEED TO DO to your todo.txt on its own line and
+          Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
           Project and context notation optional.
           Quotes optional.
 
@@ -610,6 +619,34 @@ case $action in
     echo "$input" >> "$TODO_FILE"
     TASKNUM=$(sed -n '$ =' "$TODO_FILE")
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$input' added on line $TASKNUM."
+    cleanup;;
+
+"addm")
+    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
+        echo -n "Add: "
+        read input
+    else
+        [ -z "$2" ] && die "usage: $TODO_SH addm \"TODO ITEM\""
+        shift
+        input=$*
+    fi
+
+    # Set Internal Field Seperator as newline so we can 
+    # loop across multiple lines
+    SAVEIFS=$IFS
+    IFS=$'\n'
+
+    # Treat each line seperately
+    for line in $input ; do
+      if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
+          now=`date '+%Y-%m-%d'`
+          line="$now $line"
+      fi
+      echo "$line" >> "$TODO_FILE"
+      TASKNUM=$(sed -n '$ =' "$TODO_FILE")
+      [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$line' added on line $TASKNUM."
+    done
+    IFS=$SAVEIFS
     cleanup;;
 
 "addto" )
