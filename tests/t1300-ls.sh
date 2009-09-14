@@ -539,4 +539,85 @@ test_todo_session 'check line number padding, out to 3 digits' <<EOF
 TODO: 112 of 112 tasks shown from $HOME/todo.txt
 EOF
 
+#
+# check that blank lines are ignored.
+#
+
+# Less than 10
+cat > todo.txt <<EOF
+hex00 this is one line
+
+hex02 this is another line
+hex03 this is another line
+hex04 this is another line
+hex05 this is another line
+hex06 this is another line
+hex07 this is another line
+EOF
+test_todo_session 'check that blank lines are ignored for less than 10 items' <<EOF
+>>> todo.sh ls
+1 hex00 this is one line
+3 hex02 this is another line
+4 hex03 this is another line
+5 hex04 this is another line
+6 hex05 this is another line
+7 hex06 this is another line
+8 hex07 this is another line
+--
+TODO: 7 of 7 tasks shown from $HOME/todo.txt
+EOF
+
+# More than 10
+cat > todo.txt <<EOF
+hex00 this is one line
+
+hex02 this is another line
+hex03 this is another line
+hex04 this is another line
+hex05 this is another line
+hex06 this is another line
+hex07 this is another line
+hex08 this is another line
+hex09 this is another line
+EOF
+test_todo_session 'check that blank lines are ignored for blank lines whose ID begins with `0` (one blank)' <<EOF
+>>> todo.sh ls
+01 hex00 this is one line
+03 hex02 this is another line
+04 hex03 this is another line
+05 hex04 this is another line
+06 hex05 this is another line
+07 hex06 this is another line
+08 hex07 this is another line
+09 hex08 this is another line
+10 hex09 this is another line
+--
+TODO: 9 of 9 tasks shown from $HOME/todo.txt
+EOF
+cat > todo.txt <<EOF
+hex00 this is one line
+
+hex02 this is another line
+hex03 this is another line
+hex04 this is another line
+hex05 this is another line
+
+hex07 this is another line
+hex08 this is another line
+hex09 this is another line
+EOF
+test_todo_session 'check that blank lines are ignored for blank lines whose ID begins with `0` (many blanks)' <<EOF
+>>> todo.sh ls
+01 hex00 this is one line
+03 hex02 this is another line
+04 hex03 this is another line
+05 hex04 this is another line
+06 hex05 this is another line
+08 hex07 this is another line
+09 hex08 this is another line
+10 hex09 this is another line
+--
+TODO: 8 of 8 tasks shown from $HOME/todo.txt
+EOF
+
 test_done

@@ -531,7 +531,7 @@ _list() {
     items=$(
         sed = "$src"                                            \
         | sed "N; s/^/     /; s/ *\(.\{$PADDING,\}\)\n/\1 /"    \
-        | grep -v "^[0-9]\+ *$"
+        | grep -v "^[ 0-9]\+ *$"
     )
     if [ "${filter_command}" ]; then
         filtered_items=$(echo -ne "$items" | eval ${filter_command})
