@@ -108,7 +108,9 @@ fi
 
 ## Multiple line addition
 # Create the expected file
-echo  -e "TODO: 'eat apples' added on line 2.\nTODO: 'eat oranges' added on line 3.\nTODO: 'drink milk' added on line 4.">$HOME/expect.multi
+echo "TODO: 'eat apples' added on line 2." > $HOME/expect.multi
+echo "TODO: 'eat oranges' added on line 3." >>$HOME/expect.multi
+echo "TODO: 'drink milk' added on line 4." >> $HOME/expect.multi
 
 test_expect_success 'actual multiline add' '
 (
