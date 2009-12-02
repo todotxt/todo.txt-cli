@@ -17,15 +17,15 @@ function! TodoList(args)
 	endif
 	call Todo('list ' . list_args)
 	nnoremap <buffer> q :q<ENTER>
-	execute 'nnoremap <buffer> o :call TodoAddInput()<ENTER>:TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> o :call TodoAddInput()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
 	execute 'nnoremap <buffer> r :TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> d :silent call TodoDoneCurrent()<ENTER>:TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> D :silent call TodoDeleteCurrent()<ENTER>:TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> p :call TodoPriorityCurrent()<ENTER>:TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> P :call TodoAppendProjectCurrent()<ENTER>:TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> C :call TodoAppendContextCurrent()<ENTER>:TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> + :silent call TodoPriorityAdjust(-1)<ENTER>:TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> - :silent call TodoPriorityAdjust(1)<ENTER>:TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> d :silent call TodoDoneCurrent()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> D :silent call TodoDeleteCurrent()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> p :call TodoPriorityCurrent()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> P :call TodoAppendProjectCurrent()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> C :call TodoAppendContextCurrent()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> + :silent call TodoPriorityAdjust(-1)<ENTER>:silent TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> - :silent call TodoPriorityAdjust(1)<ENTER>:silent TodoList ' . list_args . '<ENTER>'
 endfunction
 
 function! TodoPriorityAdjust(amount)
@@ -58,7 +58,7 @@ function! TodoAddInput()
 		let task .= " " . g:todo_project_context
 	endif
 	call inputrestore()
-	call TodoAction('add "' . task . '"')
+	silent call TodoAction('add "' . task . '"')
 endfunction
 function! TodoCurrentLineId()
 	let row = split(getline('.'))
