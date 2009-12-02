@@ -80,7 +80,7 @@ function! TodoPriorityCurrent()
 	call inputsave()
 	let priority = input("Priority (A-Z): ", "A")
 	call inputrestore()
-	call TodoAction('pri ' . id . ' ' . priority)
+	silent call TodoAction('pri ' . id . ' ' . priority)
 endfunction
 
 function! TodoAppendContextCurrent()
@@ -88,7 +88,7 @@ function! TodoAppendContextCurrent()
 	call inputsave()
 	let context = input("Context: ", "@", "customlist,CompleteTodoProjects")
 	call inputrestore()
-	call TodoAction('append ' . id . ' ' . context)
+	silent call TodoAction('append ' . id . ' ' . context)
 endfunction
 
 function! TodoAppendProjectCurrent()
@@ -96,7 +96,7 @@ function! TodoAppendProjectCurrent()
 	call inputsave()
 	let project = input("Project: ", "+", "customlist,CompleteTodoProjects")
 	call inputrestore()
-	call TodoAction('append ' . id . ' ' . project)
+	silent call TodoAction('append ' . id . ' ' . project)
 endfunction
 
 function! TodoListProj()
