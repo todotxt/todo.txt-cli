@@ -11,18 +11,21 @@ nnoremap <Leader>tl :TodoList<ENTER>
 nnoremap <Leader>ta :TodoAdd
 
 function! TodoList(args)
-	let list_args = a:args . ' ' . g:todo_project_context
+	let list_args = a:args
+	if match(list_args, g:todo_project_context) == -1
+		let list_args .= " " . g:todo_project_context
+	endif
 	call Todo('list ' . list_args)
 	nnoremap <buffer> q :q<ENTER>
-	execute 'nnoremap <buffer> o :call TodoAddInput()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> r :silent TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> d :silent call TodoDoneCurrent()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> D :silent call TodoDeleteCurrent()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> p :call TodoPriorityCurrent()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> P :call TodoAppendProjectCurrent()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> C :call TodoAppendContextCurrent()<ENTER>:silent TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> + :silent call TodoPriorityAdjust(1)<ENTER>:silent TodoList ' . list_args . '<ENTER>'
-	execute 'nnoremap <buffer> - :silent call TodoPriorityAdjust(-1)<ENTER>:silent TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> o :call TodoAddInput()<ENTER>:TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> r :TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> d :silent call TodoDoneCurrent()<ENTER>:TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> D :silent call TodoDeleteCurrent()<ENTER>:TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> p :call TodoPriorityCurrent()<ENTER>:TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> P :call TodoAppendProjectCurrent()<ENTER>:TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> C :call TodoAppendContextCurrent()<ENTER>:TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> + :silent call TodoPriorityAdjust(-1)<ENTER>:TodoList ' . list_args . '<ENTER>'
+	execute 'nnoremap <buffer> - :silent call TodoPriorityAdjust(1)<ENTER>:TodoList ' . list_args . '<ENTER>'
 endfunction
 
 function! TodoPriorityAdjust(amount)
@@ -42,12 +45,18 @@ function! TodoPriorityAdjust(amount)
 		endif
 		let index += 1
 	endwhile
+	if index == len(priorities)
+		call TodoAction('pri ' . id . ' ' . priorities[0])
+	endif
 
 endfunction
 
 function! TodoAddInput()
 	call inputsave()
 	let task = input("Task: ")
+	if len(g:todo_project_context) > 0
+		let task .= " " . g:todo_project_context
+	endif
 	call inputrestore()
 	call TodoAction('add "' . task . '"')
 endfunction
