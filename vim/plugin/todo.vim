@@ -86,7 +86,7 @@ endfunction
 function! TodoAppendContextCurrent()
 	let id = TodoCurrentLineId()
 	call inputsave()
-	let context = input("Context: ", "@", "customlist,CompleteTodoProjects")
+	let context = input("Context: ", "@", "customlist,CompleteTodoContexts")
 	call inputrestore()
 	silent call TodoAction('append ' . id . ' ' . context)
 endfunction
