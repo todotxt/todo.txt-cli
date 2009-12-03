@@ -1,9 +1,9 @@
 if !exists('g:todo_project_context')
-    let g:todo_project_context = ''
+	let g:todo_project_context = ''
 endif
 
-command! -nargs=* Todo                call Todo(<q-args>)
-command! -nargs=+ TodoAdd             call TodoAdd(<q-args>)
+command! -nargs=* Todo				call Todo(<q-args>)
+command! -nargs=+ TodoAdd			 call TodoAdd(<q-args>)
 command! -nargs=* -complete=customlist,CompleteTodoList TodoList call TodoList(<q-args>)
 command! -nargs=0 TodoListProjects call TodoListProj()
 command! -nargs=0 TodoListContexts call TodoListCon()
@@ -166,11 +166,12 @@ function! s:OpenTodoBuffer(content)
 	if exists('b:is_todo_output_buffer') && b:is_todo_output_buffer
 		enew!
 	else
-		new
+		10new
 	endif
-    setlocal buftype=nofile readonly modifiable
-    silent put=a:content
-    keepjumps 0d
-    setlocal nomodifiable
-    let b:is_todo_output_buffer = 1
+	setlocal buftype=nofile readonly modifiable
+	silent put=a:content
+	keepjumps 0d
+	setlocal nomodifiable
+	setlocal winfixheight
+	let b:is_todo_output_buffer = 1
 endfunction
