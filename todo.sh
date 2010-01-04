@@ -259,7 +259,7 @@ cleaninput()
     input=`echo $input | tr -d '\r|\n'`
 		
     # Check which action we are being used in as this affects what cleaning we do
-    if [[ $action =~ ^(append|app|prepend|prep|replace)$ ]]; then
+    if [[ $action =~ '^(append|app|prepend|prep|replace)$' ]]; then
         # These actions use sed and & as the matched string so escape it
         input=`echo $input | sed 's/\&/\\\&/g'`
 		fi
