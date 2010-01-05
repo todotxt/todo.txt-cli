@@ -289,7 +289,7 @@ do
         ## HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
         ##   (true) the first time this flag is seen. Each time the flag
         ##   is seen after that, increment it again so that an even
-        ##   number hides project names and an odd number shows project
+        ##   number shows context names and an odd number hides context
         ##   names.
         : $(( HIDE_CONTEXT_NAMES++ ))
         if [ $(( $HIDE_CONTEXT_NAMES % 2 )) -eq 0 ]
@@ -305,7 +305,7 @@ do
         ## HIDE_PROJECT_NAMES starts at zero (false); increment it to one
         ##   (true) the first time this flag is seen. Each time the flag
         ##   is seen after that, increment it again so that an even
-        ##   number hides project names and an odd number shows project
+        ##   number shows project names and an odd number hides project
         ##   names.
         : $(( HIDE_PROJECT_NAMES++ ))
         if [ $(( $HIDE_PROJECT_NAMES % 2 )) -eq 0 ]
@@ -339,8 +339,8 @@ do
         ## HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
         ##   (true) the first time this flag is seen. Each time the flag
         ##   is seen after that, increment it again so that an even
-        ##   number hides project names and an odd number shows project
-        ##   names.
+        ##   number shows priority labels and an odd number hides priority
+        ##   labels.
         : $(( HIDE_PRIORITY_LABELS++ ))
         if [ $(( $HIDE_PRIORITY_LABELS % 2 )) -eq 0 ]
         then
