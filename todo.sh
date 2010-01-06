@@ -800,7 +800,13 @@ case $action in
     cleanup ;;
 
 "help" )
-    help
+    if [ -t 1 ] ; then # STDOUT is a TTY
+        if (exec which ${PAGER:-less} 2>/dev/null >/dev/null); then
+            # we have a working PAGER (or less as a default)
+            help | exec ${PAGER:-less}
+        fi
+    fi
+    help # just in case something failed above, we go ahead and just spew to STDOUT
     ;;
 
 "list" | "ls" )
