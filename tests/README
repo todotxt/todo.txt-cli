@@ -105,7 +105,7 @@ First digit tells the family:
 
 	0 - the absolute basics and global stuff
 	1 - basic every-day usage
-        2 - add ins
+	2 - add ins
 
 Second digit tells the particular command we are testing.
 

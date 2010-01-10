@@ -473,6 +473,24 @@ fi
 # === HEAVY LIFTING ===
 shopt -s extglob
 
+_addto() {
+    file="$1"
+    input="$2"
+    cleaninput $input
+
+    if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
+        now=`date '+%Y-%m-%d'`
+        input="$now $input"
+    fi
+    echo "$input" >> "$file"
+    [ $TODOTXT_VERBOSE -gt 0 ] && {
+        TASKNUM=$(sed -n '$ =' "$file")
+        BASE=$(basename "$file")
+        PREFIX=$(echo ${BASE%%.[^.]*} | tr [a-z] [A-Z])
+        echo "${PREFIX}: '$input' added on line $TASKNUM."
+    }
+}
+
 _list() {
     local FILE="$1"
     ## If the file starts with a "/" use absolute path. Otherwise,
@@ -616,17 +634,7 @@ case $action in
         shift
         input=$*
     fi
-    cleaninput $input
-
-    if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
-        now=`date '+%Y-%m-%d'`
-        input="$now $input"
-    fi
-    echo "$input" >> "$TODO_FILE"
-    [ $TODOTXT_VERBOSE -gt 0 ] && {
-        TASKNUM=$(sed -n '$ =' "$TODO_FILE")
-        echo "TODO: '$input' added on line $TASKNUM."
-    }
+    _addto "$TODO_FILE" "$input"
     cleanup;;
 
 "addm")
@@ -646,15 +654,7 @@ case $action in
 
     # Treat each line seperately
     for line in $input ; do
-      if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
-          now=`date '+%Y-%m-%d'`
-          line="$now $line"
-      fi
-      echo "$line" >> "$TODO_FILE"
-      [ $TODOTXT_VERBOSE -gt 0 ] && {
-          TASKNUM=$(sed -n '$ =' "$TODO_FILE")
-          echo "TODO: '$line' added on line $TASKNUM."
-      }
+        _addto "$TODO_FILE" "$line"
     done
     IFS=$SAVEIFS
     cleanup;;
@@ -668,11 +668,7 @@ case $action in
     input=$*
 
     if [ -f "$dest" ]; then
-        echo "$input" >> "$dest"
-        [ $TODOTXT_VERBOSE -gt 0 ] && {
-            TASKNUM=$(sed -n '$ =' "$dest")
-            echo "TODO: '$input' added to $dest on line $TASKNUM."
-        }
+        _addto "$dest" "$input"
     else
         echo "TODO: Destination file $dest does not exist."
     fi
