@@ -590,11 +590,13 @@ _list() {
     echo -ne "$filtered_items${filtered_items:+\n}"
 
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
+        BASE=$(basename "$FILE")
+        PREFIX=$(echo ${BASE%%.[^.]*} | tr [a-z] [A-Z])
         NUMTASKS=$( echo -ne "$filtered_items" | sed -n '$ =' )
         TOTALTASKS=$( echo -ne "$items" | sed -n '$ =' )
 
         echo "--"
-        echo "TODO: ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown from $FILE"
+        echo "${PREFIX}: ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
     fi
     if [ $TODOTXT_VERBOSE -gt 1 ]
     then

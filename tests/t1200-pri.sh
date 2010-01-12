@@ -22,7 +22,7 @@ test_todo_session 'basic priority' <<EOF
 1 smell the uppercase Roses +flowers @outside
 3 stop
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 1 B
 1: (B) smell the uppercase Roses +flowers @outside
@@ -33,14 +33,14 @@ TODO: 1 prioritized (B).
 2 notice the sunflowers
 3 stop
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 
 >>> todo.sh -p list
 1 (B) smell the uppercase Roses +flowers @outside
 2 notice the sunflowers
 3 stop
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 C
 2: (C) notice the sunflowers
@@ -51,7 +51,7 @@ TODO: 2 prioritized (C).
 2 (C) notice the sunflowers
 3 stop
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 A
 2: (A) notice the sunflowers
@@ -62,7 +62,7 @@ TODO: 2 prioritized (A).
 1 (B) smell the uppercase Roses +flowers @outside
 3 stop
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 a
 2: (A) notice the sunflowers
@@ -72,7 +72,7 @@ TODO: 2 prioritized (A).
 2 (A) notice the sunflowers
 1 (B) smell the uppercase Roses +flowers @outside
 --
-TODO: 2 of 3 tasks shown from $HOME/todo.txt
+TODO: 2 of 3 tasks shown
 
 >>> todo.sh add "smell the coffee +wakeup"
 TODO: 'smell the coffee +wakeup' added on line 4.
@@ -83,7 +83,7 @@ TODO: 'smell the coffee +wakeup' added on line 4.
 4 smell the coffee +wakeup
 3 stop
 --
-TODO: 4 of 4 tasks shown from $HOME/todo.txt
+TODO: 4 of 4 tasks shown
 EOF
 
 test_done

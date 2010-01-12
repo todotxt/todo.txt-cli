@@ -12,7 +12,7 @@ when there are no todos.
 #
 cat > expect <<EOF
 --
-TODO: 0 of 0 tasks shown from $HOME/todo.txt
+TODO: 0 of 0 tasks shown
 EOF
 
 test_expect_success 'null ls' '
@@ -44,7 +44,7 @@ test_expect_success 'null listpri a' '
 #
 cat > expect <<EOF
 --
-TODO: 0 of 0 tasks shown from $HOME/todo.tmp
+TODO: 0 of 0 tasks shown
 EOF
 
 test_expect_success 'null lsa' '

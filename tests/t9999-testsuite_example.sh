@@ -17,23 +17,23 @@ test_todo_session 'basic tests' <<EOF
 4 smell the coffee +wakeup
 3 stop
 --
-TODO: 4 of 4 tasks shown from $HOME/todo.txt
+TODO: 4 of 4 tasks shown
 
 >>> todo.sh -p list +flowers
 1 (B) smell the uppercase Roses +flowers @outside
 --
-TODO: 1 of 4 tasks shown from $HOME/todo.txt
+TODO: 1 of 4 tasks shown
 
 >>> todo.sh -p list flowers
 2 (A) notice the sunflowers
 1 (B) smell the uppercase Roses +flowers @outside
 --
-TODO: 2 of 4 tasks shown from $HOME/todo.txt
+TODO: 2 of 4 tasks shown
 
 >>> todo.sh -p list flowers out
 1 (B) smell the uppercase Roses +flowers @outside
 --
-TODO: 1 of 4 tasks shown from $HOME/todo.txt
+TODO: 1 of 4 tasks shown
 
 >>> todo.sh -a do 2
 2: x 2009-02-13 notice the sunflowers
@@ -45,7 +45,7 @@ TODO: 2 marked as done.
 3 stop
 2 x 2009-02-13 notice the sunflowers
 --
-TODO: 4 of 4 tasks shown from $HOME/todo.txt
+TODO: 4 of 4 tasks shown
 
 >>> todo.sh add "make the coffee +wakeup"
 TODO: 'make the coffee +wakeup' added on line 5.
@@ -54,7 +54,7 @@ TODO: 'make the coffee +wakeup' added on line 5.
 5 make the coffee +wakeup
 4 smell the coffee +wakeup
 --
-TODO: 2 of 5 tasks shown from $HOME/todo.txt
+TODO: 2 of 5 tasks shown
 
 >>> todo.sh add "visit http://example.com"
 TODO: 'visit http://example.com' added on line 6.
@@ -67,7 +67,7 @@ TODO: 'visit http://example.com' added on line 6.
 6 visit http://example.com
 2 x 2009-02-13 notice the sunflowers
 --
-TODO: 6 of 6 tasks shown from $HOME/todo.txt
+TODO: 6 of 6 tasks shown
 
 >>> todo.sh archive
 x 2009-02-13 notice the sunflowers
@@ -80,7 +80,7 @@ TODO: $HOME/todo.txt archived.
 2 stop
 5 visit http://example.com
 --
-TODO: 5 of 5 tasks shown from $HOME/todo.txt
+TODO: 5 of 5 tasks shown
 
 >>> todo.sh report
 TODO: Report file updated.
@@ -105,7 +105,7 @@ usage: todo.sh append ITEM# "TEXT TO APPEND"
 2 stop and think
 5 visit http://example.com
 --
-TODO: 5 of 5 tasks shown from $HOME/todo.txt
+TODO: 5 of 5 tasks shown
 
 >>> todo.sh append 10 "hej!"
 10: No such todo.
@@ -118,7 +118,7 @@ TODO: 5 of 5 tasks shown from $HOME/todo.txt
 2 stop and think
 5 visit http://example.com
 --
-TODO: 5 of 5 tasks shown from $HOME/todo.txt
+TODO: 5 of 5 tasks shown
 
 >>> todo.sh do 10
 10: No such todo.
@@ -131,7 +131,7 @@ TODO: 5 of 5 tasks shown from $HOME/todo.txt
 2 stop and think
 5 visit http://example.com
 --
-TODO: 5 of 5 tasks shown from $HOME/todo.txt
+TODO: 5 of 5 tasks shown
 
 >>> todo.sh add "the coffee +wakeup"
 TODO: 'the coffee +wakeup' added on line 6.
@@ -144,7 +144,7 @@ TODO: 'the coffee +wakeup' added on line 6.
 6 the coffee +wakeup
 5 visit http://example.com
 --
-TODO: 6 of 6 tasks shown from $HOME/todo.txt
+TODO: 6 of 6 tasks shown
 
 >>> todo.sh prepend 6 "make"
 6: make the coffee +wakeup
@@ -157,7 +157,7 @@ TODO: 6 of 6 tasks shown from $HOME/todo.txt
 2 stop and think
 5 visit http://example.com
 --
-TODO: 6 of 6 tasks shown from $HOME/todo.txt
+TODO: 6 of 6 tasks shown
 
 >>> todo.sh remdup
 Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]

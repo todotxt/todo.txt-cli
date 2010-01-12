@@ -24,7 +24,7 @@ test_todo_session 'basic append' <<EOF
 >>> todo.sh list
 1 notice the daisies smell the roses
 --
-TODO: 1 of 1 tasks shown from $HOME/todo.txt
+TODO: 1 of 1 tasks shown
 EOF
 
 test_todo_session 'basic append with &' <<EOF
@@ -34,7 +34,7 @@ test_todo_session 'basic append with &' <<EOF
 >>> todo.sh list
 1 notice the daisies smell the roses see the wasps & bees
 --
-TODO: 1 of 1 tasks shown from $HOME/todo.txt
+TODO: 1 of 1 tasks shown
 EOF
 
 

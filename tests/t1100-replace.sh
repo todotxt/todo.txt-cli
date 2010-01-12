@@ -26,7 +26,7 @@ replaced with
 >>> todo.sh list
 1 smell the cows
 --
-TODO: 1 of 1 tasks shown from $HOME/todo.txt
+TODO: 1 of 1 tasks shown
 
 >>> todo.sh replace 1 smell the roses
 1: smell the cows
@@ -36,7 +36,7 @@ replaced with
 >>> todo.sh list
 1 smell the roses
 --
-TODO: 1 of 1 tasks shown from $HOME/todo.txt
+TODO: 1 of 1 tasks shown
 EOF
 
 cat > todo.txt <<EOF

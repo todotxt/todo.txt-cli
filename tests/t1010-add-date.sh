@@ -17,7 +17,7 @@ TODO: '2009-02-13 notice the daisies' added on line 1.
 >>> todo.sh list
 1 2009-02-13 notice the daisies
 --
-TODO: 1 of 1 tasks shown from $HOME/todo.txt
+TODO: 1 of 1 tasks shown
 EOF
 
 test_tick
@@ -30,7 +30,7 @@ TODO: '2009-02-14 smell the roses' added on line 2.
 1 2009-02-13 notice the daisies
 2 2009-02-14 smell the roses
 --
-TODO: 2 of 2 tasks shown from $HOME/todo.txt
+TODO: 2 of 2 tasks shown
 EOF
 
 test_tick
@@ -44,7 +44,7 @@ TODO: '2009-02-15 mow the lawn' added on line 3.
 2 2009-02-14 smell the roses
 3 2009-02-15 mow the lawn
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 EOF
 
 # Switch to config file
@@ -63,7 +63,7 @@ TODO: '2009-02-15 take out the trash' added on line 4.
 3 2009-02-15 mow the lawn
 4 2009-02-15 take out the trash
 --
-TODO: 4 of 4 tasks shown from $HOME/todo.txt
+TODO: 4 of 4 tasks shown
 EOF
 
 test_done

@@ -17,7 +17,7 @@ TODO: 'notice the daisies' added on line 1.
 >>> todo.sh list
 1 notice the daisies
 --
-TODO: 1 of 1 tasks shown from $HOME/todo.txt
+TODO: 1 of 1 tasks shown
 
 >>> todo.sh add smell the roses
 TODO: 'smell the roses' added on line 2.
@@ -26,7 +26,7 @@ TODO: 'smell the roses' added on line 2.
 1 notice the daisies
 2 smell the roses
 --
-TODO: 2 of 2 tasks shown from $HOME/todo.txt
+TODO: 2 of 2 tasks shown
 EOF
 
 #
@@ -36,12 +36,12 @@ test_todo_session 'basic list filtering' <<EOF
 >>> todo.sh list daisies
 1 notice the daisies
 --
-TODO: 1 of 2 tasks shown from $HOME/todo.txt
+TODO: 1 of 2 tasks shown
 
 >>> todo.sh list smell
 2 smell the roses
 --
-TODO: 1 of 2 tasks shown from $HOME/todo.txt
+TODO: 1 of 2 tasks shown
 EOF
 
 test_todo_session 'case-insensitive filtering' <<EOF
@@ -52,7 +52,7 @@ TODO: 'smell the uppercase Roses' added on line 3.
 2 smell the roses
 3 smell the uppercase Roses
 --
-TODO: 2 of 3 tasks shown from $HOME/todo.txt
+TODO: 2 of 3 tasks shown
 EOF
 
 test_todo_session 'add with &' <<EOF
@@ -65,7 +65,7 @@ TODO: 'dig the garden & water the flowers' added on line 4.
 2 smell the roses
 3 smell the uppercase Roses
 --
-TODO: 4 of 4 tasks shown from $HOME/todo.txt
+TODO: 4 of 4 tasks shown
 
 EOF
 

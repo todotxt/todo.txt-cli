@@ -21,14 +21,14 @@ test_todo_session 'basic prepend' <<EOF
 2 notice the sunflowers
 3 stop
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 
 >>> todo.sh -p list
 1 (B) smell the uppercase Roses +flowers @outside
 2 notice the sunflowers
 3 stop
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 
 >>> todo.sh prepend 2 test
 2: test notice the sunflowers
@@ -38,7 +38,7 @@ TODO: 3 of 3 tasks shown from $HOME/todo.txt
 3 stop
 2 test notice the sunflowers
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 
 >>> todo.sh prepend 1 test
 1: (B) test smell the uppercase Roses +flowers @outside
@@ -48,7 +48,7 @@ TODO: 3 of 3 tasks shown from $HOME/todo.txt
 3 stop
 2 test notice the sunflowers
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 
 EOF
 

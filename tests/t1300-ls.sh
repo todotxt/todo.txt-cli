@@ -28,14 +28,14 @@ test_todo_session 'checking TODOTXT_SORT_COMMAND' <<EOF
 3 bbb yyy this line should be second.
 1 ccc xxx this line should be third.
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 
 >>> todo.sh -d "$TEST_TODO1_" ls
 1 ccc xxx this line should be third.
 3 bbb yyy this line should be second.
 2 aaa zzz this line should be first.
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 EOF
 
 #
@@ -50,7 +50,7 @@ test_todo_session 'checking TODOTXT_FINAL_FILTER' <<EOF
 3 bbb yyy this line s...
 1 ccc xxx this line s...
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 EOF
 
 #
@@ -70,14 +70,14 @@ test_todo_session 'final filter suppression' <<EOF
 3 baz
 1 foo
 --
-TODO: 2 of 3 tasks shown from $HOME/todo.txt
+TODO: 2 of 3 tasks shown
 
 >>> todo.sh -d "$TEST_TODO3_" -x ls
 2 bar xxx
 3 baz
 1 foo
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 EOF
 
 #
@@ -128,7 +128,7 @@ test_todo_session 'plain mode option' <<EOF
 19 @con02 +prj03 -- Some project 03 task, no priorty
 20 @con02 +prj04 -- Some project 04 task, no priority
 --
-TODO: 20 of 20 tasks shown from $HOME/todo.txt
+TODO: 20 of 20 tasks shown
 
 >>> todo.sh -p ls
 01 (A) @con01 +prj01 -- Some project 01 task, pri A
@@ -152,7 +152,7 @@ TODO: 20 of 20 tasks shown from $HOME/todo.txt
 19 @con02 +prj03 -- Some project 03 task, no priorty
 20 @con02 +prj04 -- Some project 04 task, no priority
 --
-TODO: 20 of 20 tasks shown from $HOME/todo.txt
+TODO: 20 of 20 tasks shown
 EOF
 
 #
@@ -203,7 +203,7 @@ test_todo_session 'context, project, and priority suppression' <<EOF
 19 @con02 +prj03 -- Some project 03 task, no priorty
 20 @con02 +prj04 -- Some project 04 task, no priority
 --
-TODO: 20 of 20 tasks shown from $HOME/todo.txt
+TODO: 20 of 20 tasks shown
 
 >>> todo.sh ls @con01
 [1;33m01 (A) @con01 +prj01 -- Some project 01 task, pri A[0m
@@ -217,7 +217,7 @@ TODO: 20 of 20 tasks shown from $HOME/todo.txt
 17 @con01 +prj01 -- Some project 01 task, no priority
 18 @con01 +prj02 -- Some project 02 task, no priority
 --
-TODO: 10 of 20 tasks shown from $HOME/todo.txt
+TODO: 10 of 20 tasks shown
 
 >>> todo.sh -P ls @con01
 [1;33m01 @con01 +prj01 -- Some project 01 task, pri A[0m
@@ -231,7 +231,7 @@ TODO: 10 of 20 tasks shown from $HOME/todo.txt
 17 @con01 +prj01 -- Some project 01 task, no priority
 18 @con01 +prj02 -- Some project 02 task, no priority
 --
-TODO: 10 of 20 tasks shown from $HOME/todo.txt
+TODO: 10 of 20 tasks shown
 
 >>> todo.sh -+ ls @con01
 [1;33m01 (A) @con01 -- Some project 01 task, pri A[0m
@@ -245,7 +245,7 @@ TODO: 10 of 20 tasks shown from $HOME/todo.txt
 17 @con01 -- Some project 01 task, no priority
 18 @con01 -- Some project 02 task, no priority
 --
-TODO: 10 of 20 tasks shown from $HOME/todo.txt
+TODO: 10 of 20 tasks shown
 
 >>> todo.sh -@ ls @con01
 [1;33m01 (A) +prj01 -- Some project 01 task, pri A[0m
@@ -259,7 +259,7 @@ TODO: 10 of 20 tasks shown from $HOME/todo.txt
 17 +prj01 -- Some project 01 task, no priority
 18 +prj02 -- Some project 02 task, no priority
 --
-TODO: 10 of 20 tasks shown from $HOME/todo.txt
+TODO: 10 of 20 tasks shown
 
 >>> todo.sh -P -@ ls @con01
 [1;33m01 +prj01 -- Some project 01 task, pri A[0m
@@ -273,7 +273,7 @@ TODO: 10 of 20 tasks shown from $HOME/todo.txt
 17 +prj01 -- Some project 01 task, no priority
 18 +prj02 -- Some project 02 task, no priority
 --
-TODO: 10 of 20 tasks shown from $HOME/todo.txt
+TODO: 10 of 20 tasks shown
 
 >>> todo.sh -P -@ -+ -P -@ -+ ls @con01
 [1;33m01 (A) @con01 +prj01 -- Some project 01 task, pri A[0m
@@ -287,7 +287,7 @@ TODO: 10 of 20 tasks shown from $HOME/todo.txt
 17 @con01 +prj01 -- Some project 01 task, no priority
 18 @con01 +prj02 -- Some project 02 task, no priority
 --
-TODO: 10 of 20 tasks shown from $HOME/todo.txt
+TODO: 10 of 20 tasks shown
 
 >>> todo.sh -P -@ -+ -P -@ -+ -P -@ -+ ls @con01
 [1;33m01 -- Some project 01 task, pri A[0m
@@ -301,7 +301,7 @@ TODO: 10 of 20 tasks shown from $HOME/todo.txt
 17 -- Some project 01 task, no priority
 18 -- Some project 02 task, no priority
 --
-TODO: 10 of 20 tasks shown from $HOME/todo.txt
+TODO: 10 of 20 tasks shown
 EOF
 
 #
@@ -536,7 +536,7 @@ test_todo_session 'check line number padding, out to 3 digits' <<EOF
 111 hex6E this is another line
 112 hex6F this is another line
 --
-TODO: 112 of 112 tasks shown from $HOME/todo.txt
+TODO: 112 of 112 tasks shown
 EOF
 
 #
@@ -564,7 +564,7 @@ test_todo_session 'check that blank lines are ignored for less than 10 items' <<
 7 hex06 this is another line
 8 hex07 this is another line
 --
-TODO: 7 of 7 tasks shown from $HOME/todo.txt
+TODO: 7 of 7 tasks shown
 EOF
 
 # More than 10
@@ -592,7 +592,7 @@ test_todo_session 'check that blank lines are ignored for blank lines whose ID b
 09 hex08 this is another line
 10 hex09 this is another line
 --
-TODO: 9 of 9 tasks shown from $HOME/todo.txt
+TODO: 9 of 9 tasks shown
 EOF
 cat > todo.txt <<EOF
 hex00 this is one line
@@ -617,7 +617,7 @@ test_todo_session 'check that blank lines are ignored for blank lines whose ID b
 09 hex08 this is another line
 10 hex09 this is another line
 --
-TODO: 8 of 8 tasks shown from $HOME/todo.txt
+TODO: 8 of 8 tasks shown
 EOF
 
 test_done

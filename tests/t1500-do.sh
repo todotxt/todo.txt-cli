@@ -32,7 +32,7 @@ test_todo_session 'basic do' <<EOF
 1 smell the uppercase Roses +flowers @outside
 3 stop
 --
-TODO: 7 of 7 tasks shown from $HOME/todo.txt
+TODO: 7 of 7 tasks shown
 
 >>> todo.sh do 7,6
 7: x 2009-02-13 remove4
@@ -50,7 +50,7 @@ TODO: $HOME/todo.txt archived.
 1 smell the uppercase Roses +flowers @outside
 3 stop
 --
-TODO: 5 of 5 tasks shown from $HOME/todo.txt
+TODO: 5 of 5 tasks shown
 
 >>> todo.sh do 5 4
 5: x 2009-02-13 remove2
@@ -66,7 +66,7 @@ TODO: $HOME/todo.txt archived.
 1 smell the uppercase Roses +flowers @outside
 3 stop
 --
-TODO: 3 of 3 tasks shown from $HOME/todo.txt
+TODO: 3 of 3 tasks shown
 EOF
 
 test_todo_session 'fail multiple do attempts' <<EOF
