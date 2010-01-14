@@ -282,6 +282,8 @@ archive()
     sed -n 'G; s/\n/&&/; /^\([ ~-]*\n\).*\n\1/d; s/\n//; h; P' "$TMP_FILE" > "$TODO_FILE"
     #[[ $TODOTXT_VERBOSE -gt 0 ]] && echo "TODO: Duplicate tasks have been removed."
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $TODO_FILE archived."
+    [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+        _commit "TODO: $TODO_FILE archived." $TODO_FILE $DONE_FILE
     cleanup
 }
 
@@ -383,6 +385,8 @@ TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
 TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
+TODOTXT_GIT_ENABLED=${TODOTXT_GIT_ENABLED:-1}
+TODOTXT_GIT_VERBOSE=${TODOTXT_GIT_VERBOSE:-0}
 
 # Export all TODOTXT_* variables
 export ${!TODOTXT_@}
@@ -483,12 +487,48 @@ _addto() {
         input="$now $input"
     fi
     echo "$input" >> "$file"
-    [ $TODOTXT_VERBOSE -gt 0 ] && {
+
+    ( [ $TODOTXT_VERBOSE -gt 0 ] || [ $TODOTXT_GIT_ENABLED -eq 1 ] ) && {
         TASKNUM=$(sed -n '$ =' "$file")
         BASE=$(basename "$file")
         PREFIX=$(echo ${BASE%%.[^.]*} | tr [a-z] [A-Z])
-        echo "${PREFIX}: '$input' added on line $TASKNUM."
+        MESG="${PREFIX}: '$input' added on line $TASKNUM."
+        [ $TODOTXT_VERBOSE -gt 0 ] && \
+            echo $MESG
+        [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+            _commit "$MESG" $file
     }
+}
+
+_commit() {
+    [ -z "$1" ] && die "Fatal Error: No commit message."
+    [ -z "$2" ] && die "Fatal Error: No commit files."
+	MESG="$(echo $1 | sed -e 's|\\n|\n|g')"
+	shift
+	FILES=$*
+
+    if [ $TODOTXT_GIT_VERBOSE -eq 0 ] ; then
+        ( cd $TODO_DIR
+          for file in $FILES ; do
+              BASE=$(basename $file)
+              git add $BASE > /dev/null 2>&1
+              [ "$?" != 0 ] && die "Fatal Error: Git add $BASE failed."
+          done
+          git commit -m "$MESG" > /dev/null 2>&1
+          [ "$?" != 0 ] && die "Fatal Error: Git commit failed."
+        )
+    else
+        ( cd $TODO_DIR
+          for file in $FILES ; do
+              BASE=$(basename $file)
+              git add $BASE
+              [ "$?" != 0 ] && die "Fatal Error: Git add $BASE failed."
+          done
+          git commit -m "$MESG"
+          [ "$?" != 0 ] && die "Fatal Error: Git commit failed."
+        )
+    fi
+
 }
 
 _list() {
@@ -697,6 +737,9 @@ case $action in
             newtodo=$(sed "$item!d" "$TODO_FILE")
             echo "$item: $newtodo"
         }
+        [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+            _commit "TODO: Appended '$todo' w/ '$input' on line $item." \
+                    $TODO_FILE
     else
         echo "TODO: Error appending task $item."
     fi
@@ -704,6 +747,15 @@ case $action in
 
 "archive" )
     archive;;
+
+"commit" )
+    [ -z "$2" ] && die "usage: $TODO_SH commit MESSAGE"
+    shift
+    MESG=$*
+
+    ( cd $TODO_DIR
+      git commit -a -m "$MESG"
+    );;
 
 "del" | "rm" )
     # replace deleted line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
@@ -732,6 +784,8 @@ case $action in
                     sed -i.bak -e $item"s/^.*//" "$TODO_FILE"
                 fi
                 [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$DELETEME' deleted."
+                [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+                    _commit "TODO: '$DELETEME' deleted." $TODO_FILE
                 cleanup
             else
                 echo "TODO: No tasks were deleted."
@@ -742,6 +796,8 @@ case $action in
     else
         sed -i.bak -e $item"s/$3/ /g"  "$TODO_FILE"
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $3 removed from $item."
+        [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+            _commit "TODO: $3 removed from $item." $TODO_FILE
     fi ;;
 
 "depri" | "dp" )
@@ -762,6 +818,8 @@ case $action in
             echo "`echo "$item: $NEWTODO"`"
             echo "TODO: $item deprioritized."
         }
+        [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+            _commit "TODO: '$todo' deprioritized." $TODO_FILE
         cleanup
     else
         die "$errmsg"
@@ -792,6 +850,8 @@ case $action in
             echo "$item: $newtodo"
             echo "TODO: $item marked as done."
         }
+        [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+            _commit "TODO: '$todo' marked as done." $TODO_FILE
       else
         echo "$item is already marked done"
       fi
@@ -866,6 +926,11 @@ case $action in
     _list "$TODO_FILE" "$pri"
     ;;
 
+"log" | "pull" | "push" )
+    ( cd $TODO_DIR
+      git $action
+    );;
+
 "move" | "mv" )
     # replace moved line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
     errmsg="usage: $TODO_SH mv ITEM# DEST [SRC]"
@@ -900,6 +965,9 @@ case $action in
                     echo "$MOVEME" >> "$dest"
 
                     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$MOVEME' moved from '$src' to '$dest'."
+                    [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+                        _commit "TODO: '$MOVEME' moved from '$src' to '$dest'." \
+                            $src $dest
                     cleanup
                 else
                     echo "TODO: No tasks moved."
@@ -945,6 +1013,9 @@ case $action in
                 newtodo=$(sed "$item!d" "$TODO_FILE")
                 echo "$item: $newtodo"
             }
+            [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+                _commit "TODO: Prepended '$todo' w/ '$input' on line $item." \
+                        $TODO_FILE
     	else
             echo "TODO: Error prepending task $item."
         fi
@@ -955,6 +1026,9 @@ case $action in
                 newtodo=$(sed "$item!d" "$TODO_FILE")
                 echo "$item: $newtodo"
             }
+            [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+                _commit "TODO: Prepended '$todo' w/ '$input' on line $item." \
+                        $TODO_FILE
     	else
             echo "TODO: Error prepending task $item."
     	fi
@@ -982,6 +1056,8 @@ note: PRIORITY must be anywhere from A to Z."
             echo "`echo "$item: $NEWTODO"`"
             echo "TODO: $item prioritized ($newpri)."
         }
+        [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+            _commit "TODO: $item prioritized ($newpri)." $TODO_FILE
         cleanup
     else
         die "$errmsg"
@@ -1016,12 +1092,14 @@ note: PRIORITY must be anywhere from A to Z."
     else
       sed -i.bak -e "$item s/^(.) //" -e "$item s|^.*|\($priority\) $1|" "$TODO_FILE"
     fi
+    NEWTODO=$(head -$item "$TODO_FILE" | tail -1)
     [ $TODOTXT_VERBOSE -gt 0 ] && {
-        NEWTODO=$(head -$item "$TODO_FILE" | tail -1)
         echo "$item: $todo"
         echo "replaced with"
         echo "$item: $NEWTODO"
     }
+    [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+        _commit "$item: $todo\nreplaced with\n$item: $NEWTODO" $TODO_FILE
     cleanup;;
 
 "report" )
@@ -1040,6 +1118,8 @@ note: PRIORITY must be anywhere from A to Z."
     echo ${TDONE:-0})
     echo $TECHO >> "$REPORT_FILE"
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
+    [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+        _commit "TODO: Report file updated." $REPORT_FILE
     cat "$REPORT_FILE"
     cleanup;;
 
