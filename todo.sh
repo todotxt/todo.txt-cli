@@ -259,13 +259,10 @@ cleaninput()
     # Replace newlines with spaces Always
     input=`echo $input | tr -d '\r|\n'`
 
-    # Storing regexp in variable fixes quoting difference between
-    # bash v3.1.x and v3.2.x see:
-    # http://stackoverflow.com/questions/218156/bash-regex-with-quotes
-    action_regexp='^(append|app|prepend|prep|replace)$'
+    action_regexp="^\(append\|app\|prepend\|prep\|replace\)$"
 
     # Check which action we are being used in as this affects what cleaning we do
-    if [[ $action =~ $action_regexp ]]; then
+		if [ `echo $action | grep -c $action_regexp` -eq 1 ]; then
         # These actions use sed and & as the matched string so escape it
         input=`echo $input | sed 's/\&/\\\&/g'`
     fi
