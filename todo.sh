@@ -262,7 +262,7 @@ cleaninput()
     action_regexp="^\(append\|app\|prepend\|prep\|replace\)$"
 
     # Check which action we are being used in as this affects what cleaning we do
-		if [ `echo $action | grep -c $action_regexp` -eq 1 ]; then
+    if [ `echo $action | grep -c $action_regexp` -eq 1 ]; then
         # These actions use sed and & as the matched string so escape it
         input=`echo $input | sed 's/\&/\\\&/g'`
     fi
@@ -772,26 +772,26 @@ case $action in
     # Split multiple do's, if comma seperated change to whitespace sepereated
     # Loop the 'do' function for each item
     for item in `echo $* | tr ',' ' '`; do 
-    	[ -z "$item" ] && die "$errmsg"
-    	[[ "$item" = +([0-9]) ]] || die "$errmsg"
+        [ -z "$item" ] && die "$errmsg"
+        [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
-    	todo=$(sed "$item!d" "$TODO_FILE")
-    	[ -z "$todo" ] && die "$item: No such todo."
+        todo=$(sed "$item!d" "$TODO_FILE")
+        [ -z "$todo" ] && die "$item: No such todo."
 
-      # Check if this item has already been done
-      if [ `echo $todo | grep -c "^x "` -eq 0 ] ; then
-        now=`date '+%Y-%m-%d'`
-        # remove priority once item is done
-        sed -i.bak $item"s/^(.) //" "$TODO_FILE"
-        sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
-        [ $TODOTXT_VERBOSE -gt 0 ] && {
-            newtodo=$(sed "$item!d" "$TODO_FILE")
-            echo "$item: $newtodo"
-            echo "TODO: $item marked as done."
-        }
-      else
-        echo "$item is already marked done"
-      fi
+        # Check if this item has already been done
+        if [ `echo $todo | grep -c "^x "` -eq 0 ] ; then
+            now=`date '+%Y-%m-%d'`
+            # remove priority once item is done
+            sed -i.bak $item"s/^(.) //" "$TODO_FILE"
+            sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
+            [ $TODOTXT_VERBOSE -gt 0 ] && {
+                newtodo=$(sed "$item!d" "$TODO_FILE")
+                echo "$item: $newtodo"
+                echo "TODO: $item marked as done."
+            }
+        else
+            echo "$item is already marked done"
+        fi
     done
 
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
