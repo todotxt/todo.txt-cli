@@ -799,6 +799,26 @@ case $action in
     fi
     cleanup ;;
 
+"done" )
+    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
+        echo -n "Done: "
+        read input
+    else
+        [ -z "$2" ] && die "usage: $TODO_SH done \"TODO ITEM\""
+        shift
+        input=$*
+    fi
+
+    now=`date '+%Y-%m-%d'`
+    # remove priority once item is done
+    newtodo=$(sed -e "s/^(.) // ; s|^|&x $now |" <<<${input})
+    echo "$newtodo" >> "$DONE_FILE"
+    [ $TODOTXT_VERBOSE -gt 0 ] && {
+        echo "TODO: '$input' marked as done."
+    }
+
+    cleanup;;
+
 "help" )
     if [ -t 1 ] ; then # STDOUT is a TTY
         if (exec which ${PAGER:-less} 2>/dev/null >/dev/null); then
