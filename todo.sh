@@ -259,13 +259,10 @@ cleaninput()
     # Replace newlines with spaces Always
     input=`echo $input | tr -d '\r|\n'`
 
-    # Storing regexp in variable fixes quoting difference between
-    # bash v3.1.x and v3.2.x see:
-    # http://stackoverflow.com/questions/218156/bash-regex-with-quotes
-    action_regexp='^(append|app|prepend|prep|replace)$'
+    action_regexp="^\(append\|app\|prepend\|prep\|replace\)$"
 
     # Check which action we are being used in as this affects what cleaning we do
-    if [[ $action =~ $action_regexp ]]; then
+    if [ `echo $action | grep -c $action_regexp` -eq 1 ]; then
         # These actions use sed and & as the matched string so escape it
         input=`echo $input | sed 's/\&/\\\&/g'`
     fi
@@ -503,9 +500,9 @@ _addto() {
 _commit() {
     [ -z "$1" ] && die "Fatal Error: No commit message."
     [ -z "$2" ] && die "Fatal Error: No commit files."
-	MESG="$(echo $1 | sed -e 's|\\n|\n|g')"
-	shift
-	FILES=$*
+    MESG="$(echo $1 | sed -e 's|\\n|\n|g')"
+    shift
+    FILES=$*
 
     if [ $TODOTXT_GIT_VERBOSE -eq 0 ] ; then
         ( cd $TODO_DIR
@@ -833,34 +830,56 @@ case $action in
     # Split multiple do's, if comma seperated change to whitespace sepereated
     # Loop the 'do' function for each item
     for item in `echo $* | tr ',' ' '`; do 
-    	[ -z "$item" ] && die "$errmsg"
-    	[[ "$item" = +([0-9]) ]] || die "$errmsg"
+        [ -z "$item" ] && die "$errmsg"
+        [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
-    	todo=$(sed "$item!d" "$TODO_FILE")
-    	[ -z "$todo" ] && die "$item: No such todo."
+        todo=$(sed "$item!d" "$TODO_FILE")
+        [ -z "$todo" ] && die "$item: No such todo."
 
-      # Check if this item has already been done
-      if [ `echo $todo | grep -c "^x "` -eq 0 ] ; then
-        now=`date '+%Y-%m-%d'`
-        # remove priority once item is done
-        sed -i.bak $item"s/^(.) //" "$TODO_FILE"
-        sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
-        [ $TODOTXT_VERBOSE -gt 0 ] && {
-            newtodo=$(sed "$item!d" "$TODO_FILE")
-            echo "$item: $newtodo"
-            echo "TODO: $item marked as done."
-        }
-        [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
-            _commit "TODO: '$todo' marked as done." $TODO_FILE
-      else
-        echo "$item is already marked done"
-      fi
+        # Check if this item has already been done
+        if [ `echo $todo | grep -c "^x "` -eq 0 ] ; then
+            now=`date '+%Y-%m-%d'`
+            # remove priority once item is done
+            sed -i.bak $item"s/^(.) //" "$TODO_FILE"
+            sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
+            [ $TODOTXT_VERBOSE -gt 0 ] && {
+                newtodo=$(sed "$item!d" "$TODO_FILE")
+                echo "$item: $newtodo"
+                echo "TODO: $item marked as done."
+            }
+            [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+                _commit "TODO: '$todo' marked as done." $TODO_FILE
+        else
+            echo "$item is already marked done"
+        fi
     done
 
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
         archive
     fi
     cleanup ;;
+
+"done" )
+    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
+        echo -n "Done: "
+        read input
+    else
+        [ -z "$2" ] && die "usage: $TODO_SH done \"TODO ITEM\""
+        shift
+        input=$*
+    fi
+
+    now=`date '+%Y-%m-%d'`
+    # remove priority once item is done
+    newtodo=$(sed -e "s/^(.) // ; s|^|&x $now |" <<<${input})
+    echo "$newtodo" >> "$DONE_FILE"
+    [ $TODOTXT_VERBOSE -gt 0 ] && {
+        echo "TODO: '$input' marked as done."
+    }
+    [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
+        _commit "TODO: '$input' marked as done." $DONE_FILE
+
+    cleanup;;
 
 "help" )
     if [ -t 1 ] ; then # STDOUT is a TTY
@@ -1008,7 +1027,7 @@ case $action in
 
     # If priority isn't set prepend
     if [ -z $priority ]; then 
-    	if sed -i.bak $item" s|^.*|$input &|" "$TODO_FILE"; then
+        if sed -i.bak $item" s|^.*|$input &|" "$TODO_FILE"; then
             [ $TODOTXT_VERBOSE -gt 0 ] && {
                 newtodo=$(sed "$item!d" "$TODO_FILE")
                 echo "$item: $newtodo"
@@ -1016,7 +1035,7 @@ case $action in
             [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
                 _commit "TODO: Prepended '$todo' w/ '$input' on line $item." \
                         $TODO_FILE
-    	else
+        else
             echo "TODO: Error prepending task $item."
         fi
     # If priority is set, remove priority, prepend and add back priority
@@ -1029,9 +1048,9 @@ case $action in
             [ $TODOTXT_GIT_ENABLED -eq 1 ] && \
                 _commit "TODO: Prepended '$todo' w/ '$input' on line $item." \
                         $TODO_FILE
-    	else
+        else
             echo "TODO: Error prepending task $item."
-    	fi
+        fi
     fi
     cleanup;;
 
