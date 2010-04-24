@@ -1,0 +1,6 @@
+.git[ia]* export-ignore
+GEN-VERSION-FILE export-ignore
+Makefile export-ignore
+README.textile export-ignore
+VERSION-FILE export-ignore
+tests export-ignore
