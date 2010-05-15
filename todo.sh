@@ -1011,7 +1011,7 @@ note: PRIORITY must be anywhere from A to Z."
     if [ -z $priority ]; then
       sed -i.bak $item" s|^.*|$input|" "$TODO_FILE"
     else
-      sed -i.bak -e "$item s/^(.) //" -e "$item s|^.*|\($priority\) $1|" "$TODO_FILE"
+      sed -i.bak -e "$item s/^(.) //" -e "$item s|^.*|\($priority\) $input|" "$TODO_FILE"
     fi
     [ $TODOTXT_VERBOSE -gt 0 ] && {
         NEWTODO=$(head -$item "$TODO_FILE" | tail -1)
