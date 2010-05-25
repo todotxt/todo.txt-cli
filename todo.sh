@@ -49,7 +49,7 @@ shorthelp()
 		    command [ACTIONS]
 		    del|rm NUMBER [TERM]
 		    dp|depri NUMBER
-		    do NUMBER
+		    do NUMBER[, NUMBER, NUMBER, ...]
 		    help
 		    list|ls [TERM...]
 		    listall|lsa [TERM...]
