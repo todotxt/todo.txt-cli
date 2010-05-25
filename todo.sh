@@ -48,7 +48,7 @@ shorthelp()
 		    archive
 		    command [ACTIONS]
 		    del|rm NUMBER [TERM]
-		    dp|depri NUMBER
+		    dp|depri NUMBER[, NUMBER, NUMBER, ...]
 		    do NUMBER[, NUMBER, NUMBER, ...]
 		    help
 		    list|ls [TERM...]
@@ -108,8 +108,8 @@ help()
 		      Deletes the item on line NUMBER in todo.txt.
 		      If term specified, deletes only the term from the line.
 
-		    depri NUMBER
-		    dp NUMBER
+		    depri NUMBER[, NUMBER, NUMBER, ...]
+		    dp NUMBER[, NUMBER, NUMBER, ...]
 		      Deprioritizes (removes the priority) from the item
 		      on line NUMBER in todo.txt.
 
@@ -742,27 +742,32 @@ case $action in
     fi ;;
 
 "depri" | "dp" )
-    item=$2
-    errmsg="usage: $TODO_SH depri ITEM#"
+    errmsg="usage: $TODO_SH depri ITEM#[, ITEM#, ITEM#, ...]"
+    shift;
+    [ $# -eq 0 ] && die "$errmsg"
 
-    [[ "$item" = +([0-9]) ]] || die "$errmsg"
-    todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item: No such todo."
+    # Split multiple depri's, if comma separated change to whitespace separated
+    # Loop the 'depri' function for each item
+    for item in `echo $* | tr ',' ' '`; do
+	[[ "$item" = +([0-9]) ]] || die "$errmsg"
+	todo=$(sed "$item!d" "$TODO_FILE")
+	[ -z "$todo" ] && die "$item: No such todo."
 
-    sed -e $item"s/^(.) //" "$TODO_FILE" > /dev/null 2>&1
+	sed -e $item"s/^(.) //" "$TODO_FILE" > /dev/null 2>&1
 
-    if [ "$?" -eq 0 ]; then
-        #it's all good, continue
-        sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
-        [ $TODOTXT_VERBOSE -gt 0 ] && {
-            NEWTODO=$(sed "$item!d" "$TODO_FILE")
-            echo "`echo "$item: $NEWTODO"`"
-            echo "TODO: $item deprioritized."
-        }
-        cleanup
-    else
-        die "$errmsg"
-    fi;;
+	if [ "$?" -eq 0 ]; then
+	    #it's all good, continue
+	    sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
+	    [ $TODOTXT_VERBOSE -gt 0 ] && {
+		NEWTODO=$(sed "$item!d" "$TODO_FILE")
+		echo "`echo "$item: $NEWTODO"`"
+		echo "TODO: $item deprioritized."
+	    }
+	else
+	    die "$errmsg"
+	fi
+    done
+    cleanup ;;
 
 "do" )
     errmsg="usage: $TODO_SH do ITEM#[, ITEM#, ITEM#, ...]"
