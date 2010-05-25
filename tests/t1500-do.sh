@@ -8,7 +8,7 @@ test_description='do functionality
 
 test_todo_session 'do usage' <<EOF
 >>> todo.sh do B B
-usage: todo.sh do ITEM#
+usage: todo.sh do ITEM#[, ITEM#, ITEM#, ...]
 === 1
 EOF
 

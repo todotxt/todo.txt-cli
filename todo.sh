@@ -765,7 +765,7 @@ case $action in
     fi;;
 
 "do" )
-    errmsg="usage: $TODO_SH do ITEM#"
+    errmsg="usage: $TODO_SH do ITEM#[, ITEM#, ITEM#, ...]"
     # shift so we get arguments to the do request
     shift;
 
