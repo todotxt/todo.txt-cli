@@ -768,6 +768,7 @@ case $action in
     errmsg="usage: $TODO_SH do ITEM#[, ITEM#, ITEM#, ...]"
     # shift so we get arguments to the do request
     shift;
+    [ "$#" -eq 0 ] && die "$errmsg"
 
     # Split multiple do's, if comma seperated change to whitespace sepereated
     # Loop the 'do' function for each item

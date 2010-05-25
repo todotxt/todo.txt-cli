@@ -12,6 +12,12 @@ usage: todo.sh do ITEM#[, ITEM#, ITEM#, ...]
 === 1
 EOF
 
+test_todo_session 'do missing ITEM#' <<EOF
+>>> todo.sh do
+usage: todo.sh do ITEM#[, ITEM#, ITEM#, ...]
+=== 1
+EOF
+
 cat > todo.txt <<EOF
 smell the uppercase Roses +flowers @outside
 notice the sunflowers
