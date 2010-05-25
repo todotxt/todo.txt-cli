@@ -745,9 +745,9 @@ case $action in
     item=$2
     errmsg="usage: $TODO_SH depri ITEM#"
 
+    [[ "$item" = +([0-9]) ]] || die "$errmsg"
     todo=$(sed "$item!d" "$TODO_FILE")
     [ -z "$todo" ] && die "$item: No such todo."
-    [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
     sed -e $item"s/^(.) //" "$TODO_FILE" > /dev/null 2>&1
 
