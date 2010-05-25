@@ -770,7 +770,7 @@ case $action in
     shift;
     [ "$#" -eq 0 ] && die "$errmsg"
 
-    # Split multiple do's, if comma seperated change to whitespace sepereated
+    # Split multiple do's, if comma separated change to whitespace separated
     # Loop the 'do' function for each item
     for item in `echo $* | tr ',' ' '`; do 
         [ -z "$item" ] && die "$errmsg"
