@@ -680,7 +680,7 @@ case $action in
     [ -z "$item" ] && die "$errmsg"
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
     todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item: No such todo."
+    [ -z "$todo" ] && die "$item: No such task."
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Append: "
         read input
@@ -734,7 +734,7 @@ case $action in
                 echo "TODO: No tasks were deleted."
             fi
         else
-            echo "$item: No such todo."
+            echo "$item: No such task."
         fi
     else
         sed -i.bak -e $item"s/$3/ /g"  "$TODO_FILE"
@@ -751,7 +751,7 @@ case $action in
     for item in `echo $* | tr ',' ' '`; do
 	[[ "$item" = +([0-9]) ]] || die "$errmsg"
 	todo=$(sed "$item!d" "$TODO_FILE")
-	[ -z "$todo" ] && die "$item: No such todo."
+	[ -z "$todo" ] && die "$item: No such task."
 
 	sed -e $item"s/^(.) //" "$TODO_FILE" > /dev/null 2>&1
 
@@ -782,7 +782,7 @@ case $action in
         [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
         todo=$(sed "$item!d" "$TODO_FILE")
-        [ -z "$todo" ] && die "$item: No such todo."
+        [ -z "$todo" ] && die "$item: No such task."
 
         # Check if this item has already been done
         if [ `echo $todo | grep -c "^x "` -eq 0 ] ; then
@@ -926,7 +926,7 @@ case $action in
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
     todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item: No such todo."
+    [ -z "$todo" ] && die "$item: No such task."
 
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Prepend: "
@@ -998,7 +998,7 @@ note: PRIORITY must be anywhere from A to Z."
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
     todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item: No such todo."
+    [ -z "$todo" ] && die "$item: No such task."
 
     # Test for then set priority
     if [ `sed "$item!d" "$TODO_FILE"|grep -c "^(\\w)"` -eq 1 ]; then

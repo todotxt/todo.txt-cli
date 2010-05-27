@@ -12,7 +12,7 @@ EOF
 
 test_todo_session 'depriority nonexistant item' <<EOF
 >>> todo.sh depri 42
-42: No such todo.
+42: No such task.
 === 1
 EOF
 
