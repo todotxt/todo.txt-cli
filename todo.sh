@@ -93,11 +93,11 @@ help()
 
 		    append ITEM# "TEXT TO APPEND"
 		    app ITEM# "TEXT TO APPEND"
-		      Adds TEXT TO APPEND to the end of the todo on line ITEM#.
+		      Adds TEXT TO APPEND to the end of the task on line ITEM#.
 		      Quotes optional.
 
 		    archive
-		      Moves done items from todo.txt to done.txt and removes blank lines.
+		      Moves all done tasks from todo.txt to done.txt and removes blank lines.
 
 		    command [ACTIONS]
 		      Runs the remaining arguments using only todo.sh builtins.
@@ -105,23 +105,23 @@ help()
 
 		    del ITEM# [TERM]
 		    rm ITEM# [TERM]
-		      Deletes the item on line ITEM# in todo.txt.
-		      If term specified, deletes only the term from the line.
+		      Deletes the task on line ITEM# in todo.txt.
+		      If TERM specified, deletes only TERM from the task.
 
 		    depri ITEM#[, ITEM#, ITEM#, ...]
 		    dp ITEM#[, ITEM#, ITEM#, ...]
-		      Deprioritizes (removes the priority) from the item
+		      Deprioritizes (removes the priority) from the task(s)
 		      on line ITEM# in todo.txt.
 
 		    do ITEM#[, ITEM#, ITEM#, ...]
-		      Marks item(s) on line ITEM# as done in todo.txt.
+		      Marks task(s) on line ITEM# as done in todo.txt.
 
 		    help
 		      Display this help message.
 
 		    list [TERM...]
 		    ls [TERM...]
-		      Displays all todo's that contain TERM(s) sorted by priority with line
+		      Displays all tasks that contain TERM(s) sorted by priority with line
 		      numbers.  If no TERM specified, lists entire todo.txt.
 
 		    listall [TERM...]
@@ -142,8 +142,8 @@ help()
 
 		    listpri [PRIORITY]
 		    lsp [PRIORITY]
-		      Displays all items prioritized PRIORITY.
-		      If no PRIORITY specified, lists all prioritized items.
+		      Displays all tasks prioritized PRIORITY.
+		      If no PRIORITY specified, lists all prioritized tasks.
 
 		    listproj
 		    lsprj
@@ -158,20 +158,20 @@ help()
 
 		    prepend ITEM# "TEXT TO PREPEND"
 		    prep ITEM# "TEXT TO PREPEND"
-		      Adds TEXT TO PREPEND to the beginning of the todo on line ITEM#.
+		      Adds TEXT TO PREPEND to the beginning of the task on line ITEM#.
 		      Quotes optional.
 
 		    pri ITEM# PRIORITY
 		    p ITEM# PRIORITY
-		      Adds PRIORITY to todo on line ITEM#.  If the item is already
+		      Adds PRIORITY to task on line ITEM#.  If the task is already
 		      prioritized, replaces current priority with new PRIORITY.
 		      PRIORITY must be an uppercase letter between A and Z.
 
 		    replace ITEM# "UPDATED TODO"
-		      Replaces todo on line ITEM# with UPDATED TODO.
+		      Replaces task on line ITEM# with UPDATED TODO.
 
 		    report
-		      Adds the number of open todo's and closed done's to report.txt.
+		      Adds the number of open tasks and done tasks to report.txt.
 
 
 
