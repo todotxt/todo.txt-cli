@@ -44,12 +44,12 @@ shorthelp()
 		    addto DEST "TEXT TO ADD"
 		    addm "THINGS I NEED TO DO
 		          MORE THINGS I NEED TO DO"
-		    append|app NUMBER "TEXT TO APPEND"
+		    append|app ITEM# "TEXT TO APPEND"
 		    archive
 		    command [ACTIONS]
-		    del|rm NUMBER [TERM]
-		    dp|depri NUMBER[, NUMBER, NUMBER, ...]
-		    do NUMBER[, NUMBER, NUMBER, ...]
+		    del|rm ITEM# [TERM]
+		    dp|depri ITEM#[, ITEM#, ITEM#, ...]
+		    do ITEM#[, ITEM#, ITEM#, ...]
 		    help
 		    list|ls [TERM...]
 		    listall|lsa [TERM...]
@@ -57,10 +57,10 @@ shorthelp()
 		    listfile|lf SRC [TERM...]
 		    listpri|lsp [PRIORITY]
 		    listproj|lsprj
-		    move|mv NUMBER DEST [SRC]
-		    prepend|prep NUMBER "TEXT TO PREPEND"
-		    pri|p NUMBER PRIORITY
-		    replace NUMBER "UPDATED TODO"
+		    move|mv ITEM# DEST [SRC]
+		    prepend|prep ITEM# "TEXT TO PREPEND"
+		    pri|p ITEM# PRIORITY
+		    replace ITEM# "UPDATED TODO"
 		    report
 
 		  See "help" for more details.
@@ -91,9 +91,9 @@ help()
 		      Adds a line of text to any file located in the todo.txt directory.
 		      For example, addto inbox.txt "decide about vacation"
 
-		    append NUMBER "TEXT TO APPEND"
-		    app NUMBER "TEXT TO APPEND"
-		      Adds TEXT TO APPEND to the end of the todo on line NUMBER.
+		    append ITEM# "TEXT TO APPEND"
+		    app ITEM# "TEXT TO APPEND"
+		      Adds TEXT TO APPEND to the end of the todo on line ITEM#.
 		      Quotes optional.
 
 		    archive
@@ -103,18 +103,18 @@ help()
 		      Runs the remaining arguments using only todo.sh builtins.
 		      Will not call any .todo.actions.d scripts.
 
-		    del NUMBER [TERM]
-		    rm NUMBER [TERM]
-		      Deletes the item on line NUMBER in todo.txt.
+		    del ITEM# [TERM]
+		    rm ITEM# [TERM]
+		      Deletes the item on line ITEM# in todo.txt.
 		      If term specified, deletes only the term from the line.
 
-		    depri NUMBER[, NUMBER, NUMBER, ...]
-		    dp NUMBER[, NUMBER, NUMBER, ...]
+		    depri ITEM#[, ITEM#, ITEM#, ...]
+		    dp ITEM#[, ITEM#, ITEM#, ...]
 		      Deprioritizes (removes the priority) from the item
-		      on line NUMBER in todo.txt.
+		      on line ITEM# in todo.txt.
 
-		    do NUMBER[, NUMBER, NUMBER, ...]
-		      Marks item(s) on line NUMBER as done in todo.txt.
+		    do ITEM#[, ITEM#, ITEM#, ...]
+		      Marks item(s) on line ITEM# as done in todo.txt.
 
 		    help
 		      Display this help message.
@@ -149,26 +149,26 @@ help()
 		    lsprj
 		      Lists all the projects that start with the + sign in todo.txt.
 
-		    move NUMBER DEST [SRC]
-		    mv NUMBER DEST [SRC]
+		    move ITEM# DEST [SRC]
+		    mv ITEM# DEST [SRC]
 		      Moves a line from source text file (SRC) to destination text file (DEST).
 		      Both source and destination file must be located in the directory defined
 		      in the configuration directory.  When SRC is not defined
 		      it's by default todo.txt.
 
-		    prepend NUMBER "TEXT TO PREPEND"
-		    prep NUMBER "TEXT TO PREPEND"
-		      Adds TEXT TO PREPEND to the beginning of the todo on line NUMBER.
+		    prepend ITEM# "TEXT TO PREPEND"
+		    prep ITEM# "TEXT TO PREPEND"
+		      Adds TEXT TO PREPEND to the beginning of the todo on line ITEM#.
 		      Quotes optional.
 
-		    pri NUMBER PRIORITY
-		    p NUMBER PRIORITY
-		      Adds PRIORITY to todo on line NUMBER.  If the item is already
+		    pri ITEM# PRIORITY
+		    p ITEM# PRIORITY
+		      Adds PRIORITY to todo on line ITEM#.  If the item is already
 		      prioritized, replaces current priority with new PRIORITY.
 		      PRIORITY must be an uppercase letter between A and Z.
 
-		    replace NUMBER "UPDATED TODO"
-		      Replaces todo on line NUMBER with UPDATED TODO.
+		    replace ITEM# "UPDATED TODO"
+		      Replaces todo on line ITEM# with UPDATED TODO.
 
 		    report
 		      Adds the number of open todo's and closed done's to report.txt.
