@@ -87,7 +87,7 @@ EOF
 test_todo_session 'replace error' << EOF
 >>> todo.sh replace 10 "hej!"
 === 1
-10: No such todo.
+10: No such task.
 EOF
 
 test_done

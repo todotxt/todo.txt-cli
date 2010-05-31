@@ -41,7 +41,7 @@ EOF
 test_todo_session 'append error' << EOF
 >>> todo.sh append 10 "hej!"
 === 1
-10: No such todo.
+10: No such task.
 EOF
 
 test_done
