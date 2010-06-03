@@ -760,7 +760,7 @@ case $action in
 	    sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
 	    [ $TODOTXT_VERBOSE -gt 0 ] && {
 		NEWTODO=$(sed "$item!d" "$TODO_FILE")
-		echo "`echo "$item: $NEWTODO"`"
+		echo "$item: $NEWTODO"
 		echo "TODO: $item deprioritized."
 	    }
 	else
@@ -982,7 +982,7 @@ note: PRIORITY must be anywhere from A to Z."
         sed -i.bak -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE"
         [ $TODOTXT_VERBOSE -gt 0 ] && {
             NEWTODO=$(sed "$item!d" "$TODO_FILE")
-            echo "`echo "$item: $NEWTODO"`"
+            echo "$item: $NEWTODO"
             echo "TODO: $item prioritized ($newpri)."
         }
         cleanup
