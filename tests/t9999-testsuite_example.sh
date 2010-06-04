@@ -48,7 +48,8 @@ TODO: 2 marked as done.
 TODO: 4 of 4 tasks shown
 
 >>> todo.sh add "make the coffee +wakeup"
-TODO: 'make the coffee +wakeup' added on line 5.
+5: make the coffee +wakeup
+TODO: 5 added.
 
 >>> todo.sh -p list coffee
 5 make the coffee +wakeup
@@ -57,7 +58,8 @@ TODO: 'make the coffee +wakeup' added on line 5.
 TODO: 2 of 5 tasks shown
 
 >>> todo.sh add "visit http://example.com"
-TODO: 'visit http://example.com' added on line 6.
+6: visit http://example.com
+TODO: 6 added.
 
 >>> todo.sh -p list
 1 (B) smell the uppercase Roses +flowers @outside
@@ -134,7 +136,8 @@ TODO: 5 of 5 tasks shown
 TODO: 5 of 5 tasks shown
 
 >>> todo.sh add "the coffee +wakeup"
-TODO: 'the coffee +wakeup' added on line 6.
+6: the coffee +wakeup
+TODO: 6 added.
 
 >>> todo.sh -p list
 1 (B) smell the uppercase Roses +flowers @outside
