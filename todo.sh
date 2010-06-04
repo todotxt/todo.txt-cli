@@ -515,10 +515,10 @@ _list() {
     ## Prefix the filter_command with the pre_filter_command
     filter_command="${pre_filter_command:-}"
 
-    for search_term in "$@"
+    for search_term
     do
         ## See if the first character of $search_term is a dash
-        if [ ${search_term:0:1} != '-' ]
+        if [ "${search_term:0:1}" != '-' ]
         then
             ## First character isn't a dash: hide lines that don't match
             ## this $search_term

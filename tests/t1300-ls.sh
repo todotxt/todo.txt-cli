@@ -54,6 +54,47 @@ TODO: 3 of 3 tasks shown
 EOF
 
 #
+# check the filtering of TERM
+#
+test_todo_session 'checking filtering of TERM' <<EOF
+>>> todo.sh ls second
+3 bbb yyy this line should be second.
+--
+TODO: 1 of 3 tasks shown
+
+>>> todo.sh ls "should be f"
+2 aaa zzz this line should be first.
+--
+TODO: 1 of 3 tasks shown
+
+>>> todo.sh ls " zzz"
+2 aaa zzz this line should be first.
+--
+TODO: 1 of 3 tasks shown
+EOF
+
+#
+# check the filtering of TERM with regexp
+#
+test_todo_session 'checking filtering of TERM with regexp' <<EOF
+>>> todo.sh ls "ir[ds]"
+2 aaa zzz this line should be first.
+1 ccc xxx this line should be third.
+--
+TODO: 2 of 3 tasks shown
+
+>>> todo.sh ls "f.*t"
+2 aaa zzz this line should be first.
+--
+TODO: 1 of 3 tasks shown
+
+>>> todo.sh ls "ir[ds]" xxx
+1 ccc xxx this line should be third.
+--
+TODO: 1 of 3 tasks shown
+EOF
+
+#
 # check the x command line option
 #
 TEST_TODO3_=todo3.cfg
