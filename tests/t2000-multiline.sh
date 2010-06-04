@@ -33,7 +33,8 @@ fi
 
 ## Add test
 # Create the expected file
-echo "TODO: 'eat apples eat oranges drink milk' added on line 2.">$HOME/expect.multi
+echo "2: eat apples eat oranges drink milk
+TODO: 2 added.">$HOME/expect.multi
 
 test_expect_success 'multiline squash item add' '
 (
@@ -108,9 +109,12 @@ fi
 
 ## Multiple line addition
 # Create the expected file
-echo "TODO: 'eat apples' added on line 2." > $HOME/expect.multi
-echo "TODO: 'eat oranges' added on line 3." >>$HOME/expect.multi
-echo "TODO: 'drink milk' added on line 4." >> $HOME/expect.multi
+echo "2: eat apples
+TODO: 2 added." > $HOME/expect.multi
+echo "3: eat oranges
+TODO: 3 added." >>$HOME/expect.multi
+echo "4: drink milk
+TODO: 4 added." >> $HOME/expect.multi
 
 test_expect_success 'actual multiline add' '
 (

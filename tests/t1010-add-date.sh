@@ -12,7 +12,8 @@ a date to each item.
 #
 test_todo_session 'cmd line first day' <<EOF
 >>> todo.sh -t add notice the daisies
-TODO: '2009-02-13 notice the daisies' added on line 1.
+1: 2009-02-13 notice the daisies
+TODO: 1 added.
 
 >>> todo.sh list
 1 2009-02-13 notice the daisies
@@ -24,7 +25,8 @@ test_tick
 
 test_todo_session 'cmd line second day' <<EOF
 >>> todo.sh -t add smell the roses
-TODO: '2009-02-14 smell the roses' added on line 2.
+2: 2009-02-14 smell the roses
+TODO: 2 added.
 
 >>> todo.sh list
 1 2009-02-13 notice the daisies
@@ -37,7 +39,8 @@ test_tick
 
 test_todo_session 'cmd line third day' <<EOF
 >>> todo.sh -t add mow the lawn
-TODO: '2009-02-15 mow the lawn' added on line 3.
+3: 2009-02-15 mow the lawn
+TODO: 3 added.
 
 >>> todo.sh list
 1 2009-02-13 notice the daisies
@@ -55,7 +58,8 @@ test_tick 3600
 
 test_todo_session 'config file third day' <<EOF
 >>> todo.sh add take out the trash
-TODO: '2009-02-15 take out the trash' added on line 4.
+4: 2009-02-15 take out the trash
+TODO: 4 added.
 
 >>> todo.sh list
 1 2009-02-13 notice the daisies

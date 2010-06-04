@@ -75,7 +75,8 @@ TODO: 2 prioritized (A).
 TODO: 2 of 3 tasks shown
 
 >>> todo.sh add "smell the coffee +wakeup"
-TODO: 'smell the coffee +wakeup' added on line 4.
+4: smell the coffee +wakeup
+TODO: 4 added.
 
 >>> todo.sh -p list
 2 (A) notice the sunflowers

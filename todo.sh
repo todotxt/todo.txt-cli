@@ -484,7 +484,8 @@ _addto() {
         TASKNUM=$(sed -n '$ =' "$file")
         BASE=$(basename "$file")
         PREFIX=$(echo ${BASE%%.[^.]*} | tr [a-z] [A-Z])
-        echo "${PREFIX}: '$input' added on line $TASKNUM."
+        echo "$TASKNUM: $input"
+        echo "${PREFIX}: $TASKNUM added."
     }
 }
 
