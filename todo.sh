@@ -460,9 +460,9 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 [ -f "$REPORT_FILE" ] || cp /dev/null "$REPORT_FILE"
 
 if [ $TODOTXT_PLAIN = 1 ]; then
-    PRI_A=$NONE
-    PRI_B=$NONE
-    PRI_C=$NONE
+    for clr in ${!PRI_@}; do
+        export $clr=$NONE
+    done
     PRI_X=$NONE
     DEFAULT=$NONE
 fi
@@ -570,14 +570,14 @@ _list() {
             s/^ /0/;
           ''' \
         | eval ${TODOTXT_SORT_COMMAND}                                        \
-        | sed '''
-            /^[0-9]\{'$PADDING'\} x /! {
-                /(A)/ s|^.*|'$PRI_A'&'$DEFAULT'|
-                /(B)/ s|^.*|'$PRI_B'&'$DEFAULT'|
-                /(C)/ s|^.*|'$PRI_C'&'$DEFAULT'|
-                /([D-Z])/ s|^.*|'$PRI_X'&'$DEFAULT'|
-            }
-          '''                                                   \
+        | awk '''{
+            pos = match($0, /\([A-Z]\)/)
+            if( pos > 0 && match($0, /^[0-9]+ x /) != 1 ) {
+                clr=ENVIRON["PRI_" substr($0, pos+1, 1)]
+                str = ( clr ? clr : ENVIRON["PRI_X"] ) $0 ENVIRON["DEFAULT"]
+                gsub( /\\+033/, "\033", str) ; print str
+            } else { print }
+          }'''  \
         | sed '''
             s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
             s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
