@@ -1,0 +1,114 @@
+#!/bin/sh
+#
+
+test_description='list highlighting
+
+This test checks the highlighting (with colors) of prioritized tasks.
+'
+. ./test-lib.sh
+
+TEST_TODO_=todo.cfg
+
+#
+# check the highlighting of prioritized tasks
+#
+cat > todo.txt <<EOF
+(A) @con01 +prj01 -- Some project 01 task, pri A
+(B) @con02 +prj02 -- Some project 02 task, pri B
+(C) @con01 +prj01 -- Some project 01 task, pri C
+(D) @con02 +prj02 -- Some project 02 task, pri D
+(E) @con01 +prj01 -- Some project 01 task, pri E
+(Z) @con02 +prj02 -- Some project 02 task, pri Z
+@con01 +prj01 -- Some project 01 task, no priority
+@con02 +prj02 -- Some project 02 task, no priority
+EOF
+test_todo_session 'default highlighting' <<EOF
+>>> todo.sh ls
+[1;33m1 (A) @con01 +prj01 -- Some project 01 task, pri A[0m
+[0;32m2 (B) @con02 +prj02 -- Some project 02 task, pri B[0m
+[1;34m3 (C) @con01 +prj01 -- Some project 01 task, pri C[0m
+[1;37m4 (D) @con02 +prj02 -- Some project 02 task, pri D[0m
+[1;37m5 (E) @con01 +prj01 -- Some project 01 task, pri E[0m
+[1;37m6 (Z) @con02 +prj02 -- Some project 02 task, pri Z[0m
+7 @con01 +prj01 -- Some project 01 task, no priority
+8 @con02 +prj02 -- Some project 02 task, no priority
+--
+TODO: 8 of 8 tasks shown
+EOF
+
+#
+# check changing the color definitions into something other than ANSI color
+# escape sequences
+#
+TEST_TODO_CUSTOM=todo-custom.cfg
+cat todo.cfg > "$TEST_TODO_CUSTOM"
+cat >> "$TEST_TODO_CUSTOM" <<'EOF'
+export YELLOW='${color yellow}'
+export GREEN='${color green}'
+export LIGHT_BLUE='${color LightBlue}'
+export WHITE='${color white}'
+export DEFAULT='${color}'
+export PRI_A=$YELLOW
+export PRI_B=$GREEN
+export PRI_C=$LIGHT_BLUE
+export PRI_X=$WHITE
+EOF
+test_todo_session 'customized highlighting' <<'EOF'
+>>> todo.sh -d "$TEST_TODO_CUSTOM" ls
+${color yellow}1 (A) @con01 +prj01 -- Some project 01 task, pri A${color}
+${color green}2 (B) @con02 +prj02 -- Some project 02 task, pri B${color}
+${color LightBlue}3 (C) @con01 +prj01 -- Some project 01 task, pri C${color}
+${color white}4 (D) @con02 +prj02 -- Some project 02 task, pri D${color}
+${color white}5 (E) @con01 +prj01 -- Some project 01 task, pri E${color}
+${color white}6 (Z) @con02 +prj02 -- Some project 02 task, pri Z${color}
+7 @con01 +prj01 -- Some project 01 task, no priority
+8 @con02 +prj02 -- Some project 02 task, no priority
+--
+TODO: 8 of 8 tasks shown
+EOF
+
+#
+# check defining highlightings for more priorities than the default A, B, C
+#
+TEST_TODO_ADDITIONAL=todo-additional.cfg
+cat todo.cfg > "$TEST_TODO_ADDITIONAL"
+cat >> "$TEST_TODO_ADDITIONAL" <<'EOF'
+export PRI_E=$BROWN
+export PRI_Z=$LIGHT_PURPLE
+EOF
+test_todo_session 'additional highlighting pri E+Z' <<'EOF'
+>>> todo.sh -d "$TEST_TODO_ADDITIONAL" ls
+[1;33m1 (A) @con01 +prj01 -- Some project 01 task, pri A[0m
+[0;32m2 (B) @con02 +prj02 -- Some project 02 task, pri B[0m
+[1;34m3 (C) @con01 +prj01 -- Some project 01 task, pri C[0m
+[1;37m4 (D) @con02 +prj02 -- Some project 02 task, pri D[0m
+[0;33m5 (E) @con01 +prj01 -- Some project 01 task, pri E[0m
+[1;35m6 (Z) @con02 +prj02 -- Some project 02 task, pri Z[0m
+7 @con01 +prj01 -- Some project 01 task, no priority
+8 @con02 +prj02 -- Some project 02 task, no priority
+--
+TODO: 8 of 8 tasks shown
+EOF
+
+# check changing the fallback highlighting for undefined priorities
+#
+TEST_TODO_PRI_X=todo-pri-x.cfg
+cat todo.cfg > "$TEST_TODO_PRI_X"
+cat >> "$TEST_TODO_PRI_X" <<'EOF'
+export PRI_X=$BROWN
+EOF
+test_todo_session 'different highlighting for pri X' <<'EOF'
+>>> todo.sh -d "$TEST_TODO_PRI_X" ls
+[1;33m1 (A) @con01 +prj01 -- Some project 01 task, pri A[0m
+[0;32m2 (B) @con02 +prj02 -- Some project 02 task, pri B[0m
+[1;34m3 (C) @con01 +prj01 -- Some project 01 task, pri C[0m
+[0;33m4 (D) @con02 +prj02 -- Some project 02 task, pri D[0m
+[0;33m5 (E) @con01 +prj01 -- Some project 01 task, pri E[0m
+[0;33m6 (Z) @con02 +prj02 -- Some project 02 task, pri Z[0m
+7 @con01 +prj01 -- Some project 01 task, no priority
+8 @con02 +prj02 -- Some project 02 task, no priority
+--
+TODO: 8 of 8 tasks shown
+EOF
+
+test_done

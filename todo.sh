@@ -250,7 +250,7 @@ die()
 cleanup()
 {
     [ -f "$TMP_FILE" ] && rm "$TMP_FILE"
-    exit 0
+    return 0
 }
 
 cleaninput()
@@ -279,7 +279,6 @@ archive()
     sed -n 'G; s/\n/&&/; /^\([ ~-]*\n\).*\n\1/d; s/\n//; h; P' "$TMP_FILE" > "$TODO_FILE"
     #[[ $TODOTXT_VERBOSE -gt 0 ]] && echo "TODO: Duplicate tasks have been removed."
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $TODO_FILE archived."
-    cleanup
 }
 
 
@@ -460,9 +459,9 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 [ -f "$REPORT_FILE" ] || cp /dev/null "$REPORT_FILE"
 
 if [ $TODOTXT_PLAIN = 1 ]; then
-    PRI_A=$NONE
-    PRI_B=$NONE
-    PRI_C=$NONE
+    for clr in ${!PRI_@}; do
+        export $clr=$NONE
+    done
     PRI_X=$NONE
     DEFAULT=$NONE
 fi
@@ -570,14 +569,14 @@ _list() {
             s/^ /0/;
           ''' \
         | eval ${TODOTXT_SORT_COMMAND}                                        \
-        | sed '''
-            /^[0-9]\{'$PADDING'\} x /! {
-                /(A)/ s|^.*|'$PRI_A'&'$DEFAULT'|
-                /(B)/ s|^.*|'$PRI_B'&'$DEFAULT'|
-                /(C)/ s|^.*|'$PRI_C'&'$DEFAULT'|
-                /([D-Z])/ s|^.*|'$PRI_X'&'$DEFAULT'|
-            }
-          '''                                                   \
+        | awk '''{
+            pos = match($0, /\([A-Z]\)/)
+            if( pos > 0 && match($0, /^[0-9]+ x /) != 1 ) {
+                clr=ENVIRON["PRI_" substr($0, pos+1, 1)]
+                str = ( clr ? clr : ENVIRON["PRI_X"] ) $0 ENVIRON["DEFAULT"]
+                gsub( /\\+033/, "\033", str) ; print str
+            } else { print }
+          }'''  \
         | sed '''
             s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
             s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
@@ -602,7 +601,7 @@ _list() {
     fi
 }
 
-export -f _list
+export -f _list die
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
@@ -620,7 +619,9 @@ then
 elif [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
+    status=$?
     cleanup
+    exit $status
 fi
 
 ## Only run if $action isn't found in .todo.actions.d
@@ -635,7 +636,7 @@ case $action in
         input=$*
     fi
     _addto "$TODO_FILE" "$input"
-    cleanup;;
+    ;;
 
 "addm")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
@@ -657,7 +658,7 @@ case $action in
         _addto "$TODO_FILE" "$line"
     done
     IFS=$SAVEIFS
-    cleanup;;
+    ;;
 
 "addto" )
     [ -z "$2" ] && die "usage: $TODO_SH addto DEST \"TODO ITEM\""
@@ -672,7 +673,7 @@ case $action in
     else
         echo "TODO: Destination file $dest does not exist."
     fi
-    cleanup;;
+    ;;
 
 "append" | "app" )
     errmsg="usage: $TODO_SH append ITEM# \"TEXT TO APPEND\""
@@ -698,7 +699,7 @@ case $action in
     else
         echo "TODO: Error appending task $item."
     fi
-    cleanup;;
+    ;;
 
 "archive" )
     archive;;
@@ -730,7 +731,6 @@ case $action in
                     sed -i.bak -e $item"s/^.*//" "$TODO_FILE"
                 fi
                 [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$DELETEME' deleted."
-                cleanup
             else
                 echo "TODO: No tasks were deleted."
             fi
@@ -740,7 +740,8 @@ case $action in
     else
         sed -i.bak -e $item"s/$3/ /g"  "$TODO_FILE"
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $3 removed from $item."
-    fi ;;
+    fi
+    ;;
 
 "depri" | "dp" )
     errmsg="usage: $TODO_SH depri ITEM#[, ITEM#, ITEM#, ...]"
@@ -768,7 +769,7 @@ case $action in
 	    die "$errmsg"
 	fi
     done
-    cleanup ;;
+    ;;
 
 "do" )
     errmsg="usage: $TODO_SH do ITEM#[, ITEM#, ITEM#, ...]"
@@ -804,7 +805,7 @@ case $action in
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
         archive
     fi
-    cleanup ;;
+    ;;
 
 "help" )
     if [ -t 1 ] ; then # STDOUT is a TTY
@@ -819,8 +820,6 @@ case $action in
 "list" | "ls" )
     shift  ## Was ls; new $1 is first search term
     _list "$TODO_FILE" "$@"
-
-    cleanup
     ;;
 
 "listall" | "lsa" )
@@ -828,8 +827,6 @@ case $action in
 
     cat "$TODO_FILE" "$DONE_FILE" > "$TMP_FILE"
     _list "$TMP_FILE" "$@"
-
-    cleanup
     ;;
 
 "listfile" | "lf" )
@@ -838,18 +835,15 @@ case $action in
     shift  ## Was filename; next $1 is first search term
 
     _list "$FILE" "$@"
-
-    cleanup
     ;;
 
 "listcon" | "lsc" )
     grep -o '[^ ]*@[^ ]\+' "$TODO_FILE" | grep '^@' | sort -u
-    cleanup ;;
+    ;;
 
 "listproj" | "lsprj" )
     grep -o '[^ ]*+[^ ]\+' "$TODO_FILE" | grep '^+' | sort -u
-    cleanup ;;
-
+    ;;
 
 "listpri" | "lsp" )
     shift ## was "listpri", new $1 is priority to list
@@ -904,7 +898,6 @@ case $action in
                     echo "$MOVEME" >> "$dest"
 
                     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$MOVEME' moved from '$src' to '$dest'."
-                    cleanup
                 else
                     echo "TODO: No tasks moved."
                 fi
@@ -917,7 +910,7 @@ case $action in
     else
         echo "TODO: Source file $src does not exist."
     fi
-    cleanup;;
+    ;;
 
 "prepend" | "prep" )
     errmsg="usage: $TODO_SH prepend ITEM# \"TEXT TO PREPEND\""
@@ -963,7 +956,7 @@ case $action in
             echo "TODO: Error prepending task $item."
     	fi
     fi
-    cleanup;;
+    ;;
 
 "pri" | "p" )
     item=$2
@@ -986,10 +979,10 @@ note: PRIORITY must be anywhere from A to Z."
             echo "$item: $NEWTODO"
             echo "TODO: $item prioritized ($newpri)."
         }
-        cleanup
     else
         die "$errmsg"
-    fi;;
+    fi
+    ;;
 
 "replace" )
     errmsg="usage: $TODO_SH replace ITEM# \"UPDATED ITEM\""
@@ -1026,7 +1019,7 @@ note: PRIORITY must be anywhere from A to Z."
         echo "replaced with"
         echo "$item: $NEWTODO"
     }
-    cleanup;;
+    ;;
 
 "report" )
     #archive first
@@ -1045,9 +1038,10 @@ note: PRIORITY must be anywhere from A to Z."
     echo $TECHO >> "$REPORT_FILE"
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
     cat "$REPORT_FILE"
-    cleanup;;
+    ;;
 
 * )
-    usage
-    ;;
+    usage;;
 esac
+
+cleanup
