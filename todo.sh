@@ -250,7 +250,7 @@ die()
 cleanup()
 {
     [ -f "$TMP_FILE" ] && rm "$TMP_FILE"
-    exit 0
+    return 0
 }
 
 cleaninput()
@@ -620,7 +620,9 @@ then
 elif [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
+    status=$?
     cleanup
+    exit $status
 fi
 
 ## Only run if $action isn't found in .todo.actions.d
