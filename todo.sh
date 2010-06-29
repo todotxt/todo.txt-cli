@@ -484,7 +484,8 @@ _addto() {
         TASKNUM=$(sed -n '$ =' "$file")
         BASE=$(basename "$file")
         PREFIX=$(echo ${BASE%%.[^.]*} | tr [a-z] [A-Z])
-        echo "${PREFIX}: '$input' added on line $TASKNUM."
+        echo "$TASKNUM: $input"
+        echo "${PREFIX}: $TASKNUM added."
     }
 }
 
@@ -515,10 +516,10 @@ _list() {
     ## Prefix the filter_command with the pre_filter_command
     filter_command="${pre_filter_command:-}"
 
-    for search_term in "$@"
+    for search_term
     do
         ## See if the first character of $search_term is a dash
-        if [ ${search_term:0:1} != '-' ]
+        if [ "${search_term:0:1}" != '-' ]
         then
             ## First character isn't a dash: hide lines that don't match
             ## this $search_term
@@ -571,10 +572,10 @@ _list() {
         | eval ${TODOTXT_SORT_COMMAND}                                        \
         | sed '''
             /^[0-9]\{'$PADDING'\} x /! {
-                s/\(.*(A).*\)/'$PRI_A'\1'$DEFAULT'/g;
-                s/\(.*(B).*\)/'$PRI_B'\1'$DEFAULT'/g;
-                s/\(.*(C).*\)/'$PRI_C'\1'$DEFAULT'/g;
-                s/\(.*([D-Z]).*\)/'$PRI_X'\1'$DEFAULT'/g;
+                /(A)/ s|^.*|'$PRI_A'&'$DEFAULT'|
+                /(B)/ s|^.*|'$PRI_B'&'$DEFAULT'|
+                /(C)/ s|^.*|'$PRI_C'&'$DEFAULT'|
+                /([D-Z])/ s|^.*|'$PRI_X'&'$DEFAULT'|
             }
           '''                                                   \
         | sed '''
@@ -760,7 +761,7 @@ case $action in
 	    sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
 	    [ $TODOTXT_VERBOSE -gt 0 ] && {
 		NEWTODO=$(sed "$item!d" "$TODO_FILE")
-		echo "`echo "$item: $NEWTODO"`"
+		echo "$item: $NEWTODO"
 		echo "TODO: $item deprioritized."
 	    }
 	else
@@ -982,7 +983,7 @@ note: PRIORITY must be anywhere from A to Z."
         sed -i.bak -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE"
         [ $TODOTXT_VERBOSE -gt 0 ] && {
             NEWTODO=$(sed "$item!d" "$TODO_FILE")
-            echo "`echo "$item: $NEWTODO"`"
+            echo "$item: $NEWTODO"
             echo "TODO: $item prioritized ($newpri)."
         }
         cleanup
