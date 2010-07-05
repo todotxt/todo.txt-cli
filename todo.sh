@@ -469,6 +469,12 @@ export PRI_B=$GREEN         # color for B priority
 export PRI_C=$LIGHT_BLUE    # color for C priority
 export PRI_X=$WHITE         # color for rest of them
 
+# Default sentence delimiters for todo.sh append.
+# If the text to be appended to the task begins with one of these characters, no
+# whitespace is inserted in between. This makes appending to an enumeration
+# (todo.sh add 42 ", foo") syntactically correct.
+export SENTENCE_DELIMITERS=',.:;'
+
 [ -e "$TODOTXT_CFG_FILE" ] || {
     CFG_FILE_ALT="$HOME/todo.cfg"
 
@@ -746,9 +752,13 @@ case $action in
     else
         input=$*
     fi
+    case "$input" in
+      [$SENTENCE_DELIMITERS]*)  appendspace=;;
+      *)                        appendspace=" ";;
+    esac
     cleaninput $input
 
-    if sed -i.bak $item" s|^.*|& $input|" "$TODO_FILE"; then
+    if sed -i.bak $item" s|^.*|&${appendspace}${input}|" "$TODO_FILE"; then
         [ $TODOTXT_VERBOSE -gt 0 ] && {
             newtodo=$(sed "$item!d" "$TODO_FILE")
             echo "$item: $newtodo"
