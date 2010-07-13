@@ -776,37 +776,50 @@ case $action in
     errmsg="usage: $TODO_SH del ITEM# [TERM]"
     item=$2
     [ -z "$item" ] && die "$errmsg"
+    [[ "$item" = +([0-9]) ]] || die "$errmsg"
+    DELETEME=$(sed "$item!d" "$TODO_FILE")
+    [ -z "$DELETEME" ] && die "$item: No such task."
 
     if [ -z "$3" ]; then
-
-        [[ "$item" = +([0-9]) ]] || die "$errmsg"
-        if sed -ne "$item p" "$TODO_FILE" | grep "^."; then
-            DELETEME=$(sed "$item!d" "$TODO_FILE")
-
-            if  [ $TODOTXT_FORCE = 0 ]; then
-                echo "Delete '$DELETEME'?  (y/n)"
-                read ANSWER
+        if  [ $TODOTXT_FORCE = 0 ]; then
+            echo "Delete '$DELETEME'?  (y/n)"
+            read ANSWER
+        else
+            ANSWER="y"
+        fi
+        if [ "$ANSWER" = "y" ]; then
+            if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
+                # delete line (changes line numbers)
+                sed -i.bak -e $item"s/^.*//" -e '/./!d' "$TODO_FILE"
             else
-                ANSWER="y"
+                # leave blank line behind (preserves line numbers)
+                sed -i.bak -e $item"s/^.*//" "$TODO_FILE"
             fi
-            if [ "$ANSWER" = "y" ]; then
-                if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
-                    # delete line (changes line numbers)
-                    sed -i.bak -e $item"s/^.*//" -e '/./!d' "$TODO_FILE"
-                else
-                    # leave blank line behind (preserves line numbers)
-                    sed -i.bak -e $item"s/^.*//" "$TODO_FILE"
-                fi
-                [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$DELETEME' deleted."
-            else
-                echo "TODO: No tasks were deleted."
+            if [ $TODOTXT_VERBOSE -gt 0 ]; then
+                echo "$item: $DELETEME"
+                echo "TODO: $item deleted."
             fi
         else
-            die "$item: No such task."
+            echo "TODO: No tasks were deleted."
         fi
     else
-        sed -i.bak -e $item"s/$3/ /g"  "$TODO_FILE"
-        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $3 removed from $item."
+        sed -i.bak \
+            -e $item"s/^\((.) \)\{0,1\} *$3 */\1/g" \
+            -e $item"s/ *$3 *\$//g" \
+            -e $item"s/  *$3 */ /g" \
+            -e $item"s/ *$3  */ /g" \
+            -e $item"s/$3//g" \
+            "$TODO_FILE"
+        newtodo=$(sed "$item!d" "$TODO_FILE")
+        if [ "$DELETEME" = "$newtodo" ]; then
+            [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $DELETEME"
+            die "'$3' not found; no removal done."
+        fi
+        if [ $TODOTXT_VERBOSE -gt 0 ]; then
+            echo "$item: $DELETEME"
+            echo "got '$3' removed to become"
+            echo "$item: $newtodo"
+        fi
     fi
     ;;
 
