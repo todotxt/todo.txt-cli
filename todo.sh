@@ -773,7 +773,7 @@ case $action in
 
 "del" | "rm" )
     # replace deleted line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
-    errmsg="usage: $TODO_SH del ITEM#"
+    errmsg="usage: $TODO_SH del ITEM# [TERM]"
     item=$2
     [ -z "$item" ] && die "$errmsg"
 
@@ -802,7 +802,7 @@ case $action in
                 echo "TODO: No tasks were deleted."
             fi
         else
-            echo "$item: No such task."
+            die "$item: No such task."
         fi
     else
         sed -i.bak -e $item"s/$3/ /g"  "$TODO_FILE"
