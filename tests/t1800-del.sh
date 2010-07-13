@@ -47,6 +47,47 @@ EOF
 cat > todo.txt <<EOF
 (B) smell the uppercase Roses +flowers @outside
 (A) notice the sunflowers
+stop
+EOF
+test_todo_session 'del preserving line numbers' <<EOF
+>>> todo.sh -f del 1
+1: (B) smell the uppercase Roses +flowers @outside
+TODO: 1 deleted.
+
+>>> todo.sh -f del 1
+1: No such task.
+=== 1
+
+>>> todo.sh add A new task
+4: A new task
+TODO: 4 added.
+
+>>> todo.sh -p list
+2 (A) notice the sunflowers
+4 A new task
+3 stop
+--
+TODO: 3 of 3 tasks shown
+
+>>> todo.sh -f -n del 2
+2: (A) notice the sunflowers
+TODO: 2 deleted.
+
+>>> todo.sh add Another new task
+3: Another new task
+TODO: 3 added.
+
+>>> todo.sh -p list
+2 A new task
+3 Another new task
+1 stop
+--
+TODO: 3 of 3 tasks shown
+EOF
+
+cat > todo.txt <<EOF
+(B) smell the uppercase Roses +flowers @outside
+(A) notice the sunflowers
 (C) stop
 EOF
 test_todo_session 'basic del TERM' <<EOF
