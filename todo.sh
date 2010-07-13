@@ -957,38 +957,33 @@ case $action in
 
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
-    if [ -f "$src" ]; then
-        if [ -f "$dest" ]; then
-            if sed -ne "$item p" "$src" | grep "^."; then
-                MOVEME=$(sed "$item!d" "$src")
-                if  [ $TODOTXT_FORCE = 0 ]; then
-                    echo "Move '$MOVEME' from $src to $dest? (y/n)"
-                    read ANSWER
-                else
-                    ANSWER="y"
-                fi
-                if [ "$ANSWER" = "y" ]; then
-                    if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
-                        # delete line (changes line numbers)
-                        sed -i.bak -e $item"s/^.*//" -e '/./!d' "$src"
-                    else
-                        # leave blank line behind (preserves line numbers)
-                       sed -i.bak -e $item"s/^.*//" "$src"
-                    fi
-                    echo "$MOVEME" >> "$dest"
+    [ -f "$src" ] || die "TODO: Source file $src does not exist."
+    [ -f "$dest" ] || die "TODO: Destination file $dest does not exist."
 
-                    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: '$MOVEME' moved from '$src' to '$dest'."
-                else
-                    echo "TODO: No tasks moved."
-                fi
-            else
-                echo "$item: No such item in $src."
-            fi
+    MOVEME=$(sed "$item!d" "$src")
+    [ -z "$MOVEME" ] && die "$item: No such item in $src."
+    if  [ $TODOTXT_FORCE = 0 ]; then
+        echo "Move '$MOVEME' from $src to $dest? (y/n)"
+        read ANSWER
+    else
+        ANSWER="y"
+    fi
+    if [ "$ANSWER" = "y" ]; then
+        if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
+            # delete line (changes line numbers)
+            sed -i.bak -e $item"s/^.*//" -e '/./!d' "$src"
         else
-            echo "TODO: Destination file $dest does not exist."
+            # leave blank line behind (preserves line numbers)
+            sed -i.bak -e $item"s/^.*//" "$src"
+        fi
+        echo "$MOVEME" >> "$dest"
+
+        if [ $TODOTXT_VERBOSE -gt 0 ]; then
+            echo "$item: $MOVEME"
+            echo "TODO: $item moved from '$src' to '$dest'."
         fi
     else
-        echo "TODO: Source file $src does not exist."
+        echo "TODO: No tasks moved."
     fi
     ;;
 
