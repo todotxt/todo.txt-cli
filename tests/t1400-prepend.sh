@@ -31,7 +31,7 @@ TODO: 3 of 3 tasks shown
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh prepend 2 test
-2: test notice the sunflowers
+2 test notice the sunflowers
 
 >>> todo.sh -p list
 1 (B) smell the uppercase Roses +flowers @outside
@@ -41,7 +41,7 @@ TODO: 3 of 3 tasks shown
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh prepend 1 test
-1: (B) test smell the uppercase Roses +flowers @outside
+1 (B) test smell the uppercase Roses +flowers @outside
 
 >>> todo.sh -p list
 1 (B) test smell the uppercase Roses +flowers @outside
@@ -54,41 +54,41 @@ EOF
 
 test_todo_session 'prepend with &' <<EOF
 >>> todo.sh prepend 3 "no running & jumping now"
-3: no running & jumping now stop
+3 no running & jumping now stop
 EOF
 
 cat /dev/null > todo.txt
 test_todo_session 'prepend handling prepended date on add' <<EOF
 >>> todo.sh -t add "new task"
-1: 2009-02-13 new task
+1 2009-02-13 new task
 TODO: 1 added.
 
 >>> todo.sh prepend 1 "this is just a"
-1: 2009-02-13 this is just a new task
+1 2009-02-13 this is just a new task
 EOF
 
 cat /dev/null > todo.txt
 test_todo_session 'prepend handling priority and prepended date on add' <<EOF
 >>> todo.sh -t add "new task"
-1: 2009-02-13 new task
+1 2009-02-13 new task
 TODO: 1 added.
 
 >>> todo.sh pri 1 A
-1: (A) 2009-02-13 new task
+1 (A) 2009-02-13 new task
 TODO: 1 prioritized (A).
 
 >>> todo.sh prepend 1 "this is just a"
-1: (A) 2009-02-13 this is just a new task
+1 (A) 2009-02-13 this is just a new task
 EOF
 
 cat /dev/null > todo.txt
 test_todo_session 'prepend with prepended date keeps both' <<EOF
 >>> todo.sh -t add "new task"
-1: 2009-02-13 new task
+1 2009-02-13 new task
 TODO: 1 added.
 
 >>> todo.sh prepend 1 "2010-07-04 this is just a"
-1: 2009-02-13 2010-07-04 this is just a new task
+1 2009-02-13 2010-07-04 this is just a new task
 EOF
 
 test_done

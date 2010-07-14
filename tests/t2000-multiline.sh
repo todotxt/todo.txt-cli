@@ -6,9 +6,9 @@ test_description='Multi-line functionality'
 
 ## Replace test
 # Create the expected file
-echo "1: smell the cheese
+echo "1 smell the cheese
 TODO: Replaced task with:
-1: eat apples eat oranges drink milk">$HOME/expect.multi
+1 eat apples eat oranges drink milk">$HOME/expect.multi
 
 test_expect_success 'multiline squash item replace' '
 (
@@ -33,7 +33,7 @@ fi
 
 ## Add test
 # Create the expected file
-echo "2: eat apples eat oranges drink milk
+echo "2 eat apples eat oranges drink milk
 TODO: 2 added.">$HOME/expect.multi
 
 test_expect_success 'multiline squash item add' '
@@ -59,7 +59,7 @@ fi
 
 ## Append test
 # Create the expected file
-echo "1: smell the cheese eat apples eat oranges drink milk">$HOME/expect.multi
+echo "1 smell the cheese eat apples eat oranges drink milk">$HOME/expect.multi
 
 test_expect_success 'multiline squash item append' '
 (
@@ -84,7 +84,7 @@ fi
 
 ## Prepend test
 # Create the expected file
-echo "1: eat apples eat oranges drink milk smell the cheese">$HOME/expect.multi
+echo "1 eat apples eat oranges drink milk smell the cheese">$HOME/expect.multi
 
 test_expect_success 'multiline squash item prepend' '
 (
@@ -109,11 +109,11 @@ fi
 
 ## Multiple line addition
 # Create the expected file
-echo "2: eat apples
+echo "2 eat apples
 TODO: 2 added." > $HOME/expect.multi
-echo "3: eat oranges
+echo "3 eat oranges
 TODO: 3 added." >>$HOME/expect.multi
-echo "4: drink milk
+echo "4 drink milk
 TODO: 4 added." >> $HOME/expect.multi
 
 test_expect_success 'actual multiline add' '

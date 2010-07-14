@@ -20,7 +20,7 @@ touch "$HOME/garden.txt"
 
 test_todo_session 'basic addto/listfile' <<EOF
 >>> todo.sh addto garden.txt notice the daisies
-1: notice the daisies
+1 notice the daisies
 GARDEN: 1 added.
 
 >>> todo.sh listfile garden.txt
@@ -29,7 +29,7 @@ GARDEN: 1 added.
 GARDEN: 1 of 1 tasks shown
 
 >>> todo.sh addto garden.txt smell the roses
-2: smell the roses
+2 smell the roses
 GARDEN: 2 added.
 
 >>> todo.sh listfile garden.txt
@@ -56,7 +56,7 @@ EOF
 
 test_todo_session 'case-insensitive filtering' <<EOF
 >>> todo.sh addto garden.txt smell the uppercase Roses
-3: smell the uppercase Roses
+3 smell the uppercase Roses
 GARDEN: 3 added.
 
 >>> todo.sh listfile garden.txt roses
@@ -68,7 +68,7 @@ EOF
 
 test_todo_session 'addto with &' <<EOF
 >>> todo.sh addto garden.txt "dig the garden & water the flowers"
-4: dig the garden & water the flowers
+4 dig the garden & water the flowers
 GARDEN: 4 added.
 
 >>> todo.sh listfile garden.txt 

@@ -30,7 +30,7 @@ test_todo_session 'basic depriority' <<EOF
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh depri 1
-1: smell the uppercase Roses +flowers @outside
+1 smell the uppercase Roses +flowers @outside
 TODO: 1 deprioritized.
 
 >>> todo.sh -p list
@@ -55,9 +55,9 @@ test_todo_session 'multiple depriority' <<EOF
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh depri 3 2
-3: stop
+3 stop
 TODO: 3 deprioritized.
-2: notice the sunflowers
+2 notice the sunflowers
 TODO: 2 deprioritized.
 
 >>> todo.sh -p list

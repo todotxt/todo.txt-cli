@@ -25,7 +25,7 @@ test_todo_session 'basic priority' <<EOF
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 1 B
-1: (B) smell the uppercase Roses +flowers @outside
+1 (B) smell the uppercase Roses +flowers @outside
 TODO: 1 prioritized (B).
 
 >>> todo.sh list
@@ -43,7 +43,7 @@ TODO: 3 of 3 tasks shown
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 C
-2: (C) notice the sunflowers
+2 (C) notice the sunflowers
 TODO: 2 prioritized (C).
 
 >>> todo.sh -p list
@@ -54,7 +54,7 @@ TODO: 2 prioritized (C).
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 A
-2: (A) notice the sunflowers
+2 (A) notice the sunflowers
 TODO: 2 prioritized (A).
 
 >>> todo.sh -p list
@@ -65,7 +65,7 @@ TODO: 2 prioritized (A).
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 a
-2: (A) notice the sunflowers
+2 (A) notice the sunflowers
 TODO: 2 prioritized (A).
 
 >>> todo.sh -p listpri
@@ -75,7 +75,7 @@ TODO: 2 prioritized (A).
 TODO: 2 of 3 tasks shown
 
 >>> todo.sh add "smell the coffee +wakeup"
-4: smell the coffee +wakeup
+4 smell the coffee +wakeup
 TODO: 4 added.
 
 >>> todo.sh -p list

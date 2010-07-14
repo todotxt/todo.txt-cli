@@ -19,7 +19,7 @@ EOF
 
 test_todo_session 'basic append' <<EOF
 >>> todo.sh append 1 "smell the roses"
-1: notice the daisies smell the roses
+1 notice the daisies smell the roses
 
 >>> todo.sh list
 1 notice the daisies smell the roses
@@ -29,7 +29,7 @@ EOF
 
 test_todo_session 'basic append with &' <<EOF
 >>> todo.sh append 1 "see the wasps & bees"
-1: notice the daisies smell the roses see the wasps & bees
+1 notice the daisies smell the roses see the wasps & bees
 
 >>> todo.sh list
 1 notice the daisies smell the roses see the wasps & bees
@@ -49,13 +49,13 @@ notice the daisies
 EOF
 test_todo_session 'append of current sentence' <<EOF
 >>> todo.sh append 1 ", lilies and roses"
-1: notice the daisies, lilies and roses
+1 notice the daisies, lilies and roses
 
 >>> todo.sh append 1 "; see the wasps"
-1: notice the daisies, lilies and roses; see the wasps
+1 notice the daisies, lilies and roses; see the wasps
 
 >>> todo.sh append 1 "& bees"
-1: notice the daisies, lilies and roses; see the wasps & bees
+1 notice the daisies, lilies and roses; see the wasps & bees
 EOF
 
 cp todo.cfg special-delimiters.cfg
@@ -64,13 +64,13 @@ export SENTENCE_DELIMITERS='*,.:;&'
 EOF
 test_todo_session 'append of current sentence SENTENCE_DELIMITERS' <<EOF
 >>> todo.sh -d special-delimiters.cfg append 1 "&beans"
-1: notice the daisies, lilies and roses; see the wasps & bees&beans
+1 notice the daisies, lilies and roses; see the wasps & bees&beans
 
 >>> todo.sh -d special-delimiters.cfg append 1 "%foo"
-1: notice the daisies, lilies and roses; see the wasps & bees&beans %foo
+1 notice the daisies, lilies and roses; see the wasps & bees&beans %foo
 
 >>> todo.sh -d special-delimiters.cfg append 1 "*2"
-1: notice the daisies, lilies and roses; see the wasps & bees&beans %foo*2
+1 notice the daisies, lilies and roses; see the wasps & bees&beans %foo*2
 EOF
 
 test_done

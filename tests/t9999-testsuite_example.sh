@@ -36,7 +36,7 @@ TODO: 2 of 4 tasks shown
 TODO: 1 of 4 tasks shown
 
 >>> todo.sh -a do 2
-2: x 2009-02-13 notice the sunflowers
+2 x 2009-02-13 notice the sunflowers
 TODO: 2 marked as done.
 
 >>> todo.sh -p list
@@ -48,7 +48,7 @@ TODO: 2 marked as done.
 TODO: 4 of 4 tasks shown
 
 >>> todo.sh add "make the coffee +wakeup"
-5: make the coffee +wakeup
+5 make the coffee +wakeup
 TODO: 5 added.
 
 >>> todo.sh -p list coffee
@@ -58,7 +58,7 @@ TODO: 5 added.
 TODO: 2 of 5 tasks shown
 
 >>> todo.sh add "visit http://example.com"
-6: visit http://example.com
+6 visit http://example.com
 TODO: 6 added.
 
 >>> todo.sh -p list
@@ -98,7 +98,7 @@ usage: todo.sh append ITEM# "TEXT TO APPEND"
 === 1
 
 >>> todo.sh append 2 and think
-2: stop and think
+2 stop and think
 
 >>> todo.sh -p list
 1 (B) smell the uppercase Roses +flowers @outside
@@ -136,7 +136,7 @@ TODO: 5 of 5 tasks shown
 TODO: 5 of 5 tasks shown
 
 >>> todo.sh add "the coffee +wakeup"
-6: the coffee +wakeup
+6 the coffee +wakeup
 TODO: 6 added.
 
 >>> todo.sh -p list
@@ -150,7 +150,7 @@ TODO: 6 added.
 TODO: 6 of 6 tasks shown
 
 >>> todo.sh prepend 6 "make"
-6: make the coffee +wakeup
+6 make the coffee +wakeup
 
 >>> todo.sh -p list
 1 (B) smell the uppercase Roses +flowers @outside
