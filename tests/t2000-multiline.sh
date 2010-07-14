@@ -7,7 +7,7 @@ test_description='Multi-line functionality'
 ## Replace test
 # Create the expected file
 echo "1: smell the cheese
-replaced with
+TODO: Replaced task with:
 1: eat apples eat oranges drink milk">$HOME/expect.multi
 
 test_expect_success 'multiline squash item replace' '

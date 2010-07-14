@@ -100,7 +100,7 @@ TODO: 3 of 3 tasks shown
 
 >>> todo.sh del 1 uppercase
 1: (B) smell the uppercase Roses +flowers @outside
-got 'uppercase' removed to become
+TODO: Removed 'uppercase' from task.
 1: (B) smell the Roses +flowers @outside
 
 >>> todo.sh -p list
@@ -112,22 +112,22 @@ TODO: 3 of 3 tasks shown
 
 >>> todo.sh del 1 "the Roses"
 1: (B) smell the Roses +flowers @outside
-got 'the Roses' removed to become
+TODO: Removed 'the Roses' from task.
 1: (B) smell +flowers @outside
 
 >>> todo.sh del 1 m
 1: (B) smell +flowers @outside
-got 'm' removed to become
+TODO: Removed 'm' from task.
 1: (B) sell +flowers @outside
 
 >>> todo.sh del 1 @outside
 1: (B) sell +flowers @outside
-got '@outside' removed to become
+TODO: Removed '@outside' from task.
 1: (B) sell +flowers
 
 >>> todo.sh del 1 sell
 1: (B) sell +flowers
-got 'sell' removed to become
+TODO: Removed 'sell' from task.
 1: (B) +flowers
 EOF
 

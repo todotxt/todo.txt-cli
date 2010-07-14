@@ -333,7 +333,7 @@ replaceOrPrepend()
     case "$action" in
       replace)
         echo "$item: $todo"
-        echo "replaced with"
+        echo "TODO: Replaced task with:"
         echo "$item: $newtodo"
         ;;
       prepend)
@@ -817,7 +817,7 @@ case $action in
         fi
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
             echo "$item: $DELETEME"
-            echo "got '$3' removed to become"
+            echo "TODO: Removed '$3' from task."
             echo "$item: $newtodo"
         fi
     fi
