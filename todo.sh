@@ -280,8 +280,9 @@ archive()
     sed -i.bak '/^x /d' "$TODO_FILE"
     cp "$TODO_FILE" "$TMP_FILE"
     sed -n 'G; s/\n/&&/; /^\([ ~-]*\n\).*\n\1/d; s/\n//; h; P' "$TMP_FILE" > "$TODO_FILE"
-    #[[ $TODOTXT_VERBOSE -gt 0 ]] && echo "TODO: Duplicate tasks have been removed."
-    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: $TODO_FILE archived."
+    if [ $TODOTXT_VERBOSE -gt 0 ]; then
+	echo "TODO: $TODO_FILE archived."
+    fi
 }
 
 replaceOrPrepend()
@@ -542,13 +543,13 @@ _addto() {
         input="$now $input"
     fi
     echo "$input" >> "$file"
-    [ $TODOTXT_VERBOSE -gt 0 ] && {
+    if [ $TODOTXT_VERBOSE -gt 0 ]; then
         TASKNUM=$(sed -n '$ =' "$file")
         BASE=$(basename "$file")
         PREFIX=$(echo ${BASE%%.[^.]*} | tr [a-z] [A-Z])
         echo "$TASKNUM: $input"
         echo "${PREFIX}: $TASKNUM added."
-    }
+    fi
 }
 
 _list() {
@@ -658,8 +659,7 @@ _list() {
         echo "--"
         echo "${PREFIX}: ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
     fi
-    if [ $TODOTXT_VERBOSE -gt 1 ]
-    then
+    if [ $TODOTXT_VERBOSE -gt 1 ]; then
         echo "TODO DEBUG: Filter Command was: ${filter_command:-cat}"
     fi
 }
@@ -759,10 +759,10 @@ case $action in
     cleaninput $input
 
     if sed -i.bak $item" s|^.*|&${appendspace}${input}|" "$TODO_FILE"; then
-        [ $TODOTXT_VERBOSE -gt 0 ] && {
+        if [ $TODOTXT_VERBOSE -gt 0 ]; then
             newtodo=$(sed "$item!d" "$TODO_FILE")
             echo "$item: $newtodo"
-        }
+	fi
     else
         echo "TODO: Error appending task $item."
     fi
@@ -840,11 +840,11 @@ case $action in
 	if [ "$?" -eq 0 ]; then
 	    #it's all good, continue
 	    sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
-	    [ $TODOTXT_VERBOSE -gt 0 ] && {
+	    if [ $TODOTXT_VERBOSE -gt 0 ]; then
 		NEWTODO=$(sed "$item!d" "$TODO_FILE")
 		echo "$item: $NEWTODO"
 		echo "TODO: $item deprioritized."
-	    }
+	    fi
 	else
 	    die "$errmsg"
 	fi
@@ -872,11 +872,11 @@ case $action in
             # remove priority once item is done
             sed -i.bak $item"s/^(.) //" "$TODO_FILE"
             sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
-            [ $TODOTXT_VERBOSE -gt 0 ] && {
+            if [ $TODOTXT_VERBOSE -gt 0 ]; then
                 newtodo=$(sed "$item!d" "$TODO_FILE")
                 echo "$item: $newtodo"
                 echo "TODO: $item marked as done."
-            }
+	    fi
         else
             echo "$item is already marked done"
         fi
@@ -1008,11 +1008,11 @@ note: PRIORITY must be anywhere from A to Z."
     if [ "$?" -eq 0 ]; then
         #it's all good, continue
         sed -i.bak -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE"
-        [ $TODOTXT_VERBOSE -gt 0 ] && {
+        if [ $TODOTXT_VERBOSE -gt 0 ]; then
             NEWTODO=$(sed "$item!d" "$TODO_FILE")
             echo "$item: $NEWTODO"
             echo "TODO: $item prioritized ($newpri)."
-        }
+	fi
     else
         die "$errmsg"
     fi
