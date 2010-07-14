@@ -569,8 +569,7 @@ _list() {
         ## Path relative to current working directory
         src="$FILE"
     else
-        echo "TODO: File $FILE does not exist."
-        exit 1
+        die "TODO: File $FILE does not exist."
     fi
 
     ## Get our search arguments, if any
@@ -734,7 +733,7 @@ case $action in
     if [ -f "$dest" ]; then
         _addto "$dest" "$input"
     else
-        echo "TODO: Destination file $dest does not exist."
+        die "TODO: Destination file $dest does not exist."
     fi
     ;;
 
@@ -764,7 +763,7 @@ case $action in
             echo "$item: $newtodo"
 	fi
     else
-        echo "TODO: Error appending task $item."
+        die "TODO: Error appending task $item."
     fi
     ;;
 
@@ -813,7 +812,7 @@ case $action in
         newtodo=$(sed "$item!d" "$TODO_FILE")
         if [ "$DELETEME" = "$newtodo" ]; then
             [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item: $DELETEME"
-            die "'$3' not found; no removal done."
+            die "TODO: '$3' not found; no removal done."
         fi
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
             echo "$item: $DELETEME"

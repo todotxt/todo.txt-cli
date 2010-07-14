@@ -139,7 +139,7 @@ EOF
 test_todo_session 'del nonexistant TERM' <<EOF
 >>> todo.sh del 1 dung
 1: (B) smell the uppercase Roses +flowers @outside
-'dung' not found; no removal done.
+TODO: 'dung' not found; no removal done.
 === 1
 
 >>> todo.sh -p list

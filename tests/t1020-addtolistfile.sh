@@ -13,6 +13,7 @@ commands work, including support for filtering.
 test_todo_session 'nonexistant file' <<EOF
 >>> todo.sh addto garden.txt notice the daisies
 TODO: Destination file $HOME/garden.txt does not exist.
+=== 1
 EOF
 
 touch "$HOME/garden.txt"
