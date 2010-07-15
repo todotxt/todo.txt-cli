@@ -111,4 +111,41 @@ test_todo_session 'different highlighting for pri X' <<'EOF'
 TODO: 8 of 8 tasks shown
 EOF
 
+# check highlighting of done (but not yet archived) tasks
+#
+cat > todo.txt <<EOF
+(A) smell the uppercase Roses +flowers @outside
+remove1
+notice the sunflowers
+remove2
+stop
+EOF
+test_todo_session 'highlighting of done tasks' <<EOF
+>>> todo.sh -a do 2
+2 x 2009-02-13 remove1
+TODO: 2 marked as done.
+
+>>> todo.sh list
+[1;33m1 (A) smell the uppercase Roses +flowers @outside[0m
+3 notice the sunflowers
+4 remove2
+5 stop
+[0;37m2 x 2009-02-13 remove1[0m
+--
+TODO: 5 of 5 tasks shown
+
+>>> todo.sh -a do 4
+4 x 2009-02-13 remove2
+TODO: 4 marked as done.
+
+>>> todo.sh list
+[1;33m1 (A) smell the uppercase Roses +flowers @outside[0m
+3 notice the sunflowers
+5 stop
+[0;37m2 x 2009-02-13 remove1[0m
+[0;37m4 x 2009-02-13 remove2[0m
+--
+TODO: 5 of 5 tasks shown
+EOF
+
 test_done

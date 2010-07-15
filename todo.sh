@@ -470,6 +470,9 @@ export PRI_B=$GREEN         # color for B priority
 export PRI_C=$LIGHT_BLUE    # color for C priority
 export PRI_X=$WHITE         # color for rest of them
 
+# Default highlight colors.
+export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
+
 # Default sentence delimiters for todo.sh append.
 # If the text to be appended to the task begins with one of these characters, no
 # whitespace is inserted in between. This makes appending to an enumeration
@@ -531,6 +534,7 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     done
     PRI_X=$NONE
     DEFAULT=$NONE
+    COLOR_DONE=$NONE
 fi
 
 _addto() {
@@ -632,6 +636,9 @@ _list() {
             s/^ /0/;
           ''' \
         | eval ${TODOTXT_SORT_COMMAND}                                        \
+        | sed '''
+            /^[0-9]\{'$PADDING'\} x /s|^.*|'$COLOR_DONE'&'$DEFAULT'|
+          ''' \
         | awk '''{
             pos = match($0, /\([A-Z]\)/)
             if( pos > 0 && match($0, /^[0-9]+ x /) != 1 ) {
