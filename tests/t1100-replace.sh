@@ -88,7 +88,7 @@ EOF
 test_todo_session 'replace error' << EOF
 >>> todo.sh replace 10 "hej!"
 === 1
-10: No such task.
+TODO: No task 10.
 EOF
 
 cat /dev/null > todo.txt

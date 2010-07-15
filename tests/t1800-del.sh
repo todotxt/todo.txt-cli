@@ -12,11 +12,11 @@ EOF
 
 test_todo_session 'del nonexistant item' <<EOF
 >>> todo.sh -f del 42
-42: No such task.
+TODO: No task 42.
 === 1
 
 >>> todo.sh -f del 42 Roses
-42: No such task.
+TODO: No task 42.
 === 1
 EOF
 
@@ -55,7 +55,7 @@ test_todo_session 'del preserving line numbers' <<EOF
 TODO: 1 deleted.
 
 >>> todo.sh -f del 1
-1: No such task.
+TODO: No task 1.
 === 1
 
 >>> todo.sh add A new task

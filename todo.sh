@@ -304,7 +304,7 @@ replaceOrPrepend()
   [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
   todo=$(sed "$item!d" "$TODO_FILE")
-  [ -z "$todo" ] && die "$item: No such task."
+  [ -z "$todo" ] && die "TODO: No task $item."
 
   if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
     echo -n "$querytext"
@@ -744,7 +744,7 @@ case $action in
     [ -z "$item" ] && die "$errmsg"
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
     todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "$item: No such task."
+    [ -z "$todo" ] && die "TODO: No task $item."
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Append: "
         read input
@@ -777,7 +777,7 @@ case $action in
     [ -z "$item" ] && die "$errmsg"
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
     DELETEME=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$DELETEME" ] && die "$item: No such task."
+    [ -z "$DELETEME" ] && die "TODO: No task $item."
 
     if [ -z "$3" ]; then
         if  [ $TODOTXT_FORCE = 0 ]; then
@@ -832,7 +832,7 @@ case $action in
     for item in `echo $* | tr ',' ' '`; do
 	[[ "$item" = +([0-9]) ]] || die "$errmsg"
 	todo=$(sed "$item!d" "$TODO_FILE")
-	[ -z "$todo" ] && die "$item: No such task."
+	[ -z "$todo" ] && die "TODO: No task $item."
 
 	sed -e $item"s/^(.) //" "$TODO_FILE" > /dev/null 2>&1
 
@@ -863,7 +863,7 @@ case $action in
         [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
         todo=$(sed "$item!d" "$TODO_FILE")
-        [ -z "$todo" ] && die "$item: No such task."
+        [ -z "$todo" ] && die "TODO: No task $item."
 
         # Check if this item has already been done
         if [ `echo $todo | grep -c "^x "` -eq 0 ] ; then

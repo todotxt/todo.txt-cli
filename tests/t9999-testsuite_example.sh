@@ -110,7 +110,7 @@ usage: todo.sh append ITEM# "TEXT TO APPEND"
 TODO: 5 of 5 tasks shown
 
 >>> todo.sh append 10 "hej!"
-10: No such task.
+TODO: No task 10.
 === 1
 
 >>> todo.sh -p list
@@ -123,7 +123,7 @@ TODO: 5 of 5 tasks shown
 TODO: 5 of 5 tasks shown
 
 >>> todo.sh do 10
-10: No such task.
+TODO: No task 10.
 === 1
 
 >>> todo.sh -p list
