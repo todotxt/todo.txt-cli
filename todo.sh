@@ -560,18 +560,18 @@ _list() {
     local FILE="$1"
     ## If the file starts with a "/" use absolute path. Otherwise,
     ## try to find it in either $TODO_DIR or using a relative path
-    if [ "${1:0:1}" == / ]
-    then
+    if [ "${1:0:1}" == / ]; then
         ## Absolute path
         src="$FILE"
-    elif [ -f "$TODO_DIR/$FILE" ]
-    then
+    elif [ -f "$TODO_DIR/$FILE" ]; then
         ## Path relative to todo.sh directory
-        src="$TODO_DIR/$1"
-    elif [ -f "$FILE" ]
-    then
+        src="$TODO_DIR/$FILE"
+    elif [ -f "$FILE" ]; then
         ## Path relative to current working directory
         src="$FILE"
+    elif [ -f "$TODO_DIR/${FILE}.txt" ]; then
+        ## Path relative to todo.sh directory, missing file extension
+        src="$TODO_DIR/${FILE}.txt"
     else
         die "TODO: File $FILE does not exist."
     fi
