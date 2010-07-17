@@ -468,7 +468,7 @@ export DEFAULT='\\033[0m'
 export PRI_A=$YELLOW        # color for A priority
 export PRI_B=$GREEN         # color for B priority
 export PRI_C=$LIGHT_BLUE    # color for C priority
-export PRI_X=$WHITE         # color for rest of them
+export PRI_X=$WHITE         # color unless explicitly defined
 
 # Default highlight colors.
 export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
