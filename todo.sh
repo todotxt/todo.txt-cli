@@ -550,7 +550,7 @@ _addto() {
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
         TASKNUM=$(sed -n '$ =' "$file")
         BASE=$(basename "$file")
-        PREFIX=$(echo ${BASE%%.[^.]*} | tr [a-z] [A-Z])
+        PREFIX=$(echo ${BASE%%.[^.]*} | tr 'a-z' 'A-Z')
         echo "$TASKNUM $input"
         echo "${PREFIX}: $TASKNUM added."
     fi
@@ -658,7 +658,7 @@ _list() {
 
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
         BASE=$(basename "$FILE")
-        PREFIX=$(echo ${BASE%%.[^.]*} | tr [a-z] [A-Z])
+        PREFIX=$(echo ${BASE%%.[^.]*} | tr 'a-z' 'A-Z')
         NUMTASKS=$( echo -ne "$filtered_items" | sed -n '$ =' )
         TOTALTASKS=$( echo -ne "$items" | sed -n '$ =' )
 
