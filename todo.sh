@@ -636,17 +636,22 @@ _list() {
             s/^ /0/;
           ''' \
         | eval ${TODOTXT_SORT_COMMAND}                                        \
-        | awk '''{
-            pos = match($0, /\([A-Z]\)/)
-            if (match($0, /^[0-9]+ x /)) {
-                str = ENVIRON["COLOR_DONE"] $0 ENVIRON["DEFAULT"]
-                gsub(/\\+033/, "\033", str); print str
-            } else if (pos > 0) {
-                clr = ENVIRON["PRI_" substr($0, pos+1, 1)]
-                str = ( clr ? clr : ENVIRON["PRI_X"] ) $0 ENVIRON["DEFAULT"]
-                gsub(/\\+033/, "\033", str); print str
-            } else { print }
-          }'''  \
+        | awk '''
+            function highlight(colorVar,      color) {
+                color = ENVIRON[colorVar]
+                gsub(/\\+033/, "\033", color)
+                return color
+            }
+            {
+                pos = match($0, /\([A-Z]\)/)
+                if (match($0, /^[0-9]+ x /)) {
+                    print highlight("COLOR_DONE") $0 highlight("DEFAULT")
+                } else if (pos > 0) {
+                    clr = highlight("PRI_" substr($0, pos+1, 1))
+                    print ( clr ? clr : highlight("PRI_X") ) $0 highlight("DEFAULT")
+                } else { print }
+            }
+          '''  \
         | sed '''
             s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
             s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
