@@ -232,7 +232,7 @@ help()
         echo ""
         for action in "$TODO_ACTIONS_DIR"/*
         do
-            if [ -x "$action" ]
+            if [ -f "$action" -a -x "$action" ]
             then
                 "$action" usage
             fi
