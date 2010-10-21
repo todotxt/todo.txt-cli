@@ -622,12 +622,12 @@ _list() {
         | grep -v "^[ 0-9]\+ *$"
     )
     if [ "${filter_command}" ]; then
-        filtered_items=$(echo -ne "$items" | eval ${filter_command})
+        filtered_items=$(echo -n "$items" | eval ${filter_command})
     else
         filtered_items=$items
     fi
     filtered_items=$(
-        echo -ne "$filtered_items"                              \
+        echo -n "$filtered_items"                              \
         | sed '''
             s/^     /00000/;
             s/^    /0000/;
@@ -636,15 +636,15 @@ _list() {
             s/^ /0/;
           ''' \
         | eval ${TODOTXT_SORT_COMMAND}                                        \
-        | sed '''
-            /^[0-9]\{'$PADDING'\} x /s|^.*|'$COLOR_DONE'&'$DEFAULT'|
-          ''' \
         | awk '''{
             pos = match($0, /\([A-Z]\)/)
-            if( pos > 0 && match($0, /^[0-9]+ x /) != 1 ) {
-                clr=ENVIRON["PRI_" substr($0, pos+1, 1)]
+            if (match($0, /^[0-9]+ x /)) {
+                str = ENVIRON["COLOR_DONE"] $0 ENVIRON["DEFAULT"]
+                gsub(/\\+033/, "\033", str); print str
+            } else if (pos > 0) {
+                clr = ENVIRON["PRI_" substr($0, pos+1, 1)]
                 str = ( clr ? clr : ENVIRON["PRI_X"] ) $0 ENVIRON["DEFAULT"]
-                gsub( /\\+033/, "\033", str) ; print str
+                gsub(/\\+033/, "\033", str); print str
             } else { print }
           }'''  \
         | sed '''
@@ -654,13 +654,13 @@ _list() {
           '''                                                   \
         | eval ${TODOTXT_FINAL_FILTER}                          \
     )
-    echo -ne "$filtered_items${filtered_items:+\n}"
+    [ "$filtered_items" ] && echo "$filtered_items"
 
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
         BASE=$(basename "$FILE")
         PREFIX=$(echo ${BASE%%.[^.]*} | tr 'a-z' 'A-Z')
-        NUMTASKS=$( echo -ne "$filtered_items" | sed -n '$ =' )
-        TOTALTASKS=$( echo -ne "$items" | sed -n '$ =' )
+        NUMTASKS=$( echo -n "$filtered_items" | sed -n '$ =' )
+        TOTALTASKS=$( echo -n "$items" | sed -n '$ =' )
 
         echo "--"
         echo "${PREFIX}: ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
