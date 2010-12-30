@@ -882,7 +882,7 @@ case $action in
             now=`date '+%Y-%m-%d'`
             # remove priority once item is done
             sed -i.bak $item"s/^(.) //" "$TODO_FILE"
-            sed -i.bak $item"s|^|&x $now |" "$TODO_FILE"
+            sed -i.bak $item"s|^|x $now |" "$TODO_FILE"
             if [ $TODOTXT_VERBOSE -gt 0 ]; then
                 newtodo=$(sed "$item!d" "$TODO_FILE")
                 echo "$item $newtodo"
