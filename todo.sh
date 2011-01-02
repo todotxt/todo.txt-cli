@@ -212,6 +212,8 @@ help()
 		        Displays version, license and credits
 		    -x
 		        Disables TODOTXT_FINAL_FILTER
+		    -i
+		        Create the todo configuration file if not present
 
 
 		  Environment variables:
@@ -343,8 +345,20 @@ replaceOrPrepend()
   fi
 }
 
+# option defaults
+TODOTXT_VERBOSE=${TODOTXT_VERBOSE:-1}
+TODOTXT_PLAIN=${TODOTXT_PLAIN:-0}
+TODOTXT_CFG_FILE=${TODOTXT_CFG_FILE:-$HOME/.todo/config}
+TODOTXT_FORCE=${TODOTXT_FORCE:-0}
+TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
+TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
+TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
+TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
+TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
+TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
+
 # == PROCESS OPTIONS ==
-while getopts ":fhpnatvVx+@Pd:" Option
+while getopts ":fhpnatvVxi+@Pd:" Option
 do
   case $Option in
     '@' )
@@ -425,21 +439,29 @@ do
     x )
         TODOTXT_DISABLE_FILTER=1
         ;;
+    i )
+        # Create the config file if it does not exist
+        mkdir -p `dirname "$TODOTXT_CFG_FILE"`
+        if [ ! -f "$TODOTXT_CFG_FILE" ];
+        then
+            # Try global location
+            if [ -f "/usr/share/doc/todo.txt/examples/todo.cfg" ];
+            then
+                cp "/usr/share/doc/todo.txt/examples/todo.cfg" "$TODOTXT_CFG_FILE"
+            else
+                if [ -f "./todo.cfg" ];
+                then
+                    cp "./todo.cfg" "$TODOTXT_CFG_FILE"
+                fi
+            fi
+            die "$TODOTXT_CFG_FILE created. Go edit it and configure it for your system!"
+        else
+            die "$TODOTXT_CFG_FILE already exists!"
+        fi
+        ;;
   esac
 done
 shift $(($OPTIND - 1))
-
-# defaults if not yet defined
-TODOTXT_VERBOSE=${TODOTXT_VERBOSE:-1}
-TODOTXT_PLAIN=${TODOTXT_PLAIN:-0}
-TODOTXT_CFG_FILE=${TODOTXT_CFG_FILE:-$HOME/.todo/config}
-TODOTXT_FORCE=${TODOTXT_FORCE:-0}
-TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
-TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
-TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
-TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
-TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
-TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
 
 # Export all TODOTXT_* variables
 export ${!TODOTXT_@}
@@ -513,7 +535,7 @@ fi
 }
 
 # === SANITY CHECKS (thanks Karl!) ===
-[ -r "$TODOTXT_CFG_FILE" ] || die "Fatal Error: Cannot read configuration file $TODOTXT_CFG_FILE"
+[ -r "$TODOTXT_CFG_FILE" ] || die "Fatal Error: Cannot read configuration file $TODOTXT_CFG_FILE. To create it, run $0 -i"
 
 . "$TODOTXT_CFG_FILE"
 
