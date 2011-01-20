@@ -527,7 +527,7 @@ test_todo_session () {
     cmd=""
     status=0
     > expect
-    while read line
+    while read -r line
     do
 	case $line in
 	">>> "*)
@@ -552,7 +552,7 @@ test_todo_session () {
 	    fi
 	    ;;
 	*)
-	    echo $line >> expect
+	    echo "$line" >> expect
 	    ;;
 	esac
     done

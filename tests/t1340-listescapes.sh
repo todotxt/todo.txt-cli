@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 
 test_description='list with escape sequences
@@ -6,10 +6,6 @@ test_description='list with escape sequences
 This test checks listing of tasks that have embedded escape sequences in them.
 '
 . ./test-lib.sh
-
-# Note: The quadrupled escaped backslashes (even 8-fold for the escape color
-# code) in the expected output are necessary due to (superfluous?!)
-# interpretation of the expected output in the test library itself.
 
 #
 # check aborted list output on \c escape sequence
@@ -23,13 +19,13 @@ EOF
 test_todo_session 'aborted list output on backslash-c' <<'EOF'
 >>> todo.sh ls
 1 first todo
-2 second todo run C:\\\\WINDOWS\\\\sysnative\\\\cscript.exe
+2 second todo run C:\WINDOWS\sysnative\cscript.exe
 3 third todo
 --
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh ls 2
-2 second todo run C:\\\\WINDOWS\\\\sysnative\\\\cscript.exe
+2 second todo run C:\WINDOWS\sysnative\cscript.exe
 --
 TODO: 1 of 3 tasks shown
 EOF
@@ -45,9 +41,9 @@ EOF
 
 test_todo_session 'various escape sequences' <<'EOF'
 >>> todo.sh ls
-1 first todo with \\\\\\\\, \\\\a and \\\\t
-2 second todo with \\\\r\\\\n line break
-3 third todo with \\\\x42\\\\x55\\\\x47 and \\\\\\\\033[0;31m color codes \\\\\\\\033[0;30m
+1 first todo with \\, \a and \t
+2 second todo with \r\n line break
+3 third todo with \x42\x55\x47 and \033[0;31m color codes \033[0;30m
 --
 TODO: 3 of 3 tasks shown
 EOF
