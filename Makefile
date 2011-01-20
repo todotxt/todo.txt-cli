@@ -42,7 +42,7 @@ test-pre-clean:
 aggregate-results: $(TESTS)
 
 $(TESTS): test-pre-clean
-	-cd tests && sh $(notdir $@) $(TEST_OPTIONS)
+	-cd tests && ./$(notdir $@) $(TEST_OPTIONS)
 
 test: aggregate-results
 	tests/aggregate-results.sh tests/test-results/t*-*
