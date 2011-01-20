@@ -12,8 +12,10 @@ done,*)
 *' --tee '*|*' --va'*)
 	mkdir -p test-results
 	BASE=test-results/$(basename "$0" .sh)
-	(TEST_TEE_STARTED=done ${SHELL-sh} "$0" "$@" 2>&1;
-	 echo $? > $BASE.exit) | tee $BASE.out
+	(
+	    TEST_TEE_STARTED=done ${SHELL-sh} "$0" "$@" 2>&1;
+	    echo $? > $BASE.exit
+	) | tee $BASE.out
 	test "$(cat $BASE.exit)" = 0
 	exit
 	;;
@@ -395,7 +397,7 @@ test_done () {
 	0)
 		say_color pass "passed all $msg"
 
-                # Clean up this test.
+		# Clean up this test.
 		test -d "$remove_trash" &&
 		cd "$(dirname "$remove_trash")" &&
 		rm -rf "$(basename "$remove_trash")"
@@ -434,8 +436,8 @@ test_init_todo () {
 	root="$1"
 	mkdir -p "$root"
 	cd "$root" || error "Cannot setup todo dir in $root"
-        # Initialize the configuration file. Carefully quoted.
-        sed -e 's|TODO_DIR=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' $TEST_DIRECTORY/../todo.cfg > todo.cfg
+	# Initialize the configuration file. Carefully quoted.
+	sed -e 's|TODO_DIR=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' $TEST_DIRECTORY/../todo.cfg > todo.cfg
 
 	# Install latest todo.sh
 	mkdir bin
