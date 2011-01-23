@@ -148,4 +148,22 @@ TODO: 4 marked as done.
 TODO: 5 of 5 tasks shown
 EOF
 
+# check highlighting with hidden contexts/projects
+#
+cat > todo.txt <<EOF
+(A) +project at the beginning, with priority
+(B) with priority, ending in a +project
+(C) @context at the beginning, with priority
+(Z) with priority, ending in a @context
+EOF
+test_todo_session 'highlighting with hidden contexts/projects' <<EOF
+>>> todo.sh -+ -@ list
+[1;33m1 (A) at the beginning, with priority[0m
+[0;32m2 (B) with priority, ending in a[0m
+[1;34m3 (C) at the beginning, with priority[0m
+[1;37m4 (Z) with priority, ending in a[0m
+--
+TODO: 4 of 4 tasks shown
+EOF
+
 test_done

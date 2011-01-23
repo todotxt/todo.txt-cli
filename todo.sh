@@ -360,7 +360,7 @@ do
             unset HIDE_CONTEXTS_SUBSTITUTION
         else
             ## One or odd value -- hide context names
-            export HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[^[:space:]]\{1,\}'
+            export HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[[:graph:]]\{1,\}'
         fi
         ;;
     '+' )
@@ -376,7 +376,7 @@ do
             unset HIDE_PROJECTS_SUBSTITUTION
         else
             ## One or odd value -- hide project names
-            export HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][^[:space:]]\{1,\}'
+            export HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][[:graph:]]\{1,\}'
         fi
         ;;
     a )
