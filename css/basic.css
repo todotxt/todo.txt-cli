@@ -1,3 +1,9 @@
+body {
+	font-size: 13px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	line-height:17px;
+}
+
 code, pre {
 			background-color:#eee;
 }
@@ -19,12 +25,7 @@ a:visited {
 	color : Purple;
 }
 
-
-body {
-	font-size: 13px;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-	line-height:17px;
-}
+.logo { margin-right:5px;}
 
 h1 {
 	font-size: 20px;
@@ -35,11 +36,11 @@ h1 {
 h1 a { display:none; }
 
 h2 {
-	text-align: right;
-	font-size: 16px;
+	text-align: left;
+	font-size: 20px;
 	border-bottom: 1px solid #ccc;
 	margin: 0;
-font-family:Georgia;
+font-family:Courier;
 padding-bottom:2px;
 padding-top:7px;
 }
@@ -92,12 +93,6 @@ li {
 	margin: 10px 0 10px 8px;
 }
 
-#content {
-	margin: 0 0 0 160px;
-	padding: 5px;
-	border-left: 1px solid #ccc;
-}
-
 #flags {
 	margin: 5px 0 5px 0;
 	float: right;
@@ -108,20 +103,20 @@ li {
 	margin-top: 40px;
 }
 
-#menu {
-	float: left;
-	width: 150px;	
-	text-align: right;
-	padding: 0 10px 0 0;
-	font-size: 14px;
-}
-
 #page {
 	margin: 10px auto 5px auto;
 	width: 750px;
 }
 
-#wo {
-	display: none;
+#menu {
+	float: left;
+	width: 256px;	
+	text-align: right;
+	padding: 0 10px 0 0;
+	font-size: 14px;
 }
 
+#content {
+	margin: 0 0 0 0px;
+	padding: 5px;
+}
