@@ -497,6 +497,16 @@ export SENTENCE_DELIMITERS=',.:;'
     fi
 }
 
+[ -e "$TODOTXT_CFG_FILE" ] || {
+    CFG_FILE_ALT=`dirname $0`"/todo.cfg"
+
+    if [ -e "$CFG_FILE_ALT" ]
+    then
+        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
+    fi
+}
+
+
 if [ -z "$TODO_ACTIONS_DIR" -o ! -d "$TODO_ACTIONS_DIR" ]
 then
     TODO_ACTIONS_DIR="$HOME/.todo/actions"
