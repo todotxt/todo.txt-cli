@@ -260,7 +260,7 @@ cleaninput()
 {
     # Cleanup the input
     # Replace newlines with spaces Always
-    input=`echo $input | tr -d '\r|\n'`
+    input=`echo $input | tr -d '\r\n'`
 
     action_regexp="^\(append\|app\|prepend\|prep\|replace\)$"
 

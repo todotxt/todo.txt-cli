@@ -58,19 +58,23 @@ TODO: 3 added.
 TODO: 2 of 3 tasks shown
 EOF
 
-test_todo_session 'add with &' <<EOF
->>> todo.sh add "dig the garden & water the flowers"
-4 dig the garden & water the flowers
+test_todo_session 'add with symbols' <<EOF
+>>> todo.sh add "~@#$%^&*()-_=+[{]}|;:',<.>/?"
+4 ~@#$%^&*()-_=+[{]}|;:',<.>/?
 TODO: 4 added.
 
+>>> todo.sh add '\`!\\"'
+5 \`!\\"
+TODO: 5 added.
+
 >>> todo.sh list
-4 dig the garden & water the flowers
 1 notice the daisies
 2 smell the roses
 3 smell the uppercase Roses
+5 \`!\\"
+4 ~@#$%^&*()-_=+[{]}|;:',<.>/?
 --
-TODO: 4 of 4 tasks shown
-
+TODO: 5 of 5 tasks shown
 EOF
 
 test_done
