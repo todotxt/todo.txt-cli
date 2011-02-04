@@ -59,6 +59,7 @@ shorthelp()
 		    listcon|lsc
 		    listfile|lf SRC [TERM...]
 		    listpri|lsp [PRIORITY]
+                    listtags|lst
 		    listproj|lsprj
 		    move|mv ITEM# DEST [SRC]
 		    prepend|prep ITEM# "TEXT TO PREPEND"
@@ -151,6 +152,10 @@ help()
 		    listproj
 		    lsprj
 		      Lists all the projects that start with the + sign in todo.txt.
+
+		    listtags
+		    lst
+		      Lists all the tags that start with the ^ character in todo.txt.
 
 		    move ITEM# DEST [SRC]
 		    mv ITEM# DEST [SRC]
@@ -934,6 +939,10 @@ case $action in
 
 "listproj" | "lsprj" )
     grep -o '[^ ]*+[^ ]\+' "$TODO_FILE" | grep '^+' | sort -u
+    ;;
+
+"listtags" | "lst" )
+    grep -o '[^ ]*\^[^ ]\+' "$TODO_FILE" | grep '^\^' | sort -u
     ;;
 
 "listpri" | "lsp" )
