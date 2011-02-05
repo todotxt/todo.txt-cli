@@ -1095,7 +1095,7 @@ note: PRIORITY must be anywhere from A to Z."
         escapekey
         if echo $existing_tags | grep -q "$key"
         then
-           echo "'$tag' already exists"
+           true
         else
            taglist="$taglist $tag"
         fi
@@ -1103,7 +1103,7 @@ note: PRIORITY must be anywhere from A to Z."
     taglist=`echo $taglist | tr " " "\n" | sort -u`
     # currently tag list is now a sorted list of tags that were taken from
     # the command line
-    echo $taglist
+    replaceOrPrepend 'replace' $TODO_SH $item "$input $taglist"
     ;;
 
 * )
