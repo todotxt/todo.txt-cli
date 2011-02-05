@@ -280,6 +280,12 @@ cleaninput()
     fi
 }
 
+escapekey() {
+   # escapes the contents of $key this will ensure that the key does not contain
+   # any characters that may be used as part of a regexp search
+   key=`echo "$key" | sed 's/\\([^[:alnum:]]\\)/\\\\\\1/g'`
+}
+
 archive()
 {
     #defragment blank lines
@@ -1080,14 +1086,14 @@ note: PRIORITY must be anywhere from A to Z."
 
     existing_tags=`echo $input | tr " " "\n" | sort -u | grep '^\^'`
 
-    echo $existing_tags
-
     # split the tags and make sure they all have the ^ prefix if it was not there.
     taglist=""
     for tag in $*
     do
         tag=`echo $tag | sed 's/^\([^\^]\)/\^\1/'`
-        if echo $existing_tags | grep -q $tag
+        key=$tag
+        escapekey
+        if echo $existing_tags | grep -q "$key"
         then
            echo "'$tag' already exists"
         else
