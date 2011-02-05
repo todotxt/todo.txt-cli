@@ -1070,13 +1070,29 @@ note: PRIORITY must be anywhere from A to Z."
     errmsg="usage: $TODO_SH tag ITEM# TAG,..."
     shift
     item=$1
+    [ -z "$item" ] && die "$errmsg"
+    [[ "$item" = +([0-9]) ]] || die "$errmsg"
+    input=$(sed "$item!d" "$TODO_FILE")
+    cleaninput $input
+    [ -z "$input" ] && die "TODO: No task $item."
+    
     shift
+
+    existing_tags=`echo $input | tr " " "\n" | sort -u | grep '^\^'`
+
+    echo $existing_tags
+
     # split the tags and make sure they all have the ^ prefix if it was not there.
     taglist=""
     for tag in $*
     do
         tag=`echo $tag | sed 's/^\([^\^]\)/\^\1/'`
-        taglist="$taglist $tag"
+        if echo $existing_tags | grep -q $tag
+        then
+           echo "'$tag' already exists"
+        else
+           taglist="$taglist $tag"
+        fi
     done
     taglist=`echo $taglist | tr " " "\n" | sort -u`
     # currently tag list is now a sorted list of tags that were taken from
