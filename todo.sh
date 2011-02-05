@@ -66,6 +66,7 @@ shorthelp()
 		    pri|p ITEM# PRIORITY
 		    replace ITEM# "UPDATED TODO"
 		    report
+		    tag ITEM# TAG,...
 
 		  See "help" for more details.
 	EndHelp
@@ -180,6 +181,9 @@ help()
 
 		    report
 		      Adds the number of open tasks and done tasks to report.txt.
+
+		    tag ITEM# TAG,...
+		      Adds the specified tags to an item.
 
 
 
@@ -1060,6 +1064,24 @@ note: PRIORITY must be anywhere from A to Z."
     echo $TECHO >> "$REPORT_FILE"
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
     cat "$REPORT_FILE"
+    ;;
+
+"tag" )
+    errmsg="usage: $TODO_SH tag ITEM# TAG,..."
+    shift
+    item=$1
+    shift
+    # split the tags and make sure they all have the ^ prefix if it was not there.
+    taglist=""
+    for tag in $*
+    do
+        tag=`echo $tag | sed 's/^\([^\^]\)/\^\1/'`
+        taglist="$taglist $tag"
+    done
+    taglist=`echo $taglist | tr " " "\n" | sort -u`
+    # currently tag list is now a sorted list of tags that were taken from
+    # the command line
+    echo $taglist
     ;;
 
 * )
