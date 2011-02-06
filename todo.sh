@@ -1110,6 +1110,43 @@ note: PRIORITY must be anywhere from A to Z."
     replaceOrPrepend 'replace' $TODO_SH $item "$input $taglist"
     ;;
 
+"untag" )
+    errmsg="usage: $TODO_SH tag ITEM# TAG,..."
+    shift
+    item=$1
+    [ -z "$item" ] && die "$errmsg"
+    [[ "$item" = +([0-9]) ]] || die "$errmsg"
+    input=$(sed "$item!d" "$TODO_FILE")
+    cleaninput $input
+    [ -z "$input" ] && die "TODO: No task $item."
+
+    shift
+
+    # split the tags and make sure they all have the ^ prefix if it was not there.
+    taglist=""
+    for tag in $*
+    do
+        tag=`echo $tag | sed 's/^\([^\^]\)/\^\1/'`
+        key=$tag
+        escapekey
+        if echo $existing_tags | grep -q "$key"
+        then
+           true
+        else
+           taglist="$taglist $tag"
+        fi
+    done
+    taglist=`echo $taglist | tr " " "\n" | sort -u`
+
+    # for each entry on the tag list find the pattern and remove it from the input string.
+    for tag in $taglist
+    do
+      input=`echo $input | sed 's/[[:space:]]'$tag'[[:space:]]/ /g' | sed 's/[[:space:]]'$tag'$//g' | sed 's/^'$tag'[[:space:]]//g'`
+    done
+
+    replaceOrPrepend 'replace' $TODO_SH $item "$input"
+    ;;
+
 * )
     usage;;
 esac
