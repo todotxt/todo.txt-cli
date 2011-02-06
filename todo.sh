@@ -67,6 +67,7 @@ shorthelp()
 		    replace ITEM# "UPDATED TODO"
 		    report
 		    tag ITEM# TAG,...
+		    untag ITEM# TAG,...
 
 		  See "help" for more details.
 	EndHelp
@@ -184,6 +185,9 @@ help()
 
 		    tag ITEM# TAG,...
 		      Adds the specified tags to an item.
+
+		    untag ITEM# TAG,...
+		      Removes the specified tags to an item.
 
 
 
