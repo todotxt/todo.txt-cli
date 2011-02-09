@@ -343,6 +343,14 @@ replaceOrPrepend()
   fi
 }
 
+#Preserving environment variables so they don't get clobbered by the config file
+OVR_TODOTXT_AUTO_ARCHIVE="$TODOTXT_AUTO_ARCHIVE"
+OVR_TODOTXT_FORCE="$TODOTXT_FORCE"
+OVR_TODOTXT_PRESERVE_LINE_NUMBERS="$TODOTXT_PRESERVE_LINE_NUMBERS"
+OVR_TODOTXT_PLAIN="$TODOTXT_PLAIN"
+OVR_TODOTXT_DATE_ON_ADD="$TODOTXT_DATE_ON_ADD"
+OVR_TODOTXT_DISABLE_FILTER="$TODOTXT_DISABLE_FILTER"
+
 # == PROCESS OPTIONS ==
 while getopts ":fhpnatvVx+@Pd:" Option
 do
@@ -380,22 +388,22 @@ do
         fi
         ;;
     a )
-        TODOTXT_AUTO_ARCHIVE=0
+        OVR_TODOTXT_AUTO_ARCHIVE=0
         ;;
     d )
         TODOTXT_CFG_FILE=$OPTARG
         ;;
     f )
-        TODOTXT_FORCE=1
+        OVR_TODOTXT_FORCE=1
         ;;
     h )
         shorthelp
         ;;
     n )
-        TODOTXT_PRESERVE_LINE_NUMBERS=0
+        OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
         ;;
     p )
-        TODOTXT_PLAIN=1
+        OVR_TODOTXT_PLAIN=1
         ;;
     P )
         ## HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
@@ -414,7 +422,7 @@ do
         fi
         ;;
     t )
-        TODOTXT_DATE_ON_ADD=1
+        OVR_TODOTXT_DATE_ON_ADD=1
         ;;
     v )
         : $(( TODOTXT_VERBOSE++ ))
@@ -423,7 +431,7 @@ do
         version
         ;;
     x )
-        TODOTXT_DISABLE_FILTER=1
+        OVR_TODOTXT_DISABLE_FILTER=1
         ;;
   esac
 done
@@ -516,6 +524,26 @@ fi
 [ -r "$TODOTXT_CFG_FILE" ] || die "Fatal Error: Cannot read configuration file $TODOTXT_CFG_FILE"
 
 . "$TODOTXT_CFG_FILE"
+
+# === APPLY OVERRIDES
+if [ -n "$OVR_TODOTXT_AUTO_ARCHIVE" ] ; then
+  TODOTXT_AUTO_ARCHIVE="$OVR_TODOTXT_AUTO_ARCHIVE"
+fi
+if [ -n "$OVR_TODOTXT_FORCE" ] ; then
+  TODOTXT_FORCE="$OVR_TODOTXT_FORCE"
+fi
+if [ -n "$OVR_TODOTXT_PRESERVE_LINE_NUMBERS" ] ; then
+  TODOTXT_PRESERVE_LINE_NUMBERS="$OVR_TODOTXT_PRESERVE_LINE_NUMBERS"
+fi
+if [ -n "$OVR_TODOTXT_PLAIN" ] ; then
+  TODOTXT_PLAIN="$OVR_TODOTXT_PLAIN"
+fi
+if [ -n "$OVR_TODOTXT_DATE_ON_ADD" ] ; then
+  TODOTXT_DATE_ON_ADD="$OVR_TODOTXT_DATE_ON_ADD"
+fi
+if [ -n "$OVR_TODOTXT_DISABLE_FILTER" ] ; then
+  TODOTXT_DISABLE_FILTER="$OVR_TODOTXT_DISABLE_FILTER"
+fi
 
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
