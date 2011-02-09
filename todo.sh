@@ -224,12 +224,12 @@ help()
 
 
 		  Environment variables:
-		    TODOTXT_AUTO_ARCHIVE=0          is same as option -a/-A
+		    TODOTXT_AUTO_ARCHIVE            is same as option -a (0)/-A (1)
 		    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
 		    TODOTXT_FORCE=1                 is same as option -f
-		    TODOTXT_PRESERVE_LINE_NUMBERS=0 is same as option -n/-N
-		    TODOTXT_PLAIN=1                 is same as option -p/-c
-		    TODOTXT_DATE_ON_ADD=1           is same as option -t/-T
+		    TODOTXT_PRESERVE_LINE_NUMBERS   is same as option -n (0)/-N (1)
+		    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
+		    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
 		    TODOTXT_VERBOSE=1               is same as option -v
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
