@@ -185,6 +185,8 @@ help()
 		    -+
 		        Hide project names in list output. Use twice to show project
 		        names (default).
+		    -c
+		        Color mode
 		    -d CONFIG_FILE
 		        Use a configuration file other than the default ~/.todo/config
 		    -f
@@ -198,11 +200,18 @@ help()
 		        priority labels (default).
 		    -a
 		        Don't auto-archive tasks automatically on completion
+		    -A
+		        Auto-archive tasks automatically on completion
 		    -n
 		        Don't preserve line numbers; automatically remove blank lines
 		        on task deletion
+		    -N
+		        Preserve line numbers
 		    -t
 		        Prepend the current date to a task automatically
+		        when it's added.
+		    -T
+		        Do not prepend the current date to a task automatically
 		        when it's added.
 		    -v
 		        Verbose mode turns on confirmation messages
@@ -215,12 +224,12 @@ help()
 
 
 		  Environment variables:
-		    TODOTXT_AUTO_ARCHIVE=0          is same as option -a
+		    TODOTXT_AUTO_ARCHIVE=0          is same as option -a/-A
 		    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
 		    TODOTXT_FORCE=1                 is same as option -f
-		    TODOTXT_PRESERVE_LINE_NUMBERS=0 is same as option -n
-		    TODOTXT_PLAIN=1                 is same as option -p
-		    TODOTXT_DATE_ON_ADD=1           is same as option -t
+		    TODOTXT_PRESERVE_LINE_NUMBERS=0 is same as option -n/-N
+		    TODOTXT_PLAIN=1                 is same as option -p/-c
+		    TODOTXT_DATE_ON_ADD=1           is same as option -t/-T
 		    TODOTXT_VERBOSE=1               is same as option -v
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
@@ -390,6 +399,12 @@ do
     a )
         OVR_TODOTXT_AUTO_ARCHIVE=0
         ;;
+    A )
+        OVR_TODOTXT_AUTO_ARCHIVE=1
+        ;;
+    c )
+        OVR_TODOTXT_PLAIN=0
+        ;;
     d )
         TODOTXT_CFG_FILE=$OPTARG
         ;;
@@ -401,6 +416,9 @@ do
         ;;
     n )
         OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
+        ;;
+    N )
+        OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1
         ;;
     p )
         OVR_TODOTXT_PLAIN=1
@@ -423,6 +441,9 @@ do
         ;;
     t )
         OVR_TODOTXT_DATE_ON_ADD=1
+        ;;
+    T )
+        OVR_TODOTXT_DATE_ON_ADD=0
         ;;
     v )
         : $(( TODOTXT_VERBOSE++ ))
