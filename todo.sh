@@ -361,7 +361,7 @@ OVR_TODOTXT_DATE_ON_ADD="$TODOTXT_DATE_ON_ADD"
 OVR_TODOTXT_DISABLE_FILTER="$TODOTXT_DISABLE_FILTER"
 
 # == PROCESS OPTIONS ==
-while getopts ":fhpnatvVx+@Pd:" Option
+while getopts ":fhpcnNaAtTvVx+@Pd:" Option
 do
   case $Option in
     '@' )
