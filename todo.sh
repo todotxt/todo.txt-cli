@@ -185,6 +185,8 @@ help()
 		    -+
 		        Hide project names in list output. Use twice to show project
 		        names (default).
+		    -c
+		        Color mode
 		    -d CONFIG_FILE
 		        Use a configuration file other than the default ~/.todo/config
 		    -f
@@ -198,11 +200,18 @@ help()
 		        priority labels (default).
 		    -a
 		        Don't auto-archive tasks automatically on completion
+		    -A
+		        Auto-archive tasks automatically on completion
 		    -n
 		        Don't preserve line numbers; automatically remove blank lines
 		        on task deletion
+		    -N
+		        Preserve line numbers
 		    -t
 		        Prepend the current date to a task automatically
+		        when it's added.
+		    -T
+		        Do not prepend the current date to a task automatically
 		        when it's added.
 		    -v
 		        Verbose mode turns on confirmation messages
@@ -215,12 +224,12 @@ help()
 
 
 		  Environment variables:
-		    TODOTXT_AUTO_ARCHIVE=0          is same as option -a
+		    TODOTXT_AUTO_ARCHIVE            is same as option -a (0)/-A (1)
 		    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
 		    TODOTXT_FORCE=1                 is same as option -f
-		    TODOTXT_PRESERVE_LINE_NUMBERS=0 is same as option -n
-		    TODOTXT_PLAIN=1                 is same as option -p
-		    TODOTXT_DATE_ON_ADD=1           is same as option -t
+		    TODOTXT_PRESERVE_LINE_NUMBERS   is same as option -n (0)/-N (1)
+		    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
+		    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
 		    TODOTXT_VERBOSE=1               is same as option -v
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
@@ -343,8 +352,20 @@ replaceOrPrepend()
   fi
 }
 
+#Preserving environment variables so they don't get clobbered by the config file
+OVR_TODOTXT_AUTO_ARCHIVE="$TODOTXT_AUTO_ARCHIVE"
+OVR_TODOTXT_FORCE="$TODOTXT_FORCE"
+OVR_TODOTXT_PRESERVE_LINE_NUMBERS="$TODOTXT_PRESERVE_LINE_NUMBERS"
+OVR_TODOTXT_PLAIN="$TODOTXT_PLAIN"
+OVR_TODOTXT_DATE_ON_ADD="$TODOTXT_DATE_ON_ADD"
+OVR_TODOTXT_DISABLE_FILTER="$TODOTXT_DISABLE_FILTER"
+OVR_TODOTXT_VERBOSE="$TODOTXT_VERBOSE"
+OVR_TODOTXT_DEFAULT_ACTION="$TODOTXT_DEFAULT_ACTION"
+OVR_TODOTXT_SORT_COMMAND="$TODOTXT_SORT_COMMAND"
+OVR_TODOTXT_FINAL_FILTER="$TODOTXT_FINAL_FILTER"
+
 # == PROCESS OPTIONS ==
-while getopts ":fhpnatvVx+@Pd:" Option
+while getopts ":fhpcnNaAtTvVx+@Pd:" Option
 do
   case $Option in
     '@' )
@@ -380,22 +401,31 @@ do
         fi
         ;;
     a )
-        TODOTXT_AUTO_ARCHIVE=0
+        OVR_TODOTXT_AUTO_ARCHIVE=0
+        ;;
+    A )
+        OVR_TODOTXT_AUTO_ARCHIVE=1
+        ;;
+    c )
+        OVR_TODOTXT_PLAIN=0
         ;;
     d )
         TODOTXT_CFG_FILE=$OPTARG
         ;;
     f )
-        TODOTXT_FORCE=1
+        OVR_TODOTXT_FORCE=1
         ;;
     h )
         shorthelp
         ;;
     n )
-        TODOTXT_PRESERVE_LINE_NUMBERS=0
+        OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
+        ;;
+    N )
+        OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1
         ;;
     p )
-        TODOTXT_PLAIN=1
+        OVR_TODOTXT_PLAIN=1
         ;;
     P )
         ## HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
@@ -414,7 +444,10 @@ do
         fi
         ;;
     t )
-        TODOTXT_DATE_ON_ADD=1
+        OVR_TODOTXT_DATE_ON_ADD=1
+        ;;
+    T )
+        OVR_TODOTXT_DATE_ON_ADD=0
         ;;
     v )
         : $(( TODOTXT_VERBOSE++ ))
@@ -423,7 +456,7 @@ do
         version
         ;;
     x )
-        TODOTXT_DISABLE_FILTER=1
+        OVR_TODOTXT_DISABLE_FILTER=1
         ;;
   esac
 done
@@ -526,6 +559,38 @@ fi
 [ -r "$TODOTXT_CFG_FILE" ] || die "Fatal Error: Cannot read configuration file $TODOTXT_CFG_FILE"
 
 . "$TODOTXT_CFG_FILE"
+
+# === APPLY OVERRIDES
+if [ -n "$OVR_TODOTXT_AUTO_ARCHIVE" ] ; then
+  TODOTXT_AUTO_ARCHIVE="$OVR_TODOTXT_AUTO_ARCHIVE"
+fi
+if [ -n "$OVR_TODOTXT_FORCE" ] ; then
+  TODOTXT_FORCE="$OVR_TODOTXT_FORCE"
+fi
+if [ -n "$OVR_TODOTXT_PRESERVE_LINE_NUMBERS" ] ; then
+  TODOTXT_PRESERVE_LINE_NUMBERS="$OVR_TODOTXT_PRESERVE_LINE_NUMBERS"
+fi
+if [ -n "$OVR_TODOTXT_PLAIN" ] ; then
+  TODOTXT_PLAIN="$OVR_TODOTXT_PLAIN"
+fi
+if [ -n "$OVR_TODOTXT_DATE_ON_ADD" ] ; then
+  TODOTXT_DATE_ON_ADD="$OVR_TODOTXT_DATE_ON_ADD"
+fi
+if [ -n "$OVR_TODOTXT_DISABLE_FILTER" ] ; then
+  TODOTXT_DISABLE_FILTER="$OVR_TODOTXT_DISABLE_FILTER"
+fi
+if [ -n "$OVR_TODOTXT_VERBOSE" ] ; then
+  TODOTXT_VERBOSE="$OVR_TODOTXT_VERBOSE"
+fi
+if [ -n "$OVR_TODOTXT_DEFAULT_ACTION" ] ; then
+  TODOTXT_DEFAULT_ACTION="$OVR_TODOTXT_DEFAULT_ACTION"
+fi
+if [ -n "$OVR_TODOTXT_SORT_COMMAND" ] ; then
+  TODOTXT_SORT_COMMAND="$OVR_TODOTXT_SORT_COMMAND"
+fi
+if [ -n "$OVR_TODOTXT_FINAL_FILTER" ] ; then
+  TODOTXT_FINAL_FILTER="$OVR_TODOTXT_FINAL_FILTER"
+fi
 
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
