@@ -24,3 +24,8 @@ h2. Quick Links
 * "Add-on Directory":http://wiki.github.com/ginatrapani/todo.txt-cli/todosh-add-on-directory
 * "Changelog":http://wiki.github.com/ginatrapani/todo.txt-cli/todosh-changelog
 * "Known Bugs":http://github.com/ginatrapani/todo.txt-cli/issues
+
+h2. Changes from the original
+
+* This adds a custom addon folder
+* This adds a capability for the addon folder to be relative to the path of todo.sh if the previously defined locations are not present
