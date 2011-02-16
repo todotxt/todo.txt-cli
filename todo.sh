@@ -241,7 +241,7 @@ help()
         echo ""
         for action in "$TODO_ACTIONS_DIR"/*
         do
-            if $( echo "$action" | grep -q '\.' )
+            if echo "$action" | grep -q '\.' 
             then
                 true
             elif [ -f "$action" -a -x "$action" ]
