@@ -269,14 +269,14 @@ cleaninput()
 {
     # Cleanup the input
     # Replace newlines with spaces Always
-    input=`echo $input | tr -d '\r\n'`
+    input=$(echo $input | tr -d '\r\n')
 
     action_regexp="^\(append\|app\|prepend\|prep\|replace\)$"
 
     # Check which action we are being used in as this affects what cleaning we do
-    if [ `echo $action | grep -c $action_regexp` -eq 1 ]; then
+    if [ $(echo $action | grep -c $action_regexp) -eq 1 ]; then
         # These actions use sed and & as the matched string so escape it
-        input=`echo $input | sed 's/\&/\\\&/g'`
+        input=$(echo $input | sed 's/\&/\\\&/g')
     fi
 }
 
@@ -531,7 +531,7 @@ export SENTENCE_DELIMITERS=',.:;'
 }
 
 [ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT=`dirname "$0"`"/todo.cfg"
+    CFG_FILE_ALT=$(dirname "$0")"/todo.cfg"
 
     if [ -e "$CFG_FILE_ALT" ]
     then
@@ -618,7 +618,7 @@ _addto() {
     cleaninput $input
 
     if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
-        now=`date '+%Y-%m-%d'`
+        now=$(date '+%Y-%m-%d')
         input="$now $input"
     fi
     echo "$input" >> "$file"
@@ -916,7 +916,7 @@ case $action in
 
     # Split multiple depri's, if comma separated change to whitespace separated
     # Loop the 'depri' function for each item
-    for item in `echo $* | tr ',' ' '`; do
+    for item in $(echo $* | tr ',' ' '); do
 	[[ "$item" = +([0-9]) ]] || die "$errmsg"
 	todo=$(sed "$item!d" "$TODO_FILE")
 	[ -z "$todo" ] && die "TODO: No task $item."
@@ -945,7 +945,7 @@ case $action in
 
     # Split multiple do's, if comma separated change to whitespace separated
     # Loop the 'do' function for each item
-    for item in `echo $* | tr ',' ' '`; do 
+    for item in $(echo $* | tr ',' ' '); do 
         [ -z "$item" ] && die "$errmsg"
         [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
@@ -953,8 +953,8 @@ case $action in
         [ -z "$todo" ] && die "TODO: No task $item."
 
         # Check if this item has already been done
-        if [ `echo $todo | grep -c "^x "` -eq 0 ] ; then
-            now=`date '+%Y-%m-%d'`
+        if [ $(echo $todo | grep -c "^x ") -eq 0 ] ; then
+            now=$(date '+%Y-%m-%d')
             # remove priority once item is done
             sed -i.bak $item"s/^(.) //" "$TODO_FILE"
             sed -i.bak $item"s|^|x $now |" "$TODO_FILE"
