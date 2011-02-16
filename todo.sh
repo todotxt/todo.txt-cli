@@ -916,7 +916,7 @@ case $action in
 
     # Split multiple depri's, if comma separated change to whitespace separated
     # Loop the 'depri' function for each item
-    for item in ${echo $* | tr ',' ' '}; do
+    for item in $(echo $* | tr ',' ' '); do
 	[[ "$item" = +([0-9]) ]] || die "$errmsg"
 	todo=$(sed "$item!d" "$TODO_FILE")
 	[ -z "$todo" ] && die "TODO: No task $item."
