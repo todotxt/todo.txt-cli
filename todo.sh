@@ -3,6 +3,8 @@
 # === HEAVY LIFTING ===
 shopt -s extglob
 
+set -e
+
 # NOTE:  Todo.sh requires the .todo/config configuration file to run.
 # Place the .todo/config file in your home directory or use the -d option for a custom location.
 
