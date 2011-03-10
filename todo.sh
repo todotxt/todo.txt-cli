@@ -234,7 +234,7 @@ help()
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
-		    TODOTXT_BACKUP_NAME=".bak"   suffix to sed's -i for backup files
+		    TODOTXT_BACKUP_NAME=".bak"      suffix to sed's -i for backup files
 	EndHelp
 
     if [ -d "$TODO_ACTIONS_DIR" ]
