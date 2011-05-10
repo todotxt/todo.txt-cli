@@ -1022,9 +1022,9 @@ note: PRIORITY must a single letter from A to Z."
         ## No priority specified; show all priority tasks
         pri="[A-Z]"
     fi
-    pri="($pri)"
 
-    _list "$TODO_FILE" "$pri"
+    post_filter_command="grep '^ *[0-9]\+ (${pri}) '"
+    _list "$TODO_FILE"
     ;;
 
 "move" | "mv" )
