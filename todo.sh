@@ -966,7 +966,7 @@ case $action in
                 echo "TODO: $item marked as done."
 	    fi
         else
-            echo "$item is already marked done"
+            echo "TODO: $item is already marked done."
         fi
     done
 
