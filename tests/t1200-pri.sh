@@ -55,7 +55,7 @@ TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 A
 2 (A) notice the sunflowers
-TODO: 2 prioritized (A).
+TODO: 2 re-prioritized from (C) to (A).
 
 >>> todo.sh -p list
 2 (A) notice the sunflowers
@@ -66,7 +66,7 @@ TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 a
 2 (A) notice the sunflowers
-TODO: 2 prioritized (A).
+TODO: 2 already prioritized (A).
 
 >>> todo.sh -p listpri
 2 (A) notice the sunflowers
