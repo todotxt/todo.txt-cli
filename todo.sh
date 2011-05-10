@@ -1016,7 +1016,18 @@ case $action in
 "listpri" | "lsp" )
     shift ## was "listpri", new $1 is priority to list or first TERM
 
-    pri=$(printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$') && shift || pri="[A-Z]"
+    if [ "${1:-}" ]
+    then
+        ## A priority was specified
+        pri=$( printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
+            die "usage: $TODO_SH listpri PRIORITY
+note: PRIORITY must a single letter from A to Z."
+        }
+    else
+        ## No priority specified; show all priority tasks
+        pri="[A-Z]"
+    fi
+
     post_filter_command="grep '^ *[0-9]\+ (${pri}) '"
     _list "$TODO_FILE" "$@"
     ;;
