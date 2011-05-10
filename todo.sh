@@ -1016,7 +1016,7 @@ case $action in
         ## A priority was specified
         pri=$( printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
             die "usage: $TODO_SH listpri PRIORITY
-            note: PRIORITY must a single letter from A to Z."
+note: PRIORITY must a single letter from A to Z."
         }
     else
         ## No priority specified; show all priority tasks

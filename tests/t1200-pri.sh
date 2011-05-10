@@ -87,10 +87,11 @@ TODO: 3 of 3 tasks shown
 2 (A) notice the sunflowers
 TODO: 2 already prioritized (A).
 
->>> todo.sh -p listpri
+>>> todo.sh -p list
 2 (A) notice the sunflowers
 1 (B) smell the uppercase Roses +flowers @outside
+3 stop
 --
-TODO: 2 of 3 tasks shown
+TODO: 3 of 3 tasks shown
 EOF
 test_done
