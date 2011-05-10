@@ -324,8 +324,8 @@ replaceOrPrepend()
   cleaninput $input
 
   # Retrieve existing priority and prepended date
-  priority=$(sed -e "$item!d" -e $item's/^\(([A-Z]) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}.*/\1/' "$TODO_FILE")
-  prepdate=$(sed -e "$item!d" -e $item's/^\(([A-Z]) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}.*/\2/' "$TODO_FILE")
+  priority=$(sed -e "$item!d" -e $item's/^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}.*/\1/' "$TODO_FILE")
+  prepdate=$(sed -e "$item!d" -e $item's/^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}.*/\2/' "$TODO_FILE")
 
   if [ "$prepdate" -a "$action" = "replace" ] && [ "$(echo "$input"|sed -e 's/^\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\}\)\{0,1\}.*/\1/')" ]; then
     # If the replaced text starts with a date, it will replace the existing
