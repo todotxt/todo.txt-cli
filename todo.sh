@@ -1020,7 +1020,7 @@ case $action in
         }
     else
         ## No priority specified; show all priority tasks
-        pri="[[:upper:]]"
+        pri="[A-Z]"
     fi
     pri="($pri)"
 
