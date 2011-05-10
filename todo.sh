@@ -58,7 +58,7 @@ shorthelp()
 		    listall|lsa [TERM...]
 		    listcon|lsc
 		    listfile|lf SRC [TERM...]
-		    listpri|lsp [PRIORITY]
+		    listpri|lsp [PRIORITY] [TERM...]
 		    listproj|lsprj
 		    move|mv ITEM# DEST [SRC]
 		    prepend|prep ITEM# "TEXT TO PREPEND"
@@ -143,10 +143,11 @@ help()
 		      sorted by priority with line  numbers.  If TERM specified, lists
 		      all lines that contain TERM in SRC file.
 
-		    listpri [PRIORITY]
-		    lsp [PRIORITY]
+		    listpri [PRIORITY] [TERM...]
+		    lsp [PRIORITY] [TERM...]
 		      Displays all tasks prioritized PRIORITY.
 		      If no PRIORITY specified, lists all prioritized tasks.
+		      If TERM specified, lists only prioritized tasks that contain TERM.
 
 		    listproj
 		    lsprj
@@ -1013,22 +1014,11 @@ case $action in
     ;;
 
 "listpri" | "lsp" )
-    shift ## was "listpri", new $1 is priority to list
+    shift ## was "listpri", new $1 is priority to list or first TERM
 
-    if [ "${1:-}" ]
-    then
-        ## A priority was specified
-        pri=$( printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
-            die "usage: $TODO_SH listpri PRIORITY
-            note: PRIORITY must a single letter from A to Z."
-        }
-    else
-        ## No priority specified; show all priority tasks
-        pri="[[:upper:]]"
-    fi
-    pri="($pri)"
-
-    _list "$TODO_FILE" "$pri"
+    pri=$(printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$') && shift || pri="[A-Z]"
+    post_filter_command="grep '^ *[0-9]\+ (${pri}) '"
+    _list "$TODO_FILE" "$@"
     ;;
 
 "move" | "mv" )
