@@ -62,29 +62,33 @@ TODO: Replaced task with:
 4 collect the eggs
 EOF
 
+echo '(A) collect the eggs' > todo.txt
 test_todo_session 'replace with priority' <<EOF
->>> todo.sh pri 4 a
-4 (A) collect the eggs
-TODO: 4 prioritized (A).
-
->>> todo.sh replace 4 "collect the bread"
-4 (A) collect the eggs
+>>> todo.sh replace 1 "collect the bread"
+1 (A) collect the eggs
 TODO: Replaced task with:
-4 (A) collect the bread
+1 (A) collect the bread
 
->>> todo.sh replace 4 collect the eggs
-4 (A) collect the bread
+>>> todo.sh replace 1 collect the eggs
+1 (A) collect the bread
 TODO: Replaced task with:
-4 (A) collect the eggs
+1 (A) collect the eggs
 EOF
 
+echo 'jump on hay' > todo.txt
 test_todo_session 'replace with &' << EOF
->>> todo.sh replace 3 "thrash the hay & thresh the wheat"
-3 jump on hay
+>>> todo.sh replace 1 "thrash the hay & thrash the wheat"
+1 jump on hay
 TODO: Replaced task with:
-3 thrash the hay & thresh the wheat
+1 thrash the hay & thrash the wheat
 EOF
 
+cat > todo.txt <<EOF
+smell the cows
+grow some corn
+thrash some hay
+chase the chickens
+EOF
 test_todo_session 'replace error' << EOF
 >>> todo.sh replace 10 "hej!"
 === 1
@@ -124,6 +128,7 @@ TODO: Replaced task with:
 1 (A) 2009-02-13 this is just a new one
 EOF
 
+echo '(A) 2009-02-13 this is just a new one' > todo.txt
 test_todo_session 'replace with prepended date replaces existing date' <<EOF
 >>> todo.sh replace 1 2010-07-04 this also has a new date
 1 (A) 2009-02-13 this is just a new one
