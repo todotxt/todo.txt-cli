@@ -45,6 +45,12 @@ grow some corn
 thrash some hay
 chase the chickens
 EOF
+test_todo_session 'replace error' << EOF
+>>> todo.sh replace 10 "hej!"
+=== 1
+TODO: No task 10.
+EOF
+
 test_todo_session 'replace in multi-item file' <<EOF
 >>> todo.sh replace 1 smell the cheese
 1 smell the cows
@@ -62,33 +68,51 @@ TODO: Replaced task with:
 4 collect the eggs
 EOF
 
+echo '(A) collect the eggs' > todo.txt
 test_todo_session 'replace with priority' <<EOF
->>> todo.sh pri 4 a
-4 (A) collect the eggs
-TODO: 4 prioritized (A).
-
->>> todo.sh replace 4 "collect the bread"
-4 (A) collect the eggs
+>>> todo.sh replace 1 "collect the bread"
+1 (A) collect the eggs
 TODO: Replaced task with:
-4 (A) collect the bread
+1 (A) collect the bread
 
->>> todo.sh replace 4 collect the eggs
-4 (A) collect the bread
+>>> todo.sh replace 1 collect the eggs
+1 (A) collect the bread
 TODO: Replaced task with:
-4 (A) collect the eggs
+1 (A) collect the eggs
 EOF
 
+echo 'jump on hay' > todo.txt
 test_todo_session 'replace with &' << EOF
->>> todo.sh replace 3 "thrash the hay & thresh the wheat"
-3 jump on hay
+>>> todo.sh replace 1 "thrash the hay & thrash the wheat"
+1 jump on hay
 TODO: Replaced task with:
-3 thrash the hay & thresh the wheat
+1 thrash the hay & thrash the wheat
 EOF
 
-test_todo_session 'replace error' << EOF
->>> todo.sh replace 10 "hej!"
-=== 1
-TODO: No task 10.
+cat > todo.txt <<EOF
+smell the cows
+grow some corn
+thrash some hay
+chase the chickens
+EOF
+test_todo_session 'replace with symbols' <<EOF
+>>> todo.sh replace 1 "~@#$%^&*()-_=+[{]}|;:',<.>/?"
+1 smell the cows
+TODO: Replaced task with:
+1 ~@#$%^&*()-_=+[{]}|;:',<.>/?
+
+>>> todo.sh replace 2 '\`!\\"'
+2 grow some corn
+TODO: Replaced task with:
+2 \`!\\"
+
+>>> todo.sh list
+4 chase the chickens
+3 thrash some hay
+2 \`!\\"
+1 ~@#$%^&*()-_=+[{]}|;:',<.>/?
+--
+TODO: 4 of 4 tasks shown
 EOF
 
 cat /dev/null > todo.txt
@@ -124,6 +148,7 @@ TODO: Replaced task with:
 1 (A) 2009-02-13 this is just a new one
 EOF
 
+echo '(A) 2009-02-13 this is just a new one' > todo.txt
 test_todo_session 'replace with prepended date replaces existing date' <<EOF
 >>> todo.sh replace 1 2010-07-04 this also has a new date
 1 (A) 2009-02-13 this is just a new one
