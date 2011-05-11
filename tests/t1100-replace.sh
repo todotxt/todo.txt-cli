@@ -45,6 +45,12 @@ grow some corn
 thrash some hay
 chase the chickens
 EOF
+test_todo_session 'replace error' << EOF
+>>> todo.sh replace 10 "hej!"
+=== 1
+TODO: No task 10.
+EOF
+
 test_todo_session 'replace in multi-item file' <<EOF
 >>> todo.sh replace 1 smell the cheese
 1 smell the cows
@@ -89,10 +95,24 @@ grow some corn
 thrash some hay
 chase the chickens
 EOF
-test_todo_session 'replace error' << EOF
->>> todo.sh replace 10 "hej!"
-=== 1
-TODO: No task 10.
+test_todo_session 'replace with symbols' <<EOF
+>>> todo.sh replace 1 "~@#$%^&*()-_=+[{]}|;:',<.>/?"
+1 smell the cows
+TODO: Replaced task with:
+1 ~@#$%^&*()-_=+[{]}|;:',<.>/?
+
+>>> todo.sh replace 2 '\`!\\"'
+2 grow some corn
+TODO: Replaced task with:
+2 \`!\\"
+
+>>> todo.sh list
+4 chase the chickens
+3 thrash some hay
+2 \`!\\"
+1 ~@#$%^&*()-_=+[{]}|;:',<.>/?
+--
+TODO: 4 of 4 tasks shown
 EOF
 
 cat /dev/null > todo.txt

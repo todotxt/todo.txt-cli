@@ -272,8 +272,16 @@ cleaninput()
     input=$(echo $input | tr -d '\r\n')
 
     if [ "$1" = "for sed" ]; then
-        # This action uses sed and & as the matched string so escape it
-        input=`echo $input | sed 's/\&/\\\&/g'`
+        # This action uses sed and & as the matched string so escape it.
+        # Backslashes must be escaped, too.
+        input=`echo $input | sed -e 's+\\\+\\\\\\\\+g' -e 's/\&/\\\&/g'`
+
+        # Find a separator that doesn't occur in $input, sed cannot handle it, and escaping doesn't help.
+        # In the worst case (no separator found), the replacement text after the "|" is lost.
+        for inputSep in '%' '#' '@' ':' '!' '|'
+        do
+            [[ "$input" = *${inputSep}* ]] || break
+        done
     fi
 }
 
@@ -319,6 +327,7 @@ replaceOrPrepend()
     input=$*
   fi
   cleaninput "for sed"
+  sep=${inputSep:-|}
 
   # Retrieve existing priority and prepended date
   priority=$(sed -e "$item!d" -e $item's/^\(([A-Z]) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}.*/\1/' "$TODO_FILE")
@@ -333,7 +342,7 @@ replaceOrPrepend()
   # Temporarily remove any existing priority and prepended date, perform the
   # change (replace/prepend) and re-insert the existing priority and prepended
   # date again.
-  sed -i.bak -e "$item s/^${priority}${prepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
+  sed -i.bak -e "$item s/^${priority}${prepdate}//" -e "$item s${sep}^.*${sep}${priority}${prepdate}${input}${backref}${sep}" "$TODO_FILE"
   if [ $TODOTXT_VERBOSE -gt 0 ]; then
     newtodo=$(sed "$item!d" "$TODO_FILE")
     case "$action" in
@@ -840,8 +849,9 @@ case $action in
       *)                        appendspace=" ";;
     esac
     cleaninput "for sed"
+    sep=${inputSep:-|}
 
-    if sed -i.bak $item" s|^.*|&${appendspace}${input}|" "$TODO_FILE"; then
+    if sed -i.bak $item" s${sep}^.*${sep}&${appendspace}${input}${sep}" "$TODO_FILE"; then
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
             newtodo=$(sed "$item!d" "$TODO_FILE")
             echo "$item $newtodo"
