@@ -321,7 +321,7 @@ replaceOrPrepend()
   else
     input=$*
   fi
-  cleaninput $input
+  cleaninput
 
   # Retrieve existing priority and prepended date
   priority=$(sed -e "$item!d" -e $item's/^\(([A-Z]) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}.*/\1/' "$TODO_FILE")
@@ -615,7 +615,7 @@ fi
 _addto() {
     file="$1"
     input="$2"
-    cleaninput $input
+    cleaninput
 
     if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
         now=$(date '+%Y-%m-%d')
@@ -842,7 +842,7 @@ case $action in
       [$SENTENCE_DELIMITERS]*)  appendspace=;;
       *)                        appendspace=" ";;
     esac
-    cleaninput $input
+    cleaninput
 
     if sed -i.bak $item" s|^.*|&${appendspace}${input}|" "$TODO_FILE"; then
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
