@@ -271,12 +271,9 @@ cleaninput()
     # Replace newlines with spaces Always
     input=$(echo $input | tr -d '\r\n')
 
-    action_regexp="^\(append\|app\|prepend\|prep\|replace\)$"
-
-    # Check which action we are being used in as this affects what cleaning we do
-    if [ $(echo $action | grep -c $action_regexp) -eq 1 ]; then
-        # These actions use sed and & as the matched string so escape it
-        input=$(echo $input | sed 's/\&/\\\&/g')
+    if [ "$1" = "for sed" ]; then
+        # This action uses sed and & as the matched string so escape it
+        input=`echo $input | sed 's/\&/\\\&/g'`
     fi
 }
 
@@ -321,7 +318,7 @@ replaceOrPrepend()
   else
     input=$*
   fi
-  cleaninput
+  cleaninput "for sed"
 
   # Retrieve existing priority and prepended date
   priority=$(sed -e "$item!d" -e $item's/^\(([A-Z]) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}.*/\1/' "$TODO_FILE")
@@ -842,7 +839,7 @@ case $action in
       [$SENTENCE_DELIMITERS]*)  appendspace=;;
       *)                        appendspace=" ";;
     esac
-    cleaninput
+    cleaninput "for sed"
 
     if sed -i.bak $item" s|^.*|&${appendspace}${input}|" "$TODO_FILE"; then
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
