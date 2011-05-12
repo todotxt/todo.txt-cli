@@ -958,7 +958,7 @@ case $action in
         [ -z "$todo" ] && die "TODO: No task $item."
 
         # Check if this item has already been done
-        if [ `echo $todo | grep -c "^x "` -eq 0 ] ; then
+        if [ "${todo:0:2}" != "x " ]; then
             now=`date '+%Y-%m-%d'`
             # remove priority once item is done
             sed -i.bak $item"s/^(.) //" "$TODO_FILE"
