@@ -12,5 +12,5 @@ shift
 }
 
 [ "$action" = "birdseye" ] && {
-     python ~/.todo.actions.d/birdseye.py "$TODO_FILE" "$DONE_FILE"
+     python ${TODO_ACTIONS_DIR}/birdseye.py "$TODO_FILE" "$DONE_FILE"
 }
