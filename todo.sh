@@ -618,6 +618,10 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     COLOR_DONE=$NONE
 fi
 
+_post_command() {
+    [ -n "$TODOTXT_POST_COMMAND" ] && eval ${TODOTXT_POST_COMMAND}
+}
+
 _addto() {
     file="$1"
     input="$2"
