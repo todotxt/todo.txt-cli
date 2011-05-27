@@ -760,7 +760,7 @@ _list() {
     fi
 }
 
-export -f _list die
+export -f _list die _post_command
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
