@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # === HEAVY LIFTING ===
-shopt -s extglob
+shopt -s extglob extquote
 
 # NOTE:  Todo.sh requires the .todo/config configuration file to run.
 # Place the .todo/config file in your home directory or use the -d option for a custom location.
@@ -267,9 +267,9 @@ cleanup()
 
 cleaninput()
 {
-    # Cleanup the input
-    # Replace newlines with spaces Always
-    input=`printf %s "$input" | tr '\r\n' ' '`
+    # Replace CR and LF with space; tasks always comprise a single line.
+    input=${input//$'\r'/ }
+    input=${input//$'\n'/ }
 
     if [ "$1" = "for sed" ]; then
         # This action uses sed with "|" as the substitution separator, and & as
