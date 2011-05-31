@@ -274,8 +274,10 @@ cleaninput()
     if [ "$1" = "for sed" ]; then
         # This action uses sed with "|" as the substitution separator, and & as
         # the matched string; these must be escaped.
-        # Backslashes must be escaped, too.
-        input=`echo $input | sed -e 's+\\\+\\\\\\\\+g' -e 's/\&/\\\&/g' -e 's/|/\\\\|/g'`
+        # Backslashes must be escaped, too, and before the other stuff.
+        input=${input//\\/\\\\}
+        input=${input//|/\\|}
+        input=${input//&/\\&}
     fi
 }
 
