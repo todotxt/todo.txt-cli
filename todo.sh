@@ -269,7 +269,7 @@ cleaninput()
 {
     # Cleanup the input
     # Replace newlines with spaces Always
-    input=`echo $input | tr -d '\r\n'`
+    input=`printf %s "$input" | tr '\r\n' ' '`
 
     if [ "$1" = "for sed" ]; then
         # This action uses sed with "|" as the substitution separator, and & as
