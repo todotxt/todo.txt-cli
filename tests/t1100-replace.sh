@@ -89,6 +89,14 @@ TODO: Replaced task with:
 1 thrash the hay & thrash the wheat
 EOF
 
+echo 'jump on hay' > todo.txt
+test_todo_session 'replace with spaces' <<EOF
+>>> todo.sh replace 1 "notice the   three   spaces"
+1 jump on hay
+TODO: Replaced task with:
+1 notice the   three   spaces
+EOF
+
 cat > todo.txt <<EOF
 smell the cows
 grow some corn
