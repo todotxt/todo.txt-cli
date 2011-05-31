@@ -77,4 +77,37 @@ TODO: 5 added.
 TODO: 5 of 5 tasks shown
 EOF
 
+#
+# Advanced add
+#
+
+cat /dev/null > todo.txt
+test_todo_session 'add with spaces' <<EOF
+>>> todo.sh add "notice the   three   spaces"
+1 notice the   three   spaces
+TODO: 1 added.
+
+>>> todo.sh add notice how the   spaces    get lost
+2 notice how the spaces get lost
+TODO: 2 added.
+
+>>> todo.sh list
+2 notice how the spaces get lost
+1 notice the   three   spaces
+--
+TODO: 2 of 2 tasks shown
+EOF
+
+cat /dev/null > todo.txt
+test_todo_session 'add with CR' <<EOF
+>>> todo.sh add "smell theCarriage Return"
+1 smell the Carriage Return
+TODO: 1 added.
+
+>>> todo.sh list
+1 smell the Carriage Return
+--
+TODO: 1 of 1 tasks shown
+EOF
+
 test_done
