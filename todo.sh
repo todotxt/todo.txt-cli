@@ -751,7 +751,7 @@ _list() {
     fi
 }
 
-export -f _list die
+export -f cleaninput _list die
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
