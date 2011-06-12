@@ -51,7 +51,7 @@ def getAPIService():
     http = credentials.authorize(http)
 
     # Build a service object for interacting with the API. 
-    service = build(serviceName='tasks', version='v1', http=http,
+    service = build(serviceName="tasks", version="v1", http=http,
        developerKey='YOUR_DEVELOPER_KEY')	
     return service
 
@@ -60,26 +60,40 @@ def pull():
     tasklists = service.tasklists().list().execute()
     try:
         todoFile = open(os.environ.get("TODO_DIR")+"/todo.txt", "r+")
+        doneFile = open(os.environ.get("TODO_DIR")+"/done.txt", "r+")
     except IOError:
         print "ERROR: The todo.txt files could not be read."
         sys.exit(2)
 
-    for tasklist in tasklists['items']:
-        tasklistName = tasklist['title']
-        tasks = service.tasks().list(tasklist=tasklist['id']).execute()
-        for task in tasks['items']:
-            if task['status'] == "needsAction":
-                print task["title"] + " @" + tasklistName
+    for tasklist in tasklists["items"]:
+        tasklistName = tasklist["title"]
 
-		for line in f:
-			words = line.split()
-			for word in words:
-				if word[0:2] == "p:" or word[0:2] == "p-" or word[0:1] == "+":
-					if word not in completedTasks:
-						completedTasks[word] = 1
-					else:
-						completedTasks[word] = completedTasks.setdefault(word, 0) + 1
-		todoFile.close()
+        tasks = service.tasks().list(tasklist=tasklist["id"]).execute()
+        for task in tasks["items"]:
+            if task["status"] == "needsAction" and task["title"].strip():
+                found = False                
+                print task["title"] + " @" + tasklistName
+                for line in todoFile:
+                    if task["title"] in line:
+                        found = True
+                        break
+                if not found:
+                    print task["title"] + " not found"
+                else:
+                    print task["title"] + " found"
+            elif task["status"] == "completed" and task["title"].strip():
+                found = False                
+                print task["title"] + " @" + tasklistName
+                for line in doneFile:
+                    if task["title"] in line:
+                        found = True
+                        break
+                if not found:
+                    print task["title"] + " not found"
+                else:
+                    print task["title"] + " found"
+    todoFile.close()
+    doneFile.close()
 
 
 def push():
