@@ -1,0 +1,103 @@
+#!/usr/bin/python
+
+# The client_id and client_secret are copied from the API Access tab on
+# the Google APIs Console
+CLIENT_ID="YOUR_CLIENT_ID"
+CLIENT_SECRET="YOUR_CLIENT_SECRET"
+
+import os
+import sys
+import gflags
+import httplib2
+
+from apiclient.discovery import build
+from oauth2client.file import Storage
+from oauth2client.client import OAuth2WebServerFlow
+from oauth2client.tools import run
+
+
+__version__ = "0.1"
+__date__ = "2011/06/06"
+__updated__ = "2011/06/07"
+__author__ = "Andrew McIntosh (github.com/amcintosh)"
+__copyright__ = "Copyright 2011, Andrew McIntosh"
+__license__ = "GPL"
+
+FLAGS = gflags.FLAGS
+#FLAGS.auth_local_webserver = False
+
+# Set up a Flow object for authentication. Uses OAuth 2.0
+FLOW = OAuth2WebServerFlow(
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    scope='https://www.googleapis.com/auth/tasks',
+    user_agent='todo.txt/0.1')
+
+
+def usage():
+    """Prints progam usage"""
+    print "USAGE: %s [push|pull]"% (sys.argv[1], )
+
+def getAPIService():
+    """Authorize and return a session for the Tasks API"""
+    # Check is credentials are stored and valid. Otherwise get credentials
+    storage = Storage(".tasks.dat")
+    credentials = storage.get()
+    if credentials is None or credentials.invalid == True:
+         credentials = run(FLOW, storage)
+
+    # httplib2.Http object to handle our HTTP requests authorized with Credentials.
+    http = httplib2.Http()
+    http = credentials.authorize(http)
+
+    # Build a service object for interacting with the API. 
+    service = build(serviceName='tasks', version='v1', http=http,
+       developerKey='YOUR_DEVELOPER_KEY')	
+    return service
+
+def pull():
+    service = getAPIService()
+    tasklists = service.tasklists().list().execute()
+    try:
+        todoFile = open(os.environ.get("TODO_DIR")+"/todo.txt", "r+")
+    except IOError:
+        print "ERROR: The todo.txt files could not be read."
+        sys.exit(2)
+
+    for tasklist in tasklists['items']:
+        tasklistName = tasklist['title']
+        tasks = service.tasks().list(tasklist=tasklist['id']).execute()
+        for task in tasks['items']:
+            if task['status'] == "needsAction":
+                print task["title"] + " @" + tasklistName
+
+		for line in f:
+			words = line.split()
+			for word in words:
+				if word[0:2] == "p:" or word[0:2] == "p-" or word[0:1] == "+":
+					if word not in completedTasks:
+						completedTasks[word] = 1
+					else:
+						completedTasks[word] = completedTasks.setdefault(word, 0) + 1
+		todoFile.close()
+
+
+def push():
+    service = getAPIService()
+
+def main(argv):
+    if len(argv) < 2 or argv[0]=="usage":
+        usage()
+        sys.exit(2)
+
+    if argv[1]=="pull":
+        print "pulling"
+        pull()        
+    elif argv[1]=="push":
+        print "pushing"
+        push()
+    else:
+        usage()
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
