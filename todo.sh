@@ -533,7 +533,7 @@ export SENTENCE_DELIMITERS=',.:;'
 }
 
 [ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT=`dirname "$0"`"/todo.cfg"
+    CFG_FILE_ALT=$(dirname "$0")"/todo.cfg"
 
     if [ -e "$CFG_FILE_ALT" ]
     then
@@ -620,8 +620,8 @@ _addto() {
     cleaninput
 
     if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
-        now=`date '+%Y-%m-%d'`
-        input="$now $input"
+        now=$(date '+%Y-%m-%d')
+        input=$(echo "$input" | sed -e 's/^\(([A-Z]) \)\{0,1\}/\1'"$now /")
     fi
     echo "$input" >> "$file"
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
@@ -918,12 +918,12 @@ case $action in
 
     # Split multiple depri's, if comma separated change to whitespace separated
     # Loop the 'depri' function for each item
-    for item in `echo $* | tr ',' ' '`; do
+    for item in $(echo $* | tr ',' ' '); do
 	[[ "$item" = +([0-9]) ]] || die "$errmsg"
 	todo=$(sed "$item!d" "$TODO_FILE")
 	[ -z "$todo" ] && die "TODO: No task $item."
 
-	if sed "$item!d" "$TODO_FILE" | grep "^(.) " > /dev/null; then
+	if [[ "$todo" = \(?\)\ * ]]; then
 	    sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
 	    if [ $TODOTXT_VERBOSE -gt 0 ]; then
 		NEWTODO=$(sed "$item!d" "$TODO_FILE")
@@ -944,7 +944,7 @@ case $action in
 
     # Split multiple do's, if comma separated change to whitespace separated
     # Loop the 'do' function for each item
-    for item in `echo $* | tr ',' ' '`; do 
+    for item in $(echo $* | tr ',' ' '); do
         [ -z "$item" ] && die "$errmsg"
         [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
@@ -953,7 +953,7 @@ case $action in
 
         # Check if this item has already been done
         if [ "${todo:0:2}" != "x " ]; then
-            now=`date '+%Y-%m-%d'`
+            now=$(date '+%Y-%m-%d')
             # remove priority once item is done
             sed -i.bak $item"s/^(.) //" "$TODO_FILE"
             sed -i.bak $item"s|^|x $now |" "$TODO_FILE"
