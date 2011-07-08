@@ -241,9 +241,15 @@ help()
         echo ""
         for action in "$TODO_ACTIONS_DIR"/*
         do
-            if [ -f "$action" -a -x "$action" ]
+            if echo "$action" | grep -q '\\.' 
+            then
+                true
+            elif [ -f "$action" -a -x "$action" ]
             then
                 "$action" usage
+            elif [ -f "$action" ]
+            then
+                . "$action" usage
             fi
         done
         echo ""
@@ -768,6 +774,12 @@ then
 elif [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
+    status=$?
+    cleanup
+    exit $status
+elif [ -d "$TODO_ACTIONS_DIR" -a -e "$TODO_ACTIONS_DIR/$action" ]
+then
+    . "$TODO_ACTIONS_DIR/$action" "$@"
     status=$?
     cleanup
     exit $status
