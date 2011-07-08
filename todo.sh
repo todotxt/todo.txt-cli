@@ -234,6 +234,7 @@ help()
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
+		    TODOTXT_POST_COMMAND="post.sh"  run custom command after modification
 	EndHelp
 
     if [ -d "$TODO_ACTIONS_DIR" ]
@@ -363,6 +364,7 @@ OVR_TODOTXT_VERBOSE="$TODOTXT_VERBOSE"
 OVR_TODOTXT_DEFAULT_ACTION="$TODOTXT_DEFAULT_ACTION"
 OVR_TODOTXT_SORT_COMMAND="$TODOTXT_SORT_COMMAND"
 OVR_TODOTXT_FINAL_FILTER="$TODOTXT_FINAL_FILTER"
+OVR_TODOTXT_POST_COMMAND="$TODOTXT_POST_COMMAND"
 
 # == PROCESS OPTIONS ==
 while getopts ":fhpcnNaAtTvVx+@Pd:" Option
@@ -473,6 +475,7 @@ TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
 TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
+TODOTXT_POST_COMMAND=${TODOTXT_POST_COMMAND:-}
 
 # Export all TODOTXT_* variables
 export ${!TODOTXT_@}
@@ -591,6 +594,9 @@ fi
 if [ -n "$OVR_TODOTXT_FINAL_FILTER" ] ; then
   TODOTXT_FINAL_FILTER="$OVR_TODOTXT_FINAL_FILTER"
 fi
+if [ -n "$OVR_TODOTXT_POST_COMMAND" ] ; then
+  TODOTXT_POST_COMMAND="$OVR_TODOTXT_POST_COMMAND"
+fi
 
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
@@ -611,6 +617,10 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     DEFAULT=$NONE
     COLOR_DONE=$NONE
 fi
+
+_post_command() {
+    [ -n "$TODOTXT_POST_COMMAND" ] && eval ${TODOTXT_POST_COMMAND}
+}
 
 _addto() {
     file="$1"
@@ -750,7 +760,7 @@ _list() {
     fi
 }
 
-export -f _list die
+export -f _list die _post_command
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
@@ -785,6 +795,7 @@ case $action in
         input=$*
     fi
     _addto "$TODO_FILE" "$input"
+    _post_command
     ;;
 
 "addm")
@@ -807,6 +818,7 @@ case $action in
         _addto "$TODO_FILE" "$line"
     done
     IFS=$SAVEIFS
+    _post_command
     ;;
 
 "addto" )
@@ -819,6 +831,7 @@ case $action in
 
     if [ -f "$dest" ]; then
         _addto "$dest" "$input"
+        _post_command
     else
         die "TODO: Destination file $dest does not exist."
     fi
@@ -848,6 +861,7 @@ case $action in
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
             newtodo=$(sed "$item!d" "$TODO_FILE")
             echo "$item $newtodo"
+        _post_command
 	fi
     else
         die "TODO: Error appending task $item."
@@ -885,6 +899,7 @@ case $action in
                 echo "$item $DELETEME"
                 echo "TODO: $item deleted."
             fi
+            _post_command
         else
             echo "TODO: No tasks were deleted."
         fi
@@ -906,6 +921,7 @@ case $action in
             echo "TODO: Removed '$3' from task."
             echo "$item $newtodo"
         fi
+        _post_command
     fi
     ;;
 
@@ -931,6 +947,7 @@ case $action in
 		echo "$item $NEWTODO"
 		echo "TODO: $item deprioritized."
 	    fi
+        _post_command
 	else
 	    die "$errmsg"
 	fi
@@ -971,6 +988,7 @@ case $action in
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
         archive
     fi
+    _post_command
     ;;
 
 "help" )
@@ -1068,6 +1086,7 @@ case $action in
             echo "$item $MOVEME"
             echo "TODO: $item moved from '$src' to '$dest'."
         fi
+        _post_command
     else
         echo "TODO: No tasks moved."
     fi
@@ -1076,6 +1095,7 @@ case $action in
 "prepend" | "prep" )
     errmsg="usage: $TODO_SH prepend ITEM# \"TEXT TO PREPEND\""
     replaceOrPrepend 'prepend' "$@"
+    _post_command
     ;;
 
 "pri" | "p" )
@@ -1098,6 +1118,7 @@ note: PRIORITY must be anywhere from A to Z."
             NEWTODO=$(sed "$item!d" "$TODO_FILE")
             echo "$item $NEWTODO"
             echo "TODO: $item prioritized ($newpri)."
+        _post_command
 	fi
     else
         die "$errmsg"
@@ -1107,6 +1128,7 @@ note: PRIORITY must be anywhere from A to Z."
 "replace" )
     errmsg="usage: $TODO_SH replace ITEM# \"UPDATED ITEM\""
     replaceOrPrepend 'replace' "$@"
+    _post_command
     ;;
 
 "report" )
