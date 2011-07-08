@@ -68,4 +68,30 @@ TODO: 2 deprioritized.
 TODO: 3 of 3 tasks shown
 EOF
 
+cat > todo.txt <<EOF
+(B) smell the uppercase Roses +flowers @outside
+(A) notice the sunflowers
+stop
+EOF
+test_todo_session 'depriority of unprioritized task' <<EOF
+>>> todo.sh -p list
+2 (A) notice the sunflowers
+1 (B) smell the uppercase Roses +flowers @outside
+3 stop
+--
+TODO: 3 of 3 tasks shown
+
+>>> todo.sh depri 3 2
+TODO: 3 is not prioritized.
+2 notice the sunflowers
+TODO: 2 deprioritized.
+
+>>> todo.sh -p list
+1 (B) smell the uppercase Roses +flowers @outside
+2 notice the sunflowers
+3 stop
+--
+TODO: 3 of 3 tasks shown
+EOF
+
 test_done
