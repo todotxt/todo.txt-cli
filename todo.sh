@@ -234,6 +234,7 @@ help()
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
+		    TODOTXT_BACKUP_NAME=".bak"      suffix to sed's -i for backup files
 	EndHelp
 
     if [ -d "$TODO_ACTIONS_DIR" ]
@@ -283,10 +284,10 @@ cleaninput()
 archive()
 {
     #defragment blank lines
-    sed -i.bak -e '/./!d' "$TODO_FILE"
+    sed -i "$TODOTXT_BACKUP_NAME" -e '/./!d' "$TODO_FILE"
     [ $TODOTXT_VERBOSE -gt 0 ] && grep "^x " "$TODO_FILE"
     grep "^x " "$TODO_FILE" >> "$DONE_FILE"
-    sed -i.bak '/^x /d' "$TODO_FILE"
+    sed -i "$TODOTXT_BACKUP_NAME" '/^x /d' "$TODO_FILE"
     cp "$TODO_FILE" "$TMP_FILE"
     sed -n 'G; s/\n/&&/; /^\([ ~-]*\n\).*\n\1/d; s/\n//; h; P' "$TMP_FILE" > "$TODO_FILE"
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
@@ -336,7 +337,7 @@ replaceOrPrepend()
   # Temporarily remove any existing priority and prepended date, perform the
   # change (replace/prepend) and re-insert the existing priority and prepended
   # date again.
-  sed -i.bak -e "$item s/^${priority}${prepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
+  sed -i "$TODOTXT_BACKUP_NAME" -e "$item s/^${priority}${prepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
   if [ $TODOTXT_VERBOSE -gt 0 ]; then
     newtodo=$(sed "$item!d" "$TODO_FILE")
     case "$action" in
@@ -363,6 +364,7 @@ OVR_TODOTXT_VERBOSE="$TODOTXT_VERBOSE"
 OVR_TODOTXT_DEFAULT_ACTION="$TODOTXT_DEFAULT_ACTION"
 OVR_TODOTXT_SORT_COMMAND="$TODOTXT_SORT_COMMAND"
 OVR_TODOTXT_FINAL_FILTER="$TODOTXT_FINAL_FILTER"
+OVR_TODOTXT_BACKUP_NAME="$TODOTXT_BACKUP_NAME"
 
 # == PROCESS OPTIONS ==
 while getopts ":fhpcnNaAtTvVx+@Pd:" Option
@@ -473,6 +475,7 @@ TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
 TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
+TODOTXT_BACKUP=${TODOTXT_BACKUP:-.bak}
 
 # Export all TODOTXT_* variables
 export ${!TODOTXT_@}
@@ -591,6 +594,9 @@ fi
 if [ -n "$OVR_TODOTXT_FINAL_FILTER" ] ; then
   TODOTXT_FINAL_FILTER="$OVR_TODOTXT_FINAL_FILTER"
 fi
+if [ -n "$OVR_TODOTXT_BACKUP_NAME" ] ; then
+  TODOTXT_BACKUP_NAME="$OVR_TODOTXT_BACKUP_NAME"
+fi
 
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
@@ -619,7 +625,7 @@ _addto() {
 
     if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
         now=`date '+%Y-%m-%d'`
-        input="$now $input"
+        input=`echo "$input" | sed -e 's/^\(([A-Z]) \)\{0,1\}/\1'"$now /"`
     fi
     echo "$input" >> "$file"
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
@@ -734,7 +740,7 @@ _list() {
           '''                                                   \
         | eval ${TODOTXT_FINAL_FILTER}                          \
     )
-    [ "$filtered_items" ] && echo "$filtered_items"
+    [ "$filtered_items" ] && echo -e "$filtered_items"
 
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
         BASE=$(basename "$FILE")
@@ -844,7 +850,7 @@ case $action in
     esac
     cleaninput $input
 
-    if sed -i.bak $item" s|^.*|&${appendspace}${input}|" "$TODO_FILE"; then
+    if sed -i "$TODOTXT_BACKUP_NAME" $item" s|^.*|&${appendspace}${input}|" "$TODO_FILE"; then
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
             newtodo=$(sed "$item!d" "$TODO_FILE")
             echo "$item $newtodo"
@@ -876,10 +882,10 @@ case $action in
         if [ "$ANSWER" = "y" ]; then
             if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
                 # delete line (changes line numbers)
-                sed -i.bak -e $item"s/^.*//" -e '/./!d' "$TODO_FILE"
+                sed -i "$TODOTXT_BACKUP_NAME" -e $item"s/^.*//" -e '/./!d' "$TODO_FILE"
             else
                 # leave blank line behind (preserves line numbers)
-                sed -i.bak -e $item"s/^.*//" "$TODO_FILE"
+                sed -i "$TODOTXT_BACKUP_NAME" -e $item"s/^.*//" "$TODO_FILE"
             fi
             if [ $TODOTXT_VERBOSE -gt 0 ]; then
                 echo "$item $DELETEME"
@@ -889,7 +895,7 @@ case $action in
             echo "TODO: No tasks were deleted."
         fi
     else
-        sed -i.bak \
+        sed -i "$TODOTXT_BACKUP_NAME" \
             -e $item"s/^\((.) \)\{0,1\} *$3 */\1/g" \
             -e $item"s/ *$3 *\$//g" \
             -e $item"s/  *$3 */ /g" \
@@ -925,7 +931,7 @@ case $action in
 
 	if [ "$?" -eq 0 ]; then
 	    #it's all good, continue
-	    sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
+	    sed -i "$TODOTXT_BACKUP_NAME" -e $item"s/^(.) //" "$TODO_FILE"
 	    if [ $TODOTXT_VERBOSE -gt 0 ]; then
 		NEWTODO=$(sed "$item!d" "$TODO_FILE")
 		echo "$item $NEWTODO"
@@ -956,8 +962,8 @@ case $action in
         if [ `echo $todo | grep -c "^x "` -eq 0 ] ; then
             now=`date '+%Y-%m-%d'`
             # remove priority once item is done
-            sed -i.bak $item"s/^(.) //" "$TODO_FILE"
-            sed -i.bak $item"s|^|x $now |" "$TODO_FILE"
+            sed -i "$TODOTXT_BACKUP_NAME" $item"s/^(.) //" "$TODO_FILE"
+            sed -i "$TODOTXT_BACKUP_NAME" $item"s|^|x $now |" "$TODO_FILE"
             if [ $TODOTXT_VERBOSE -gt 0 ]; then
                 newtodo=$(sed "$item!d" "$TODO_FILE")
                 echo "$item $newtodo"
@@ -1057,10 +1063,10 @@ case $action in
     if [ "$ANSWER" = "y" ]; then
         if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
             # delete line (changes line numbers)
-            sed -i.bak -e $item"s/^.*//" -e '/./!d' "$src"
+            sed -i "$TODOTXT_BACKUP_NAME" -e $item"s/^.*//" -e '/./!d' "$src"
         else
             # leave blank line behind (preserves line numbers)
-            sed -i.bak -e $item"s/^.*//" "$src"
+            sed -i "$TODOTXT_BACKUP_NAME" -e $item"s/^.*//" "$src"
         fi
         echo "$MOVEME" >> "$dest"
 
@@ -1093,7 +1099,7 @@ note: PRIORITY must be anywhere from A to Z."
 
     if [ "$?" -eq 0 ]; then
         #it's all good, continue
-        sed -i.bak -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE"
+        sed -i "$TODOTXT_BACKUP_NAME" -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE"
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
             NEWTODO=$(sed "$item!d" "$TODO_FILE")
             echo "$item $NEWTODO"
@@ -1112,7 +1118,7 @@ note: PRIORITY must be anywhere from A to Z."
 "report" )
     #archive first
     sed '/^x /!d' "$TODO_FILE" >> "$DONE_FILE"
-    sed -i.bak '/^x /d' "$TODO_FILE"
+    sed -i "$TODOTXT_BACKUP_NAME" '/^x /d' "$TODO_FILE"
 
     NUMLINES=$( sed -n '$ =' "$TODO_FILE" )
     if [ ${NUMLINES:-0} = "0" ]; then
