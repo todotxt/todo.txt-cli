@@ -922,10 +922,7 @@ case $action in
 	todo=$(sed "$item!d" "$TODO_FILE")
 	[ -z "$todo" ] && die "TODO: No task $item."
 
-	sed -e $item"s/^(.) //" "$TODO_FILE" > /dev/null 2>&1
-
-	if [ "$?" -eq 0 ]; then
-	    #it's all good, continue
+	if sed "$item!d" "$TODO_FILE" | grep "^(.) " > /dev/null; then
 	    sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
 	    if [ $TODOTXT_VERBOSE -gt 0 ]; then
 		NEWTODO=$(sed "$item!d" "$TODO_FILE")
@@ -933,7 +930,7 @@ case $action in
 		echo "TODO: $item deprioritized."
 	    fi
 	else
-	    die "$errmsg"
+	    echo "TODO: $item is not prioritized."
 	fi
     done
     ;;
