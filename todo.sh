@@ -546,14 +546,16 @@ then
     export TODO_ACTIONS_DIR
 fi
 
-[ -d "$TODO_ACTIONS_DIR" ] || {
-    TODO_ACTIONS_DIR_ALT="$HOME/.todo.actions.d"
-
-    if [ -d "$TODO_ACTIONS_DIR_ALT" ]
-    then
-        TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
-    fi
-}
+if [ -d "$TODO_ACTIONS_DIR" ]
+then
+    true
+elif [ -d "$HOME/.todo.actions.d" ]
+then
+    TODO_ACTIONS_DIR="$HOME/.todo.actions.d"
+elif [ -d "$(dirname "$0")/actions.d" ]
+then
+    TODO_ACTIONS_DIR=$(dirname "$0")"/actions.d"
+fi
 
 # === SANITY CHECKS (thanks Karl!) ===
 [ -r "$TODOTXT_CFG_FILE" ] || die "Fatal Error: Cannot read configuration file $TODOTXT_CFG_FILE"
