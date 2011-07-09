@@ -53,9 +53,28 @@ TODO: 2 prioritized (C).
 --
 TODO: 3 of 3 tasks shown
 
+>>> todo.sh add "smell the coffee +wakeup"
+4 smell the coffee +wakeup
+TODO: 4 added.
+
+>>> todo.sh -p list
+1 (B) smell the uppercase Roses +flowers @outside
+2 (C) notice the sunflowers
+4 smell the coffee +wakeup
+3 stop
+--
+TODO: 4 of 4 tasks shown
+EOF
+
+cat > todo.txt <<EOF
+(B) smell the uppercase Roses +flowers @outside
+(C) notice the sunflowers
+stop
+EOF
+test_todo_session 'reprioritize' <<EOF
 >>> todo.sh pri 2 A
 2 (A) notice the sunflowers
-TODO: 2 prioritized (A).
+TODO: 2 re-prioritized from (C) to (A).
 
 >>> todo.sh -p list
 2 (A) notice the sunflowers
@@ -66,25 +85,13 @@ TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 a
 2 (A) notice the sunflowers
-TODO: 2 prioritized (A).
-
->>> todo.sh -p listpri
-2 (A) notice the sunflowers
-1 (B) smell the uppercase Roses +flowers @outside
---
-TODO: 2 of 3 tasks shown
-
->>> todo.sh add "smell the coffee +wakeup"
-4 smell the coffee +wakeup
-TODO: 4 added.
+TODO: 2 already prioritized (A).
 
 >>> todo.sh -p list
 2 (A) notice the sunflowers
 1 (B) smell the uppercase Roses +flowers @outside
-4 smell the coffee +wakeup
 3 stop
 --
-TODO: 4 of 4 tasks shown
+TODO: 3 of 3 tasks shown
 EOF
-
 test_done
