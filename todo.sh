@@ -621,7 +621,7 @@ _addto() {
 
     if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
         now=$(date '+%Y-%m-%d')
-        input=`echo "$input" | sed -e 's/^\(([A-Z]) \)\{0,1\}/\1'"$now /"`
+        input=$(echo "$input" | sed -e 's/^\(([A-Z]) \)\{0,1\}/\1'"$now /")
     fi
     echo "$input" >> "$file"
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
