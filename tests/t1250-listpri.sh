@@ -4,13 +4,6 @@ test_description='list priority functionality
 '
 . ./test-lib.sh
 
-test_todo_session 'listpri usage' <<EOF
->>> todo.sh listpri ?
-usage: todo.sh listpri PRIORITY
-note: PRIORITY must a single letter from A to Z.
-=== 1
-EOF
-
 cat > todo.txt <<EOF
 (B) smell the uppercase Roses +flowers @outside
 (C) notice the sunflowers
@@ -42,7 +35,7 @@ cat > todo.txt <<EOF
 (n) not a prioritized task
 notice the (C)opyright
 EOF
-test_todo_session 'listpri filtering' <<EOF
+test_todo_session 'listpri filtering priorities' <<EOF
 >>> todo.sh -p listpri
 1 (B) smell the uppercase Roses +flowers @outside
 2 (C) notice the sunflowers
@@ -66,6 +59,37 @@ TODO: 0 of 5 tasks shown
 >>> todo.sh -p listpri n
 --
 TODO: 0 of 5 tasks shown
+EOF
+
+cat > todo.txt <<EOF
+(B) ccc xxx this line should be third.
+ccc xxx this line should be third.
+(A) aaa zzz this line should be first.
+aaa zzz this line should be first.
+(B) bbb yyy this line should be second.
+bbb yyy this line should be second.
+EOF
+test_todo_session 'listpri filtering of TERM' <<EOF
+>>> todo.sh -p listpri "should be"
+3 (A) aaa zzz this line should be first.
+5 (B) bbb yyy this line should be second.
+1 (B) ccc xxx this line should be third.
+--
+TODO: 3 of 6 tasks shown
+
+>>> todo.sh -p listpri a "should be"
+3 (A) aaa zzz this line should be first.
+--
+TODO: 1 of 6 tasks shown
+
+>>> todo.sh -p listpri b second
+5 (B) bbb yyy this line should be second.
+--
+TODO: 1 of 6 tasks shown
+
+>>> todo.sh -p listpri x "should be"
+--
+TODO: 0 of 6 tasks shown
 EOF
 
 test_done

@@ -923,7 +923,7 @@ case $action in
 	todo=$(sed "$item!d" "$TODO_FILE")
 	[ -z "$todo" ] && die "TODO: No task $item."
 
-	if sed "$item!d" "$TODO_FILE" | grep "^(.) " > /dev/null; then
+	if [[ "$todo" = \(?\)\ * ]]; then
 	    sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
 	    if [ $TODOTXT_VERBOSE -gt 0 ]; then
 		NEWTODO=$(sed "$item!d" "$TODO_FILE")
@@ -944,7 +944,7 @@ case $action in
 
     # Split multiple do's, if comma separated change to whitespace separated
     # Loop the 'do' function for each item
-    for item in $(echo $* | tr ',' ' '); do 
+    for item in $(echo $* | tr ',' ' '); do
         [ -z "$item" ] && die "$errmsg"
         [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
@@ -1013,18 +1013,7 @@ case $action in
 "listpri" | "lsp" )
     shift ## was "listpri", new $1 is priority to list or first TERM
 
-    if [ "${1:-}" ]
-    then
-        ## A priority was specified
-        pri=$( printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$' ) || {
-            die "usage: $TODO_SH listpri PRIORITY
-note: PRIORITY must a single letter from A to Z."
-        }
-    else
-        ## No priority specified; show all priority tasks
-        pri="[A-Z]"
-    fi
-
+    pri=$(printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$') && shift || pri="[A-Z]"
     post_filter_command="grep '^ *[0-9]\+ (${pri}) '"
     _list "$TODO_FILE" "$@"
     ;;
