@@ -171,6 +171,10 @@ help()
 		      prioritized, replaces current priority with new PRIORITY.
 		      PRIORITY must be an uppercase letter between A and Z.
 
+			properties
+			prop
+			  Lists the path to the todo.txt file
+
 		    replace ITEM# "UPDATED TODO"
 		      Replaces task on line ITEM# with UPDATED TODO.
 
@@ -1096,6 +1100,10 @@ note: PRIORITY must be anywhere from A to Z."
         echo "TODO: $item already prioritized ($newpri)."
     fi
     ;;
+
+"prop" | "properties" )
+	echo $TODO_FILE
+	;;
 
 "replace" )
     errmsg="usage: $TODO_SH replace ITEM# \"UPDATED ITEM\""
