@@ -37,12 +37,12 @@ h1 a { display:none; }
 
 h2 {
 	text-align: left;
-	font-size: 20px;
+	font-size: 30px;
 	border-bottom: 1px solid #ccc;
 	margin: 0;
 font-family:Courier;
-padding-bottom:2px;
-padding-top:7px;
+padding-bottom:6px;
+padding-top:100px;
 }
 
 h3 {
@@ -119,4 +119,41 @@ li {
 #content {
 	margin: 0 0 0 0px;
 	padding: 5px;
+}
+
+#download, #download h3 {
+	text-align: center;
+	color: white;
+	font-size:150%;
+	text-decoration:none;
+	padding-top:30px;
+}
+
+#download h3 {
+	padding-top: 0px;
+	margin-top: 6px;
+	font-weight: normal;
+}
+
+a#download, a#download:link, a#download:visited {
+	display:block;
+	margin: 20px 0px 10px 20px;
+	height: 50px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	border: 1px solid #3B9877;
+	color:#fff;
+	overflow:visible;
+	background:#6ECBAB;
+	background: -moz-linear-gradient(top, #6ECBAB 0%, #3B9877 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6ECBAB), color-stop(100%,#3B9877));
+	background: linear-gradient(top, #6ECBAB 0%, #3B9877 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#6ECBAB', endColorstr='#3B9877',GradientType=0 );
+}
+
+a#download:hover {
+	background:#3B9877;
+	text-decoration: none;
+	border: 1px solid #666;
 }
