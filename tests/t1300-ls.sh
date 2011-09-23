@@ -142,7 +142,7 @@ cat > todo.txt <<EOF
 (D) @con02 +prj03 -- Some project 03 task, pri D
 (D) @con02 +prj04 -- Some project 04 task, pri D
 @con01 +prj01 -- Some project 01 task, no priority
-@con01 +prj02 -- Some project 02 task, no priority
+@con01 +prj02 -- Some project(S) 02 task, no priority
 @con02 +prj03 -- Some project 03 task, no priorty
 @con02 +prj04 -- Some project 04 task, no priority
 EOF
@@ -165,7 +165,7 @@ test_todo_session 'plain mode option' <<EOF
 [1;37m15 (D) @con02 +prj03 -- Some project 03 task, pri D[0m
 [1;37m16 (D) @con02 +prj04 -- Some project 04 task, pri D[0m
 17 @con01 +prj01 -- Some project 01 task, no priority
-18 @con01 +prj02 -- Some project 02 task, no priority
+18 @con01 +prj02 -- Some project(S) 02 task, no priority
 19 @con02 +prj03 -- Some project 03 task, no priorty
 20 @con02 +prj04 -- Some project 04 task, no priority
 --
@@ -189,7 +189,7 @@ TODO: 20 of 20 tasks shown
 15 (D) @con02 +prj03 -- Some project 03 task, pri D
 16 (D) @con02 +prj04 -- Some project 04 task, pri D
 17 @con01 +prj01 -- Some project 01 task, no priority
-18 @con01 +prj02 -- Some project 02 task, no priority
+18 @con01 +prj02 -- Some project(S) 02 task, no priority
 19 @con02 +prj03 -- Some project 03 task, no priorty
 20 @con02 +prj04 -- Some project 04 task, no priority
 --
@@ -217,7 +217,7 @@ cat > todo.txt <<EOF
 (D) @con02 +prj03 -- Some project 03 task, pri D
 (D) @con02 +prj04 -- Some project 04 task, pri D
 @con01 +prj01 -- Some project 01 task, no priority
-@con01 +prj02 -- Some project 02 task, no priority
+@con01 +prj02 -- Some project(S) 02 task, no priority
 @con02 +prj03 -- Some project 03 task, no priorty
 @con02 +prj04 -- Some project 04 task, no priority
 EOF
@@ -240,7 +240,7 @@ test_todo_session 'context, project, and priority suppression' <<EOF
 [1;37m15 (D) @con02 +prj03 -- Some project 03 task, pri D[0m
 [1;37m16 (D) @con02 +prj04 -- Some project 04 task, pri D[0m
 17 @con01 +prj01 -- Some project 01 task, no priority
-18 @con01 +prj02 -- Some project 02 task, no priority
+18 @con01 +prj02 -- Some project(S) 02 task, no priority
 19 @con02 +prj03 -- Some project 03 task, no priorty
 20 @con02 +prj04 -- Some project 04 task, no priority
 --
@@ -256,7 +256,7 @@ TODO: 20 of 20 tasks shown
 [1;37m13 (D) @con01 +prj01 -- Some project 01 task, pri D[0m
 [1;37m14 (D) @con01 +prj02 -- Some project 02 task, pri D[0m
 17 @con01 +prj01 -- Some project 01 task, no priority
-18 @con01 +prj02 -- Some project 02 task, no priority
+18 @con01 +prj02 -- Some project(S) 02 task, no priority
 --
 TODO: 10 of 20 tasks shown
 
@@ -270,7 +270,7 @@ TODO: 10 of 20 tasks shown
 [1;37m13 @con01 +prj01 -- Some project 01 task, pri D[0m
 [1;37m14 @con01 +prj02 -- Some project 02 task, pri D[0m
 17 @con01 +prj01 -- Some project 01 task, no priority
-18 @con01 +prj02 -- Some project 02 task, no priority
+18 @con01 +prj02 -- Some project(S) 02 task, no priority
 --
 TODO: 10 of 20 tasks shown
 
@@ -284,7 +284,7 @@ TODO: 10 of 20 tasks shown
 [1;37m13 (D) @con01 -- Some project 01 task, pri D[0m
 [1;37m14 (D) @con01 -- Some project 02 task, pri D[0m
 17 @con01 -- Some project 01 task, no priority
-18 @con01 -- Some project 02 task, no priority
+18 @con01 -- Some project(S) 02 task, no priority
 --
 TODO: 10 of 20 tasks shown
 
@@ -298,7 +298,7 @@ TODO: 10 of 20 tasks shown
 [1;37m13 (D) +prj01 -- Some project 01 task, pri D[0m
 [1;37m14 (D) +prj02 -- Some project 02 task, pri D[0m
 17 +prj01 -- Some project 01 task, no priority
-18 +prj02 -- Some project 02 task, no priority
+18 +prj02 -- Some project(S) 02 task, no priority
 --
 TODO: 10 of 20 tasks shown
 
@@ -312,7 +312,7 @@ TODO: 10 of 20 tasks shown
 [1;37m13 +prj01 -- Some project 01 task, pri D[0m
 [1;37m14 +prj02 -- Some project 02 task, pri D[0m
 17 +prj01 -- Some project 01 task, no priority
-18 +prj02 -- Some project 02 task, no priority
+18 +prj02 -- Some project(S) 02 task, no priority
 --
 TODO: 10 of 20 tasks shown
 
@@ -326,7 +326,7 @@ TODO: 10 of 20 tasks shown
 [1;37m13 (D) @con01 +prj01 -- Some project 01 task, pri D[0m
 [1;37m14 (D) @con01 +prj02 -- Some project 02 task, pri D[0m
 17 @con01 +prj01 -- Some project 01 task, no priority
-18 @con01 +prj02 -- Some project 02 task, no priority
+18 @con01 +prj02 -- Some project(S) 02 task, no priority
 --
 TODO: 10 of 20 tasks shown
 
@@ -340,7 +340,7 @@ TODO: 10 of 20 tasks shown
 [1;37m13 -- Some project 01 task, pri D[0m
 [1;37m14 -- Some project 02 task, pri D[0m
 17 -- Some project 01 task, no priority
-18 -- Some project 02 task, no priority
+18 -- Some project(S) 02 task, no priority
 --
 TODO: 10 of 20 tasks shown
 EOF

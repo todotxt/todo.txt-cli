@@ -724,12 +724,14 @@ _list() {
                     print highlight("COLOR_DONE") $0 highlight("DEFAULT")
                 } else if (match($0, /^[0-9]+ \([A-Z]\)[[:space:]]/)) {
                     clr = highlight("PRI_" substr($0, RSTART + RLENGTH - 3, 1))
-                    print ( clr ? clr : highlight("PRI_X") ) $0 highlight("DEFAULT")
+                    print \
+                        (clr ? clr : highlight("PRI_X")) \
+                        (ENVIRON["HIDE_PRIORITY_SUBSTITUTION"] == "" ? $0 : substr($0, 1, RLENGTH - 4) substr($0, RSTART + RLENGTH)) \
+                        highlight("DEFAULT")
                 } else { print }
             }
           '''  \
         | sed '''
-            s/'${HIDE_PRIORITY_SUBSTITUTION:-^}'//g
             s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
             s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
           '''                                                   \
