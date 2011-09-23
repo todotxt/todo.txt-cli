@@ -720,11 +720,10 @@ _list() {
                 return color
             }
             {
-                pos = match($0, /\([A-Z]\)/)
                 if (match($0, /^[0-9]+ x /)) {
                     print highlight("COLOR_DONE") $0 highlight("DEFAULT")
-                } else if (pos > 0) {
-                    clr = highlight("PRI_" substr($0, pos+1, 1))
+                } else if (match($0, /^[0-9]+ \([A-Z]\)[[:space:]]/)) {
+                    clr = highlight("PRI_" substr($0, RSTART + RLENGTH - 3, 1))
                     print ( clr ? clr : highlight("PRI_X") ) $0 highlight("DEFAULT")
                 } else { print }
             }
