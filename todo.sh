@@ -232,6 +232,7 @@ help()
 		    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
 		    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
 		    TODOTXT_VERBOSE=1               is same as option -v
+		    TODOTXT_DISABLE_FILTER=1        is same as option -x
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
