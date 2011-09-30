@@ -65,9 +65,18 @@ shorthelp()
 		    pri|p ITEM# PRIORITY
 		    replace ITEM# "UPDATED TODO"
 		    report
+		    shorthelp
+
+	EndHelp
+
+    # Only list the one-line usage from the add-on actions. This assumes that
+    # add-ons use the same usage indentation structure as todo.sh.
+    addonHelp | grep -e '^  Add-on Actions:' -e '^    [[:alpha:]]'
+
+    cat <<-EndHelpFooter
 
 		  See "help" for more details.
-	EndHelp
+	EndHelpFooter
     exit 0
 }
 
@@ -90,7 +99,7 @@ help()
 		    -f
 		        Forces actions without confirmation or interactive input
 		    -h
-		        Display a short help message
+		        Display a short help message; same as action "shorthelp"
 		    -p
 		        Plain mode turns off colors
 		    -P
@@ -241,9 +250,18 @@ help()
 		    report
 		      Adds the number of open tasks and done tasks to report.txt.
 
+		    shorthelp
+		      List the one-line usage of all built-in and add-on actions.
+
 
 	EndActionsHelp
 
+        addonHelp
+    exit 1
+}
+
+addonHelp()
+{
     if [ -d "$TODO_ACTIONS_DIR" ]; then
         didPrintAddonActionsHeader=
         for action in "$TODO_ACTIONS_DIR"/*
@@ -259,9 +277,6 @@ help()
             fi
         done
     fi
-
-
-    exit 1
 }
 
 die()
@@ -428,7 +443,10 @@ do
         OVR_TODOTXT_FORCE=1
         ;;
     h )
-        shorthelp
+        # Short-circuit option parsing and forward to the action.
+        # Cannot just invoke shorthelp() because we need the configuration
+        # processed to locate the add-on actions directory.
+        set -- '-h' 'shorthelp'
         ;;
     n )
         OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
@@ -990,6 +1008,16 @@ case $action in
         fi
     fi
     help # just in case something failed above, we go ahead and just spew to STDOUT
+    ;;
+
+"shorthelp" )
+    if [ -t 1 ] ; then # STDOUT is a TTY
+        if which "${PAGER:-less}" >/dev/null 2>&1; then
+            # we have a working PAGER (or less as a default)
+            shorthelp | "${PAGER:-less}" && exit 0
+        fi
+    fi
+    shorthelp # just in case something failed above, we go ahead and just spew to STDOUT
     ;;
 
 "list" | "ls" )
