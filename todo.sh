@@ -44,14 +44,14 @@ shorthelp()
 
 		  Actions:
 		    add|a "THING I NEED TO DO +project @context"
-		    addto DEST "TEXT TO ADD"
 		    addm "THINGS I NEED TO DO
 		          MORE THINGS I NEED TO DO"
+		    addto DEST "TEXT TO ADD"
 		    append|app ITEM# "TEXT TO APPEND"
 		    archive
 		    command [ACTIONS]
 		    del|rm ITEM# [TERM]
-		    dp|depri ITEM#[, ITEM#, ITEM#, ...]
+		    depri|dp ITEM#[, ITEM#, ITEM#, ...]
 		    do ITEM#[, ITEM#, ITEM#, ...]
 		    help
 		    list|ls [TERM...]
