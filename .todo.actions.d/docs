@@ -21,7 +21,7 @@ function firstrun() {
 	echo "- Google CL with oAuth configured (run 'google docs list')"
 }
 
-if [ $# -ne 2 ] || [ "$1" = "usage" ] ; then
+if [ $# -ne 2 ] || [ "$2" = "usage" ] ; then
 	echo "Usage: $TODO_SH docs <option>"
 	echo
 	echo "Options:"
@@ -66,8 +66,9 @@ case $1 in
 'pull' )
 	cat $tmpf|while read title ; do
 		regexp=^$title$
+		echo bla"$title"bla
 		if [ `sed 's/^(.) //' "$TODO_FILE"|grep "$regexp"|wc -l` -eq 0 ] ; then
-			$TODO_DIR/$TODO_SH add $title
+			$TODO_DIR/$TODO_SH add "$title"
 		fi
 	done
 	sed 's/^(.) //' "$TODO_FILE"|while read l; do
