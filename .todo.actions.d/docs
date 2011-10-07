@@ -66,7 +66,6 @@ case $1 in
 'pull' )
 	cat $tmpf|while read title ; do
 		regexp=^$title$
-		echo bla"$title"bla
 		if [ `sed 's/^(.) //' "$TODO_FILE"|grep "$regexp"|wc -l` -eq 0 ] ; then
 			$TODO_DIR/$TODO_SH add "$title"
 		fi
