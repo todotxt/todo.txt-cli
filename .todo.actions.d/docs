@@ -16,54 +16,61 @@
 function firstrun() {
 	echo "Welcome, for happiness verify the following:"
 	echo "- Google Docs account"
-	echo "- todo folder in docs (stored in .docs file)"
+	echo "- todo folder in docs (name stored in .docs file)"
 	echo "- Google CL installed (visit http://code.google.com/p/googlecl)"
 	echo "- Google CL with oAuth configured (run 'google docs list')"
 }
 
-if [ $# -ne 2 ] || [ "$2" = "usage" ] ; then
+function usage() {
 	echo "Usage: $TODO_SH docs <option>"
 	echo
 	echo "Options:"
 	echo "	pull	Pull todo from Google docs"
 	echo "	push 	Push todo to Google docs"
-	echo "	usage	This help"
+	echo "	help	This help"
 	echo
 	firstrun
+}
+
+function init() {
+	DOCS=$(dirname $0)/.docs
+
+	if [ ! -f "$DOCS" ] ; then
+		firstrun
+		echo "Type CTRL-C now if something is not ok"
+		echo
+		echo "Please, what is yout todo folder name in docs:"
+		read f
+		echo $f > "$DOCS"
+		echo "Hurray, docs pull push should work now."
+	fi
+
+	FOLDER=$(cat "$DOCS")
+	if [ -z "$FOLDER" ] ; then
+		echo 'TODO folder empty'
+		exit 1
+	fi
+	
+
+	google docs list --folder "$FOLDER" 2>&1|awk -F, '{print $1}' > $tmpf
+	if [ `grep 'No folder found' $tmpf|wc -l` -ne 0 ] ; then
+		echo "$FOLDER not found"
+		rm -f $tmpf 
+		exit 1
+	fi
+}
+
+if [ $# -ne 2 ] ; then
+	usage
 	exit 0
 fi
 
-DOCS=$(dirname $0)/.docs
-
-shift
-
-if [ ! -f "$DOCS" ] ; then
-	firstrun
-	echo "Type CTRL-C now if something is not ok"
-	echo
-	echo "Please, what is yout todo folder name in docs:"
-	read f
-	echo $f > "$DOCS"
-	echo "Hurray, docs pull push should work now."
-fi
-
-FOLDER=$(cat "$DOCS")
-if [ -z "$FOLDER" ] ; then
-	echo 'TODO folder empty'
-	exit 1
-fi
-
 tmpf="/tmp/$(basename $0).$$"
-
-google docs list --folder "$FOLDER" 2>&1|awk -F, '{print $1}' > $tmpf
-if [ `grep 'No folder found' $tmpf|wc -l` -ne 0 ] ; then
-	echo "$FOLDER not found"
-	rm -f $tmpf 
-	exit 1
-fi
+shift
 
 case $1 in
 'pull' )
+	init $tmpf
 	cat $tmpf|while read title ; do
 		regexp=^$title$
 		if [ `sed 's/^(.) //' "$TODO_FILE"|grep "$regexp"|wc -l` -eq 0 ] ; then
@@ -81,6 +88,7 @@ case $1 in
 	done
 	;;
 'push' )
+	init $tmpf
 	sed 's/^(.) //' "$TODO_FILE"|while read l; do
 		[ -z "$l" ] && continue
 		regexp=^$l$
@@ -102,6 +110,12 @@ EOF
 			[ $? -eq 0 ] ; echo "$title deleted in docs"
 		fi
 	done
+	;;
+'help' )
+	usage
+	;;
+*)
+	echo 'Unknown command. Type <todo> docs help'
 	;;
 esac
 
