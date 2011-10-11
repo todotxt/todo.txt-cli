@@ -1,4 +1,4 @@
-#!/bin/bash
+#/bin/bash
 
 # Google DOCS extension for todotxt
 # First release: 7/10/2011
@@ -12,6 +12,7 @@
 #
 # We explicitly omit the todotxt priority when Google Docs syncing
 #
+#
 
 function firstrun() {
 	echo "Welcome, for happiness verify the following:"
@@ -19,6 +20,7 @@ function firstrun() {
 	echo "- todo folder in docs (name stored in .docs file)"
 	echo "- Google CL installed (visit http://code.google.com/p/googlecl)"
 	echo "- Google CL with oAuth configured (run 'google docs list')"
+	echo "If you work in UTF-8, add 'default_encoding = utf-8' to the GENERAL section of ~/.config/googlecl/config"
 }
 
 function usage() {
@@ -32,46 +34,42 @@ function usage() {
 	firstrun
 }
 
-function init() {
-	DOCS=$(dirname $0)/.docs
-
-	if [ ! -f "$DOCS" ] ; then
-		firstrun
-		echo "Type CTRL-C now if something is not ok"
-		echo
-		echo "Please, what is yout todo folder name in docs:"
-		read f
-		echo $f > "$DOCS"
-		echo "Hurray, docs pull push should work now."
-	fi
-
-	FOLDER=$(cat "$DOCS")
-	if [ -z "$FOLDER" ] ; then
-		echo 'TODO folder empty'
-		exit 1
-	fi
-	
-
-	google docs list --folder "$FOLDER" 2>&1|awk -F, '{print $1}' > $tmpf
-	if [ `grep 'No folder found' $tmpf|wc -l` -ne 0 ] ; then
-		echo "$FOLDER not found"
-		rm -f $tmpf 
-		exit 1
-	fi
-}
-
 if [ $# -ne 2 ] ; then
 	usage
 	exit 0
 fi
 
-tmpf="/tmp/$(basename $0).$$"
+googlst="/tmp/$(basename $0).txt"
+
 shift
+
+DOCS=$(dirname $0)/.docs
+if [ ! -f "$DOCS" ] ; then
+	firstrun
+	echo "Type CTRL-C now if something is not ok"
+	echo
+	echo "Please, what is yout todo folder name in docs:"
+	read f
+	echo $f > "$DOCS"
+	echo "Hurray, docs pull push should work now."
+fi
+
+FOLDER=$(cat "$DOCS")
+if [ -z "$FOLDER" ] ; then
+	echo 'TODO folder empty'
+	exit 1
+fi
+
+google docs list --folder "$FOLDER" 2>&1|awk -F, '{print $1}' > $googlst
+if [ `grep 'No folder found' $googlst|wc -l` -ne 0 ] ; then
+	echo "$FOLDER not found"
+	rm -f $googlst 
+	exit 1
+fi
 
 case $1 in
 'pull' )
-	init $tmpf
-	cat $tmpf|while read title ; do
+	cat $googlst|while read title ; do
 		regexp=^$title$
 		if [ `sed 's/^(.) //' "$TODO_FILE"|grep "$regexp"|wc -l` -eq 0 ] ; then
 			$TODO_DIR/$TODO_SH add "$title"
@@ -80,28 +78,27 @@ case $1 in
 	sed 's/^(.) //' "$TODO_FILE"|while read l; do
 		[ -z "$l" ] && continue
 		regexp=^$l$
-		if [ `grep "$regexp" $tmpf|wc -l` -eq 0 ] ; then
-			tmpf2="/tmp/$(basename $0).$$2"
-			grep -v "$l" "$TODO_FILE" > $tmpf2 && rm "$TODO_FILE" && cp $tmpf2 "$TODO_FILE" && rm -f $tmpf2
+		if [ `grep "$regexp" "$googlst"|wc -l` -eq 0 ] ; then
+			grep -v "$l" "$TODO_FILE" > "$googlst2" && rm "$TODO_FILE" && cp "$googlst2" "$TODO_FILE" && rm -f "$googlst2"
 			echo "$l deleted in todo"
 		fi
 	done
 	;;
 'push' )
-	init $tmpf
+	googn='/tmp/googn.txt'
+	touch $googn
 	sed 's/^(.) //' "$TODO_FILE"|while read l; do
 		[ -z "$l" ] && continue
 		regexp=^$l$
-		if [ `grep "$regexp" $tmpf|wc -l` -eq 0 ] ; then
-			echo "adding $l in docs\n"
-			touch /tmp/$$.$l
-			google docs upload --src "/tmp/$$.$l" --title "$l" --folder "$FOLDER" > /dev/null
+		if [ `grep "$regexp" $googlst|wc -l` -eq 0 ] ; then
+			echo "adding $l in docs"		
+			google docs upload --src "$googn" --title "$l" --folder "$FOLDER"
 			[ $? -eq 0 ] ; echo "$l added in docs"
-			rm -f /tmp/$$.$l
 		fi
 	done
+	rm -f $googn
 	
-	cat $tmpf|while read title ; do
+	cat $googlst|while read title ; do
 		regexp=^$title$
 		if [ `sed 's/^(.) //' "$TODO_FILE"|grep "$regexp"|wc -l` -eq 0 ] ; then
 			google docs delete --title "$title" --folder "$FOLDER" > /dev/null <<EOF
@@ -111,7 +108,7 @@ EOF
 		fi
 	done
 	;;
-'help' )
+'help','usage' )
 	usage
 	;;
 *)
@@ -119,5 +116,5 @@ EOF
 	;;
 esac
 
-rm -f $tmpf
+rm -f $googlst
 
