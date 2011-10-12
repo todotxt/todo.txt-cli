@@ -34,14 +34,16 @@ function usage() {
 	firstrun
 }
 
-if [ $# -ne 2 ] ; then
-	usage
-	exit 0
-fi
+function mklst() {
+	$TODO_DIR/$TODO_SH -@+Ppf ls|grep '^[0-9]'|sed 's/,/ /g'|sed 's/\s\{1,\}/ /g'|sed 's/\(^[0-9]*\)\ /\1,/' > $todolst
 
-googlst="/tmp/$(basename $0).txt"
-
-shift
+	google docs list --folder "$FOLDER" 2>&1|awk -F, '{print $1}'|sed 's/,/ /g'|sed 's/\s\{1,\}/ /g' > $googlst
+	if [ `grep 'No folder found' $googlst|wc -l` -ne 0 ] ; then
+		echo "$FOLDER not found"
+		rm -f $googlst 
+		exit 1
+	fi
+}
 
 DOCS=$(dirname $0)/.docs
 if [ ! -f "$DOCS" ] ; then
@@ -54,61 +56,67 @@ if [ ! -f "$DOCS" ] ; then
 	echo "Hurray, docs pull push should work now."
 fi
 
-FOLDER=$(cat "$DOCS")
+export FOLDER=$(cat "$DOCS")
 if [ -z "$FOLDER" ] ; then
 	echo 'TODO folder empty'
 	exit 1
 fi
 
-google docs list --folder "$FOLDER" 2>&1|awk -F, '{print $1}' > $googlst
-if [ `grep 'No folder found' $googlst|wc -l` -ne 0 ] ; then
-	echo "$FOLDER not found"
-	rm -f $googlst 
-	exit 1
-fi
 
-case $1 in
+export googlst="/tmp/$(basename $0)_goog.txt"
+export todolst="/tmp/$(basename $0)_todo.txt"
+
+case $2 in
 'pull' )
+	mklst
 	cat $googlst|while read title ; do
-		regexp=^$title$
-		if [ `sed 's/^(.) //' "$TODO_FILE"|sed 's/,//g'|grep "$regexp"|wc -l` -eq 0 ] ; then
+		if [ `awk -F, '{print $2}' "$todolst"|grep "^$title$"|wc -l` -eq 0 ] ; then
 			$TODO_DIR/$TODO_SH add "$title"
 		fi
 	done
-	sed 's/^(.) //' "$TODO_FILE"|sed 's/,//g'|while read l; do
+	cat $todolst|while read l; do
 		[ -z "$l" ] && continue
-		regexp=^$l$
-		if [ `grep "$regexp" "$googlst"|wc -l` -eq 0 ] ; then
-			grep -v "$l" "$TODO_FILE" > "$googlst2" && rm "$TODO_FILE" && cp "$googlst2" "$TODO_FILE" && rm -f "$googlst2"
-			echo "$l deleted in todo"
+		n=$(echo $l|awk -F, '{print $1}')
+		t=$(echo $l|awk -F, '{print $2}')
+		if [ `grep "^$t$" "$googlst"|wc -l` -eq 0 ] ; then
+			$TODO_DIR/$TODO_SH -f del "$n"
 		fi
 	done
 	;;
 'push' )
+	mklst
 	googn='/tmp/googn.txt'
 	touch $googn
-	sed 's/^(.) //' "$TODO_FILE"|sed 's/,//g'|while read l; do
+	cat $todolst|while read l; do
 		[ -z "$l" ] && continue
-		regexp=^$l$
-		if [ `grep "$regexp" $googlst|wc -l` -eq 0 ] ; then
-			echo "adding $l in docs"		
-			google docs upload --src "$googn" --title "$l" --folder "$FOLDER"
-			[ $? -eq 0 ] ; echo "$l added in docs"
+		n=$(echo $l|awk -F, '{print $1}')
+		t=$(echo $l|awk -F, '{print $2}')
+		if [ `grep "^$t$" "$googlst"|wc -l` -eq 0 ] ; then	
+			r=$(google docs upload --src "$googn" --title "$t" --folder "$FOLDER" --debug 2>&1)
+			if [ `echo $r|grep \'POST|wc -l` -eq 1 ] ; then
+				echo "DOCS: $t ADDED"
+			else
+				echo "DOCS: $t NOT ADDED"
+			fi
 		fi
 	done
 	rm -f $googn
 	
 	cat $googlst|while read title ; do
-		regexp=^$title$
-		if [ `sed 's/^(.) //' "$TODO_FILE"|sed 's/,//g'|grep "$regexp"|wc -l` -eq 0 ] ; then
-			google docs delete --title "$title" --folder "$FOLDER" <<EOF
+		if [ `awk -F, '{print $2}' "$todolst"|grep "^$title$"|wc -l` -eq 0 ] ; then
+			r=$(google docs delete --title "$title" --folder "$FOLDER" --debug 2>&1 <<EOF
 y
 EOF
-			[ $? -eq 0 ] ; echo "$title deleted in docs"
+)
+			if [ `echo $r|grep \'DELETE|wc -l` -eq 1 ] ; then
+				echo "DOCS: $title DELETED"
+			else
+				echo "DOCS: $title NOT DELETED"
+			fi
 		fi
 	done
 	;;
-'help','usage' )
+'help' )
 	usage
 	;;
 *)
@@ -116,5 +124,5 @@ EOF
 	;;
 esac
 
-rm -f $googlst
+#rm -f $googlst
 
