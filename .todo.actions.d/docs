@@ -71,11 +71,11 @@ case $1 in
 'pull' )
 	cat $googlst|while read title ; do
 		regexp=^$title$
-		if [ `sed 's/^(.) //' "$TODO_FILE"|grep "$regexp"|wc -l` -eq 0 ] ; then
+		if [ `sed 's/^(.) //' "$TODO_FILE"|sed 's/,//g'|grep "$regexp"|wc -l` -eq 0 ] ; then
 			$TODO_DIR/$TODO_SH add "$title"
 		fi
 	done
-	sed 's/^(.) //' "$TODO_FILE"|while read l; do
+	sed 's/^(.) //' "$TODO_FILE"|sed 's/,//g'|while read l; do
 		[ -z "$l" ] && continue
 		regexp=^$l$
 		if [ `grep "$regexp" "$googlst"|wc -l` -eq 0 ] ; then
@@ -87,7 +87,7 @@ case $1 in
 'push' )
 	googn='/tmp/googn.txt'
 	touch $googn
-	sed 's/^(.) //' "$TODO_FILE"|while read l; do
+	sed 's/^(.) //' "$TODO_FILE"|sed 's/,//g'|while read l; do
 		[ -z "$l" ] && continue
 		regexp=^$l$
 		if [ `grep "$regexp" $googlst|wc -l` -eq 0 ] ; then
@@ -100,8 +100,8 @@ case $1 in
 	
 	cat $googlst|while read title ; do
 		regexp=^$title$
-		if [ `sed 's/^(.) //' "$TODO_FILE"|grep "$regexp"|wc -l` -eq 0 ] ; then
-			google docs delete --title "$title" --folder "$FOLDER" > /dev/null <<EOF
+		if [ `sed 's/^(.) //' "$TODO_FILE"|sed 's/,//g'|grep "$regexp"|wc -l` -eq 0 ] ; then
+			google docs delete --title "$title" --folder "$FOLDER" <<EOF
 y
 EOF
 			[ $? -eq 0 ] ; echo "$title deleted in docs"
