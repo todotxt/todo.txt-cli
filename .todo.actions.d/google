@@ -9,16 +9,17 @@ import os
 import sys
 import gflags
 import httplib2
+import datetime
 
 from apiclient.discovery import build
 from oauth2client.file import Storage
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.tools import run
-
+from subprocess import call
 
 __version__ = "0.1"
 __date__ = "2011/06/06"
-__updated__ = "2011/06/07"
+__updated__ = "2011/10/10"
 __author__ = "Andrew McIntosh (github.com/amcintosh)"
 __copyright__ = "Copyright 2011, Andrew McIntosh"
 __license__ = "GPL"
@@ -36,7 +37,8 @@ FLOW = OAuth2WebServerFlow(
 
 def usage():
     """Prints progam usage"""
-    print "USAGE: %s [push|pull]"% (sys.argv[1], )
+    print "USAGE: %s [pull|push]"% (sys.argv[1], )
+
 
 def getAPIService():
     """Authorize and return a session for the Tasks API"""
@@ -55,13 +57,28 @@ def getAPIService():
        developerKey='YOUR_DEVELOPER_KEY')	
     return service
 
+
+def addToTodo(task):
+    """Format the google task and add it to todo file"""
+    todo = task["title"]
+    call([os.environ.get("TODO_FULL_SH"),"add",todo])
+
+
+def addToDone(task):
+    """Format the google task and add it to todo done file"""
+    date = datetime.datetime.strptime(task["completed"], "%Y-%m-%dT%H:%M:%S.%fZ")
+    todo = "x " + date.strftime("%Y-%m-%d") + " " + task["title"]
+    call([os.environ.get("TODO_FULL_SH"),"addto","done.txt",todo])
+
+
 def pull():
     """Get Tasks from google task API and add those that don't exist to todo.txt"""
     service = getAPIService()
     tasklists = service.tasklists().list().execute()
+    call([os.environ.get("TODO_FULL_SH"),"archive"])
     try:
-        todoFile = open(os.environ.get("TODO_DIR")+"/todo.txt", "r+")
-        doneFile = open(os.environ.get("TODO_DIR")+"/done.txt", "r+")
+        todoFile = open(os.environ.get("TODO_DIR")+"/todo.txt", "r")
+        doneFile = open(os.environ.get("TODO_DIR")+"/done.txt", "r")
     except IOError:
         print "ERROR: The todo.txt files could not be read."
         sys.exit(2)
@@ -71,37 +88,49 @@ def pull():
         tasks = service.tasks().list(tasklist=tasklist["id"]).execute()
 
         for task in tasks["items"]:
+            todoFile.seek(0)
+            doneFile.seek(0)
+
             if task["title"].strip():
                 #Check for the task in the todo files
-                foundInTodo = False
-                foundInDone = False
+                foundInTodo = -1
+                foundInDone = -1
+                count = 1
                 for line in todoFile:
-                    if task["title"] in line:
-                        foundInTodo = True
+                    if title in line:
+                        foundInTodo = count
                         break
+                    else:
+                        print title + ":" + line
+                    count+=1
+                count = 1
                 for line in doneFile:
-                    if task["title"] in line:
-                        foundInDone = True
+                    if title in line:
+                        foundInDone = count
+                        print "Found in done"
                         break
-            
-                if task["status"] == "needsAction" and foundInTodo:
+                    count+=1            
+
+                #Decide what to do with task
+                if task["status"] == "needsAction" and foundInTodo>-1:
                     #Do nothing
                     pass
-                elif task["status"] == "completed" and foundInTodo:
+                elif task["status"] == "completed" and foundInTodo>-1:
                     #Remove from todo.txt and add to done.txt
-                    pass
-                elif task["status"] == "needsAction" and foundInDone:
+                    call([os.environ.get("TODO_FULL_SH"),"do " + str(foundInTodo)])
+                elif task["status"] == "needsAction" and foundInDone>-1:
                     #Do nothing (changes need synced up, but not my problem)
                     pass
-                elif task["status"] == "completed" and foundInDone:
+                elif task["status"] == "completed" and foundInDone>-1:
                     #Do nothing
                     pass
-                if task["status"] == "needsAction":
+                elif task["status"] == "needsAction":
                     #Add to todo.txt
-                    pass
+                    addToTodo(task)                    
                 elif task["status"] == "completed":
                     #Add to done.txt
-                    pass
+                    addToDone(task)
+               
     todoFile.close()
     doneFile.close()
 
@@ -109,6 +138,7 @@ def pull():
 def push():
     """Get items from todo.txt and adds them to google tasks via API"""
     service = getAPIService()
+
 
 def main(argv):
     if len(argv) < 2 or argv[0]=="usage":
@@ -123,6 +153,7 @@ def main(argv):
         push()
     else:
         usage()
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
