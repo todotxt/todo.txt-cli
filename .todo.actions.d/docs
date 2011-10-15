@@ -34,10 +34,14 @@ function usage() {
 	firstrun
 }
 
-function mklst() {
-	$TODO_DIR/$TODO_SH -@+Ppf ls|grep '^[0-9]'|sed 's/,/ /g'|sed 's/\s\{1,\}/ /g'|sed 's/\(^[0-9]*\)\ /\1,/' > $todolst
+export googlst="/tmp/$(basename $0)_goog.txt"
+export todolst="/tmp/$(basename $0)_todo.txt"
+export DELIM='•'
 
-	google docs list --folder "$FOLDER" 2>&1|awk -F, '{print $1}'|sed 's/,/ /g'|sed 's/\s\{1,\}/ /g' > $googlst
+function mklst() {
+	$TODO_DIR/$TODO_SH -@+Ppf ls|grep '^[0-9]'|sed "s/\$DELIM/ /g"|sed 's/\s\{1,\}/ /g'|sed "s/\(^[0-9]*\)\ /\1$DELIM/" > $todolst
+
+	google docs list --fields title --folder "$FOLDER" 2>&1|sed 's/\s\{1,\}/ /g' > $googlst
 	if [ `grep 'No folder found' $googlst|wc -l` -ne 0 ] ; then
 		echo "$FOLDER not found"
 		rm -f $googlst 
@@ -63,21 +67,19 @@ if [ -z "$FOLDER" ] ; then
 fi
 
 
-export googlst="/tmp/$(basename $0)_goog.txt"
-export todolst="/tmp/$(basename $0)_todo.txt"
 
 case $2 in
 'pull' )
 	mklst
 	cat $googlst|while read title ; do
-		if [ `awk -F, '{print $2}' "$todolst"|grep "^$title$"|wc -l` -eq 0 ] ; then
+		if [ `awk -F$DELIM '{print $2}' "$todolst"|grep "^$title$"|wc -l` -eq 0 ] ; then
 			$TODO_DIR/$TODO_SH add "$title"
 		fi
 	done
 	cat $todolst|while read l; do
 		[ -z "$l" ] && continue
-		n=$(echo $l|awk -F, '{print $1}')
-		t=$(echo $l|awk -F, '{print $2}')
+		n=$(echo $l|awk -F$DELIM '{print $1}')
+		t=$(echo $l|awk -F$DELIM '{print $2}')
 		if [ `grep "^$t$" "$googlst"|wc -l` -eq 0 ] ; then
 			$TODO_DIR/$TODO_SH -f del "$n"
 		fi
@@ -89,11 +91,11 @@ case $2 in
 	touch $googn
 	cat $todolst|while read l; do
 		[ -z "$l" ] && continue
-		n=$(echo $l|awk -F, '{print $1}')
-		t=$(echo $l|awk -F, '{print $2}')
-		if [ `grep "^$t$" "$googlst"|wc -l` -eq 0 ] ; then	
-			r=$(google docs upload --src "$googn" --title "$t" --folder "$FOLDER" --debug 2>&1)
-			if [ `echo $r|grep \'POST|wc -l` -eq 1 ] ; then
+		n=$(echo $l|awk -F$DELIM '{print $1}')
+		t=$(echo $l|awk -F$DELIM '{print $2}')
+		if [ `grep "^$t$" "$googlst"|wc -l` -eq 0 ] ; then
+			r=$(google docs upload --src "$googn" --title "$t" --folder "$FOLDER" 2>&1)
+			if [ `echo $r|grep 'Upload success'|wc -l` -eq 1 ] ; then
 				echo "DOCS: $t ADDED"
 			else
 				echo "DOCS: $t NOT ADDED"
@@ -103,8 +105,8 @@ case $2 in
 	rm -f $googn
 	
 	cat $googlst|while read title ; do
-		if [ `awk -F, '{print $2}' "$todolst"|grep "^$title$"|wc -l` -eq 0 ] ; then
-			r=$(google docs delete --title "$title" --folder "$FOLDER" --debug 2>&1 <<EOF
+		if [ `awk -F$DELIM '{print $2}' "$todolst"|grep "^$title$"|wc -l` -eq 0 ] ; then
+			r=$(google docs delete --title "^$title$" --folder "$FOLDER" --debug 2>&1 <<EOF
 y
 EOF
 )
@@ -124,5 +126,6 @@ EOF
 	;;
 esac
 
-#rm -f $googlst
+rm -f $todolst
+rm -f $googlst
 
