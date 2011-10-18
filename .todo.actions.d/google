@@ -79,35 +79,40 @@ def pull():
     try:
         todoFile = open(os.environ.get("TODO_DIR")+"/todo.txt", "r")
         doneFile = open(os.environ.get("TODO_DIR")+"/done.txt", "r")
+    
+        todos = []
+        dones = []
+        for line in todoFile:
+            todos.append(line)
+        for line in doneFile:
+            dones.append(line)
+        todoFile.close()
+        doneFile.close()
+
     except IOError:
         print "ERROR: The todo.txt files could not be read."
         sys.exit(2)
-
+ 
     for tasklist in tasklists["items"]:
         tasklistName = tasklist["title"]
         tasks = service.tasks().list(tasklist=tasklist["id"]).execute()
 
         for task in tasks["items"]:
-            todoFile.seek(0)
-            doneFile.seek(0)
 
             if task["title"].strip():
                 #Check for the task in the todo files
                 foundInTodo = -1
                 foundInDone = -1
                 count = 1
-                for line in todoFile:
-                    if title in line:
+                for item in todos:
+                    if title in item:
                         foundInTodo = count
                         break
-                    else:
-                        print title + ":" + line
                     count+=1
                 count = 1
-                for line in doneFile:
-                    if title in line:
+                for item in dones:
+                    if title in item:
                         foundInDone = count
-                        print "Found in done"
                         break
                     count+=1            
 
@@ -130,14 +135,33 @@ def pull():
                 elif task["status"] == "completed":
                     #Add to done.txt
                     addToDone(task)
-               
-    todoFile.close()
-    doneFile.close()
 
 
-def push():
+def push(filename):
     """Get items from todo.txt and adds them to google tasks via API"""
     service = getAPIService()
+    tasklists = service.tasklists().list().execute()
+    call([os.environ.get("TODO_FULL_SH"),"archive"])
+
+    try:
+        todoFile = open(os.environ.get("TODO_DIR")+"/"+filename+".txt", "r")
+    
+        todos = []
+        for line in todoFile:
+            todos.append(line)
+        todoFile.close()
+
+    except IOError:
+        print "ERROR: The " + filename + ".txt files could not be read."
+        sys.exit(2)
+
+    for todo in todos:
+        for tasklist in tasklists["items"]:
+            tasklistName = tasklist["title"]
+            tasks = service.tasks().list(tasklist=tasklist["id"]).execute()
+            for task in tasks["items"]:
+
+                if task["title"].strip():
 
 
 def main(argv):
@@ -150,7 +174,11 @@ def main(argv):
         pull()        
     elif argv[1]=="push":
         print "pushing"
-        push()
+        push("todo")
+    elif argv[1]=="push" and argv[2]=="all":
+        print "pushing all"
+        push("todo")
+        push("done")
     else:
         usage()
 
