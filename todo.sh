@@ -44,14 +44,14 @@ shorthelp()
 
 		  Actions:
 		    add|a "THING I NEED TO DO +project @context"
-		    addto DEST "TEXT TO ADD"
 		    addm "THINGS I NEED TO DO
 		          MORE THINGS I NEED TO DO"
+		    addto DEST "TEXT TO ADD"
 		    append|app ITEM# "TEXT TO APPEND"
 		    archive
 		    command [ACTIONS]
 		    del|rm ITEM# [TERM]
-		    dp|depri ITEM#[, ITEM#, ITEM#, ...]
+		    depri|dp ITEM#[, ITEM#, ITEM#, ...]
 		    do ITEM#[, ITEM#, ITEM#, ...]
 		    help
 		    list|ls [TERM...]
@@ -65,18 +65,91 @@ shorthelp()
 		    pri|p ITEM# PRIORITY
 		    replace ITEM# "UPDATED TODO"
 		    report
+		    shorthelp
+
+	EndHelp
+
+    # Only list the one-line usage from the add-on actions. This assumes that
+    # add-ons use the same usage indentation structure as todo.sh.
+    addonHelp | grep -e '^  Add-on Actions:' -e '^    [[:alpha:]]'
+
+    cat <<-EndHelpFooter
 
 		  See "help" for more details.
-	EndHelp
+	EndHelpFooter
     exit 0
 }
 
 help()
 {
-    cat <<-EndHelp
+    cat <<-EndOptionsHelp
 		  Usage: $oneline_usage
 
-		  Actions:
+		  Options:
+		    -@
+		        Hide context names in list output. Use twice to show context
+		        names (default).
+		    -+
+		        Hide project names in list output. Use twice to show project
+		        names (default).
+		    -c
+		        Color mode
+		    -d CONFIG_FILE
+		        Use a configuration file other than the default ~/.todo/config
+		    -f
+		        Forces actions without confirmation or interactive input
+		    -h
+		        Display a short help message; same as action "shorthelp"
+		    -p
+		        Plain mode turns off colors
+		    -P
+		        Hide priority labels in list output. Use twice to show
+		        priority labels (default).
+		    -a
+		        Don't auto-archive tasks automatically on completion
+		    -A
+		        Auto-archive tasks automatically on completion
+		    -n
+		        Don't preserve line numbers; automatically remove blank lines
+		        on task deletion
+		    -N
+		        Preserve line numbers
+		    -t
+		        Prepend the current date to a task automatically
+		        when it's added.
+		    -T
+		        Do not prepend the current date to a task automatically
+		        when it's added.
+		    -v
+		        Verbose mode turns on confirmation messages
+		    -vv
+		        Extra verbose mode prints some debugging information and
+		        additional help text
+		    -V
+		        Displays version, license and credits
+		    -x
+		        Disables TODOTXT_FINAL_FILTER
+
+
+	EndOptionsHelp
+
+    [ $TODOTXT_VERBOSE -gt 1 ] && cat <<-EndVerboseHelp
+		  Environment variables:
+		    TODOTXT_AUTO_ARCHIVE            is same as option -a (0)/-A (1)
+		    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
+		    TODOTXT_FORCE=1                 is same as option -f
+		    TODOTXT_PRESERVE_LINE_NUMBERS   is same as option -n (0)/-N (1)
+		    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
+		    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
+		    TODOTXT_VERBOSE=1               is same as option -v
+		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
+		    TODOTXT_SORT_COMMAND="sort ..." customize list output
+		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
+
+
+	EndVerboseHelp
+    cat <<-EndActionsHelp
+		  Built-in Actions:
 		    add "THING I NEED TO DO +project @context"
 		    a "THING I NEED TO DO +project @context"
 		      Adds THING I NEED TO DO to your todo.txt file on its own line.
@@ -177,81 +250,33 @@ help()
 		    report
 		      Adds the number of open tasks and done tasks to report.txt.
 
+		    shorthelp
+		      List the one-line usage of all built-in and add-on actions.
 
 
-		  Options:
-		    -@
-		        Hide context names in list output. Use twice to show context
-		        names (default).
-		    -+
-		        Hide project names in list output. Use twice to show project
-		        names (default).
-		    -c
-		        Color mode
-		    -d CONFIG_FILE
-		        Use a configuration file other than the default ~/.todo/config
-		    -f
-		        Forces actions without confirmation or interactive input
-		    -h
-		        Display a short help message
-		    -p
-		        Plain mode turns off colors
-		    -P
-		        Hide priority labels in list output. Use twice to show
-		        priority labels (default).
-		    -a
-		        Don't auto-archive tasks automatically on completion
-		    -A
-		        Auto-archive tasks automatically on completion
-		    -n
-		        Don't preserve line numbers; automatically remove blank lines
-		        on task deletion
-		    -N
-		        Preserve line numbers
-		    -t
-		        Prepend the current date to a task automatically
-		        when it's added.
-		    -T
-		        Do not prepend the current date to a task automatically
-		        when it's added.
-		    -v
-		        Verbose mode turns on confirmation messages
-		    -vv
-		        Extra verbose mode prints some debugging information
-		    -V
-		        Displays version, license and credits
-		    -x
-		        Disables TODOTXT_FINAL_FILTER
+	EndActionsHelp
 
+        addonHelp
+    exit 1
+}
 
-		  Environment variables:
-		    TODOTXT_AUTO_ARCHIVE            is same as option -a (0)/-A (1)
-		    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
-		    TODOTXT_FORCE=1                 is same as option -f
-		    TODOTXT_PRESERVE_LINE_NUMBERS   is same as option -n (0)/-N (1)
-		    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
-		    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
-		    TODOTXT_VERBOSE=1               is same as option -v
-		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
-		    TODOTXT_SORT_COMMAND="sort ..." customize list output
-		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
-	EndHelp
-
-    if [ -d "$TODO_ACTIONS_DIR" ]
-    then
-        echo ""
+addonHelp()
+{
+    if [ -d "$TODO_ACTIONS_DIR" ]; then
+        didPrintAddonActionsHeader=
         for action in "$TODO_ACTIONS_DIR"/*
         do
-            if [ -f "$action" -a -x "$action" ]
-            then
+            if [ -f "$action" -a -x "$action" ]; then
+                if [ ! "$didPrintAddonActionsHeader" ]; then
+                    cat <<-EndAddonActionsHeader
+		  Add-on Actions:
+	EndAddonActionsHeader
+                    didPrintAddonActionsHeader=1
+                fi
                 "$action" usage
             fi
         done
-        echo ""
     fi
-
-
-    exit 1
 }
 
 die()
@@ -418,7 +443,10 @@ do
         OVR_TODOTXT_FORCE=1
         ;;
     h )
-        shorthelp
+        # Short-circuit option parsing and forward to the action.
+        # Cannot just invoke shorthelp() because we need the configuration
+        # processed to locate the add-on actions directory.
+        set -- '-h' 'shorthelp'
         ;;
     n )
         OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
@@ -980,6 +1008,16 @@ case $action in
         fi
     fi
     help # just in case something failed above, we go ahead and just spew to STDOUT
+    ;;
+
+"shorthelp" )
+    if [ -t 1 ] ; then # STDOUT is a TTY
+        if which "${PAGER:-less}" >/dev/null 2>&1; then
+            # we have a working PAGER (or less as a default)
+            shorthelp | "${PAGER:-less}" && exit 0
+        fi
+    fi
+    shorthelp # just in case something failed above, we go ahead and just spew to STDOUT
     ;;
 
 "list" | "ls" )
