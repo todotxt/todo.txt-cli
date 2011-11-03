@@ -59,7 +59,7 @@ shorthelp()
 		    listcon|lsc
 		    listfile|lf SRC [TERM...]
 		    listpri|lsp [PRIORITY] [TERM...]
-		    listproj|lsprj
+		    listproj|lsprj [TERM...]
 		    move|mv ITEM# DEST [SRC]
 		    prepend|prep ITEM# "TEXT TO PREPEND"
 		    pri|p ITEM# PRIORITY
@@ -1007,7 +1007,11 @@ case $action in
     ;;
 
 "listproj" | "lsprj" )
-    grep -o '[^ ]*+[^ ]\+' "$TODO_FILE" | grep '^+' | sort -u
+    shift
+
+    export TODOTXT_PLAIN=1
+    _list "$TODO_FILE" "$@" | grep -o '[^ ]*+[^ ]\+' | grep '^+' | \
+        sed "s:\[[0-9;]*[mK]::g" | sort -u
     ;;
 
 "listpri" | "lsp" )
