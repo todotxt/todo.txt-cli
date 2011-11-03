@@ -722,7 +722,7 @@ _list() {
             {
                 if (match($0, /^[0-9]+ x /)) {
                     print highlight("COLOR_DONE") $0 highlight("DEFAULT")
-                } else if (match($0, /^[0-9]+ \([A-Z]\)[[:space:]]/)) {
+                } else if (match($0, /^[0-9]+ \([A-Z]\) /)) {
                     clr = highlight("PRI_" substr($0, RSTART + RLENGTH - 3, 1))
                     print \
                         (clr ? clr : highlight("PRI_X")) \
