@@ -166,4 +166,20 @@ test_todo_session 'highlighting with hidden contexts/projects' <<EOF
 TODO: 4 of 4 tasks shown
 EOF
 
+# check that priorities are only matched at the start of the task
+#
+cat > todo.txt <<EOF
+(D) some prioritized task
+not prioritized
+should not be seen as PRIORITIZE(D) task
+EOF
+test_todo_session 'highlighting priority position' <<EOF
+>>> todo.sh ls
+[1;37m1 (D) some prioritized task[0m
+2 not prioritized
+3 should not be seen as PRIORITIZE(D) task
+--
+TODO: 3 of 3 tasks shown
+EOF
+
 test_done
