@@ -633,6 +633,37 @@ _addto() {
     fi
 }
 
+filtercommand()
+{
+    filter=${1:-}
+    shift
+    post_filter=${1:-}
+    shift
+
+    for search_term
+    do
+        ## See if the first character of $search_term is a dash
+        if [ "${search_term:0:1}" != '-' ]
+        then
+            ## First character isn't a dash: hide lines that don't match
+            ## this $search_term
+            filter="${filter:-}${filter:+ | }grep -i \"$search_term\""
+        else
+            ## First character is a dash: hide lines that match this
+            ## $search_term
+            #
+            ## Remove the first character (-) before adding to our filter command
+            filter="${filter:-}${filter:+ | }grep -v -i \"${search_term:1}\""
+        fi
+    done
+
+    [ -n "$post_filter" ] && {
+        filter="${filter:-}${filter:+ | }${post_filter:-}"
+    }
+
+    printf %s "$filter"
+}
+
 _list() {
     local FILE="$1"
     ## If the file starts with a "/" use absolute path. Otherwise,
@@ -656,32 +687,8 @@ _list() {
     ## Get our search arguments, if any
     shift ## was file name, new $1 is first search term
 
-    ## Prefix the filter_command with the pre_filter_command
-    filter_command="${pre_filter_command:-}"
-
-    for search_term
-    do
-        ## See if the first character of $search_term is a dash
-        if [ "${search_term:0:1}" != '-' ]
-        then
-            ## First character isn't a dash: hide lines that don't match
-            ## this $search_term
-            filter_command="${filter_command:-} ${filter_command:+|} \
-                grep -i \"$search_term\" "
-        else
-            ## First character is a dash: hide lines that match this
-            ## $search_term
-            #
-            ## Remove the first character (-) before adding to our filter command
-            filter_command="${filter_command:-} ${filter_command:+|} \
-                grep -v -i \"${search_term:1}\" "
-        fi
-    done
-
-    ## If post_filter_command is set, append it to the filter_command
-    [ -n "$post_filter_command" ] && {
-        filter_command="${filter_command:-}${filter_command:+ | }${post_filter_command:-}"
-    }
+    ## Build the filter.
+    filter_command=$(filtercommand "${pre_filter_command:-}" "${post_filter_command:-}" "$@")
 
     ## Figure out how much padding we need to use
     ## We need one level of padding for each power of 10 $LINES uses
@@ -752,7 +759,7 @@ _list() {
     fi
 }
 
-export -f cleaninput _list die
+export -f cleaninput filtercommand _list die
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
@@ -1008,10 +1015,7 @@ case $action in
 
 "listproj" | "lsprj" )
     shift
-
-    export TODOTXT_PLAIN=1
-    _list "$TODO_FILE" "$@" | grep -o '[^ ]*+[^ ]\+' | grep '^+' | \
-        sed "s:\[[0-9;]*[mK]::g" | sort -u
+    eval $(filtercommand 'cat "$TODO_FILE"' '' "$@") | grep -o '[^ ]*+[^ ]\+' | grep '^+' | sort -u
     ;;
 
 "listpri" | "lsp" )
