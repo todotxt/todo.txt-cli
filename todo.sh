@@ -633,6 +633,11 @@ _addto() {
     fi
 }
 
+shellquote()
+{
+    typeset -r qq=\'; printf %s\\n "'${1//\'/${qq}\\${qq}${qq}}'";
+}
+
 filtercommand()
 {
     filter=${1:-}
@@ -647,13 +652,13 @@ filtercommand()
         then
             ## First character isn't a dash: hide lines that don't match
             ## this $search_term
-            filter="${filter:-}${filter:+ | }grep -i \"$search_term\""
+            filter="${filter:-}${filter:+ | }grep -i $(shellquote "$search_term")"
         else
             ## First character is a dash: hide lines that match this
             ## $search_term
             #
             ## Remove the first character (-) before adding to our filter command
-            filter="${filter:-}${filter:+ | }grep -v -i \"${search_term:1}\""
+            filter="${filter:-}${filter:+ | }grep -v -i '$(shellquote "${search_term:1}")'"
         fi
     done
 
@@ -706,7 +711,7 @@ _list() {
         | grep -v "^[ 0-9]\+ *$"
     )
     if [ "${filter_command}" ]; then
-        filtered_items=$(echo -n "$items" | eval ${filter_command})
+        filtered_items=$(echo -n "$items" | eval "${filter_command}")
     else
         filtered_items=$items
     fi
@@ -759,7 +764,7 @@ _list() {
     fi
 }
 
-export -f cleaninput filtercommand _list die
+export -f cleaninput shellquote filtercommand _list die
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
@@ -1015,7 +1020,7 @@ case $action in
 
 "listproj" | "lsprj" )
     shift
-    eval $(filtercommand 'cat "$TODO_FILE"' '' "$@") | grep -o '[^ ]*+[^ ]\+' | grep '^+' | sort -u
+    eval "$(filtercommand 'cat "$TODO_FILE"' '' "$@")" | grep -o '[^ ]*+[^ ]\+' | grep '^+' | sort -u
     ;;
 
 "listpri" | "lsp" )
