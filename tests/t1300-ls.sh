@@ -95,6 +95,40 @@ TODO: 1 of 3 tasks shown
 EOF
 
 #
+# check the filtering of TERM containing characters that are special to the
+# shell, like variables, quotes, and multiple subsequent spaces.
+#
+cat > todo.txt <<'EOF'
+earn some pennies
+earn some $$
+earn some "money"
+get money from O'Brian
+just get   money!
+EOF
+test_todo_session 'checking filtering of special characters' <<'EOF'
+>>> todo.sh ls '$$'
+2 earn some $$
+--
+TODO: 1 of 5 tasks shown
+
+>>> todo.sh ls '"money"'
+3 earn some "money"
+--
+TODO: 1 of 5 tasks shown
+
+>>> todo.sh ls "O'Brian"
+4 get money from O'Brian
+--
+TODO: 1 of 5 tasks shown
+
+>>> todo.sh ls "get   money"
+5 just get   money!
+--
+TODO: 1 of 5 tasks shown
+EOF
+
+
+#
 # check the x command line option
 #
 TEST_TODO3_=todo3.cfg
