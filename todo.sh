@@ -232,6 +232,7 @@ help()
 		    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
 		    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
 		    TODOTXT_VERBOSE=1               is same as option -v
+		    TODOTXT_DISABLE_FILTER=1        is same as option -x
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
@@ -474,6 +475,7 @@ TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
 TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
+TODOTXT_DISABLE_FILTER=${TODOTXT_DISABLE_FILTER:-}
 TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
 
 # Export all TODOTXT_* variables
