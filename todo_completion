@@ -29,8 +29,28 @@ _todo()
             *)  case "$cur" in
                     +*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listproj);;
                     @*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listcon);;
-                    *)  return 0;;
+                    *)  if [[ "$cur" =~ ^[0-9]+$ ]]; then
+                            local item=$(TODOTXT_VERBOSE=0 todo.sh -@ -+ -p -x command ls "^ *${cur} " | head -n 1)
+
+                            # Remove the (padded) task number; we prepend the
+                            # user-provided $cur.
+                            item=${item#* }
+
+                            # Remove the timestamp prepended by the -t option;
+                            # there's no todo.txt option for that yet.
+                            item=${item#[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] }
+
+                            # Append task text as a shell comment. This
+                            # completion can be a safety check before a
+                            # destructive todo.txt operation.
+                            [ "$item" ] && COMPREPLY[0]="$cur # $item"
+                            return 0
+                        else
+                            return 0
+                        fi
+                        ;;
                 esac
+                ;;
         esac
     fi
 
