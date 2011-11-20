@@ -29,5 +29,4 @@ _todo()
 complete -F _todo todo.sh
 # If you define an alias (e.g. "t") to todo.sh, you need to explicitly enable
 # completion for it, too:
-complete -F _todo t
-complete -F _todo todo
+#complete -F _todo t
