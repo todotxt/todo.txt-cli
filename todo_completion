@@ -7,25 +7,33 @@ _todo()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    COMMANDS="add a addto addm append app archive command del  \
-              rm depri dp do help list ls listall lsa listcon  \
-              lsc listfile lf listpri lsp listproj lsprj move  \
-              mv prepend prep pri p replace report"
+
+    local -r OPTS="-@ -@@ -+ -++ -d -f -h -p -P -PP -a -n -t -v -vv -V -x"
+    local -r COMMANDS="\
+        add a addto addm append app archive command del  \
+        rm depri dp do help list ls listall lsa listcon  \
+        lsc listfile lf listpri lsp listproj lsprj move \
+        mv prepend prep pri p replace report"
+
     # Add custom commands from add-ons, if installed.
-    COMMANDS="$COMMANDS $('ls' ${TODO_ACTIONS_DIR:-$HOME/.todo.actions.d}/ 2>/dev/null)"
-    OPTS="-@ -@@ -+ -++ -d -f -h -p -P -PP -a -n -t -v -vv -V -x"
-    if [ "${cur:0:1}" == "+" ]; then
-        completions="$(todo.sh listproj)"
-    elif [ "${cur:0:1}" == "@" ]; then
-        completions="$(todo.sh listcon)"
-    elif [ $COMP_CWORD -eq 1 ]; then
-        completions="$COMMANDS $OPTS"
+    local allCommands="$COMMANDS $('ls' ${TODO_ACTIONS_DIR:-$HOME/.todo.actions.d}/ 2>/dev/null)"
+
+    local completions
+    if [ $COMP_CWORD -eq 1 ]; then
+        completions="$allCommands $OPTS"
     else
-        case "${prev}" in
-            -*) completions="$COMMANDS $OPTS";;
-            *)  return 0;;
+        case "$prev" in
+            command)
+                completions=$COMMANDS;;
+            -*) completions="$allCommands $OPTS";;
+            *)  case "$cur" in
+                    +*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listproj);;
+                    @*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listcon);;
+                    *)  return 0;;
+                esac
         esac
     fi
+
     COMPREPLY=( $( compgen -W "$completions" -- $cur ))
     return 0
 }
