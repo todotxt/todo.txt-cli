@@ -16,7 +16,8 @@ _todo()
         mv prepend prep pri p replace report shorthelp"
 
     # Add custom commands from add-ons, if installed.
-    local allCommands="$COMMANDS $('ls' ${TODO_ACTIONS_DIR:-$HOME/.todo.actions.d}/ 2>/dev/null)"
+    # TODO: Filter for executable flag of files found in $TODO_ACTIONS_DIR.
+    local allCommands="$COMMANDS $('ls' "${TODO_ACTIONS_DIR:-$HOME/.todo.actions.d}/" 2>/dev/null)"
 
     local completions
     if [ $COMP_CWORD -eq 1 ]; then
