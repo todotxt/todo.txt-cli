@@ -22,6 +22,11 @@ _todo()
     local completions
     if [ $COMP_CWORD -eq 1 ]; then
         completions="$allCommands $OPTS"
+    elif [[ $COMP_CWORD -gt 2 && ( \
+        "${COMP_WORDS[COMP_CWORD-2]}" =~ ^(move|mv)$ || \
+        "${COMP_WORDS[COMP_CWORD-3]}" =~ ^(move|mv)$ ) ]]; then
+        # "move ITEM# DEST [SRC]" has file arguments on positions 2 and 3.
+        completions=$(TODOTXT_VERBOSE=0 todo.sh command listfile)
     else
         case "$prev" in
             command)
