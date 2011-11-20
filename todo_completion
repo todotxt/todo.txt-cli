@@ -26,6 +26,8 @@ _todo()
         case "$prev" in
             command)
                 completions=$COMMANDS;;
+            addto|listfile|lf)
+                completions=$(TODOTXT_VERBOSE=0 todo.sh command listfile);;
             -*) completions="$allCommands $OPTS";;
             *)  case "$cur" in
                     +*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listproj);;
