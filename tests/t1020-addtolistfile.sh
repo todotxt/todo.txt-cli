@@ -40,6 +40,24 @@ GARDEN: 2 of 2 tasks shown
 EOF
 
 #
+# List available files
+#
+test_todo_session 'list available files' <<EOF
+>>> todo.sh listfile
+Files in the todo.txt directory:
+done.txt
+garden.txt
+report.txt
+todo.txt
+
+>>> TODOTXT_VERBOSE=0 todo.sh listfile
+done.txt
+garden.txt
+report.txt
+todo.txt
+EOF
+
+#
 # Filter
 #
 test_todo_session 'basic listfile filtering' <<EOF
