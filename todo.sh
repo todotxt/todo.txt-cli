@@ -690,7 +690,7 @@ filtercommand()
             ## $search_term
             #
             ## Remove the first character (-) before adding to our filter command
-            filter="${filter:-}${filter:+ | }grep -v -i '$(shellquote "${search_term:1}")'"
+            filter="${filter:-}${filter:+ | }grep -v -i $(shellquote "${search_term:1}")"
         fi
     done
 
