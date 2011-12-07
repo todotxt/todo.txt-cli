@@ -57,7 +57,7 @@ shorthelp()
 		    list|ls [TERM...]
 		    listall|lsa [TERM...]
 		    listcon|lsc
-		    listfile|lf SRC [TERM...]
+		    listfile|lf [SRC [TERM...]]
 		    listpri|lsp [PRIORITY] [TERM...]
 		    listproj|lsprj [TERM...]
 		    move|mv ITEM# DEST [SRC]
@@ -211,11 +211,13 @@ help()
 		    lsc
 		      Lists all the task contexts that start with the @ sign in todo.txt.
 
-		    listfile SRC [TERM...]
-		    lf SRC [TERM...]
+		    listfile [SRC [TERM...]]
+		    lf [SRC [TERM...]]
 		      Displays all the lines in SRC file located in the todo.txt directory,
 		      sorted by priority with line  numbers.  If TERM specified, lists
 		      all lines that contain TERM in SRC file.
+		      Without any arguments, the names of all text files in the todo.txt
+		      directory are listed.
 
 		    listpri [PRIORITY] [TERM...]
 		    lsp [PRIORITY] [TERM...]
@@ -1049,10 +1051,15 @@ case $action in
 
 "listfile" | "lf" )
     shift  ## Was listfile, next $1 is file name
-    FILE="$1"
-    shift  ## Was filename; next $1 is first search term
+    if [ $# -eq 0 ]; then
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "Files in the todo.txt directory:"
+        cd "$TODO_DIR" && ls -1 *.txt
+    else
+        FILE="$1"
+        shift  ## Was filename; next $1 is first search term
 
-    _list "$FILE" "$@"
+        _list "$FILE" "$@"
+    fi
     ;;
 
 "listcon" | "lsc" )
