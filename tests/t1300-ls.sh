@@ -74,6 +74,29 @@ TODO: 1 of 3 tasks shown
 EOF
 
 #
+# check negative filtering via -TERM
+#
+test_todo_session 'checking negative filtering via -TERM' <<EOF
+>>> todo.sh ls -second
+2 aaa zzz this line should be first.
+1 ccc xxx this line should be third.
+--
+TODO: 2 of 3 tasks shown
+
+>>> todo.sh ls "-should be f"
+3 bbb yyy this line should be second.
+1 ccc xxx this line should be third.
+--
+TODO: 2 of 3 tasks shown
+
+>>> todo.sh ls "- zzz"
+3 bbb yyy this line should be second.
+1 ccc xxx this line should be third.
+--
+TODO: 2 of 3 tasks shown
+EOF
+
+#
 # check the filtering of TERM with regexp
 #
 test_todo_session 'checking filtering of TERM with regexp' <<EOF
