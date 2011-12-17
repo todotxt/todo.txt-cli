@@ -1138,7 +1138,14 @@ note: PRIORITY must be anywhere from A to Z."
     [[ "$item" = +([0-9]) ]] || die "$errmsg"
     [[ "$newpri" = @([A-Z]) ]] || die "$errmsg"
 
-    oldpri=$(sed -ne $item's/^(\(.\)) .*/\1/p' "$TODO_FILE")
+    todo=$(sed "$item!d" "$TODO_FILE")
+    [ -z "$todo" ] && die "TODO: No task $item."
+
+    oldpri=
+    if [[ "$todo" = \(?\)\ * ]]; then
+        oldpri=${todo:1:1}
+    fi
+
     if [ "$oldpri" != "$newpri" ]; then
         sed -i.bak -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE"
     fi
