@@ -296,6 +296,11 @@ cleanup()
 
 cleaninput()
 {
+    # Parameters:    When $1 = "for sed", performs additional escaping for use
+    #                in sed substitution with "|" separators.
+    # Precondition:  $input contains text to be cleaned.
+    # Postcondition: Modifies $input.
+
     # Replace CR and LF with space; tasks always comprise a single line.
     input=${input//$'\r'/ }
     input=${input//$'\n'/ }
@@ -308,6 +313,44 @@ cleaninput()
         input=${input//|/\\|}
         input=${input//&/\\&}
     fi
+}
+
+getPrefix()
+{
+    # Parameters:    $1: todo file; empty means $TODO_FILE.
+    # Returns:       Uppercase FILE prefix to be used in place of "TODO:" where
+    #                a different todo file can be specified.
+    local base=$(basename "${1:-$TODO_FILE}")
+    echo "${base%%.[^.]*}" | tr 'a-z' 'A-Z'
+}
+
+getTodo()
+{
+    # Parameters:    $1: task number
+    #                $2: Optional todo file
+    # Precondition:  $errmsg contains usage message.
+    # Postcondition: $todo contains task text.
+
+    local item=$1
+    [ -z "$item" ] && die "$errmsg"
+    [ "${item//[0-9]/}" ] && die "$errmsg"
+
+    todo=$(sed "$item!d" "${2:-$TODO_FILE}")
+    [ -z "$todo" ] && die "$(getPrefix "$2"): No task $item."
+}
+getNewtodo()
+{
+    # Parameters:    $1: task number
+    #                $2: Optional todo file
+    # Precondition:  None.
+    # Postcondition: $newtodo contains task text.
+
+    local item=$1
+    [ -z "$item" ] && die 'Programming error: $item should exist.'
+    [ "${item//[0-9]/}" ] && die 'Programming error: $item should be numeric.'
+
+    newtodo=$(sed "$item!d" "${2:-$TODO_FILE}")
+    [ -z "$newtodo" ] && die "$(getPrefix "$2"): No updated task $item."
 }
 
 archive()
@@ -338,12 +381,7 @@ replaceOrPrepend()
       ;;
   esac
   shift; item=$1; shift
-
-  [ -z "$item" ] && die "$errmsg"
-  [[ "$item" = +([0-9]) ]] || die "$errmsg"
-
-  todo=$(sed "$item!d" "$TODO_FILE")
-  [ -z "$todo" ] && die "TODO: No task $item."
+  getTodo "$item"
 
   if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
     echo -n "$querytext"
@@ -368,7 +406,7 @@ replaceOrPrepend()
   # date again.
   sed -i.bak -e "$item s/^${priority}${prepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
   if [ $TODOTXT_VERBOSE -gt 0 ]; then
-    newtodo=$(sed "$item!d" "$TODO_FILE")
+    getNewtodo "$item"
     case "$action" in
       replace)
         echo "$item $todo"
@@ -658,10 +696,8 @@ _addto() {
     echo "$input" >> "$file"
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
         TASKNUM=$(sed -n '$ =' "$file")
-        BASE=$(basename "$file")
-        PREFIX=$(echo ${BASE%%.[^.]*} | tr 'a-z' 'A-Z')
         echo "$TASKNUM $input"
-        echo "${PREFIX}: $TASKNUM added."
+        echo "$(getPrefix "$file"): $TASKNUM added."
     fi
 }
 
@@ -784,20 +820,18 @@ _list() {
     [ "$filtered_items" ] && echo "$filtered_items"
 
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
-        BASE=$(basename "$FILE")
-        PREFIX=$(echo ${BASE%%.[^.]*} | tr 'a-z' 'A-Z')
         NUMTASKS=$( echo -n "$filtered_items" | sed -n '$ =' )
         TOTALTASKS=$( echo -n "$items" | sed -n '$ =' )
 
         echo "--"
-        echo "${PREFIX}: ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
+        echo "$(getPrefix "$FILE"): ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
     fi
     if [ $TODOTXT_VERBOSE -gt 1 ]; then
         echo "TODO DEBUG: Filter Command was: ${filter_command:-cat}"
     fi
 }
 
-export -f cleaninput shellquote filtercommand _list die
+export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list die
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
@@ -874,11 +908,8 @@ case $action in
 "append" | "app" )
     errmsg="usage: $TODO_SH append ITEM# \"TEXT TO APPEND\""
     shift; item=$1; shift
+    getTodo "$item"
 
-    [ -z "$item" ] && die "$errmsg"
-    [[ "$item" = +([0-9]) ]] || die "$errmsg"
-    todo=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$todo" ] && die "TODO: No task $item."
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Append: "
         read input
@@ -893,7 +924,7 @@ case $action in
 
     if sed -i.bak $item" s|^.*|&${appendspace}${input}|" "$TODO_FILE"; then
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
-            newtodo=$(sed "$item!d" "$TODO_FILE")
+            getNewtodo "$item"
             echo "$item $newtodo"
 	fi
     else
@@ -908,14 +939,11 @@ case $action in
     # replace deleted line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
     errmsg="usage: $TODO_SH del ITEM# [TERM]"
     item=$2
-    [ -z "$item" ] && die "$errmsg"
-    [[ "$item" = +([0-9]) ]] || die "$errmsg"
-    DELETEME=$(sed "$item!d" "$TODO_FILE")
-    [ -z "$DELETEME" ] && die "TODO: No task $item."
+    getTodo "$item"
 
     if [ -z "$3" ]; then
         if  [ $TODOTXT_FORCE = 0 ]; then
-            echo "Delete '$DELETEME'?  (y/n)"
+            echo "Delete '$todo'?  (y/n)"
             read ANSWER
         else
             ANSWER="y"
@@ -929,7 +957,7 @@ case $action in
                 sed -i.bak -e $item"s/^.*//" "$TODO_FILE"
             fi
             if [ $TODOTXT_VERBOSE -gt 0 ]; then
-                echo "$item $DELETEME"
+                echo "$item $todo"
                 echo "TODO: $item deleted."
             fi
         else
@@ -943,13 +971,13 @@ case $action in
             -e $item"s/ *$3  */ /g" \
             -e $item"s/$3//g" \
             "$TODO_FILE"
-        newtodo=$(sed "$item!d" "$TODO_FILE")
-        if [ "$DELETEME" = "$newtodo" ]; then
-            [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item $DELETEME"
+        getNewtodo "$item"
+        if [ "$todo" = "$newtodo" ]; then
+            [ $TODOTXT_VERBOSE -gt 0 ] && echo "$item $todo"
             die "TODO: '$3' not found; no removal done."
         fi
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
-            echo "$item $DELETEME"
+            echo "$item $todo"
             echo "TODO: Removed '$3' from task."
             echo "$item $newtodo"
         fi
@@ -964,15 +992,13 @@ case $action in
     # Split multiple depri's, if comma separated change to whitespace separated
     # Loop the 'depri' function for each item
     for item in $(echo $* | tr ',' ' '); do
-	[[ "$item" = +([0-9]) ]] || die "$errmsg"
-	todo=$(sed "$item!d" "$TODO_FILE")
-	[ -z "$todo" ] && die "TODO: No task $item."
+        getTodo "$item"
 
 	if [[ "$todo" = \(?\)\ * ]]; then
 	    sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
 	    if [ $TODOTXT_VERBOSE -gt 0 ]; then
-		NEWTODO=$(sed "$item!d" "$TODO_FILE")
-		echo "$item $NEWTODO"
+		getNewtodo "$item"
+		echo "$item $newtodo"
 		echo "TODO: $item deprioritized."
 	    fi
 	else
@@ -990,11 +1016,7 @@ case $action in
     # Split multiple do's, if comma separated change to whitespace separated
     # Loop the 'do' function for each item
     for item in $(echo $* | tr ',' ' '); do
-        [ -z "$item" ] && die "$errmsg"
-        [[ "$item" = +([0-9]) ]] || die "$errmsg"
-
-        todo=$(sed "$item!d" "$TODO_FILE")
-        [ -z "$todo" ] && die "TODO: No task $item."
+        getTodo "$item"
 
         # Check if this item has already been done
         if [ "${todo:0:2}" != "x " ]; then
@@ -1003,7 +1025,7 @@ case $action in
             sed -i.bak $item"s/^(.) //" "$TODO_FILE"
             sed -i.bak $item"s|^|x $now |" "$TODO_FILE"
             if [ $TODOTXT_VERBOSE -gt 0 ]; then
-                newtodo=$(sed "$item!d" "$TODO_FILE")
+                getNewtodo "$item"
                 echo "$item $newtodo"
                 echo "TODO: $item marked as done."
 	    fi
@@ -1086,19 +1108,16 @@ case $action in
     dest="$TODO_DIR/$3"
     src="$TODO_DIR/$4"
 
-    [ -z "$item" ] && die "$errmsg"
     [ -z "$4" ] && src="$TODO_FILE"
     [ -z "$dest" ] && die "$errmsg"
-
-    [[ "$item" = +([0-9]) ]] || die "$errmsg"
 
     [ -f "$src" ] || die "TODO: Source file $src does not exist."
     [ -f "$dest" ] || die "TODO: Destination file $dest does not exist."
 
-    MOVEME=$(sed "$item!d" "$src")
-    [ -z "$MOVEME" ] && die "$item: No such item in $src."
+    getTodo "$item" "$src"
+    [ -z "$todo" ] && die "$item: No such item in $src."
     if  [ $TODOTXT_FORCE = 0 ]; then
-        echo "Move '$MOVEME' from $src to $dest? (y/n)"
+        echo "Move '$todo' from $src to $dest? (y/n)"
         read ANSWER
     else
         ANSWER="y"
@@ -1111,10 +1130,10 @@ case $action in
             # leave blank line behind (preserves line numbers)
             sed -i.bak -e $item"s/^.*//" "$src"
         fi
-        echo "$MOVEME" >> "$dest"
+        echo "$todo" >> "$dest"
 
         if [ $TODOTXT_VERBOSE -gt 0 ]; then
-            echo "$item $MOVEME"
+            echo "$item $todo"
             echo "TODO: $item moved from '$src' to '$dest'."
         fi
     else
@@ -1135,16 +1154,20 @@ case $action in
 note: PRIORITY must be anywhere from A to Z."
 
     [ "$#" -ne 3 ] && die "$errmsg"
-    [[ "$item" = +([0-9]) ]] || die "$errmsg"
     [[ "$newpri" = @([A-Z]) ]] || die "$errmsg"
+    getTodo "$item"
 
-    oldpri=$(sed -ne $item's/^(\(.\)) .*/\1/p' "$TODO_FILE")
+    oldpri=
+    if [[ "$todo" = \(?\)\ * ]]; then
+        oldpri=${todo:1:1}
+    fi
+
     if [ "$oldpri" != "$newpri" ]; then
         sed -i.bak -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE"
     fi
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
-        NEWTODO=$(sed "$item!d" "$TODO_FILE")
-        echo "$item $NEWTODO"
+        getNewtodo "$item"
+        echo "$item $newtodo"
         if [ "$oldpri" != "$newpri" ]; then
             if [ "$oldpri" ]; then
                 echo "TODO: $item re-prioritized from ($oldpri) to ($newpri)."
