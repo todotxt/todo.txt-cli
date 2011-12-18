@@ -315,6 +315,15 @@ cleaninput()
     fi
 }
 
+getPrefix()
+{
+    # Parameters:    $1: todo file; empty means $TODO_FILE.
+    # Returns:       Uppercase FILE prefix to be used in place of "TODO:" where
+    #                a different todo file can be specified.
+    local base=$(basename "${1:-$TODO_FILE}")
+    echo "${base%%.[^.]*}" | tr 'a-z' 'A-Z'
+}
+
 getTodo()
 {
     # Parameters:    $1: task number
@@ -327,7 +336,7 @@ getTodo()
     [ "${item//[0-9]/}" ] && die "$errmsg"
 
     todo=$(sed "$item!d" "${2:-$TODO_FILE}")
-    [ -z "$todo" ] && die "TODO: No task $item${2:+ in $2}."
+    [ -z "$todo" ] && die "$(getPrefix "$2"): No task $item."
 }
 getNewtodo()
 {
@@ -341,7 +350,7 @@ getNewtodo()
     [ "${item//[0-9]/}" ] && die 'Programming error: $item should be numeric.'
 
     newtodo=$(sed "$item!d" "${2:-$TODO_FILE}")
-    [ -z "$newtodo" ] && die "TODO: No updated task $item${2:+ in $2}."
+    [ -z "$newtodo" ] && die "$(getPrefix "$2"): No updated task $item."
 }
 
 archive()
@@ -687,10 +696,8 @@ _addto() {
     echo "$input" >> "$file"
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
         TASKNUM=$(sed -n '$ =' "$file")
-        BASE=$(basename "$file")
-        PREFIX=$(echo ${BASE%%.[^.]*} | tr 'a-z' 'A-Z')
         echo "$TASKNUM $input"
-        echo "${PREFIX}: $TASKNUM added."
+        echo "$(getPrefix "$file"): $TASKNUM added."
     fi
 }
 
@@ -813,20 +820,18 @@ _list() {
     [ "$filtered_items" ] && echo "$filtered_items"
 
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
-        BASE=$(basename "$FILE")
-        PREFIX=$(echo ${BASE%%.[^.]*} | tr 'a-z' 'A-Z')
         NUMTASKS=$( echo -n "$filtered_items" | sed -n '$ =' )
         TOTALTASKS=$( echo -n "$items" | sed -n '$ =' )
 
         echo "--"
-        echo "${PREFIX}: ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
+        echo "$(getPrefix "$FILE"): ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
     fi
     if [ $TODOTXT_VERBOSE -gt 1 ]; then
         echo "TODO DEBUG: Filter Command was: ${filter_command:-cat}"
     fi
 }
 
-export -f cleaninput getTodo getNewtodo shellquote filtercommand _list die
+export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list die
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
