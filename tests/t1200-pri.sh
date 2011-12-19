@@ -66,6 +66,12 @@ TODO: 4 added.
 TODO: 4 of 4 tasks shown
 EOF
 
+test_todo_session 'priority error' <<EOF
+>>> todo.sh pri 10 B
+=== 1
+TODO: No task 10.
+EOF
+
 cat > todo.txt <<EOF
 (B) smell the uppercase Roses +flowers @outside
 (C) notice the sunflowers
