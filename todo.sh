@@ -779,8 +779,8 @@ _list() {
             N
             s/^/     /
             s/ *\([ 0-9]\{'"$PADDING"',\}\)\n/\1 /
-	  '''                                                 \
-        | grep -v "^[ 0-9]\+ *$"
+            /^[ 0-9]\+ *$/d
+         '''
     )
     if [ "${filter_command}" ]; then
         filtered_items=$(echo -n "$items" | eval "${filter_command}")
