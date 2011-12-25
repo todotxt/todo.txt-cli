@@ -66,6 +66,9 @@ shorthelp()
 		    replace ITEM# "UPDATED TODO"
 		    report
 
+		  Actions can be added and overridden using scripts in the actions
+		  directory.
+
 		  See "help" for more details.
 	EndHelp
     exit 0
@@ -124,13 +127,17 @@ help()
 		    list [TERM...]
 		    ls [TERM...]
 		      Displays all tasks that contain TERM(s) sorted by priority with line
-		      numbers.  If no TERM specified, lists entire todo.txt.
+		      numbers.  Hides all tasks that contain TERM(s) preceded by a
+		      minus sign (i.e. -TERM).  If no TERM specified, lists entire
+		      todo.txt.
 
 		    listall [TERM...]
 		    lsa [TERM...]
 		      Displays all the lines in todo.txt AND done.txt that contain TERM(s)
-		      sorted by priority with line  numbers.  If no TERM specified, lists
-		      entire todo.txt AND done.txt concatenated and sorted.
+		      sorted by priority with line  numbers.  Hides all tasks that
+		      contain TERM(s) preceded by a minus sign (i.e. -TERM).  If no
+		      TERM specified, lists entire todo.txt AND done.txt
+		      concatenated and sorted.
 
 		    listcon
 		    lsc
@@ -140,13 +147,16 @@ help()
 		    lf SRC [TERM...]
 		      Displays all the lines in SRC file located in the todo.txt directory,
 		      sorted by priority with line  numbers.  If TERM specified, lists
-		      all lines that contain TERM in SRC file.
+		      all lines that contain TERM in SRC file.  Hides all tasks that
+		      contain TERM(s) preceded by a minus sign (i.e. -TERM).  
 
 		    listpri [PRIORITY] [TERM...]
 		    lsp [PRIORITY] [TERM...]
 		      Displays all tasks prioritized PRIORITY.
 		      If no PRIORITY specified, lists all prioritized tasks.
 		      If TERM specified, lists only prioritized tasks that contain TERM.
+		      Hides all tasks that contain TERM(s) preceded by a minus sign
+		      (i.e. -TERM).  
 
 		    listproj
 		    lsprj
@@ -177,6 +187,10 @@ help()
 		    report
 		      Adds the number of open tasks and done tasks to report.txt.
 
+		  Adding actions:
+		    To add or override an action, add an executable script in
+		    TODO_ACTIONS_DIR.  See https://github.com/ginatrapani/todo.txt-cli/wiki/Creating-and-Installing-Add-ons 
+		    for details.
 
 
 		  Options:
@@ -198,11 +212,11 @@ help()
 		        Plain mode turns off colors
 		    -P
 		        Hide priority labels in list output. Use twice to show
-		        priority labels (default).
+		        priority labels (default)
 		    -a
 		        Don't auto-archive tasks automatically on completion
 		    -A
-		        Auto-archive tasks automatically on completion
+		        Auto-archive tasks automatically on completion (default)
 		    -n
 		        Don't preserve line numbers; automatically remove blank lines
 		        on task deletion
