@@ -67,6 +67,8 @@ shorthelp()
 		    report
 		    shorthelp
 
+		  Actions can be added and overridden using scripts in the actions
+		  directory.
 	EndHelp
 
     # Only list the one-line usage from the add-on actions. This assumes that
@@ -162,7 +164,6 @@ help()
 		      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and
 		      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
 		      Project and context notation optional.
-		      Quotes optional.
 
 		    addto DEST "TEXT TO ADD"
 		      Adds a line of text to any file located in the todo.txt directory.
@@ -199,16 +200,19 @@ help()
 		    list [TERM...]
 		    ls [TERM...]
 		      Displays all tasks that contain TERM(s) sorted by priority with line
-		      numbers.  Each task must match all TERMs (logical AND); to display
+		      numbers.  Each task must match all TERM(s) (logical AND); to display
 		      tasks that contain any TERM (logical OR), use
 		      "TERM1\|TERM2\|..." (with quotes), or TERM1\\\|TERM2 (unquoted).
-		      If no TERM specified, lists entire todo.txt.
+		      Hides all tasks that contain TERM(s) preceded by a
+		      minus sign (i.e. -TERM). If no TERM specified, lists entire todo.txt.
 
 		    listall [TERM...]
 		    lsa [TERM...]
 		      Displays all the lines in todo.txt AND done.txt that contain TERM(s)
-		      sorted by priority with line numbers.  If no TERM specified, lists
-		      entire todo.txt AND done.txt concatenated and sorted.
+		      sorted by priority with line  numbers.  Hides all tasks that
+		      contain TERM(s) preceded by a minus sign (i.e. -TERM).  If no
+		      TERM specified, lists entire todo.txt AND done.txt
+		      concatenated and sorted.
 
 		    listcon
 		    lsc
@@ -217,20 +221,24 @@ help()
 		    listfile [SRC [TERM...]]
 		    lf [SRC [TERM...]]
 		      Displays all the lines in SRC file located in the todo.txt directory,
-		      sorted by priority with line numbers.  If TERM specified, lists
-		      all lines that contain TERM(s) in SRC file.
+		      sorted by priority with line  numbers.  If TERM specified, lists
+		      all lines that contain TERM(s) in SRC file.  Hides all tasks that
+		      contain TERM(s) preceded by a minus sign (i.e. -TERM).  
 		      Without any arguments, the names of all text files in the todo.txt
 		      directory are listed.
-
+		
 		    listpri [PRIORITY] [TERM...]
 		    lsp [PRIORITY] [TERM...]
 		      Displays all tasks prioritized PRIORITY.
 		      If no PRIORITY specified, lists all prioritized tasks.
 		      If TERM specified, lists only prioritized tasks that contain TERM(s).
+		      Hides all tasks that contain TERM(s) preceded by a minus sign
+		      (i.e. -TERM).  
 
 		    listproj
 		    lsprj
-		      Lists all the projects that start with the + sign in todo.txt.
+		      Lists all the projects (terms that start with a + sign) in
+		      todo.txt.
 
 		    move ITEM# DEST [SRC]
 		    mv ITEM# DEST [SRC]
@@ -248,7 +256,7 @@ help()
 		    p ITEM# PRIORITY
 		      Adds PRIORITY to task on line ITEM#.  If the task is already
 		      prioritized, replaces current priority with new PRIORITY.
-		      PRIORITY must be an uppercase letter between A and Z.
+		      PRIORITY must be a letter between A and Z.
 
 		    replace ITEM# "UPDATED TODO"
 		      Replaces task on line ITEM# with UPDATED TODO.
@@ -258,7 +266,6 @@ help()
 
 		    shorthelp
 		      List the one-line usage of all built-in and add-on actions.
-
 
 	EndActionsHelp
 

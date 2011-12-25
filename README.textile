@@ -21,6 +21,7 @@ h2. Quick Links
 * Original anemic release by "Gina Trapani":http://ginatrapani.org on 5/11/2006.
 * Raised to great heights by "brainy and dedicated volunteers":http://github.com/ginatrapani/todo.txt-cli/network.
 * Licensed under the "GPL":http://www.gnu.org/copyleft/gpl.html
-* "Add-on Directory":http://wiki.github.com/ginatrapani/todo.txt-cli/todosh-add-on-directory
+* "Add-on Directory":https://github.com/ginatrapani/todo.txt-cli/wiki/Todo.sh-Add-on-Directory
+https://github.com/ginatrapani/todo.txt-cli/wiki/Creating-and-Installing-Add-ons
 * "Changelog":http://wiki.github.com/ginatrapani/todo.txt-cli/todosh-changelog
 * "Known Bugs":http://github.com/ginatrapani/todo.txt-cli/issues
