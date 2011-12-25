@@ -150,7 +150,8 @@ help()
 
 		    listproj
 		    lsprj
-		      Lists all the projects that start with the + sign in todo.txt.
+		      Lists all the projects (terms that start with a + sign) in
+		      todo.txt.
 
 		    move ITEM# DEST [SRC]
 		    mv ITEM# DEST [SRC]
@@ -168,7 +169,7 @@ help()
 		    p ITEM# PRIORITY
 		      Adds PRIORITY to task on line ITEM#.  If the task is already
 		      prioritized, replaces current priority with new PRIORITY.
-		      PRIORITY must be an uppercase letter between A and Z.
+		      PRIORITY must be a letter between A and Z.
 
 		    replace ITEM# "UPDATED TODO"
 		      Replaces task on line ITEM# with UPDATED TODO.
