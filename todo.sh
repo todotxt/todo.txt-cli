@@ -1072,7 +1072,20 @@ case $action in
     shift  ## Was lsa; new $1 is first search term
 
     cat "$TODO_FILE" "$DONE_FILE" > "$TMP_FILE"
-    _list "$TMP_FILE" "$@"
+    TOTAL=$( sed -n '$ =' "$TODO_FILE" )
+
+    post_filter_command="awk -v TOTAL=$TOTAL -v PADDING=${#TOTAL} '{ \$1 = sprintf(\"%\" PADDING \"d\", (\$1 > TOTAL ? 0 : \$1)); print }' "
+    TODOTXT_VERBOSE=0 _list "$TMP_FILE" "$@"
+
+    if [ $TODOTXT_VERBOSE -gt 0 ]; then
+        TDONE=$( sed -n '$ =' "$DONE_FILE" )
+        TASKNUM=$(TODOTXT_PLAIN=1 TODOTXT_VERBOSE=0 _list "$TODO_FILE" "$@" | sed -n '$ =')
+        DONENUM=$(TODOTXT_PLAIN=1 TODOTXT_VERBOSE=0 _list "$DONE_FILE" "$@" | sed -n '$ =')
+        echo "--"
+        echo "$(getPrefix "$TODO_FILE"): ${TASKNUM:-0} of ${TOTAL:-0} tasks shown"
+        echo "$(getPrefix "$DONE_FILE"): ${DONENUM:-0} of ${TDONE:-0} tasks shown"
+        echo "total $((TASKNUM + DONENUM)) of $((TOTAL + TDONE)) tasks shown"
+    fi
     ;;
 
 "listfile" | "lf" )
