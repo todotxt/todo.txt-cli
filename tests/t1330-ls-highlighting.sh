@@ -148,6 +148,25 @@ TODO: 4 marked as done.
 TODO: 5 of 5 tasks shown
 EOF
 
+# check highlighting of uppercase-X done-but-not-archived tasks
+cat > todo.txt <<EOF
+(A) smell the uppercase Roses +flowers @outside
+X remove1
+notice the sunflowers
+remove2
+stop
+EOF
+test_todo_session 'highlighting of done tasks' <<EOF
+>>> todo.sh list
+[1;33m1 (A) smell the uppercase Roses +flowers @outside[0m
+3 notice the sunflowers
+4 remove2
+5 stop
+[0;37m2 X remove1[0m
+--
+TODO: 5 of 5 tasks shown
+EOF
+
 # check highlighting with hidden contexts/projects
 #
 cat > todo.txt <<EOF
