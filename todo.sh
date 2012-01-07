@@ -199,7 +199,10 @@ help()
 		    list [TERM...]
 		    ls [TERM...]
 		      Displays all tasks that contain TERM(s) sorted by priority with line
-		      numbers.  If no TERM specified, lists entire todo.txt.
+		      numbers.  Each task must match all TERMs (logical AND); to display
+		      tasks that contain any TERM (logical OR), use
+		      "TERM1\|TERM2\|..." (with quotes), or TERM1\\\|TERM2 (unquoted).
+		      If no TERM specified, lists entire todo.txt.
 
 		    listall [TERM...]
 		    lsa [TERM...]
