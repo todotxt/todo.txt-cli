@@ -215,7 +215,7 @@ help()
 		    lf [SRC [TERM...]]
 		      Displays all the lines in SRC file located in the todo.txt directory,
 		      sorted by priority with line  numbers.  If TERM specified, lists
-		      all lines that contain TERM in SRC file.
+		      all lines that contain TERM(s) in SRC file.
 		      Without any arguments, the names of all text files in the todo.txt
 		      directory are listed.
 
@@ -223,7 +223,7 @@ help()
 		    lsp [PRIORITY] [TERM...]
 		      Displays all tasks prioritized PRIORITY.
 		      If no PRIORITY specified, lists all prioritized tasks.
-		      If TERM specified, lists only prioritized tasks that contain TERM.
+		      If TERM specified, lists only prioritized tasks that contain TERM(s).
 
 		    listproj
 		    lsprj
