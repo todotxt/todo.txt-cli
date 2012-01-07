@@ -54,6 +54,18 @@ TODO: 3 of 3 tasks shown
 EOF
 
 #
+# check the custom hiding
+#
+test_todo_session 'checking HIDE_CUSTOM_SUBSTITUTION' <<EOF
+>>> HIDE_CUSTOM_SUBSTITUTION='[tT]h' todo.sh ls
+2 aaa zzz is line should be first.
+3 bbb yyy is line should be second.
+1 ccc xxx is line should be ird.
+--
+TODO: 3 of 3 tasks shown
+EOF
+
+#
 # check the filtering of TERM
 #
 test_todo_session 'checking filtering of TERM' <<EOF
