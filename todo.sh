@@ -999,7 +999,7 @@ case $action in
 
     # Split multiple depri's, if comma separated change to whitespace separated
     # Loop the 'depri' function for each item
-    for item in $(echo $* | tr ',' ' '); do
+    for item in ${*//,/ }; do
         getTodo "$item"
 
 	if [[ "$todo" = \(?\)\ * ]]; then
@@ -1023,7 +1023,7 @@ case $action in
 
     # Split multiple do's, if comma separated change to whitespace separated
     # Loop the 'do' function for each item
-    for item in $(echo $* | tr ',' ' '); do
+    for item in ${*//,/ }; do
         getTodo "$item"
 
         # Check if this item has already been done
