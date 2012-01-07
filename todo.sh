@@ -812,8 +812,8 @@ _list() {
             }
           '''  \
         | sed '''
-            s/'${HIDE_PROJECTS_SUBSTITUTION:-^}'//g
-            s/'${HIDE_CONTEXTS_SUBSTITUTION:-^}'//g
+            s/'"${HIDE_PROJECTS_SUBSTITUTION:-^}"'//g
+            s/'"${HIDE_CONTEXTS_SUBSTITUTION:-^}"'//g
           '''                                                   \
         | eval ${TODOTXT_FINAL_FILTER}                          \
     )
