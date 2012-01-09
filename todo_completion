@@ -38,20 +38,25 @@ _todo()
                     +*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listproj);;
                     @*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listcon);;
                     *)  if [[ "$cur" =~ ^[0-9]+$ ]]; then
-                            local item=$(TODOTXT_VERBOSE=0 todo.sh -@ -+ -p -x command ls "^ *${cur} " | head -n 1)
-
                             # Remove the (padded) task number; we prepend the
-                            # user-provided $cur.
-                            item=${item#* }
-
-                            # Remove the timestamp prepended by the -t option;
-                            # there's no todo.txt option for that yet.
-                            item=${item#[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] }
-
+                            # user-provided $cur instead.
+                            # Remove the timestamp prepended by the -t option,
+                            # and the done date (for done tasks); there's no
+                            # todo.txt option for that yet.
+                            # But keep priority and "x"; they're short and may
+                            # provide useful context.
+                            # Finally, limit the output to a single line just as
+                            # a safety check of the ls action output.
+                            local todo=$( \
+                                TODOTXT_VERBOSE=0 todo.sh -@ -+ -p -x command ls "^ *${cur} " | \
+                                sed -e 's/^ *[0-9]\+ //' -e 's/\((.) \)[0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} /\1/' \
+                                    -e 's/\([xX] \)\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{1,2\}/\1/' \
+                                    -e '1q' \
+                            )
                             # Append task text as a shell comment. This
                             # completion can be a safety check before a
                             # destructive todo.txt operation.
-                            [ "$item" ] && COMPREPLY[0]="$cur # $item"
+                            [ "$todo" ] && COMPREPLY[0]="$cur # $todo"
                             return 0
                         else
                             return 0
