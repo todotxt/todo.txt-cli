@@ -361,6 +361,19 @@ archive()
     grep "^x " "$TODO_FILE" >> "$DONE_FILE"
     sed -i.bak '/^x /d' "$TODO_FILE"
     cp "$TODO_FILE" "$TMP_FILE"
+	# look for duplicate lines with printable chars (i.e. duplicate tasks)
+	# and discard the second occurrence
+	# we start with an empty hold space on the first line.  For each line:
+	#   G - appends newline + hold space to the pattern space
+	#   s/\n/&&/; - double up the first new line so we catch adjacent dups
+	#   /^\([ -~]*\n\).*\n\1/d; 
+	#       If the first line (i.e. the new input line) of the hold space
+	#       is printable, and if that same pattern shows up again later as
+	#       an entire line, it's a duplicate.  Delete the current pattern space,
+	#	    quit this line and move on to the next
+	#   s/\n//;   - else, drop the doubled newline
+	#   h;        - replace the hold space with the expanded pattern space
+	#   P;        - print up to the first newline (that is, the input line)
     sed -n 'G; s/\n/&&/; /^\([ -~]*\n\).*\n\1/d; s/\n//; h; P' "$TMP_FILE" > "$TODO_FILE"
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
 	echo "TODO: $TODO_FILE archived."

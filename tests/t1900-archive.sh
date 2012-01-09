@@ -2,7 +2,7 @@
 
 test_description='archive functionality
 
-Ensure we can append items successfully.
+Ensure we can archive items successfully.
 '
 . ./test-lib.sh
 
