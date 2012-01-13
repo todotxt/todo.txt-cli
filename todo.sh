@@ -1236,21 +1236,33 @@ note: PRIORITY must be anywhere from A to Z."
     ;;
 
 "deduplicate" )
-    originalTaskNum=$( sed -n '$ =' "$TODO_FILE" )
+    if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
+        deduplicateSedCommand='d'
+    else
+        deduplicateSedCommand='{ s/^.*//; p; b }'
+    fi
+
+    # To determine the difference when deduplicated lines are preserved, only
+    # non-empty lines must be counted.
+    originalTaskNum=$( sed -e '/./!d' "$TODO_FILE" | sed -n '$ =' )
 
     # Look for duplicate lines and discard the second occurrence.
     # We start with an empty hold space on the first line.  For each line:
     #   G - appends newline + hold space to the pattern space
     #   s/\n/&&/; - double up the first new line so we catch adjacent dups
-    #   /^\([^\n]*\n\).*\n\1/d;
+    #   /^\([^\n]*\n\).*\n\1/
     #       If the first line of the hold space shows up again later as an
-    #       entire line, it's a duplicate.  Delete the current pattern space,
-    #       quit this line and move on to the next
+    #       entire line, it's a duplicate.
+    #       d;                 - Delete the current pattern space, quit this line
+    #                            and move on to the next, or:
+    #       { s/^.*//; p; b }; - Clear the task text, print this line and move on
+    #                            to the next.
     #   s/\n//;   - else, drop the doubled newline
     #   h;        - replace the hold space with the expanded pattern space
     #   P;        - print up to the first newline (that is, the input line)
-    sed -i.bak -n 'G; s/\n/&&/; /^\([^\n]*\n\).*\n\1/d; s/\n//; h; P' "$TODO_FILE"
-    newTaskNum=$( sed -n '$ =' "$TODO_FILE" )
+    sed -i.bak -n 'G; s/\n/&&/; /^\([^\n]*\n\).*\n\1/'"$deduplicateSedCommand"'; s/\n//; h; P' "$TODO_FILE"
+
+    newTaskNum=$( sed -e '/./!d' "$TODO_FILE" | sed -n '$ =' )
     deduplicateNum=$(( originalTaskNum - newTaskNum ))
     if [ $deduplicateNum -eq 0 ]; then
         echo "TODO: No duplicate tasks found"
