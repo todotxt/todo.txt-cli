@@ -6,7 +6,7 @@ Ensure we can archive items successfully.
 '
 . ./test-lib.sh
 
-cat >> todo.txt<<EOF
+cat > todo.txt <<EOF
 one
 two
 three
@@ -23,12 +23,13 @@ EOF
 
 test_todo_session 'list after archive' <<EOF
 >>> todo.sh ls
-4 four
+5 four
 1 one
+4 one
 3 three
 2 two
 --
-TODO: 4 of 4 tasks shown
+TODO: 5 of 5 tasks shown
 EOF
 
 test_done
