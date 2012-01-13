@@ -357,18 +357,6 @@ getNewtodo()
     [ -z "$newtodo" ] && die "$(getPrefix "$2"): No updated task $item."
 }
 
-archive()
-{
-    #defragment blank lines
-    sed -i.bak -e '/./!d' "$TODO_FILE"
-    [ $TODOTXT_VERBOSE -gt 0 ] && grep "^x " "$TODO_FILE"
-    grep "^x " "$TODO_FILE" >> "$DONE_FILE"
-    sed -i.bak '/^x /d' "$TODO_FILE"
-    if [ $TODOTXT_VERBOSE -gt 0 ]; then
-	echo "TODO: $TODO_FILE archived."
-    fi
-}
-
 replaceOrPrepend()
 {
   action=$1; shift
@@ -935,7 +923,15 @@ case $action in
     ;;
 
 "archive" )
-    archive;;
+    # defragment blank lines
+    sed -i.bak -e '/./!d' "$TODO_FILE"
+    [ $TODOTXT_VERBOSE -gt 0 ] && grep "^x " "$TODO_FILE"
+    grep "^x " "$TODO_FILE" >> "$DONE_FILE"
+    sed -i.bak '/^x /d' "$TODO_FILE"
+    if [ $TODOTXT_VERBOSE -gt 0 ]; then
+	echo "TODO: $TODO_FILE archived."
+    fi
+    ;;
 
 "del" | "rm" )
     # replace deleted line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
@@ -1037,7 +1033,9 @@ case $action in
     done
 
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
-        archive
+        # Recursively invoke the script to allow overriding of the archive
+        # action.
+        "$TODO_FULL_SH" archive
     fi
     ;;
 
@@ -1189,9 +1187,10 @@ note: PRIORITY must be anywhere from A to Z."
     ;;
 
 "report" )
-    #archive first
-    sed '/^x /!d' "$TODO_FILE" >> "$DONE_FILE"
-    sed -i.bak '/^x /d' "$TODO_FILE"
+    # archive first
+    # Recursively invoke the script to allow overriding of the archive
+    # action.
+    "$TODO_FULL_SH" archive
 
     NUMLINES=$( sed -n '$ =' "$TODO_FILE" )
     if [ ${NUMLINES:-0} = "0" ]; then
