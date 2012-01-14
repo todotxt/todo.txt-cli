@@ -1193,9 +1193,7 @@ note: PRIORITY must be anywhere from A to Z."
 
     TOTAL=$( sed -n '$ =' "$TODO_FILE" )
     TDONE=$( sed -n '$ =' "$DONE_FILE" )
-    TECHO=$(echo $(date +%Y-%m-%d-%T); echo ' '; echo ${TOTAL:-0}; echo ' ';
-    echo ${TDONE:-0})
-    echo $TECHO >> "$REPORT_FILE"
+    echo "$(date +%Y-%m-%d-%T) ${TOTAL:-0} ${TDONE:-0}" >> "$REPORT_FILE"
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
     sed -ne '$p' "$REPORT_FILE"
     ;;
