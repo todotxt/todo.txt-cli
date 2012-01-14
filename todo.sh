@@ -1197,7 +1197,7 @@ note: PRIORITY must be anywhere from A to Z."
     echo ${TDONE:-0})
     echo $TECHO >> "$REPORT_FILE"
     [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
-    cat "$REPORT_FILE"
+    sed -ne '$p' "$REPORT_FILE"
     ;;
 
 * )

@@ -88,11 +88,6 @@ TODO: 5 of 5 tasks shown
 TODO: Report file updated.
 2009-02-13-04:40:00 5 1
 
->>> todo.sh report
-TODO: Report file updated.
-2009-02-13-04:40:00 5 1
-2009-02-13-04:40:00 5 1
-
 >>> todo.sh append g a
 usage: todo.sh append ITEM# "TEXT TO APPEND"
 === 1
@@ -161,6 +156,18 @@ TODO: 6 of 6 tasks shown
 5 visit http://example.com
 --
 TODO: 6 of 6 tasks shown
+
+>>> todo.sh -a do 3
+3 x 2009-02-13 smell the coffee +wakeup
+TODO: 3 marked as done.
+
+>>> todo.sh report
+TODO: Report file updated.
+2009-02-13-04:40:00 5 2
+
+>>> todo.sh report
+TODO: Report file updated.
+2009-02-13-04:40:00 5 2
 
 >>> todo.sh remdup
 Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
