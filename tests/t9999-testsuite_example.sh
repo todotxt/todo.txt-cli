@@ -86,7 +86,7 @@ TODO: 5 of 5 tasks shown
 
 >>> todo.sh report
 TODO: Report file updated.
-2009-02-13-04:40:00 5 1
+2009-02-13T04:40:00 5 1
 
 >>> todo.sh append g a
 usage: todo.sh append ITEM# "TEXT TO APPEND"
@@ -163,11 +163,11 @@ TODO: 3 marked as done.
 
 >>> todo.sh report
 TODO: Report file updated.
-2009-02-13-04:40:00 5 2
+2009-02-13T04:40:00 5 2
 
 >>> todo.sh report
 TODO: Report file updated.
-2009-02-13-04:40:00 5 2
+2009-02-13T04:40:00 5 2
 
 >>> todo.sh remdup
 Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
