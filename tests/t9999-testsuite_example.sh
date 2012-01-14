@@ -167,7 +167,7 @@ TODO: Report file updated.
 
 >>> todo.sh report
 2009-02-13T04:40:00 5 2
-TODO: Report file updated.
+TODO: Report file is up-to-date.
 
 >>> todo.sh remdup
 Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]

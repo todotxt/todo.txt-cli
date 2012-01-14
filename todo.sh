@@ -1193,9 +1193,18 @@ note: PRIORITY must be anywhere from A to Z."
 
     TOTAL=$( sed -n '$ =' "$TODO_FILE" )
     TDONE=$( sed -n '$ =' "$DONE_FILE" )
-    echo "$(date +%Y-%m-%dT%T) ${TOTAL:-0} ${TDONE:-0}" >> "$REPORT_FILE"
-    sed -ne '$p' "$REPORT_FILE"
-    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
+    NEWDATA="${TOTAL:-0} ${TDONE:-0}"
+    LASTREPORT=$(sed -ne '$p' "$REPORT_FILE")
+    LASTDATA=${LASTREPORT#* }   # Strip timestamp.
+    if [ "$LASTDATA" = "$NEWDATA" ]; then
+        echo "$LASTREPORT"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file is up-to-date."
+    else
+        NEWREPORT="$(date +%Y-%m-%dT%T) ${NEWDATA}"
+        echo "${NEWREPORT}" >> "$REPORT_FILE"
+        echo "${NEWREPORT}"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
+    fi
     ;;
 
 * )
