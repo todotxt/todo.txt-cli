@@ -157,18 +157,6 @@ TODO: 6 of 6 tasks shown
 --
 TODO: 6 of 6 tasks shown
 
->>> todo.sh -a do 3
-3 x 2009-02-13 smell the coffee +wakeup
-TODO: 3 marked as done.
-
->>> todo.sh report
-2009-02-13T04:40:00 5 2
-TODO: Report file updated.
-
->>> todo.sh report
-2009-02-13T04:40:00 5 2
-TODO: Report file is up-to-date.
-
 >>> todo.sh remdup
 Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
 Try 'todo.sh -h' for more information.
