@@ -1220,11 +1220,6 @@ note: PRIORITY must be anywhere from A to Z."
     # action.
     "$TODO_FULL_SH" archive
 
-    NUMLINES=$( sed -n '$ =' "$TODO_FILE" )
-    if [ ${NUMLINES:-0} = "0" ]; then
-         echo "datetime todos dones" >> "$REPORT_FILE"
-    fi
-    #now report
     TOTAL=$( sed -n '$ =' "$TODO_FILE" )
     TDONE=$( sed -n '$ =' "$DONE_FILE" )
     TECHO=$(echo $(date +%Y-%m-%d-%T); echo ' '; echo ${TOTAL:-0}; echo ' ';
