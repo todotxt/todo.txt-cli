@@ -37,7 +37,7 @@ FLOW = OAuth2WebServerFlow(
 
 def usage():
     """Prints progam usage"""
-    print "USAGE: %s [pull|push]"% (sys.argv[1], )
+    print "USAGE: %s [pull|push|push all]"% (sys.argv[1], )
 
 
 def getAPIService():
@@ -72,7 +72,7 @@ def addToDone(task):
 
 
 def addToTasks(service,todo):
-    """Adds the data as a Google Task"""
+    """Adds the todo data as a Google Task"""
     if todo[:1].lower()=="x":
         task = {
             "title": todo[13:],
@@ -86,6 +86,14 @@ def addToTasks(service,todo):
            }
     service.tasks().insert(tasklist='@default', body=task).execute()
 
+
+def updateTask(service,tasklistId,task,todo):
+    """Updates a task with the current todo title"""
+    if todo[:1].lower()=="x":
+			task["title"] = todo[13:]
+    else:
+        task["title"] = todo
+    service.tasks().update(tasklist=tasklistId, task=task['id'], body=task).execute()
 
 def completeTask(service,tasklistId,task,todo):
     """Marks and existing task as completed"""
@@ -189,7 +197,12 @@ def push(filename):
                                               and todo[13:].strip() in task["title"].strip())):
                     found = True
                     if todo[:1].lower()=="x" and task["status"]=="needsAction":
+                        #Todo has been completed, task was already there
                         completeTask(service,tasklist["id"],task,todo)
+                    if todo.strip()!=task["title"].strip() or (todo[:2].lower()=="x" 
+                                                          and todo[13:].strip()!=task["title"].strip()):
+                        #Todo was found, but mismatches title, so overwrite
+                        updateTask(service,tasklist["id"],task,todo) 
         if found==False:
             addToTasks(service,todo)
 
@@ -200,13 +213,13 @@ def main(argv):
         sys.exit(2)
  
     if argv[1]=="pull":
-        print "pulling"
+        print "Pulling from Google Tasks"
         pull()        
     elif argv[1]=="push" and len(argv)<3:
-        print "pushing"
+        print "Pushing to Google Tasks"
         push("todo")
     elif argv[1]=="push" and argv[2]=="all":
-        print "pushing all"
+        print "Pushing all to Google Tasks"
         push("todo")
         push("done")
     else:
