@@ -184,7 +184,9 @@ def push(filename):
             tasklistName = tasklist["title"]
             tasks = service.tasks().list(tasklist=tasklist["id"]).execute()
             for task in tasks["items"]:
-                if task["title"].strip() and task["title"] in todo:
+                if task["title"].strip() and (task["title"].strip() in todo 
+                                          or (todo[:1].lower()=="x" 
+                                              and todo[13:].strip() in task["title"].strip())):
                     found = True
                     if todo[:1].lower()=="x" and task["status"]=="needsAction":
                         completeTask(service,tasklist["id"],task,todo)
@@ -200,13 +202,13 @@ def main(argv):
     if argv[1]=="pull":
         print "pulling"
         pull()        
+    elif argv[1]=="push" and len(argv)<3:
+        print "pushing"
+        push("todo")
     elif argv[1]=="push" and argv[2]=="all":
         print "pushing all"
         push("todo")
         push("done")
-    elif argv[1]=="push":
-        print "pushing"
-        push("todo")
     else:
         usage()
 
