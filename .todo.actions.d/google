@@ -5,6 +5,37 @@
 CLIENT_ID="YOUR_CLIENT_ID"
 CLIENT_SECRET="YOUR_CLIENT_SECRET"
 
+""" TODO.TXT Google Task Sync
+USAGE:  
+	google [pull|push|push all]
+	
+CONFIGURATION:
+	-Create a project in the Google APIs Console (http://code.google.com/apis/console).
+	-Click "Services" and switch Tasks API to "On." 
+	-Click "API Access" then "Create an OAuth 2.0 client ID."
+	-Fill in the settings for your new Client ID and set "Application Type" 
+		to "Installed Application"then click "Next." 
+	-Enter the Google-provided Client ID and Client Secret in the variables above.	
+
+USAGE NOTES:
+	Note that for simplicity, the 'archive' command is executed prior to the sync.
+
+	The 'pull' command will fetch google tasks and add them to your todo and done lists. 
+	Tasks will be pulled from all Google Task lists	
+
+	The 'push' command will push your todo list from todo.txt to Google Tasks
+	The 'push all' command will push items from both todo.txt and done.txt
+	Currently all new tasks will be added to the default Google Task list. (This may change in the future)
+
+	As this is a pull/push, there are obviously limitations to the syncing. 
+	For instance an already pushed  todo that is editted considerably will get 
+	pushed as a separate task as there is no way to match old and new. I've tried
+	to allow for some of the more common and minor changes, such as marking a todo
+	with a priority. Also, completing a todo or task can be synced up or down accordingly.
+
+"""
+
+
 import os
 import sys
 import gflags
@@ -19,7 +50,7 @@ from subprocess import call
 
 __version__ = "0.1"
 __date__ = "2011/06/06"
-__updated__ = "2011/10/10"
+__updated__ = "2012/01/18"
 __author__ = "Andrew McIntosh (github.com/amcintosh)"
 __copyright__ = "Copyright 2012, Andrew McIntosh"
 __license__ = "GPL"
@@ -32,7 +63,7 @@ FLOW = OAuth2WebServerFlow(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET,
     scope='https://www.googleapis.com/auth/tasks',
-    user_agent='todo.txt/0.1')
+    user_agent='todo.txt/1.0')
 
 
 def usage():
@@ -212,13 +243,13 @@ def main(argv):
         usage()
         sys.exit(2)
  
-    if argv[1]=="pull":
+    if argv[1].lower()=="pull":
         print "Pulling from Google Tasks"
         pull()        
-    elif argv[1]=="push" and len(argv)<3:
+    elif argv[1].lower()=="push" and len(argv)<3:
         print "Pushing to Google Tasks"
         push("todo")
-    elif argv[1]=="push" and argv[2]=="all":
+    elif argv[1].lower()=="push" and argv[2].lower()=="all":
         print "Pushing all to Google Tasks"
         push("todo")
         push("done")
