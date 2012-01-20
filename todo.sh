@@ -87,10 +87,10 @@ help()
 
 		  Options:
 		    -@
-		        Hide context names in list output. Use twice to show context
+		        Hide context names in list output.  Use twice to show context
 		        names (default).
 		    -+
-		        Hide project names in list output. Use twice to show project
+		        Hide project names in list output.  Use twice to show project
 		        names (default).
 		    -c
 		        Color mode
@@ -103,7 +103,7 @@ help()
 		    -p
 		        Plain mode turns off colors
 		    -P
-		        Hide priority labels in list output. Use twice to show
+		        Hide priority labels in list output.  Use twice to show
 		        priority labels (default).
 		    -a
 		        Don't auto-archive tasks automatically on completion
@@ -199,12 +199,15 @@ help()
 		    list [TERM...]
 		    ls [TERM...]
 		      Displays all tasks that contain TERM(s) sorted by priority with line
-		      numbers.  If no TERM specified, lists entire todo.txt.
+		      numbers.  Each task must match all TERMs (logical AND); to display
+		      tasks that contain any TERM (logical OR), use
+		      "TERM1\|TERM2\|..." (with quotes), or TERM1\\\|TERM2 (unquoted).
+		      If no TERM specified, lists entire todo.txt.
 
 		    listall [TERM...]
 		    lsa [TERM...]
 		      Displays all the lines in todo.txt AND done.txt that contain TERM(s)
-		      sorted by priority with line  numbers.  If no TERM specified, lists
+		      sorted by priority with line numbers.  If no TERM specified, lists
 		      entire todo.txt AND done.txt concatenated and sorted.
 
 		    listcon
@@ -214,8 +217,8 @@ help()
 		    listfile [SRC [TERM...]]
 		    lf [SRC [TERM...]]
 		      Displays all the lines in SRC file located in the todo.txt directory,
-		      sorted by priority with line  numbers.  If TERM specified, lists
-		      all lines that contain TERM in SRC file.
+		      sorted by priority with line numbers.  If TERM specified, lists
+		      all lines that contain TERM(s) in SRC file.
 		      Without any arguments, the names of all text files in the todo.txt
 		      directory are listed.
 
@@ -223,7 +226,7 @@ help()
 		    lsp [PRIORITY] [TERM...]
 		      Displays all tasks prioritized PRIORITY.
 		      If no PRIORITY specified, lists all prioritized tasks.
-		      If TERM specified, lists only prioritized tasks that contain TERM.
+		      If TERM specified, lists only prioritized tasks that contain TERM(s).
 
 		    listproj
 		    lsprj
