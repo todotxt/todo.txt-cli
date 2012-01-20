@@ -1212,18 +1212,20 @@ note: PRIORITY must be anywhere from A to Z."
     sed '/^x /!d' "$TODO_FILE" >> "$DONE_FILE"
     sed -i.bak '/^x /d' "$TODO_FILE"
 
-    NUMLINES=$( sed -n '$ =' "$TODO_FILE" )
-    if [ ${NUMLINES:-0} = "0" ]; then
-         echo "datetime todos dones" >> "$REPORT_FILE"
-    fi
-    #now report
     TOTAL=$( sed -n '$ =' "$TODO_FILE" )
     TDONE=$( sed -n '$ =' "$DONE_FILE" )
-    TECHO=$(echo $(date +%Y-%m-%d-%T); echo ' '; echo ${TOTAL:-0}; echo ' ';
-    echo ${TDONE:-0})
-    echo $TECHO >> "$REPORT_FILE"
-    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
-    cat "$REPORT_FILE"
+    NEWDATA="${TOTAL:-0} ${TDONE:-0}"
+    LASTREPORT=$(sed -ne '$p' "$REPORT_FILE")
+    LASTDATA=${LASTREPORT#* }   # Strip timestamp.
+    if [ "$LASTDATA" = "$NEWDATA" ]; then
+        echo "$LASTREPORT"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file is up-to-date."
+    else
+        NEWREPORT="$(date +%Y-%m-%dT%T) ${NEWDATA}"
+        echo "${NEWREPORT}" >> "$REPORT_FILE"
+        echo "${NEWREPORT}"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
+    fi
     ;;
 
 * )
