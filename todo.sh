@@ -1240,7 +1240,7 @@ note: PRIORITY must be anywhere from A to Z."
     if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
         deduplicateSedCommand='d'
     else
-        deduplicateSedCommand='{ s/^.*//; p; b }'
+        deduplicateSedCommand='s/^.*//; p'
     fi
 
     # To determine the difference when deduplicated lines are preserved, only
@@ -1251,17 +1251,25 @@ note: PRIORITY must be anywhere from A to Z."
     # We start with an empty hold space on the first line.  For each line:
     #   G - appends newline + hold space to the pattern space
     #   s/\n/&&/; - double up the first new line so we catch adjacent dups
-    #   /^\([^\n]*\n\).*\n\1/
+    #   /^\([^\n]*\n\).*\n\1/b dedup
     #       If the first line of the hold space shows up again later as an
-    #       entire line, it's a duplicate.
-    #       d;                 - Delete the current pattern space, quit this line
-    #                            and move on to the next, or:
-    #       { s/^.*//; p; b }; - Clear the task text, print this line and move on
-    #                            to the next.
-    #   s/\n//;   - else, drop the doubled newline
+    #       entire line, it's a duplicate. Jump to the "dedup" label, where
+    #       either of the following is executed, depending on whether empty
+    #       lines should be preserved:
+    #       d           - Delete the current pattern space, quit this line and
+    #                     move on to the next, or:
+    #       s/^.*//; p  - Clear the task text, print this line and move on to
+    #                     the next.
+    #   s/\n//;   - else (no duplicate), drop the doubled newline
     #   h;        - replace the hold space with the expanded pattern space
     #   P;        - print up to the first newline (that is, the input line)
-    sed -i.bak -n 'G; s/\n/&&/; /^\([^\n]*\n\).*\n\1/'"$deduplicateSedCommand"'; s/\n//; h; P' "$TODO_FILE"
+    #   b         - end processing of the current line
+    sed -i.bak -n \
+        -e 'G; s/\n/&&/; /^\([^\n]*\n\).*\n\1/b dedup' \
+        -e 's/\n//; h; P; b' \
+        -e ':dedup' \
+        -e "$deduplicateSedCommand" \
+        "$TODO_FILE"
 
     newTaskNum=$( sed -e '/./!d' "$TODO_FILE" | sed -n '$ =' )
     deduplicateNum=$(( originalTaskNum - newTaskNum ))

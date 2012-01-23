@@ -82,9 +82,9 @@ EOF
 
 cat > todo.txt <<EOF
 normal task
-a [1mbold[0m action
+a [1mbold[0m task
 something else
-a [1mbold[0m action
+a [1mbold[0m task
 something more
 EOF
 test_todo_session 'deduplicate with non-printable duplicates' <<EOF
@@ -92,7 +92,7 @@ test_todo_session 'deduplicate with non-printable duplicates' <<EOF
 TODO: 1 duplicate task(s) removed
 
 >>> todo.sh -p ls
-2 a [1mbold[0m action
+2 a [1mbold[0m task
 1 normal task
 3 something else
 5 something more
