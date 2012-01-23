@@ -85,13 +85,9 @@ TODO: $HOME/todo.txt archived.
 TODO: 5 of 5 tasks shown
 
 >>> todo.sh report
+TODO: $HOME/todo.txt archived.
+2009-02-13T04:40:00 5 1
 TODO: Report file updated.
-2009-02-13-04:40:00 5 1
-
->>> todo.sh report
-TODO: Report file updated.
-2009-02-13-04:40:00 5 1
-2009-02-13-04:40:00 5 1
 
 >>> todo.sh append g a
 usage: todo.sh append ITEM# "TEXT TO APPEND"
