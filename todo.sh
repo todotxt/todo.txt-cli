@@ -775,12 +775,12 @@ _list() {
     fi
     items=$(
         sed = "$src"                                            \
-        | sed '''
+        | sed -e '''
             N
             s/^/     /
             s/ *\([ 0-9]\{'"$PADDING"',\}\)\n/\1 /
-	  '''                                                 \
-        | grep -v "^[ 0-9]\+ *$"
+            /^[ 0-9]\{1,\} *$/d
+         '''
     )
     if [ "${filter_command}" ]; then
         filtered_items=$(echo -n "$items" | eval "${filter_command}")
