@@ -50,6 +50,7 @@ shorthelp()
 		    append|app ITEM# "TEXT TO APPEND"
 		    archive
 		    command [ACTIONS]
+		    deduplicate
 		    del|rm ITEM# [TERM]
 		    depri|dp ITEM#[, ITEM#, ITEM#, ...]
 		    do ITEM#[, ITEM#, ITEM#, ...]
@@ -180,6 +181,9 @@ help()
 		    command [ACTIONS]
 		      Runs the remaining arguments using only todo.sh builtins.
 		      Will not call any .todo.actions.d scripts.
+
+		    deduplicate
+		      Removes duplicate lines from todo.txt.
 
 		    del ITEM# [TERM]
 		    rm ITEM# [TERM]
@@ -361,20 +365,6 @@ getNewtodo()
 
     newtodo=$(sed "$item!d" "${2:-$TODO_FILE}")
     [ -z "$newtodo" ] && die "$(getPrefix "$2"): No updated task $item."
-}
-
-archive()
-{
-    #defragment blank lines
-    sed -i.bak -e '/./!d' "$TODO_FILE"
-    [ $TODOTXT_VERBOSE -gt 0 ] && grep "^x " "$TODO_FILE"
-    grep "^x " "$TODO_FILE" >> "$DONE_FILE"
-    sed -i.bak '/^x /d' "$TODO_FILE"
-    cp "$TODO_FILE" "$TMP_FILE"
-    sed -n 'G; s/\n/&&/; /^\([ ~-]*\n\).*\n\1/d; s/\n//; h; P' "$TMP_FILE" > "$TODO_FILE"
-    if [ $TODOTXT_VERBOSE -gt 0 ]; then
-	echo "TODO: $TODO_FILE archived."
-    fi
 }
 
 replaceOrPrepend()
@@ -948,7 +938,15 @@ case $action in
     ;;
 
 "archive" )
-    archive;;
+    # defragment blank lines
+    sed -i.bak -e '/./!d' "$TODO_FILE"
+    [ $TODOTXT_VERBOSE -gt 0 ] && grep "^x " "$TODO_FILE"
+    grep "^x " "$TODO_FILE" >> "$DONE_FILE"
+    sed -i.bak '/^x /d' "$TODO_FILE"
+    if [ $TODOTXT_VERBOSE -gt 0 ]; then
+	echo "TODO: $TODO_FILE archived."
+    fi
+    ;;
 
 "del" | "rm" )
     # replace deleted line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
@@ -1050,7 +1048,9 @@ case $action in
     done
 
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
-        archive
+        # Recursively invoke the script to allow overriding of the archive
+        # action.
+        "$TODO_FULL_SH" archive
     fi
     ;;
 
@@ -1215,22 +1215,69 @@ note: PRIORITY must be anywhere from A to Z."
     ;;
 
 "report" )
-    #archive first
-    sed '/^x /!d' "$TODO_FILE" >> "$DONE_FILE"
-    sed -i.bak '/^x /d' "$TODO_FILE"
+    # archive first
+    # Recursively invoke the script to allow overriding of the archive
+    # action.
+    "$TODO_FULL_SH" archive
 
-    NUMLINES=$( sed -n '$ =' "$TODO_FILE" )
-    if [ ${NUMLINES:-0} = "0" ]; then
-         echo "datetime todos dones" >> "$REPORT_FILE"
-    fi
-    #now report
     TOTAL=$( sed -n '$ =' "$TODO_FILE" )
     TDONE=$( sed -n '$ =' "$DONE_FILE" )
-    TECHO=$(echo $(date +%Y-%m-%d-%T); echo ' '; echo ${TOTAL:-0}; echo ' ';
-    echo ${TDONE:-0})
-    echo $TECHO >> "$REPORT_FILE"
-    [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
-    cat "$REPORT_FILE"
+    NEWDATA="${TOTAL:-0} ${TDONE:-0}"
+    LASTREPORT=$(sed -ne '$p' "$REPORT_FILE")
+    LASTDATA=${LASTREPORT#* }   # Strip timestamp.
+    if [ "$LASTDATA" = "$NEWDATA" ]; then
+        echo "$LASTREPORT"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file is up-to-date."
+    else
+        NEWREPORT="$(date +%Y-%m-%dT%T) ${NEWDATA}"
+        echo "${NEWREPORT}" >> "$REPORT_FILE"
+        echo "${NEWREPORT}"
+        [ $TODOTXT_VERBOSE -gt 0 ] && echo "TODO: Report file updated."
+    fi
+    ;;
+
+"deduplicate" )
+    if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
+        deduplicateSedCommand='d'
+    else
+        deduplicateSedCommand='s/^.*//; p'
+    fi
+
+    # To determine the difference when deduplicated lines are preserved, only
+    # non-empty lines must be counted.
+    originalTaskNum=$( sed -e '/./!d' "$TODO_FILE" | sed -n '$ =' )
+
+    # Look for duplicate lines and discard the second occurrence.
+    # We start with an empty hold space on the first line.  For each line:
+    #   G - appends newline + hold space to the pattern space
+    #   s/\n/&&/; - double up the first new line so we catch adjacent dups
+    #   /^\([^\n]*\n\).*\n\1/b dedup
+    #       If the first line of the hold space shows up again later as an
+    #       entire line, it's a duplicate. Jump to the "dedup" label, where
+    #       either of the following is executed, depending on whether empty
+    #       lines should be preserved:
+    #       d           - Delete the current pattern space, quit this line and
+    #                     move on to the next, or:
+    #       s/^.*//; p  - Clear the task text, print this line and move on to
+    #                     the next.
+    #   s/\n//;   - else (no duplicate), drop the doubled newline
+    #   h;        - replace the hold space with the expanded pattern space
+    #   P;        - print up to the first newline (that is, the input line)
+    #   b         - end processing of the current line
+    sed -i.bak -n \
+        -e 'G; s/\n/&&/; /^\([^\n]*\n\).*\n\1/b dedup' \
+        -e 's/\n//; h; P; b' \
+        -e ':dedup' \
+        -e "$deduplicateSedCommand" \
+        "$TODO_FILE"
+
+    newTaskNum=$( sed -e '/./!d' "$TODO_FILE" | sed -n '$ =' )
+    deduplicateNum=$(( originalTaskNum - newTaskNum ))
+    if [ $deduplicateNum -eq 0 ]; then
+        echo "TODO: No duplicate tasks found"
+    else
+        echo "TODO: $deduplicateNum duplicate task(s) removed"
+    fi
     ;;
 
 * )
