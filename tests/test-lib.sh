@@ -199,8 +199,9 @@ test_debug () {
 }
 
 test_run_ () {
-	eval >&3 2>&4 "$1"
+	eval > output 2>&1 "$1"
 	eval_ret="$?"
+	cat >&3 output
 	return 0
 }
 
@@ -594,9 +595,9 @@ test_todo_session () {
 	"")
 	    if [ ! -z "$cmd" ]; then
 		if [ $status = 0 ]; then
-		    test_expect_output "$1 $subnum" "$cmd > output"
+		    test_expect_output "$1 $subnum" "$cmd"
 		else
-		    test_expect_code_and_output "$status" "$1 $subnum" "$cmd > output"
+		    test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
 		fi
 
 		subnum=$(($subnum + 1))
@@ -612,9 +613,9 @@ test_todo_session () {
     done
     if [ ! -z "$cmd" ]; then
 	if [ $status = 0 ]; then
-	    test_expect_output "$1 $subnum" "$cmd > output"
+	    test_expect_output "$1 $subnum" "$cmd"
 	else
-	    test_expect_code_and_output "$status" "$1 $subnum" "$cmd > output"
+	    test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
 	fi
     fi
 }
