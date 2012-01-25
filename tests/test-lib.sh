@@ -180,7 +180,7 @@ test_failure_ () {
 	test_failure=$(($test_failure + 1))
 	say_color error "FAIL $test_count: $1"
 	shift
-	echo "$@" | sed -e 's/^/	/'
+	echo "$@"
 	test "$immediate" = "" || { trap - EXIT; exit 1; }
 }
 
@@ -253,6 +253,30 @@ test_expect_success () {
 		if [ "$?" = 0 -a "$eval_ret" = 0 ]
 		then
 			test_ok_ "$1"
+		else
+			test_failure_ "$@"
+		fi
+	fi
+	echo >&3 ""
+}
+
+test_expect_output () {
+	test "$#" = 2 ||
+	error "bug in the test script: not 2 parameters to test-expect-output"
+	if ! test_skip "$@"
+	then
+		say >&3 "expecting success and output: $2"
+		test_run_ "$2"
+		if [ "$?" = 0 -a "$eval_ret" = 0 ]
+		then
+			cmp_output=$(test_cmp expect output)
+			if [ "$?" = 0 ]
+			then
+				test_ok_ "$1"
+			else
+				test_failure_ "$@" "
+$cmp_output"
+			fi
 		else
 			test_failure_ "$@"
 		fi
@@ -542,9 +566,9 @@ test_todo_session () {
 	"")
 	    if [ ! -z "$cmd" ]; then
 		if [ $status = 0 ]; then
-		    test_expect_success "$1 $subnum" "$cmd > output && test_cmp expect output"
+		    test_expect_output "$1 $subnum" "$cmd > output"
 		else
-		    test_expect_success "$1 $subnum" "$cmd > output ; test \$? = $status && test_cmp expect output"
+		    test_expect_output "$1 $subnum" "$cmd > output ; test \$? = $status"
 		fi
 
 		subnum=$(($subnum + 1))
@@ -560,9 +584,9 @@ test_todo_session () {
     done
     if [ ! -z "$cmd" ]; then
 	if [ $status = 0 ]; then
-	    test_expect_success "$1 $subnum" "$cmd > output && test_cmp expect output"
+	    test_expect_output "$1 $subnum" "$cmd > output"
 	else
-	    test_expect_success "$1 $subnum" "$cmd > output ; test \$? = $status && test_cmp expect output"
+	    test_expect_output "$1 $subnum" "$cmd > output ; test \$? = $status"
 	fi
     fi
 }
