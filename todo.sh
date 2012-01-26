@@ -302,12 +302,6 @@ die()
     exit 1
 }
 
-cleanup()
-{
-    [ -f "$TMP_FILE" ] && rm "$TMP_FILE"
-    return 0
-}
-
 cleaninput()
 {
     # Parameters:    When $1 = "for sed", performs additional escaping for use
@@ -670,7 +664,6 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 [ -d "$TODO_DIR" ]  || die "Fatal Error: $TODO_DIR is not a directory"
 ( cd "$TODO_DIR" )  || die "Fatal Error: Unable to cd to $TODO_DIR"
 
-[ -w "$TMP_FILE"  ] || echo -n > "$TMP_FILE" || die "Fatal Error: Unable to write to $TMP_FILE"
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"
 [ -f "$DONE_FILE" ] || cp /dev/null "$DONE_FILE"
 [ -f "$REPORT_FILE" ] || cp /dev/null "$REPORT_FILE"
@@ -854,9 +847,7 @@ then
 elif [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
-    status=$?
-    cleanup
-    exit $status
+    exit $?
 fi
 
 ## Only run if $action isn't found in .todo.actions.d
@@ -1082,11 +1073,14 @@ case $action in
 "listall" | "lsa" )
     shift  ## Was lsa; new $1 is first search term
 
+    [ -w "$TMP_FILE"  ] || echo -n > "$TMP_FILE" || die "Fatal Error: Unable to write to $TMP_FILE"
     cat "$TODO_FILE" "$DONE_FILE" > "$TMP_FILE"
     TOTAL=$( sed -n '$ =' "$TODO_FILE" )
 
     post_filter_command="awk -v TOTAL=$TOTAL -v PADDING=${#TOTAL} '{ \$1 = sprintf(\"%\" PADDING \"d\", (\$1 > TOTAL ? 0 : \$1)); print }' "
     TODOTXT_VERBOSE=0 _list "$TMP_FILE" "$@"
+
+    [ -f "$TMP_FILE" ] && rm "$TMP_FILE"
 
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
         TDONE=$( sed -n '$ =' "$DONE_FILE" )
@@ -1283,5 +1277,3 @@ note: PRIORITY must be anywhere from A to Z."
 * )
     usage;;
 esac
-
-cleanup
