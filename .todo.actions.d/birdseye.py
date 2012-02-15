@@ -120,7 +120,7 @@ def main(argv):
 		for line in f:
 			prioritized = False
 			words = line.split()
-			if words[0][0:1] == ("("):
+			if words and words[0].startswith("("):
 				prioritized = True
 			for word in words:
 				if word[0:2] == "p:" or word[0:2] == "p-" or word[0:1] == "+":
