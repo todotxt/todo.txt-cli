@@ -59,7 +59,7 @@ shorthelp()
 		    listall|lsa [TERM...]
 		    listcon|lsc
 		    listfile|lf [SRC [TERM...]]
-		    listpri|lsp [PRIORITY] [TERM...]
+		    listpri|lsp [PRIORITIES] [TERM...]
 		    listproj|lsprj [TERM...]
 		    move|mv ITEM# DEST [SRC]
 		    prepend|prep ITEM# "TEXT TO PREPEND"
@@ -231,10 +231,11 @@ help()
 		      Without any arguments, the names of all text files in the todo.txt
 		      directory are listed.
 		
-		    listpri [PRIORITY] [TERM...]
-		    lsp [PRIORITY] [TERM...]
-		      Displays all tasks prioritized PRIORITY.
-		      If no PRIORITY specified, lists all prioritized tasks.
+		    listpri [PRIORITIES] [TERM...]
+		    lsp [PRIORITIES] [TERM...]
+		      Displays all tasks prioritized PRIORITIES.
+		      PRIORITIES can be a single one (A) or a range (A-C).
+		      If no PRIORITIES specified, lists all prioritized tasks.
 		      If TERM specified, lists only prioritized tasks that contain TERM(s).
 		      Hides all tasks that contain TERM(s) preceded by a minus sign
 		      (i.e. -TERM).  
@@ -1124,8 +1125,8 @@ case $action in
 "listpri" | "lsp" )
     shift ## was "listpri", new $1 is priority to list or first TERM
 
-    pri=$(printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep '^[A-Z]$') && shift || pri="[A-Z]"
-    post_filter_command="grep '^ *[0-9]\+ (${pri}) '"
+    pri=$(printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep -e '^[A-Z]$' -e '^[A-Z]-[A-Z]$') && shift || pri="A-Z"
+    post_filter_command="grep '^ *[0-9]\+ ([${pri}]) '"
     _list "$TODO_FILE" "$@"
     ;;
 
