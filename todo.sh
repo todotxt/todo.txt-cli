@@ -303,12 +303,6 @@ die()
     exit 1
 }
 
-cleanup()
-{
-    [ -f "$TMP_FILE" ] && rm "$TMP_FILE"
-    return 0
-}
-
 cleaninput()
 {
     # Parameters:    When $1 = "for sed", performs additional escaping for use
@@ -671,7 +665,6 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 [ -d "$TODO_DIR" ]  || die "Fatal Error: $TODO_DIR is not a directory"
 ( cd "$TODO_DIR" )  || die "Fatal Error: Unable to cd to $TODO_DIR"
 
-[ -w "$TMP_FILE"  ] || echo -n > "$TMP_FILE" || die "Fatal Error: Unable to write to $TMP_FILE"
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"
 [ -f "$DONE_FILE" ] || cp /dev/null "$DONE_FILE"
 [ -f "$REPORT_FILE" ] || cp /dev/null "$REPORT_FILE"
@@ -761,13 +754,32 @@ _list() {
     ## Get our search arguments, if any
     shift ## was file name, new $1 is first search term
 
-    ## Build the filter.
-    filter_command=$(filtercommand "${pre_filter_command:-}" "${post_filter_command:-}" "$@")
+    _format "$src" '' "$@"
 
-    ## Figure out how much padding we need to use
-    ## We need one level of padding for each power of 10 $LINES uses
-    LINES=$( sed -n '$ =' "$src" )
-    PADDING=${#LINES}
+    if [ $TODOTXT_VERBOSE -gt 0 ]; then
+        echo "--"
+        echo "$(getPrefix "$src"): ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
+    fi
+}
+getPadding()
+{
+    ## We need one level of padding for each power of 10 $LINES uses.
+    LINES=$(sed -n '$ =' "${1:-$TODO_FILE}")
+    printf %s ${#LINES}
+}
+_format()
+{
+    # Parameters:    $1: todo input file; when empty formats stdin
+    #                $2: ITEM# number width; if empty auto-detects from $1 / $TODO_FILE.
+    # Precondition:  None
+    # Postcondition: $NUMTASKS and $TOTALTASKS contain statistics (unless $TODOTXT_VERBOSE=0).
+
+    FILE=$1
+    shift
+
+    ## Figure out how much padding we need to use, unless this was passed to us.
+    PADDING=${1:-$(getPadding "$FILE")}
+    shift
 
     ## Number the file, then run the filter command,
     ## then sort and mangle output some more
@@ -775,7 +787,11 @@ _list() {
         TODOTXT_FINAL_FILTER="cat"
     fi
     items=$(
-        sed = "$src"                                            \
+        if [ "$FILE" ]; then
+            sed = "$FILE"
+        else
+            sed =
+        fi                                                      \
         | sed -e '''
             N
             s/^/     /
@@ -783,6 +799,9 @@ _list() {
             /^[ 0-9]\{1,\} *$/d
          '''
     )
+
+    ## Build and apply the filter.
+    filter_command=$(filtercommand "${pre_filter_command:-}" "${post_filter_command:-}" "$@")
     if [ "${filter_command}" ]; then
         filtered_items=$(echo -n "$items" | eval "${filter_command}")
     else
@@ -828,16 +847,13 @@ _list() {
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
         NUMTASKS=$( echo -n "$filtered_items" | sed -n '$ =' )
         TOTALTASKS=$( echo -n "$items" | sed -n '$ =' )
-
-        echo "--"
-        echo "$(getPrefix "$FILE"): ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
     fi
     if [ $TODOTXT_VERBOSE -gt 1 ]; then
         echo "TODO DEBUG: Filter Command was: ${filter_command:-cat}"
     fi
 }
 
-export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list die
+export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list getPadding _format die
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
@@ -855,9 +871,7 @@ then
 elif [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
-    status=$?
-    cleanup
-    exit $status
+    exit $?
 fi
 
 ## Only run if $action isn't found in .todo.actions.d
@@ -1083,16 +1097,16 @@ case $action in
 "listall" | "lsa" )
     shift  ## Was lsa; new $1 is first search term
 
-    cat "$TODO_FILE" "$DONE_FILE" > "$TMP_FILE"
     TOTAL=$( sed -n '$ =' "$TODO_FILE" )
+    PADDING=${#TOTAL}
 
-    post_filter_command="awk -v TOTAL=$TOTAL -v PADDING=${#TOTAL} '{ \$1 = sprintf(\"%\" PADDING \"d\", (\$1 > TOTAL ? 0 : \$1)); print }' "
-    TODOTXT_VERBOSE=0 _list "$TMP_FILE" "$@"
+    post_filter_command="awk -v TOTAL=$TOTAL -v PADDING=$PADDING '{ \$1 = sprintf(\"%\" PADDING \"d\", (\$1 > TOTAL ? 0 : \$1)); print }' "
+    cat "$TODO_FILE" "$DONE_FILE" | TODOTXT_VERBOSE=0 _format '' "$PADDING" "$@"
 
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
         TDONE=$( sed -n '$ =' "$DONE_FILE" )
-        TASKNUM=$(TODOTXT_PLAIN=1 TODOTXT_VERBOSE=0 _list "$TODO_FILE" "$@" | sed -n '$ =')
-        DONENUM=$(TODOTXT_PLAIN=1 TODOTXT_VERBOSE=0 _list "$DONE_FILE" "$@" | sed -n '$ =')
+        TASKNUM=$(TODOTXT_PLAIN=1 TODOTXT_VERBOSE=0 _format "$TODO_FILE" 1 "$@" | sed -n '$ =')
+        DONENUM=$(TODOTXT_PLAIN=1 TODOTXT_VERBOSE=0 _format "$DONE_FILE" 1 "$@" | sed -n '$ =')
         echo "--"
         echo "$(getPrefix "$TODO_FILE"): ${TASKNUM:-0} of ${TOTAL:-0} tasks shown"
         echo "$(getPrefix "$DONE_FILE"): ${DONENUM:-0} of ${TDONE:-0} tasks shown"
@@ -1284,5 +1298,3 @@ note: PRIORITY must be anywhere from A to Z."
 * )
     usage;;
 esac
-
-cleanup
