@@ -55,4 +55,27 @@ test_todo_session 'listproj embedded + test' <<EOF
 +prj02
 EOF
 
+cat > todo.txt <<EOF
++prj01 -- Some project 1 task
+EOF
+cat > done.txt <<EOF
+x 2012-02-21 +done01 -- Special project 1 done task
+x 2012-02-21 +done02 -- Some project 2 done task
+EOF
+test_todo_session 'listproj from done tasks' <<'EOF'
+>>> TODOTXT_SOURCEVAR=\$DONE_FILE todo.sh listproj
++done01
++done02
+EOF
+test_todo_session 'listproj from done tasks with filtering' <<'EOF'
+>>> TODOTXT_SOURCEVAR=\$DONE_FILE todo.sh listproj Special
++done01
+EOF
+test_todo_session 'listproj from combined open + done tasks' <<'EOF'
+>>> TODOTXT_SOURCEVAR='("$TODO_FILE" "$DONE_FILE")' todo.sh listproj
++done01
++done02
++prj01
+EOF
+
 test_done

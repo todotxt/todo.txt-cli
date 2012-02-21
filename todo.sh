@@ -149,7 +149,7 @@ help()
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
-		    TODOTXT_SOURCEVAR=\$DONE_FILE   use another source for listcon
+		    TODOTXT_SOURCEVAR=\$DONE_FILE   use another source for listcon, listproj
 
 
 	EndVerboseHelp
@@ -1135,8 +1135,10 @@ case $action in
     ;;
 
 "listproj" | "lsprj" )
+    FILE=$TODO_FILE
+    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
     shift
-    eval "$(filtercommand 'cat "$TODO_FILE"' '' "$@")" | grep -o '[^ ]*+[^ ]\+' | grep '^+' | sort -u
+    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" | grep -o '[^ ]*+[^ ]\+' | grep '^+' | sort -u
     ;;
 
 "listpri" | "lsp" )
