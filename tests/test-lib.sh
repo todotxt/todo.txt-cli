@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright (c) 2005 Junio C Hamano
 #
@@ -630,6 +630,55 @@ $HOME/todo.txt => \$HOME/todo.txt
 EOF
 	bash --noprofile --norc
 	exit 0
+}
+
+test_todo_completion () {
+	test "$#" = 3 ||
+	error "bug in the test script: not 3 parameters to test_todo_completion"
+	if ! test_skip "$@"
+	then
+		description=$1
+		expected=$3
+
+		if [ "${2: -1}" = ' ' ]
+		then
+			offset=0
+			say >&3 "expecting completions after: '$2'"
+		else
+			offset=1
+			say >&3 "expecting context completions for: '$2'"
+		fi
+
+		SAVEIFS=$IFS
+		IFS=' ' set -- $2
+		COMP_WORDS=("$@")
+		COMP_CWORD=$(($# - $offset))
+		IFS=' ' set -- $expected
+		EXPECT=("$@")
+
+		source "$TEST_DIRECTORY/../todo_completion"
+		_todo
+
+		IFS=$'\n'
+		printf '%s\n' "${EXPECT[*]}" > expect
+		printf '%s\n' "${COMPREPLY[*]}" > output
+		IFS=$SAVEIFS
+
+		if [ ${#COMPREPLY[@]} -eq ${#EXPECT[@]} ]
+		then
+			if [ "${COMPREPLY[*]}" = "${EXPECT[*]}" ]
+			then
+				test_ok_ "$description"
+			else
+				test_failure_ "$description" "Differing completion(s):
+$(test_cmp expect output)"
+			fi
+		else
+			test_failure_ "$description" "Expected ${#EXPECT[@]} completion(s), got ${#COMPREPLY[@]}:
+$(test_cmp expect output)"
+		fi
+	fi
+	echo >&3 ""
 }
 
 test_init_todo "$test"
