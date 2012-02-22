@@ -305,7 +305,7 @@ $cmp_output"
 		else
 			cmp_output=$(test_cmp expect output)
 			test_failure_ "$2" "$3" "
-* expected exit code $1, actual ${eval_ret}${cmp_output:+
+expected exit code $1, actual ${eval_ret}${cmp_output:+
 }${cmp_output}"
 		fi
 	fi
@@ -324,7 +324,7 @@ test_expect_code () {
 			test_ok_ "$2"
 		else
 			test_failure_ "$2" "$3" "
-* expected exit code $1, actual ${eval_ret}"
+expected exit code $1, actual ${eval_ret}"
 		fi
 	fi
 	echo >&3 ""
@@ -658,24 +658,28 @@ test_todo_completion () {
 
 		source "$TEST_DIRECTORY/../todo_completion"
 		_todo
-
-		IFS=$'\n'
-		printf "%s${EXPECT:+\\n}" "${EXPECT[*]}" > expect
-		printf "%s${COMPREPLY:+\\n}" "${COMPREPLY[*]}" > output
-		IFS=$SAVEIFS
-
-		if [ ${#COMPREPLY[@]} -eq ${#EXPECT[@]} ]
+		ret=$?
+		if [ "$ret" = 0 ]
 		then
-			if [ "${COMPREPLY[*]}" = "${EXPECT[*]}" ]
+			IFS=$'\n'
+			printf "%s${EXPECT:+\\n}" "${EXPECT[*]}" > expect
+			printf "%s${COMPREPLY:+\\n}" "${COMPREPLY[*]}" > compreply
+			IFS=$SAVEIFS
+
+			if [ ${#COMPREPLY[@]} -eq ${#EXPECT[@]} ]
 			then
-				test_ok_ "$description"
+				if [ "${COMPREPLY[*]}" = "${EXPECT[*]}" ]
+				then
+					test_ok_ "$description"
+				else
+					test_failure_ "$description" "$(test_cmp expect compreply)"
+				fi
 			else
-				test_failure_ "$description" "Differing completion(s):
-$(test_cmp expect output)"
+				test_failure_ "$description" "expected ${#EXPECT[@]} completion(s), got ${#COMPREPLY[@]}:
+$(test_cmp expect compreply)"
 			fi
 		else
-			test_failure_ "$description" "Expected ${#EXPECT[@]} completion(s), got ${#COMPREPLY[@]}:
-$(test_cmp expect output)"
+			test_failure_ "$description" "expected completions, actual exit code $ret"
 		fi
 	fi
 	echo >&3 ""
