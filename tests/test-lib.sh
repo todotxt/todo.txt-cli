@@ -660,8 +660,8 @@ test_todo_completion () {
 		_todo
 
 		IFS=$'\n'
-		printf '%s\n' "${EXPECT[*]}" > expect
-		printf '%s\n' "${COMPREPLY[*]}" > output
+		printf "%s${EXPECT:+\\n}" "${EXPECT[*]}" > expect
+		printf "%s${COMPREPLY:+\\n}" "${COMPREPLY[*]}" > output
 		IFS=$SAVEIFS
 
 		if [ ${#COMPREPLY[@]} -eq ${#EXPECT[@]} ]
