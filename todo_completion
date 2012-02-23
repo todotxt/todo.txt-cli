@@ -35,8 +35,18 @@ _todo()
                 completions=$(TODOTXT_VERBOSE=0 todo.sh command listfile);;
             -*) completions="$allCommands $OPTS";;
             *)  case "$cur" in
-                    +*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listproj);;
-                    @*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listcon);;
+                    +*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listproj)
+                        COMPREPLY=( $( compgen -W "$completions" -- $cur ))
+                        [ ${#COMPREPLY[@]} -gt 0 ] && return 0
+                        # Fall back to projects extracted from done tasks.
+                        completions=$(TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE todo.sh command listproj)
+                        ;;
+                    @*) completions=$(TODOTXT_VERBOSE=0 todo.sh command listcon)
+                        COMPREPLY=( $( compgen -W "$completions" -- $cur ))
+                        [ ${#COMPREPLY[@]} -gt 0 ] && return 0
+                        # Fall back to contexts extracted from done tasks.
+                        completions=$(TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE todo.sh command listcon)
+                        ;;
                     *)  if [[ "$cur" =~ ^[0-9]+$ ]]; then
                             # Remove the (padded) task number; we prepend the
                             # user-provided $cur instead.
