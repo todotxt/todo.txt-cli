@@ -197,6 +197,11 @@ library for your script to use.
    context of the last argument.  <message> should state what it
    is testing.
 
+ - test_todo_custom_completion <completefunc> <message> <cmdline> <completions>
+
+   Same as above, but in addition allows to specify a custom
+   completion function.
+
  - test_tick [interval]
 
    The test harness has an internal view of time which is

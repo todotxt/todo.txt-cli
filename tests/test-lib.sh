@@ -632,9 +632,11 @@ EOF
 	exit 0
 }
 
-test_todo_completion () {
-	test "$#" = 3 ||
-	error "bug in the test script: not 3 parameters to test_todo_completion"
+test_todo_custom_completion () {
+	test "$#" = 4 ||
+	error "bug in the test script: not 4 parameters to test_todo_custom_completion"
+	completeFunc=$1
+	shift
 	if ! test_skip "$@"
 	then
 		description=$1
@@ -657,7 +659,7 @@ test_todo_completion () {
 		EXPECT=("$@")
 
 		source "$TEST_DIRECTORY/../todo_completion"
-		_todo
+		$completeFunc
 		ret=$?
 		if [ "$ret" = 0 ]
 		then
@@ -683,6 +685,11 @@ $(test_cmp expect compreply)"
 		fi
 	fi
 	echo >&3 ""
+}
+test_todo_completion () {
+	test "$#" = 3 ||
+	error "bug in the test script: not 3 parameters to test_todo_completion"
+	test_todo_custom_completion _todo "$@"
 }
 
 test_init_todo "$test"
