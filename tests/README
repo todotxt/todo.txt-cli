@@ -221,6 +221,13 @@ library for your script to use.
 	    'git-write-tree should be able to write an empty tree.' \
 	    'tree=$(git-write-tree)'
 
+ - test_expect_code <code> <message> <script>
+
+   This takes an exit status and two strings as parameter, and
+   evaluates the <script>.  If it yields <code>, test is
+   considered successful.  <message> should state what it is
+   testing.
+
  - test_expect_failure <message> <script>
 
    This is NOT the opposite of test_expect_success, but is used
