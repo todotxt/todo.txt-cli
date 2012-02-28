@@ -191,11 +191,18 @@ library for your script to use.
    This takes three strings as parameter.  Based on <cmdline>,
    the todo_completion script is triggered in the current test
    environment and completions are compared with <completions>,
-   which should be a space-separated list.  Include a trailing
-   space in <cmdline> when you want to check new argument
-   completion; otherwise, completion is triggered with the
-   context of the last argument.  <message> should state what it
-   is testing.
+   which should be a space-separated list.  If any completion
+   contains whitespace, quote it; the entire <completions>
+   argument is eval()'ed.
+   Include a trailing space in <cmdline> when you want to check
+   new argument completion; otherwise, completion is triggered
+   with the context of the last argument. <message> should state
+   what it is testing.
+
+ - test_todo_custom_completion <completefunc> <message> <cmdline> <completions>
+
+   Same as above, but in addition allows to specify a custom
+   completion function.
 
  - test_tick [interval]
 
@@ -215,6 +222,13 @@ library for your script to use.
 	test_expect_success \
 	    'git-write-tree should be able to write an empty tree.' \
 	    'tree=$(git-write-tree)'
+
+ - test_expect_code <code> <message> <script>
+
+   This takes an exit status and two strings as parameter, and
+   evaluates the <script>.  If it yields <code>, test is
+   considered successful.  <message> should state what it is
+   testing.
 
  - test_expect_failure <message> <script>
 
