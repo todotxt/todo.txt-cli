@@ -17,5 +17,6 @@ test_todo_completion 'all actions after command action' 'todo.sh command ' "$ACT
 test_todo_completion 'all arguments after option' 'todo.sh -a ' "$ACTIONS $OPTIONS"
 test_todo_completion 'all arguments after options' 'todo.sh -a -p ' "$ACTIONS $OPTIONS"
 test_todo_completion 'all options after options' 'todo.sh -a -p -' "$OPTIONS"
+test_todo_completion 'nothing after action' 'todo.sh archive ' ''
 
 test_done
