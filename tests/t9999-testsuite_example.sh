@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 test_description='basic tests imported from previous framework
 '

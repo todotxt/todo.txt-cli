@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright (c) 2005 Junio C Hamano
 #
@@ -305,7 +305,7 @@ $cmp_output"
 		else
 			cmp_output=$(test_cmp expect output)
 			test_failure_ "$2" "$3" "
-* expected exit code $1, actual ${eval_ret}${cmp_output:+
+expected exit code $1, actual ${eval_ret}${cmp_output:+
 }${cmp_output}"
 		fi
 	fi
@@ -324,7 +324,7 @@ test_expect_code () {
 			test_ok_ "$2"
 		else
 			test_failure_ "$2" "$3" "
-* expected exit code $1, actual ${eval_ret}"
+expected exit code $1, actual ${eval_ret}"
 		fi
 	fi
 	echo >&3 ""
@@ -630,6 +630,59 @@ $HOME/todo.txt => \$HOME/todo.txt
 EOF
 	bash --noprofile --norc
 	exit 0
+}
+
+test_todo_completion () {
+	test "$#" = 3 ||
+	error "bug in the test script: not 3 parameters to test_todo_completion"
+	if ! test_skip "$@"
+	then
+		description=$1
+		expected=$3
+
+		if [ "${2: -1}" = ' ' ]
+		then
+			offset=0
+			say >&3 "expecting completions after: '$2'"
+		else
+			offset=1
+			say >&3 "expecting context completions for: '$2'"
+		fi
+
+		SAVEIFS=$IFS
+		IFS=' ' set -- $2
+		COMP_WORDS=("$@")
+		COMP_CWORD=$(($# - $offset))
+		IFS=' ' set -- $expected
+		EXPECT=("$@")
+
+		source "$TEST_DIRECTORY/../todo_completion"
+		_todo
+		ret=$?
+		if [ "$ret" = 0 ]
+		then
+			IFS=$'\n'
+			printf "%s${EXPECT:+\\n}" "${EXPECT[*]}" > expect
+			printf "%s${COMPREPLY:+\\n}" "${COMPREPLY[*]}" > compreply
+			IFS=$SAVEIFS
+
+			if [ ${#COMPREPLY[@]} -eq ${#EXPECT[@]} ]
+			then
+				if [ "${COMPREPLY[*]}" = "${EXPECT[*]}" ]
+				then
+					test_ok_ "$description"
+				else
+					test_failure_ "$description" "$(test_cmp expect compreply)"
+				fi
+			else
+				test_failure_ "$description" "expected ${#EXPECT[@]} completion(s), got ${#COMPREPLY[@]}:
+$(test_cmp expect compreply)"
+			fi
+		else
+			test_failure_ "$description" "expected completions, actual exit code $ret"
+		fi
+	fi
+	echo >&3 ""
 }
 
 test_init_todo "$test"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 test_description='no old-style backtick command substitution
 
