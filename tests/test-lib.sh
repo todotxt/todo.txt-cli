@@ -655,7 +655,7 @@ test_todo_custom_completion () {
 		IFS=' ' set -- $2
 		COMP_WORDS=("$@")
 		COMP_CWORD=$(($# - $offset))
-		IFS=' ' set -- $expected
+		IFS=' ' eval "set -- $expected"
 		EXPECT=("$@")
 
 		source "$TEST_DIRECTORY/../todo_completion"
