@@ -57,6 +57,7 @@ shorthelp()
 		    help
 		    list|ls [TERM...]
 		    listall|lsa [TERM...]
+		    listaddons
 		    listcon|lsc
 		    listfile|lf [SRC [TERM...]]
 		    listpri|lsp [PRIORITIES] [TERM...]
@@ -218,6 +219,9 @@ help()
 		      contain TERM(s) preceded by a minus sign (i.e. -TERM).  If no
 		      TERM specified, lists entire todo.txt AND done.txt
 		      concatenated and sorted.
+
+		    listaddons
+		      Lists all added and overridden actions in the actions directory.
 
 		    listcon
 		    lsc
@@ -1297,6 +1301,18 @@ note: PRIORITY must be anywhere from A to Z."
         echo "TODO: No duplicate tasks found"
     else
         echo "TODO: $deduplicateNum duplicate task(s) removed"
+    fi
+    ;;
+
+"listaddons" )
+    if [ -d "$TODO_ACTIONS_DIR" ]; then
+        cd "$TODO_ACTIONS_DIR" || exit $?
+        for action in *
+        do
+            if [ -f "$action" -a -x "$action" ]; then
+                echo "$action"
+            fi
+        done
     fi
     ;;
 
