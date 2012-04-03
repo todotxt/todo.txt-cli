@@ -33,7 +33,7 @@ h6 {line-height:20px; color:#AAA;}
 
 /* Hero unit */
 .hero-unit {
-    background:#151515;
+    background:#666;
     border-bottom: 1px solid white;
     -webkit-border-radius: 0;
     -moz-border-radius:0;
@@ -48,7 +48,7 @@ margin-top:-50px;
 }
 
 .hero-unit h1{color:#E9E9E9;font-size:40px;margin-top:12px;letter-spacing:-2px;text-shadow: 0 -1px -1px black;}
-.hero-unit h2, .hero-unit h4 {color:#808080;line-height:24px;text-shadow: 0 -1px -1px black;}
+.hero-unit h2, .hero-unit h4 {color:#fff;line-height:24px;text-shadow: 0 -1px -1px black;}
 .hero-unit h1 > img {vertical-align:top;}
 .hero-unit ul.unstyled li {border-bottom:1px solid #000;border-top:1px solid #2B2B2B;padding:15px 0 15px 15px;}
 .hero-unit ul.unstyled li:first-child {border-top:0;}
