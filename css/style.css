@@ -1,10 +1,7 @@
-html {
-	background:#151515;
-}
 body {
     padding-top:50px;
     color:#777;
-	background:#eee;
+	background:#666;
 }
 body, p, li, input, button, select, textarea {
 	font-family:;'Open Sans', sans-serif;
@@ -39,7 +36,7 @@ h6 {line-height:20px; color:#AAA;}
     -moz-border-radius:0;
     border-radius: 0;
     margin: 0;
-margin-top:-50px;
+	margin-top:-50px;
     padding:0;
 }
 .hero-unit .container {
@@ -96,7 +93,7 @@ margin-top:-50px;
 /*Footer*/
 .footer {
     background: #151515;
-    padding: 20px 0 10px 0;
+    padding: 20px 10px 10px 10px;
     box-shadow: inset 0 15px 10px rgba(0,0,0,0.6);
     -webkit-box-shadow: inset 0 15px 10px rgba(0,0,0,0.6);
     -moz-box-shadow:inset 0 15px 10px rgba(0,0,0,0.6);
@@ -121,4 +118,9 @@ img {
   height: auto;
   border: 0;
   -ms-interpolation-mode: bicubic;
+}
+
+.above-footer {
+	background:#eee;
+	max-width:100%;
 }
