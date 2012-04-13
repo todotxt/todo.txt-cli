@@ -58,7 +58,7 @@ shorthelp()
 		    list|ls [TERM...]
 		    listall|lsa [TERM...]
 		    listaddons
-		    listcon|lsc
+		    listcon|lsc [TERM...]
 		    listfile|lf [SRC [TERM...]]
 		    listpri|lsp [PRIORITIES] [TERM...]
 		    listproj|lsprj [TERM...]
@@ -223,9 +223,10 @@ help()
 		    listaddons
 		      Lists all added and overridden actions in the actions directory.
 
-		    listcon
-		    lsc
+		    listcon [TERM...]
+		    lsc [TERM...]
 		      Lists all the task contexts that start with the @ sign in todo.txt.
+		      If TERM specified, considers only tasks that contain TERM(s).
 
 		    listfile [SRC [TERM...]]
 		    lf [SRC [TERM...]]
@@ -1135,7 +1136,8 @@ case $action in
 "listcon" | "lsc" )
     FILE=$TODO_FILE
     [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
-    grep -ho '[^ ]*@[^ ]\+' "${FILE[@]}" | grep '^@' | sort -u
+    shift
+    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" | grep -o '[^ ]*@[^ ]\+' | grep '^@' | sort -u
     ;;
 
 "listproj" | "lsprj" )
