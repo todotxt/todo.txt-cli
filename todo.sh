@@ -246,10 +246,11 @@ help()
 		      Hides all tasks that contain TERM(s) preceded by a minus sign
 		      (i.e. -TERM).  
 
-		    listproj
-		    lsprj
+		    listproj [TERM...]
+		    lsprj [TERM...]
 		      Lists all the projects (terms that start with a + sign) in
 		      todo.txt.
+		      If TERM specified, considers only tasks that contain TERM(s).
 
 		    move ITEM# DEST [SRC]
 		    mv ITEM# DEST [SRC]
