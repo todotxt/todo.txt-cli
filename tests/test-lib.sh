@@ -582,7 +582,7 @@ test_todo_session () {
     cmd=""
     status=0
     > expect
-    while read -r line
+    while IFS= read -r line
     do
 	case $line in
 	">>> "*)
