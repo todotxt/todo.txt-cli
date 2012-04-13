@@ -566,14 +566,16 @@ test_tick () {
 }
 
 # Generate and run a series of tests based on a transcript.
-# Usage: test_todo_session "description" <<EOF
+# Usage: test_todo_session "description" <<'EOF'
 # >>> command
 # output1
 # output2
+#
 # >>> command
 # === exit status
-# output3
-# output4
+# output3 with empty line (must be escaped here)
+# \
+# output5
 # EOF
 test_todo_session () {
     test "$#" = 1 ||
@@ -605,6 +607,9 @@ test_todo_session () {
 		status=0
 		> expect
 	    fi
+	    ;;
+	\\)
+	    echo "" >> expect
 	    ;;
 	*)
 	    echo "$line" >> expect
