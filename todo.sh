@@ -860,7 +860,17 @@ _format()
     fi
 }
 
-export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list getPadding _format die
+listWordsWithSigil()
+{
+    sigil=$1
+    shift
+
+    FILE=$TODO_FILE
+    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
+    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" | grep -o "[^ ]*${sigil}[^ ]\\+" | grep "^$sigil" | sort -u
+}
+
+export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list listWordsWithSigil getPadding _format die
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
@@ -1135,17 +1145,13 @@ case $action in
     ;;
 
 "listcon" | "lsc" )
-    FILE=$TODO_FILE
-    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
     shift
-    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" | grep -o '[^ ]*@[^ ]\+' | grep '^@' | sort -u
+    listWordsWithSigil '@' "$@"
     ;;
 
 "listproj" | "lsprj" )
-    FILE=$TODO_FILE
-    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
     shift
-    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" | grep -o '[^ ]*+[^ ]\+' | grep '^+' | sort -u
+    listWordsWithSigil '+' "$@"
     ;;
 
 "listpri" | "lsp" )
