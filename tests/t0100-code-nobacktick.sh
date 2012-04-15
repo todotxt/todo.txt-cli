@@ -16,6 +16,8 @@ backtick_check()
 
 test_todo_session 'no old-style backtick command substitution' <<EOF
 >>> backtick_check bin/todo.sh
+
+>>> backtick_check ../../todo.cfg
 EOF
 
 test_done
