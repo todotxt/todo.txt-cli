@@ -389,7 +389,6 @@ replaceOrPrepend()
   else
     input=$*
   fi
-  cleaninput "for sed"
 
   # Retrieve existing priority and prepended date
   local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
@@ -405,6 +404,7 @@ replaceOrPrepend()
   # Temporarily remove any existing priority and prepended date, perform the
   # change (replace/prepend) and re-insert the existing priority and prepended
   # date again.
+  cleaninput "for sed"
   sed -i.bak -e "$item s/^${priority}${prepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
   if [ $TODOTXT_VERBOSE -gt 0 ]; then
     getNewtodo "$item"
