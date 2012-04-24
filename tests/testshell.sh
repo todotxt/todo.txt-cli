@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 test_description='Providing an interactive shell in the proper environment'
 . ./test-lib.sh

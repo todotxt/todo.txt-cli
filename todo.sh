@@ -57,6 +57,7 @@ shorthelp()
 		    help
 		    list|ls [TERM...]
 		    listall|lsa [TERM...]
+		    listaddons
 		    listcon|lsc
 		    listfile|lf [SRC [TERM...]]
 		    listpri|lsp [PRIORITIES] [TERM...]
@@ -136,7 +137,7 @@ help()
 
 	EndOptionsHelp
 
-    [ $TODOTXT_VERBOSE -gt 1 ] && cat <<-EndVerboseHelp
+    [ $TODOTXT_VERBOSE -gt 1 ] && cat <<-'EndVerboseHelp'
 		  Environment variables:
 		    TODOTXT_AUTO_ARCHIVE            is same as option -a (0)/-A (1)
 		    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
@@ -149,6 +150,7 @@ help()
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
+		    TODOTXT_SOURCEVAR=\$DONE_FILE   use another source for listcon, listproj
 
 
 	EndVerboseHelp
@@ -217,6 +219,9 @@ help()
 		      contain TERM(s) preceded by a minus sign (i.e. -TERM).  If no
 		      TERM specified, lists entire todo.txt AND done.txt
 		      concatenated and sorted.
+
+		    listaddons
+		      Lists all added and overridden actions in the actions directory.
 
 		    listcon
 		    lsc
@@ -1128,12 +1133,16 @@ case $action in
     ;;
 
 "listcon" | "lsc" )
-    grep -o '[^ ]*@[^ ]\+' "$TODO_FILE" | grep '^@' | sort -u
+    FILE=$TODO_FILE
+    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
+    grep -ho '[^ ]*@[^ ]\+' "${FILE[@]}" | grep '^@' | sort -u
     ;;
 
 "listproj" | "lsprj" )
+    FILE=$TODO_FILE
+    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
     shift
-    eval "$(filtercommand 'cat "$TODO_FILE"' '' "$@")" | grep -o '[^ ]*+[^ ]\+' | grep '^+' | sort -u
+    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" | grep -o '[^ ]*+[^ ]\+' | grep '^+' | sort -u
     ;;
 
 "listpri" | "lsp" )
@@ -1292,6 +1301,18 @@ note: PRIORITY must be anywhere from A to Z."
         echo "TODO: No duplicate tasks found"
     else
         echo "TODO: $deduplicateNum duplicate task(s) removed"
+    fi
+    ;;
+
+"listaddons" )
+    if [ -d "$TODO_ACTIONS_DIR" ]; then
+        cd "$TODO_ACTIONS_DIR" || exit $?
+        for action in *
+        do
+            if [ -f "$action" -a -x "$action" ]; then
+                echo "$action"
+            fi
+        done
     fi
     ;;
 
