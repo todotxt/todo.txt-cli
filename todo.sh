@@ -1105,7 +1105,7 @@ case $action in
     TOTAL=$( sed -n '$ =' "$TODO_FILE" )
     PADDING=${#TOTAL}
 
-    post_filter_command="awk -v TOTAL=$TOTAL -v PADDING=$PADDING '{ \$1 = sprintf(\"%\" PADDING \"d\", (\$1 > TOTAL ? 0 : \$1)); print }' "
+    post_filter_command="${post_filter_command:-}${post_filter_command:+ | }awk -v TOTAL=$TOTAL -v PADDING=$PADDING '{ \$1 = sprintf(\"%\" PADDING \"d\", (\$1 > TOTAL ? 0 : \$1)); print }' "
     cat "$TODO_FILE" "$DONE_FILE" | TODOTXT_VERBOSE=0 _format '' "$PADDING" "$@"
 
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
@@ -1149,7 +1149,7 @@ case $action in
     shift ## was "listpri", new $1 is priority to list or first TERM
 
     pri=$(printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep -e '^[A-Z]$' -e '^[A-Z]-[A-Z]$') && shift || pri="A-Z"
-    post_filter_command="grep '^ *[0-9]\+ ([${pri}]) '"
+    post_filter_command="${post_filter_command:-}${post_filter_command:+ | }grep '^ *[0-9]\+ ([${pri}]) '"
     _list "$TODO_FILE" "$@"
     ;;
 
