@@ -4,30 +4,14 @@ test_description='actions help functionality
 
 This test checks listing the usage help of a custom action.
 '
+. ./actions-test-lib.sh
 . ./test-lib.sh
 
-unset TODO_ACTIONS_DIR
 test_todo_session 'custom action help with no custom action directory' <<'EOF'
 >>> todo.sh help foo
 TODO: No actions directory exists.
 === 1
 EOF
-
-mkdir .todo.actions.d
-make_action()
-{
-	cat > ".todo.actions.d/$1" <<EOF
-#!/bin/bash
-[ "\$1" = "usage" ] && {
-    echo "    $1 ITEM#[, ITEM#, ...] [TERM...]"
-    echo "      This custom action does $1."
-    echo ""
-    exit
-}
-echo "custom action $1"
-EOF
-chmod +x ".todo.actions.d/$1"
-}
 
 make_action "foo"
 make_action "bar"

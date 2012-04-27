@@ -4,18 +4,8 @@ test_description='listaddons functionality
 
 This test checks listing of custom actions.
 '
+. ./actions-test-lib.sh
 . ./test-lib.sh
-
-unset TODO_ACTIONS_DIR
-mkdir .todo.actions.d
-make_action()
-{
-	cat > ".todo.actions.d/$1" <<- EOF
-	#!/bin/bash
-	echo "custom action $1"
-EOF
-chmod +x ".todo.actions.d/$1"
-}
 
 test_todo_session 'no custom actions' <<EOF
 >>> todo.sh listaddons

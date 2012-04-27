@@ -5,9 +5,8 @@ test_description='help functionality
 
 This test covers the help output.
 '
+. ./actions-test-lib.sh
 . ./test-lib.sh
-
-unset TODO_ACTIONS_DIR
 
 # Note: To avoid having to adapt the test whenever the help documentation
 # slightly changes, only check for the section headers.
@@ -32,16 +31,6 @@ test_todo_session 'very verbose help output' <<EOF
   Environment variables:
   Built-in Actions:
 EOF
-
-mkdir .todo.actions.d
-make_action()
-{
-	cat > ".todo.actions.d/$1" <<- EOF
-	#!/bin/bash
-	echo "custom action $1"
-EOF
-chmod +x ".todo.actions.d/$1"
-}
 
 make_action "foo"
 test_todo_session 'help output with custom action' <<EOF
