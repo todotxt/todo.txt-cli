@@ -28,6 +28,8 @@ _todo()
         case "$prev" in
             command)
                 completions=$COMMANDS;;
+            help)
+                completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons)";;
             addto|listfile|lf)
                 completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listfile);;
             -*) completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons) $OPTS";;
