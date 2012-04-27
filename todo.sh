@@ -302,6 +302,23 @@ addonHelp()
     fi
 }
 
+addonUsage()
+{
+    if [ -d "$TODO_ACTIONS_DIR" ]; then
+        for actionName
+        do
+            action="${TODO_ACTIONS_DIR}/${actionName}"
+            if [ -f "$action" -a -x "$action" ]; then
+                "$action" usage
+            else
+                die "TODO: No add-on action \"${actionName}\" exists."
+            fi
+        done
+    else
+        die "TODO: No actions directory exists."
+    fi
+}
+
 die()
 {
     echo "$*"
@@ -1075,13 +1092,19 @@ case $action in
     ;;
 
 "help" )
-    if [ -t 1 ] ; then # STDOUT is a TTY
-        if which "${PAGER:-less}" >/dev/null 2>&1; then
-            # we have a working PAGER (or less as a default)
-            help | "${PAGER:-less}" && exit 0
+    shift  ## Was help; new $1 is first help topic / action name
+    if [ $# -gt 0 ]; then
+        # Don't use PAGER here; we don't expect much usage output from one / few actions.
+        addonUsage "$@"
+    else
+        if [ -t 1 ] ; then # STDOUT is a TTY
+            if which "${PAGER:-less}" >/dev/null 2>&1; then
+                # we have a working PAGER (or less as a default)
+                help | "${PAGER:-less}" && exit 0
+            fi
         fi
+        help # just in case something failed above, we go ahead and just spew to STDOUT
     fi
-    help # just in case something failed above, we go ahead and just spew to STDOUT
     ;;
 
 "shorthelp" )
