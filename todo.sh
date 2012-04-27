@@ -156,7 +156,6 @@ help()
 	EndVerboseHelp
         actionsHelp
         addonHelp
-    exit 1
 }
 
 actionsHelp()
