@@ -1,6 +1,6 @@
 #!/bin/bash
 
-test_description='actions help functionality
+test_description='custom actions help functionality
 
 This test checks listing the usage help of a custom action.
 '
@@ -9,12 +9,13 @@ This test checks listing the usage help of a custom action.
 
 test_todo_session 'custom action help with no custom action directory' <<'EOF'
 >>> todo.sh help foo
-TODO: No actions directory exists.
+TODO: No action "foo" exists.
 === 1
 EOF
 
 make_action "foo"
 make_action "bar"
+make_action "ls"
 make_action "quux"
 
 test_todo_session 'custom action help' <<'EOF'
@@ -41,15 +42,35 @@ EOF
 
 test_todo_session 'nonexisting action help' <<'EOF'
 >>> todo.sh help doesnotexist
-TODO: No add-on action "doesnotexist" exists.
+TODO: No action "doesnotexist" exists.
 === 1
 
 >>> todo.sh help foo doesnotexist bar
     foo ITEM#[, ITEM#, ...] [TERM...]
       This custom action does foo.
 \
-TODO: No add-on action "doesnotexist" exists.
+TODO: No action "doesnotexist" exists.
 === 1
+EOF
+
+test_todo_session 'mixed built-in and custom actions help' <<'EOF'
+>>> todo.sh help foo shorthelp bar
+    foo ITEM#[, ITEM#, ...] [TERM...]
+      This custom action does foo.
+\
+    shorthelp
+      List the one-line usage of all built-in and add-on actions.
+\
+    bar ITEM#[, ITEM#, ...] [TERM...]
+      This custom action does bar.
+\
+EOF
+
+test_todo_session 'custom override of built-in action help' <<'EOF'
+>>> todo.sh help ls
+    ls ITEM#[, ITEM#, ...] [TERM...]
+      This custom action does ls.
+\
 EOF
 
 test_done

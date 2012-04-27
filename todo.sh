@@ -54,7 +54,7 @@ shorthelp()
 		    del|rm ITEM# [TERM]
 		    depri|dp ITEM#[, ITEM#, ITEM#, ...]
 		    do ITEM#[, ITEM#, ITEM#, ...]
-		    help
+		    help [ACTION...]
 		    list|ls [TERM...]
 		    listall|lsa [TERM...]
 		    listaddons
@@ -154,6 +154,13 @@ help()
 
 
 	EndVerboseHelp
+        actionsHelp
+        addonHelp
+    exit 1
+}
+
+actionsHelp()
+{
     cat <<-EndActionsHelp
 		  Built-in Actions:
 		    add "THING I NEED TO DO +project @context"
@@ -200,8 +207,9 @@ help()
 		    do ITEM#[, ITEM#, ITEM#, ...]
 		      Marks task(s) on line ITEM# as done in todo.txt.
 
-		    help
-		      Display this help message.
+		    help [ACTION...]
+		      Display help about usage, options, built-in and add-on actions,
+		      or just the usage help for the passed ACTION(s).
 
 		    list [TERM...]
 		    ls [TERM...]
@@ -278,9 +286,6 @@ help()
 		      List the one-line usage of all built-in and add-on actions.
 
 	EndActionsHelp
-
-        addonHelp
-    exit 1
 }
 
 addonHelp()
@@ -302,21 +307,23 @@ addonHelp()
     fi
 }
 
-addonUsage()
+actionUsage()
 {
-    if [ -d "$TODO_ACTIONS_DIR" ]; then
-        for actionName
-        do
-            action="${TODO_ACTIONS_DIR}/${actionName}"
-            if [ -f "$action" -a -x "$action" ]; then
-                "$action" usage
+    for actionName
+    do
+        action="${TODO_ACTIONS_DIR}/${actionName}"
+        if [ -f "$action" -a -x "$action" ]; then
+            "$action" usage
+        else
+            builtinActionUsage=$(actionsHelp | sed -ne "/^    ${actionName//\//\\/}\\( \\|\$\\)/,/^\$/p")
+            if [ "$builtinActionUsage" ]; then
+                echo "$builtinActionUsage"
+                echo
             else
-                die "TODO: No add-on action \"${actionName}\" exists."
+                die "TODO: No action \"${actionName}\" exists."
             fi
-        done
-    else
-        die "TODO: No actions directory exists."
-    fi
+        fi
+    done
 }
 
 die()
@@ -1095,7 +1102,7 @@ case $action in
     shift  ## Was help; new $1 is first help topic / action name
     if [ $# -gt 0 ]; then
         # Don't use PAGER here; we don't expect much usage output from one / few actions.
-        addonUsage "$@"
+        actionUsage "$@"
     else
         if [ -t 1 ] ; then # STDOUT is a TTY
             if which "${PAGER:-less}" >/dev/null 2>&1; then
