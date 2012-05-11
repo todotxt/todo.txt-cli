@@ -9,8 +9,15 @@ On failure, it will print each offending line number and line.
 '
 . ./test-lib.sh
 
+backtick_check()
+{
+    sed -n -e 's/\(^\|[ \t]\)#.*//' -e '/`/{' -e '=;p' -e '}' "$@"
+}
+
 test_todo_session 'no old-style backtick command substitution' <<EOF
->>> sed -n -e 's/\(^\|[ \t]\)#.*//' -e '/\`/{' -e '=;p' -e '}' "$(which todo.sh)"
+>>> backtick_check bin/todo.sh
+
+>>> backtick_check ../../todo.cfg
 EOF
 
 test_done
