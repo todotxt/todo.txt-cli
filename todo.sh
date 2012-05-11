@@ -314,7 +314,7 @@ actionUsage()
         if [ -f "$action" -a -x "$action" ]; then
             "$action" usage
         else
-            builtinActionUsage=$(actionsHelp | sed -ne "/^    ${actionName//\//\\/}\\( \\|\$\\)/,/^\$/p")
+            builtinActionUsage=$(actionsHelp | sed -n -e "/^    ${actionName//\//\\/} /,/^\$/p" -e "/^    ${actionName//\//\\/}$/,/^\$/p")
             if [ "$builtinActionUsage" ]; then
                 echo "$builtinActionUsage"
                 echo
