@@ -56,6 +56,16 @@ test_todo_session 'listcon e-mail address test' <<EOF
 EOF
 
 cat > todo.txt <<EOF
+(B) smell the uppercase Roses +roses @outside +shared
+(C) notice the sunflowers +sunflowers @garden +shared +landscape
+stop
+EOF
+test_todo_session 'listcon with project' <<EOF
+>>> todo.sh listcon +landscape
+@garden
+EOF
+
+cat > todo.txt <<EOF
 @con01 -- Some context 1 task
 EOF
 cat > done.txt <<EOF

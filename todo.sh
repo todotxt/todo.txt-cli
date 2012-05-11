@@ -58,7 +58,7 @@ shorthelp()
 		    list|ls [TERM...]
 		    listall|lsa [TERM...]
 		    listaddons
-		    listcon|lsc
+		    listcon|lsc [TERM...]
 		    listfile|lf [SRC [TERM...]]
 		    listpri|lsp [PRIORITIES] [TERM...]
 		    listproj|lsprj [TERM...]
@@ -223,9 +223,10 @@ help()
 		    listaddons
 		      Lists all added and overridden actions in the actions directory.
 
-		    listcon
-		    lsc
+		    listcon [TERM...]
+		    lsc [TERM...]
 		      Lists all the task contexts that start with the @ sign in todo.txt.
+		      If TERM specified, considers only tasks that contain TERM(s).
 
 		    listfile [SRC [TERM...]]
 		    lf [SRC [TERM...]]
@@ -245,10 +246,11 @@ help()
 		      Hides all tasks that contain TERM(s) preceded by a minus sign
 		      (i.e. -TERM).  
 
-		    listproj
-		    lsprj
+		    listproj [TERM...]
+		    lsprj [TERM...]
 		      Lists all the projects (terms that start with a + sign) in
 		      todo.txt.
+		      If TERM specified, considers only tasks that contain TERM(s).
 
 		    move ITEM# DEST [SRC]
 		    mv ITEM# DEST [SRC]
@@ -859,7 +861,17 @@ _format()
     fi
 }
 
-export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list getPadding _format die
+listWordsWithSigil()
+{
+    sigil=$1
+    shift
+
+    FILE=$TODO_FILE
+    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
+    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" | grep -o "[^ ]*${sigil}[^ ]\\+" | grep "^$sigil" | sort -u
+}
+
+export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list listWordsWithSigil getPadding _format die
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
@@ -1134,16 +1146,13 @@ case $action in
     ;;
 
 "listcon" | "lsc" )
-    FILE=$TODO_FILE
-    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
-    grep -ho '[^ ]*@[^ ]\+' "${FILE[@]}" | grep '^@' | sort -u
+    shift
+    listWordsWithSigil '@' "$@"
     ;;
 
 "listproj" | "lsprj" )
-    FILE=$TODO_FILE
-    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
     shift
-    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" | grep -o '[^ ]*+[^ ]\+' | grep '^+' | sort -u
+    listWordsWithSigil '+' "$@"
     ;;
 
 "listpri" | "lsp" )
