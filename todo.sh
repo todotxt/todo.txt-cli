@@ -81,7 +81,6 @@ shorthelp()
 
 		  See "help" for more details.
 	EndHelpFooter
-    exit 0
 }
 
 help()
@@ -327,6 +326,16 @@ actionUsage()
     done
 }
 
+dieWithHelp()
+{
+    case "$1" in
+        help)       help;;
+        shorthelp)  shorthelp;;
+    esac
+    shift
+
+    die "$@"
+}
 die()
 {
     echo "$*"
@@ -514,6 +523,7 @@ do
         # Cannot just invoke shorthelp() because we need the configuration
         # processed to locate the add-on actions directory.
         set -- '-h' 'shorthelp'
+        OPTIND=2
         ;;
     n )
         OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
@@ -654,7 +664,7 @@ fi
 }
 
 # === SANITY CHECKS (thanks Karl!) ===
-[ -r "$TODOTXT_CFG_FILE" ] || die "Fatal Error: Cannot read configuration file $TODOTXT_CFG_FILE"
+[ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file $TODOTXT_CFG_FILE"
 
 . "$TODOTXT_CFG_FILE"
 
@@ -693,8 +703,8 @@ fi
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
 [ -z "$ACTION" ]    && usage
-[ -d "$TODO_DIR" ]  || die "Fatal Error: $TODO_DIR is not a directory"
-( cd "$TODO_DIR" )  || die "Fatal Error: Unable to cd to $TODO_DIR"
+[ -d "$TODO_DIR" ]  || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
+( cd "$TODO_DIR" )  || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
 
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"
 [ -f "$DONE_FILE" ] || cp /dev/null "$DONE_FILE"
