@@ -514,6 +514,7 @@ do
         # Cannot just invoke shorthelp() because we need the configuration
         # processed to locate the add-on actions directory.
         set -- '-h' 'shorthelp'
+        OPTIND=2
         ;;
     n )
         OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
