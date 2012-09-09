@@ -1,10 +1,12 @@
 CONFIGURATION:
+  -Install the Google api client library (https://developers.google.com/api-client-library/python/start/installation)
   -Create a project in the Google APIs Console (http://code.google.com/apis/console).
   -Click "Services" and switch Tasks API to "On." 
   -Click "API Access" then "Create an OAuth 2.0 client ID."
   -Fill in the settings for your new Client ID and set "Application Type" 
     to "Installed Application"then click "Next." 
   -Enter the Google-provided Client ID and Client Secret in the variables above.	
+  
 
 NOTES:
   Note that for simplicity, the 'archive' command is executed prior to the sync.
