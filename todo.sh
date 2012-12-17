@@ -900,6 +900,9 @@ case $action in
 
     if [ -f "$dest" ]; then
         _addto "$dest" "$input"
+    elif [ -f "$dest.txt" ]; then
+        # missing file extension
+        _addto "$dest.txt" "$input"
     else
         die "TODO: Destination file $dest does not exist."
     fi
