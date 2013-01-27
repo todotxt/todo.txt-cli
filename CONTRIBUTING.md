@@ -1,3 +1,5 @@
+# DO NOT ENTER AN ISSUE UNTIL IT'S BEEN VERIFIED
+
 Please do not enter feature requests or bug reports here until you have joined the mailing list and submitted it there for verification and discussion first.
 
 http://tech.groups.yahoo.com/group/todotxt/
