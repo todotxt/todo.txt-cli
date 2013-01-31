@@ -8,7 +8,7 @@
 VERSION-FILE: .FORCE-VERSION-FILE
 	@./GEN-VERSION-FILE
 -include VERSION-FILE
-
+VERSION=2.9.39
 # Maybe this will include the version in it.
 todo.sh: VERSION-FILE
 

@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash 
 
 # === HEAVY LIFTING ===
 shopt -s extglob extquote
@@ -6,7 +6,7 @@ shopt -s extglob extquote
 # NOTE:  Todo.sh requires the .todo/config configuration file to run.
 # Place the .todo/config file in your home directory or use the -d option for a custom location.
 
-[ -f VERSION-FILE ] && . VERSION-FILE || VERSION="@DEV_VERSION@"
+[ -f VERSION-FILE ] && . VERSION-FILE || VERSION="2.9.39"
 version() {
     cat <<-EndVersion
 		TODO.TXT Command Line Interface v$VERSION
@@ -368,7 +368,7 @@ getPrefix()
     # Parameters:    $1: todo file; empty means $TODO_FILE.
     # Returns:       Uppercase FILE prefix to be used in place of "TODO:" where
     #                a different todo file can be specified.
-    local base=$(basename "${1:-$TODO_FILE}")
+    local base=$(basename "${USER:-$TODO_FILE}")
     echo "${base%%.[^.]*}" | tr 'a-z' 'A-Z'
 }
 
@@ -703,7 +703,7 @@ fi
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
 [ -z "$ACTION" ]    && usage
-[ -d "$TODO_DIR" ]  || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
+[ -d "$TODO_DIR" ]  || (read -p "No todo dir, create it $TODO_DIR (y/n):" createdir; if [ "$createdir" = "y" ]; then mkdir -p $TODO_DIR; else dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"; fi)
 ( cd "$TODO_DIR" )  || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
 
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"
