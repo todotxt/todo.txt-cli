@@ -639,7 +639,7 @@ export SENTENCE_DELIMITERS=',.:;'
 }
 
 [ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT=$(dirname "$0")"/todo.cfg"
+    CFG_FILE_ALT=$(dirname $(readlink "$0"))"/todo.cfg"
 
     if [ -e "$CFG_FILE_ALT" ]
     then
