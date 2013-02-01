@@ -702,8 +702,8 @@ fi
 
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
-[ -z "$ACTION" ]    && usage
-[ -d "$TODO_DIR" ]  || (read -p "No todo dir, create it $TODO_DIR (y/n):" createdir; if [ "$createdir" = "y" ]; then mkdir -p $TODO_DIR; else dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"; fi)
+[ -z "$ACTION" ] && usage
+[ -d "$TODO_DIR" ] || mkdir -p $TODO_DIR
 ( cd "$TODO_DIR" )  || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
 
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"

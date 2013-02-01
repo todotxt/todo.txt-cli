@@ -13,7 +13,7 @@ VERSION=2.9.39
 todo.sh: VERSION-FILE
 
 # For packaging
-DISTFILES := todo.cfg todo_completion
+DISTFILES := todo.cfg todo_completion todocompletion.sh
 
 DISTNAME=todo.txt_cli-$(VERSION)
 dist: $(DISTFILES) todo.sh

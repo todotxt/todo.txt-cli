@@ -31,6 +31,8 @@ install -m 755 %{name}_cli-%{version}/todo.sh %{buildroot}/opt/todo.txt
 install -m 744 %{name}_cli-%{version}/todo.cfg %{buildroot}/opt/todo.txt
 mkdir -p %{buildroot}/etc/bash_completion.d
 install -m 644 %{name}_cli-%{version}/todo_completion %{buildroot}/etc/bash_completion.d/todo
+mkdir -p %{buildroot}/etc/profile.d/
+install -m 644 %{name}_cli-%{version}/todocompletion.sh %{buildroot}/etc/profile.d/
 
 %clean
 rm -rf %{buildroot}
@@ -49,5 +51,7 @@ rmdir /opt/todo.txt
 %doc
 /opt/todo.txt/*
 /etc/bash_completion.d/*
+/etc/profile.d/*
+
 %changelog
 
