@@ -1,11 +1,12 @@
 Name: todo.txt	
-Version: 2.9	
+Version: 2.9.39	
 Release: 39
 Summary: The todo.txt CLI.	
+Group: todo.txt
 
 License: GPLv3 (http://www.gnu.org/copyleft/gpl.html)	
 URL: http://todotxt.com/ 		
-Source0: todo.txt_cli-%{version}.%{release}.tar.gz	
+Source0: todo.txt_cli-2.9.39.tar.gz	
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 Requires: sed >= 4.1.4, grep >= 2.5.1
@@ -17,7 +18,8 @@ If you’ve got a file called todo.txt on your computer right now, you’re in t
 Problem is, you don’t want to launch a full-blown text editor every time you need to add an item to your to-do list, or mark one that’s already there as complete. With a simple but powerful shell script called todo.sh, you can interact with todo.txt at the command line for quick and easy, Unix-y access.
 
 %prep
-%setup -q -c
+%setup -q -c -a 0
+
 
 
 %build
@@ -25,10 +27,10 @@ Problem is, you don’t want to launch a full-blown text editor every time you n
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/todo.txt
-install -m 755 %{name}_cli-%{version}.%{release}/todo.sh %{buildroot}/opt/todo.txt
-install -m 744 %{name}_cli-%{version}.%{release}/todo.cfg %{buildroot}/opt/todo.txt
+install -m 755 %{name}_cli-%{version}/todo.sh %{buildroot}/opt/todo.txt
+install -m 744 %{name}_cli-%{version}/todo.cfg %{buildroot}/opt/todo.txt
 mkdir -p %{buildroot}/etc/bash_completion.d
-install -m 644 %{name}_cli-%{version}.%{release}/todo_completion %{buildroot}/etc/bash_completion.d/todo
+install -m 644 %{name}_cli-%{version}/todo_completion %{buildroot}/etc/bash_completion.d/todo
 
 %clean
 rm -rf %{buildroot}
