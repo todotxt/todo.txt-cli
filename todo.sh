@@ -6,7 +6,7 @@ shopt -s extglob extquote
 # NOTE:  Todo.sh requires the .todo/config configuration file to run.
 # Place the .todo/config file in your home directory or use the -d option for a custom location.
 
-[ -f VERSION-FILE ] && . VERSION-FILE || VERSION="2.9.39"
+[ -f VERSION-FILE ] && . VERSION-FILE || VERSION="@DEV_VERSION@"
 version() {
     cat <<-EndVersion
 		TODO.TXT Command Line Interface v$VERSION
@@ -368,7 +368,7 @@ getPrefix()
     # Parameters:    $1: todo file; empty means $TODO_FILE.
     # Returns:       Uppercase FILE prefix to be used in place of "TODO:" where
     #                a different todo file can be specified.
-    local base=$(basename "${USER:-$TODO_FILE}")
+    local base=$(basename "${1:-$TODO_FILE}")
     echo "${base%%.[^.]*}" | tr 'a-z' 'A-Z'
 }
 

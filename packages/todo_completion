@@ -16,7 +16,7 @@ _todo()
         mv prepend prep pri p replace report shorthelp"
     local -r MOVE_COMMAND_PATTERN='^(move|mv)$'
 
-    local _todo_sh=${_todo_sh:-@DIST_MODE@}
+    local _todo_sh=${_todo_sh:-todo}
     local completions
     if [ $COMP_CWORD -eq 1 ]; then
         completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons) $OPTS"
@@ -83,7 +83,7 @@ _todo()
     COMPREPLY=( $( compgen -W "$completions" -- $cur ))
     return 0
 }
-complete -F _todo @DIST_MODE@
+complete -F _todo todo
 
 # If you define an alias (e.g. "t") to todo.sh, you need to explicitly enable
 # completion for it, too:
