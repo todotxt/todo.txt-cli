@@ -114,4 +114,9 @@ test_todo_session 'listproj from combined open + done tasks' <<'EOF'
 +prj01
 EOF
 
+test_todo_session 'listproj with GREP_OPTIONS disruption' <<'EOF'
+>>> GREP_OPTIONS=-n todo.sh listproj
++prj01
+EOF
+
 test_done
