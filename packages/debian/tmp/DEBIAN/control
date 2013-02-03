@@ -1,0 +1,9 @@
+Package: todo.txt
+Version: 2.9
+Architecture: all
+Maintainer: im clem <imclem@github>
+Installed-Size: 96
+Depends: sed (>= 4.1.4), grep (>= 2.5.1)
+Section: misc
+Priority: optional
+Description: TODO.TXT Command Line Interface

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ln -s /opt/todo.txt/todo.sh /usr/bin/todo
