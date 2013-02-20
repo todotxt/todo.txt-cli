@@ -647,6 +647,15 @@ export SENTENCE_DELIMITERS=',.:;'
     fi
 }
 
+[ -e "$TODOTXT_CFG_FILE" ] || {
+    CFG_FILE_ALT=/etc/todo/config
+
+    if [ -e "$CFG_FILE_ALT" ]
+    then
+        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
+    fi
+}
+
 
 if [ -z "$TODO_ACTIONS_DIR" -o ! -d "$TODO_ACTIONS_DIR" ]
 then
@@ -703,7 +712,7 @@ fi
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
 [ -z "$ACTION" ]    && usage
-[ -d "$TODO_DIR" ]  || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
+[ -d "$TODO_DIR" ]  || mkdir -p $TODO_DIR 2> /dev/null || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
 ( cd "$TODO_DIR" )  || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
 
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"

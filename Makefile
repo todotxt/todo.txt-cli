@@ -1,6 +1,7 @@
 #
 # Makefile for todo.txt
 #
+INSTALL_DIR=/usr/local/bin
 
 # Dynamically detect/generate version file as necessary
 # This file will define a variable called VERSION.
@@ -29,6 +30,12 @@ dist: $(DISTFILES) todo.sh
 clean:
 	rm -f $(DISTNAME).tar.gz $(DISTNAME).zip
 
+install:
+	install --mode=755 todo.sh $(INSTALL_DIR)
+	install --mode=644 todo_completion /etc/bash_completion.d/todo
+	mkdir -p /etc/todo
+	[ -e /etc/todo/config ] || \
+		sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > /etc/todo/config
 
 #
 # Testing
