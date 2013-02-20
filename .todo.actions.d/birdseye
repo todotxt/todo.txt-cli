@@ -1,0 +1,16 @@
+#!/bin/bash
+
+action=$1
+shift
+
+[ "$action" = "usage" ] && {
+  echo "  Bird's eye report:"
+  echo "    birdseye"
+  echo "      generates a textual report of pending and completed tasks in all projects and contexts"
+  echo ""
+  exit
+}
+
+[ "$action" = "birdseye" ] && {
+     python ${TODO_ACTIONS_DIR}/birdseye.py "$TODO_FILE" "$DONE_FILE"
+}

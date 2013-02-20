@@ -1,0 +1,10 @@
+TODO.TXT CLI Add-ons
+
+adda (symlink to aa for fewer keystrokes)
+* Adds a task and prioritizes it A in one shot
+
+addx (symlink ax for fewer keystrokes)
+* Adds a task and marks it as complete in one shot
+
+birdseye (requires Python in path and birdseye.py file)
+* Generates a textual report of open and complete tasks in all contexts and projects
