@@ -125,10 +125,10 @@ Writing Tests
 -------------
 
 The test script is written as a shell script.  It should start
-with the standard "#!/bin/sh" with copyright notices, and an
+with the standard "#!/bin/bash" with copyright notices, and an
 assignment to variable 'test_description', like this:
 
-	#!/bin/sh
+	#!/bin/bash
 	#
 	# Copyright (c) 2005 Junio C Hamano
 	#
@@ -186,6 +186,24 @@ library for your script to use.
    expected output.  (See below for how to generate transcripts
    easily.)
 
+ - test_todo_completion <message> <cmdline> <completions>
+
+   This takes three strings as parameter.  Based on <cmdline>,
+   the todo_completion script is triggered in the current test
+   environment and completions are compared with <completions>,
+   which should be a space-separated list.  If any completion
+   contains whitespace, quote it; the entire <completions>
+   argument is eval()'ed.
+   Include a trailing space in <cmdline> when you want to check
+   new argument completion; otherwise, completion is triggered
+   with the context of the last argument. <message> should state
+   what it is testing.
+
+ - test_todo_custom_completion <completefunc> <message> <cmdline> <completions>
+
+   Same as above, but in addition allows to specify a custom
+   completion function.
+
  - test_tick [interval]
 
    The test harness has an internal view of time which is
@@ -204,6 +222,13 @@ library for your script to use.
 	test_expect_success \
 	    'git-write-tree should be able to write an empty tree.' \
 	    'tree=$(git-write-tree)'
+
+ - test_expect_code <code> <message> <script>
+
+   This takes an exit status and two strings as parameter, and
+   evaluates the <script>.  If it yields <code>, test is
+   considered successful.  <message> should state what it is
+   testing.
 
  - test_expect_failure <message> <script>
 

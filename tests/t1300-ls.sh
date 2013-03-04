@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 
 test_description='list functionality
@@ -49,6 +49,18 @@ test_todo_session 'checking TODOTXT_FINAL_FILTER' <<EOF
 2 aaa zzz this line s...
 3 bbb yyy this line s...
 1 ccc xxx this line s...
+--
+TODO: 3 of 3 tasks shown
+EOF
+
+#
+# check the custom hiding
+#
+test_todo_session 'checking HIDE_CUSTOM_SUBSTITUTION' <<EOF
+>>> HIDE_CUSTOM_SUBSTITUTION='[tT]h' todo.sh ls
+2 aaa zzz is line should be first.
+3 bbb yyy is line should be second.
+1 ccc xxx is line should be ird.
 --
 TODO: 3 of 3 tasks shown
 EOF

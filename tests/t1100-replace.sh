@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 test_description='basic replace functionality
 
@@ -162,6 +162,14 @@ test_todo_session 'replace with prepended date replaces existing date' <<EOF
 1 (A) 2009-02-13 this is just a new one
 TODO: Replaced task with:
 1 (A) 2010-07-04 this also has a new date
+EOF
+
+echo '2009-02-13 this is just a new one' > todo.txt
+test_todo_session 'replace with prepended priority and date replaces existing date' <<EOF
+>>> todo.sh replace 1 '(B) 2010-07-04 this also has a new date'
+1 2009-02-13 this is just a new one
+TODO: Replaced task with:
+1 (B) 2010-07-04 this also has a new date
 EOF
 
 test_done

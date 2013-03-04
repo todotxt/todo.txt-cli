@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 test_description='todo.sh basic null functionality test.
 
@@ -45,6 +45,8 @@ test_expect_success 'null listpri a' '
 cat > expect <<EOF
 --
 TODO: 0 of 0 tasks shown
+DONE: 0 of 0 tasks shown
+total 0 of 0 tasks shown
 EOF
 
 test_expect_success 'null lsa' '

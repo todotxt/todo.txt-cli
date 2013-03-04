@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright (c) 2005 Junio C Hamano
 #
@@ -180,7 +180,7 @@ test_failure_ () {
 	test_failure=$(($test_failure + 1))
 	say_color error "FAIL $test_count: $1"
 	shift
-	echo "$@" | sed -e 's/^/	/'
+	echo "$@"
 	test "$immediate" = "" || { trap - EXIT; exit 1; }
 }
 
@@ -199,8 +199,9 @@ test_debug () {
 }
 
 test_run_ () {
-	eval >&3 2>&4 "$1"
+	eval > output 2>&1 "$1"
 	eval_ret="$?"
+	cat >&3 output
 	return 0
 }
 
@@ -260,6 +261,43 @@ test_expect_success () {
 	echo >&3 ""
 }
 
+test_expect_output () {
+	test "$#" = 2 ||
+	error "bug in the test script: not 2 parameters to test-expect-output"
+	test_expect_code_and_output 0 "$@"
+}
+
+test_expect_code_and_output () {
+	test "$#" = 3 ||
+	error "bug in the test script: not 3 parameters to test-expect-code-and-output"
+	if ! test_skip "$@"
+	then
+		if [ "$1" = 0 ]; then
+			say >&3 "expecting success and output: $3"
+		else
+			say >&3 "expecting exit code $1 and output: $3"
+		fi
+		test_run_ "$3"
+		if [ "$?" = 0 -a "$eval_ret" = "$1" ]
+		then
+			cmp_output=$(test_cmp expect output)
+			if [ "$?" = 0 ]
+			then
+				test_ok_ "$2"
+			else
+				test_failure_ "$2" "$3" "
+$cmp_output"
+			fi
+		else
+			cmp_output=$(test_cmp expect output)
+			test_failure_ "$2" "$3" "
+expected exit code $1, actual ${eval_ret}${cmp_output:+
+}${cmp_output}"
+		fi
+	fi
+	echo >&3 ""
+}
+
 test_expect_code () {
 	test "$#" = 3 ||
 	error "bug in the test script: not 3 parameters to test-expect-code"
@@ -271,7 +309,8 @@ test_expect_code () {
 		then
 			test_ok_ "$2"
 		else
-			test_failure_ "$@"
+			test_failure_ "$2" "$3" "
+expected exit code $1, actual ${eval_ret}"
 		fi
 	fi
 	echo >&3 ""
@@ -513,14 +552,16 @@ test_tick () {
 }
 
 # Generate and run a series of tests based on a transcript.
-# Usage: test_todo_session "description" <<EOF
+# Usage: test_todo_session "description" <<'EOF'
 # >>> command
 # output1
 # output2
+#
 # >>> command
 # === exit status
-# output3
-# output4
+# output3 with empty line (must be escaped here)
+# \
+# output5
 # EOF
 test_todo_session () {
     test "$#" = 1 ||
@@ -529,7 +570,7 @@ test_todo_session () {
     cmd=""
     status=0
     > expect
-    while read -r line
+    while IFS= read -r line
     do
 	case $line in
 	">>> "*)
@@ -542,9 +583,9 @@ test_todo_session () {
 	"")
 	    if [ ! -z "$cmd" ]; then
 		if [ $status = 0 ]; then
-		    test_expect_success "$1 $subnum" "$cmd > output && test_cmp expect output"
+		    test_expect_output "$1 $subnum" "$cmd"
 		else
-		    test_expect_success "$1 $subnum" "$cmd > output ; test \$? = $status && test_cmp expect output"
+		    test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
 		fi
 
 		subnum=$(($subnum + 1))
@@ -553,6 +594,9 @@ test_todo_session () {
 		> expect
 	    fi
 	    ;;
+	\\)
+	    echo "" >> expect
+	    ;;
 	*)
 	    echo "$line" >> expect
 	    ;;
@@ -560,9 +604,9 @@ test_todo_session () {
     done
     if [ ! -z "$cmd" ]; then
 	if [ $status = 0 ]; then
-	    test_expect_success "$1 $subnum" "$cmd > output && test_cmp expect output"
+	    test_expect_output "$1 $subnum" "$cmd"
 	else
-	    test_expect_success "$1 $subnum" "$cmd > output ; test \$? = $status && test_cmp expect output"
+	    test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
 	fi
     fi
 }
@@ -577,6 +621,66 @@ $HOME/todo.txt => \$HOME/todo.txt
 EOF
 	bash --noprofile --norc
 	exit 0
+}
+
+test_todo_custom_completion () {
+	test "$#" = 4 ||
+	error "bug in the test script: not 4 parameters to test_todo_custom_completion"
+	completeFunc=$1
+	shift
+	if ! test_skip "$@"
+	then
+		description=$1
+		expected=$3
+
+		if [ "${2: -1}" = ' ' ]
+		then
+			offset=0
+			say >&3 "expecting completions after: '$2'"
+		else
+			offset=1
+			say >&3 "expecting context completions for: '$2'"
+		fi
+
+		SAVEIFS=$IFS
+		IFS=' ' set -- $2
+		COMP_WORDS=("$@")
+		COMP_CWORD=$(($# - $offset))
+		IFS=' ' eval "set -- $expected"
+		EXPECT=("$@")
+
+		source "$TEST_DIRECTORY/../todo_completion"
+		$completeFunc
+		ret=$?
+		if [ "$ret" = 0 ]
+		then
+			IFS=$'\n'
+			printf "%s${EXPECT:+\\n}" "${EXPECT[*]}" > expect
+			printf "%s${COMPREPLY:+\\n}" "${COMPREPLY[*]}" > compreply
+			IFS=$SAVEIFS
+
+			if [ ${#COMPREPLY[@]} -eq ${#EXPECT[@]} ]
+			then
+				if [ "${COMPREPLY[*]}" = "${EXPECT[*]}" ]
+				then
+					test_ok_ "$description"
+				else
+					test_failure_ "$description" "$(test_cmp expect compreply)"
+				fi
+			else
+				test_failure_ "$description" "expected ${#EXPECT[@]} completion(s), got ${#COMPREPLY[@]}:
+$(test_cmp expect compreply)"
+			fi
+		else
+			test_failure_ "$description" "expected completions, actual exit code $ret"
+		fi
+	fi
+	echo >&3 ""
+}
+test_todo_completion () {
+	test "$#" = 3 ||
+	error "bug in the test script: not 3 parameters to test_todo_completion"
+	test_todo_custom_completion _todo "$@"
 }
 
 test_init_todo "$test"

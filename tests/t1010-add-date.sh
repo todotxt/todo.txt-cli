@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 test_description='test the date on add feature
 

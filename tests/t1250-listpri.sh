@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 test_description='list priority functionality
 '
@@ -59,6 +59,42 @@ TODO: 0 of 5 tasks shown
 >>> todo.sh -p listpri n
 --
 TODO: 0 of 5 tasks shown
+EOF
+
+cat > todo.txt <<EOF
+(B) smell the uppercase Roses +flowers @outside
+(X) clean the house from A-Z
+(C) notice the sunflowers
+(X) listen to music
+buy more records from artists A-Z
+EOF
+test_todo_session 'listpri filtering priority ranges' <<EOF
+>>> todo.sh -p listpri a-c
+1 (B) smell the uppercase Roses +flowers @outside
+3 (C) notice the sunflowers
+--
+TODO: 2 of 5 tasks shown
+
+>>> todo.sh -p listpri c-Z
+3 (C) notice the sunflowers
+2 (X) clean the house from A-Z
+4 (X) listen to music
+--
+TODO: 3 of 5 tasks shown
+
+>>> todo.sh -p listpri A-
+2 (X) clean the house from A-Z
+--
+TODO: 1 of 5 tasks shown
+
+>>> todo.sh -p listpri A-C A-Z
+--
+TODO: 0 of 5 tasks shown
+
+>>> todo.sh -p listpri X A-Z
+2 (X) clean the house from A-Z
+--
+TODO: 1 of 5 tasks shown
 EOF
 
 cat > todo.txt <<EOF
