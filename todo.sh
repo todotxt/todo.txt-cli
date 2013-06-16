@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash 
 
 # === HEAVY LIFTING ===
 shopt -s extglob extquote
@@ -639,7 +639,7 @@ export SENTENCE_DELIMITERS=',.:;'
 }
 
 [ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT=$(dirname "$0")"/todo.cfg"
+    CFG_FILE_ALT=$(dirname $(readlink "$0"))"/todo.cfg"
 
     if [ -e "$CFG_FILE_ALT" ]
     then
@@ -702,8 +702,8 @@ fi
 
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
-[ -z "$ACTION" ]    && usage
-[ -d "$TODO_DIR" ]  || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
+[ -z "$ACTION" ] && usage
+[ -d "$TODO_DIR" ] || mkdir -p $TODO_DIR
 ( cd "$TODO_DIR" )  || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
 
 [ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"

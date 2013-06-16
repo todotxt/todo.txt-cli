@@ -14,18 +14,30 @@ VERSION-FILE: .FORCE-VERSION-FILE
 todo.sh: VERSION-FILE
 
 # For packaging
-DISTFILES := todo.cfg todo_completion
+DISTFILES := todo.cfg 
+DISTPACKAGEFILES := todo.cfg packages/todocompletion.sh 
 
 DISTNAME=todo.txt_cli-$(VERSION)
 dist: $(DISTFILES) todo.sh
 	mkdir -p $(DISTNAME)
 	cp -f $(DISTFILES) $(DISTNAME)/
 	sed -e 's/@DEV_VERSION@/'$(VERSION)'/' todo.sh > $(DISTNAME)/todo.sh
+	sed -e 's/@DIST_MODE@/todo.sh/' todo_completion > $(DISTNAME)/todo_completion
 	tar cf $(DISTNAME).tar $(DISTNAME)/
 	gzip -f -9 $(DISTNAME).tar
 	zip -9r $(DISTNAME).zip $(DISTNAME)/
 	rm -r $(DISTNAME)
+.PHONY: clean
 
+dist-package: $(DISTPACKAGEFILES) todo.sh
+	mkdir -p $(DISTNAME)
+	cp -f $(DISTPACKAGEFILES) $(DISTNAME)/
+	sed -e 's/@DEV_VERSION@/'$(VERSION)'/' todo.sh > $(DISTNAME)/todo.sh
+	sed -e 's/@DIST_MODE@/todo/' todo_completion > $(DISTNAME)/todo_completion
+	tar cf $(DISTNAME).tar $(DISTNAME)/
+	gzip -f -9 $(DISTNAME).tar
+	zip -9r $(DISTNAME).zip $(DISTNAME)/
+	rm -r $(DISTNAME)
 .PHONY: clean
 clean:
 	rm -f $(DISTNAME).tar.gz $(DISTNAME).zip

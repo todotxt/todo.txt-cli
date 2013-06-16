@@ -1,0 +1,27 @@
+#!/usr/bin/make -f
+
+build: install
+
+binary: binary-indep
+
+install:
+	
+clean:
+	rm -rf debian/tmp
+
+binary-arch: binary-indep
+
+
+binary-indep: build
+	mkdir -p debian/tmp/opt/todo.txt
+	mkdir -p debian/tmp/etc/bash_completion.d/
+	mkdir -p debian/tmp/etc/profile.d
+	mkdir -p debian/tmp/DEBIAN
+	install -m 755 debian/post* debian/tmp/DEBIAN
+	install -m 755 todo.sh debian/tmp/opt/todo.txt
+	install -m 744 todo.cfg debian/tmp/opt/todo.txt
+	install -m 644 todo_completion debian/tmp/etc/bash_completion.d
+	install -m 644 todocompletion.sh debian/tmp/etc/profile.d/
+	dpkg-gencontrol
+	dpkg --build debian/tmp ../todo.txt_2.9_all.deb 
+

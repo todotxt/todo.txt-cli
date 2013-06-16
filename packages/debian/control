@@ -1,0 +1,12 @@
+Source:	todo.txt
+Maintainer: im clem <imclem@github>
+Section: misc
+Priority: optional
+Standards-Version: 2.9
+Build-Depends: debhelper (>= 8)
+
+Package: todo.txt
+Architecture: all
+Description: TODO.TXT Command Line Interface
+Depends: sed (>= 4.1.4), grep (>=2.5.1) 
+
