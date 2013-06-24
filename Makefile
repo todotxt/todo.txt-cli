@@ -31,9 +31,8 @@ clean:
 	rm -f $(DISTNAME).tar.gz $(DISTNAME).zip
 
 install:
-	cp todo.sh $(INSTALL_DIR)/todo
-	chmod a+x $(INSTALL_DIR)/todo
-	cp todo_completion /etc/bash_completion.d/todo
+	install --mode=755 todo.sh $(INSTALL_DIR)
+	install --mode=644 todo_completion /etc/bash_completion.d/todo
 	mkdir -p ~/.todo
 	cp -n todo.cfg ~/.todo/config 
 
