@@ -8,6 +8,10 @@ to find it somewhere else.
 '
 . ./test-lib.sh
 
+
+# Override default global config file
+export TODOTXT_GLOBAL_CFG_FILE=global.cfg
+
 # Remove the pre-created todo.cfg to test behavior in its absence
 rm -f todo.cfg
 echo "Fatal Error: Cannot read configuration file $HOME/.todo/config" > expect
@@ -53,6 +57,14 @@ test_expect_success 'config file (default location 3)' '
     todo.sh > output;
     test_cmp expect output && test -f used_config &&
         rm -f .todo.cfg
+'
+
+rm -f used_config
+test_expect_success 'config file (global config file)' '
+    cp test.cfg "$TODOTXT_GLOBAL_CFG_FILE"
+    todo.sh > output;
+    test_cmp expect output && test -f used_config &&
+        rm -f "$TODOTXT_GLOBAL_CFG_FILE"
 '
 
 rm -f used_config
