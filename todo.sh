@@ -852,7 +852,7 @@ _format()
         filtered_items=$items
     fi
     filtered_items=$(
-        echo -n "$filtered_items"                              \
+        echo "$filtered_items"                              \
         | sed '''
             s/^     /00000/;
             s/^    /0000/;
