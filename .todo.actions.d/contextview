@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# 2009-2011 Paul Mansfield
+# License: GPL, http://www.gnu.org/copyleft/gpl.html
+
+# Stop Verbose lines, thanks to Mark Harrison
+TODOTXT_VERBOSE=0
+# Allow control of wrapping if using as simplepv action
+NOWRAP=0
+
+# move arguments one to left, therefore eating action name
+action=$1
+shift
+
+# Stop filter now and run in a controlled manner after the _list function is run
+TODOTXT_DISABLE_FILTER=1 
+
+[ "$action" = "useage" ] && {
+    echo "    $(basename $0) [TERM...]"
+    echo "      Show todo items containing TERM, grouped by context, and displayed in"
+    echo "      priority order. If no TERM provided, displays entire todo.txt."
+    echo ""
+    exit
+}
+
+# Show CONTEXTS in alphabetical order and todo items in priority order
+echo "=====  Contexts  ====="
+echo ""
+
+# Find all CONTEXTS and sort
+CONTEXTS=$(grep -o '[^ ]*@[^ ]\+' "$TODO_FILE" | grep '^@' | sort -u | sed 's/^@//g' )
+
+# For each context show header and the list of todo items
+for context in $CONTEXTS ; do 
+    # Use core _list function, does numbering and colouring for us
+    CONTEXT_LIST=$(_list "$TODO_FILE" "@$context\b" "$@" | sed 's/\ *@[a-zA-Z0-9._\-]*\ */ /g')
+
+    if [[ -n "${CONTEXT_LIST}" ]]; then
+        echo  "---  $context  ---"
+        echo  "${CONTEXT_LIST}" | eval $TODOTXT_FINAL_FILTER 
+        # If run as simplepv don't add newlines
+        if [ $HOWRUN != "simplepv" ] ; then
+            echo  ""
+        fi
+    fi
+done
+
+# Show todo items not associated to a context
+CONTEXT_LIST=$(_list "$TODO_FILE" "$+" | grep -v "@[[:alnum:]]*" )
+if [[ -n "${CONTEXT_LIST}" ]]; then
+    echo "--- Not in CONTEXTS ---"
+    echo "${CONTEXT_LIST}" | eval $TODOTXT_FINAL_FILTER
+fi
