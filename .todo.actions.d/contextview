@@ -36,11 +36,8 @@ for context in $CONTEXTS ; do
 
     if [[ -n "${CONTEXT_LIST}" ]]; then
         echo  "---  $context  ---"
-        echo  "${CONTEXT_LIST}" | eval $TODOTXT_FINAL_FILTER 
-        # If run as simplepv don't add newlines
-        if [ $HOWRUN != "simplepv" ] ; then
-            echo  ""
-        fi
+        echo  "${CONTEXT_LIST}" | eval $TODOTXT_FINAL_FILTER
+        echo ""
     fi
 done
 
