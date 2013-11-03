@@ -444,9 +444,9 @@ replaceOrPrepend()
     getNewtodo "$item"
     case "$action" in
       replace)
-        echo "$item $todo"
-        echo "TODO: Replaced task with:"
-        echo "$item $newtodo"
+        echo "TODO: Replaced task #$item"
+        echo -e "\x1b[31;1m- $todo\x1b[0m"
+        echo -e "\x1b[32;1m+ $newtodo\x1b[0m"
         ;;
       prepend)
         echo "$item $newtodo"
