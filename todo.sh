@@ -615,6 +615,10 @@ export PRI_B=$GREEN         # color for B priority
 export PRI_C=$LIGHT_BLUE    # color for C priority
 export PRI_X=$WHITE         # color unless explicitly defined
 
+# Default project and context colors.
+export COLOR_PROJECT=$NONE
+export COLOR_CONTEXT=$NONE
+
 # Default highlight colors.
 export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
 
@@ -730,7 +734,12 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     PRI_X=$NONE
     DEFAULT=$NONE
     COLOR_DONE=$NONE
+    COLOR_PROJECT=$NONE
+    COLOR_CONTEXT=$NONE
 fi
+
+[[ "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
+[[ "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
 
 _addto() {
     file="$1"
@@ -878,15 +887,38 @@ _format()
                 return color
             }
             {
+                clr = ""
                 if (match($0, /^[0-9]+ x /)) {
-                    print highlight("COLOR_DONE") $0 highlight("DEFAULT")
+                    clr = highlight("COLOR_DONE")
                 } else if (match($0, /^[0-9]+ \([A-Z]\) /)) {
                     clr = highlight("PRI_" substr($0, RSTART + RLENGTH - 3, 1))
-                    print \
-                        (clr ? clr : highlight("PRI_X")) \
-                        (ENVIRON["HIDE_PRIORITY_SUBSTITUTION"] == "" ? $0 : substr($0, 1, RLENGTH - 4) substr($0, RSTART + RLENGTH)) \
-                        highlight("DEFAULT")
-                } else { print }
+                    clr = (clr ? clr : highlight("PRI_X"))
+                    if (ENVIRON["HIDE_PRIORITY_SUBSTITUTION"] != "") {
+                        $0 = substr($0, 1, RLENGTH - 4) substr($0, RSTART + RLENGTH)
+                    }
+                }
+                end_clr = (clr ? highlight("DEFAULT") : "")
+
+                prj_beg = highlight("COLOR_PROJECT")
+                prj_end = (prj_beg ? (highlight("DEFAULT") clr) : "")
+
+                ctx_beg = highlight("COLOR_CONTEXT")
+                ctx_end = (ctx_beg ? (highlight("DEFAULT") clr) : "")
+
+                gsub(/[ \t][ \t]*/, "\n&\n")
+                len = split($0, words, /\n/)
+
+                printf "%s", clr
+                for (i = 1; i <= len; ++i) {
+                    if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
+                        printf "%s", prj_beg words[i] prj_end
+                    } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
+                        printf "%s", ctx_beg words[i] ctx_end
+                    } else {
+                        printf "%s", words[i]
+                    }
+                }
+                printf "%s\n", end_clr
             }
           '''  \
         | sed '''
