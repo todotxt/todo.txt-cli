@@ -868,18 +868,39 @@ _format()
                 return color
             }
             {
+                clr = ""
                 if (match($0, /^[0-9]+ x /)) {
-                    print highlight("COLOR_DONE") $0 highlight("DEFAULT")
+                    clr = highlight("COLOR_DONE")
                 } else if (match($0, /^[0-9]+ \([A-Z]\) /)) {
                     clr = highlight("PRI_" substr($0, RSTART + RLENGTH - 3, 1))
-                    print \
-                        (clr ? clr : highlight("PRI_X")) \
-                        (ENVIRON["HIDE_PRIORITY_SUBSTITUTION"] == "" ? $0 : substr($0, 1, RLENGTH - 4) substr($0, RSTART + RLENGTH)) \
-                        highlight("DEFAULT")
-                } else { print }
+                    clr = (clr ? clr : highlight("PRI_X"))
+                }
+                end_clr = (clr ? highlight("DEFAULT") : "")
+
+                prj_beg = highlight("PROJECT_COLOR")
+                prj_end = (prj_beg ? (highlight("DEFAULT") clr) : "")
+
+                ctx_beg = highlight("CONTEXT_COLOR")
+                ctx_end = (ctx_beg ? (highlight("DEFAULT") clr) : "")
+
+                gsub(/[ \t][ \t]*/, "\n&\n")
+                len = split($0, words, /\n/)
+
+                printf "%s", clr
+                for (i = 1; i <= len; ++i) {
+                    if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
+                        printf "%s", prj_beg words[i] prj_end
+                    } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
+                        printf "%s", ctx_beg words[i] ctx_end
+                    } else {
+                        printf "%s", words[i]
+                    }
+                }
+                printf "%s\n", end_clr
             }
           '''  \
         | sed '''
+            s/'"${HIDE_PRIORITY_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_PROJECTS_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_CONTEXTS_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_CUSTOM_SUBSTITUTION:-^}"'//g
