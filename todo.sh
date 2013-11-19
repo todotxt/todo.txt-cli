@@ -709,9 +709,9 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 [ -d "$TODO_DIR" ]  || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
 ( cd "$TODO_DIR" )  || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
 
-[ -f "$TODO_FILE" ] || cp /dev/null "$TODO_FILE"
-[ -f "$DONE_FILE" ] || cp /dev/null "$DONE_FILE"
-[ -f "$REPORT_FILE" ] || cp /dev/null "$REPORT_FILE"
+[ -f "$TODO_FILE" -o -c "$TODO_FILE" ] || > "$TODO_FILE"
+[ -f "$DONE_FILE" -o -c "$DONE_FILE" ] || > "$DONE_FILE"
+[ -f "$REPORT_FILE" -o -c "$REPORT_FILE" ] || > "$REPORT_FILE"
 
 if [ $TODOTXT_PLAIN = 1 ]; then
     for clr in ${!PRI_@}; do
