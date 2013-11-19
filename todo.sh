@@ -874,6 +874,9 @@ _format()
                 } else if (match($0, /^[0-9]+ \([A-Z]\) /)) {
                     clr = highlight("PRI_" substr($0, RSTART + RLENGTH - 3, 1))
                     clr = (clr ? clr : highlight("PRI_X"))
+                    if (ENVIRON["HIDE_PRIORITY_SUBSTITUTION"] != "") {
+                        $0 = substr($0, 1, RLENGTH - 4) substr($0, RSTART + RLENGTH)
+                    }
                 }
                 end_clr = (clr ? highlight("DEFAULT") : "")
 
@@ -900,7 +903,6 @@ _format()
             }
           '''  \
         | sed '''
-            s/'"${HIDE_PRIORITY_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_PROJECTS_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_CONTEXTS_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_CUSTOM_SUBSTITUTION:-^}"'//g
