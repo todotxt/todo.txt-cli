@@ -880,10 +880,10 @@ _format()
                 }
                 end_clr = (clr ? highlight("DEFAULT") : "")
 
-                prj_beg = highlight("PROJECT_COLOR")
+                prj_beg = highlight("COLOR_PROJECT")
                 prj_end = (prj_beg ? (highlight("DEFAULT") clr) : "")
 
-                ctx_beg = highlight("CONTEXT_COLOR")
+                ctx_beg = highlight("COLOR_CONTEXT")
                 ctx_end = (ctx_beg ? (highlight("DEFAULT") clr) : "")
 
                 gsub(/[ \t][ \t]*/, "\n&\n")
