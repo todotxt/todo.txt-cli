@@ -724,6 +724,8 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     PRI_X=$NONE
     DEFAULT=$NONE
     COLOR_DONE=$NONE
+    COLOR_PROJECT=$NONE
+    COLOR_CONTEXT=$NONE
 fi
 
 _addto() {
