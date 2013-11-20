@@ -73,7 +73,7 @@ test_todo_session 'suppressing display of contexts' <<'EOF'
 TODO: 9 of 9 tasks shown
 EOF
 
-test_todo_session 'suppressing display of contexts' <<'EOF'
+test_todo_session 'suppressing display of projects' <<'EOF'
 >>> todo.sh -+ -d "$TEST_TODO_LABEL_COLORS" ls
 [1;33m1 (A) prioritized [1m@con01[0m[1;33m context[0m
 [0;32m2 (B) prioritized project[0m
