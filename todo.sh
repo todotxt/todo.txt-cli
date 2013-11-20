@@ -728,6 +728,9 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     COLOR_CONTEXT=$NONE
 fi
 
+[[ "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
+[[ "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
+
 _addto() {
     file="$1"
     input="$2"
