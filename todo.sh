@@ -614,6 +614,10 @@ export PRI_B=$GREEN         # color for B priority
 export PRI_C=$LIGHT_BLUE    # color for C priority
 export PRI_X=$WHITE         # color unless explicitly defined
 
+# Default project and context colors.
+export COLOR_PROJECT=$NONE
+export COLOR_CONTEXT=$NONE
+
 # Default highlight colors.
 export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
 
