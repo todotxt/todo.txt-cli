@@ -41,4 +41,15 @@ ls
 quux
 EOF
 
+make_action_in_folder "chuck"
+make_action_in_folder "norris"
+test_todo_session 'custom actions in subfolders' <<EOF
+>>> todo.sh listaddons
+bar
+chuck
+ls
+norris
+quux
+EOF
+
 test_done
