@@ -302,6 +302,14 @@ addonHelp()
                     didPrintAddonActionsHeader=1
                 fi
                 "$action" usage
+            elif [ -d "$action" -a -x "$action/$(basename $action)" ]; then
+                if [ ! "$didPrintAddonActionsHeader" ]; then
+                    cat <<-EndAddonActionsHeader
+		  Add-on Actions:
+	EndAddonActionsHeader
+                    didPrintAddonActionsHeader=1
+                fi
+                "$action/$(basename $action)" usage
             fi
         done
     fi
@@ -314,6 +322,8 @@ actionUsage()
         action="${TODO_ACTIONS_DIR}/${actionName}"
         if [ -f "$action" -a -x "$action" ]; then
             "$action" usage
+        elif [ -d "$action" -a -x "$action/$(basename $action)" ]; then
+            "$action/$(basename $action)" usage
         else
             builtinActionUsage=$(actionsHelp | sed -n -e "/^    ${actionName//\//\\/} /,/^\$/p" -e "/^    ${actionName//\//\\/}$/,/^\$/p")
             if [ "$builtinActionUsage" ]; then
@@ -964,6 +974,10 @@ then
     shift
     ## Reset action to new first argument
     action=$( printf "%s\n" "$1" | tr 'A-Z' 'a-z' )
+elif [ -d "$TODO_ACTIONS_DIR/$action" -a -x "$TODO_ACTIONS_DIR/$action/$action" ]
+then
+    "$TODO_ACTIONS_DIR/$action/$action" "$@"
+    exit $?
 elif [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
@@ -1404,6 +1418,8 @@ note: PRIORITY must be anywhere from A to Z."
         for action in *
         do
             if [ -f "$action" -a -x "$action" ]; then
+                echo "$action"
+            elif [ -d "$action" -a -x "$action/$action" ]; then
                 echo "$action"
             fi
         done

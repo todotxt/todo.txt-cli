@@ -11,6 +11,8 @@ readonly ACTIONS='add a addto addm append app archive command del rm depri dp do
 readonly OPTIONS='-@ -@@ -+ -++ -d -f -h -p -P -PP -a -n -t -v -vv -V -x'
 
 readonly ADDONS='bar baz foobar'
+
+readonly CONTAINED='xeno zoolander'
 makeCustomActions()
 {
     set -e
@@ -31,12 +33,28 @@ makeCustomActions()
     chmod -x "$datafile"
     [ -x "$datafile" ] && rm "$datafile"    # Some file systems may always make files executable; then, skip this check.
 
+    # Add an executable file in a folder with the same name as the file,
+    # in order to ensure completion
+    for contained in $CONTAINED
+    do
+        mkdir "${1}/$contained"
+        > "${1}/$contained/$contained"
+        chmod u+x "${1}/$contained/$contained"
+    done
+
     set +e
 }
 removeCustomActions()
 {
     set -e
     rmdir "${1}/subdir"
+
+    for contained in $CONTAINED
+    do
+        rm "${1}/$contained/$contained"
+        rmdir "${1}/$contained"
+    done
+
     rm "${1:?}/"*
     rmdir "$1"
     set +e
@@ -46,8 +64,8 @@ removeCustomActions()
 # Test resolution of the default TODO_ACTIONS_DIR.
 #
 makeCustomActions "$HOME/.todo.actions.d"
-test_todo_completion 'all arguments' 'todo.sh ' "$ACTIONS $ADDONS $OPTIONS"
-test_todo_completion 'all arguments after option' 'todo.sh -a ' "$ACTIONS $ADDONS $OPTIONS"
+test_todo_completion 'all arguments' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
+test_todo_completion 'all arguments after option' 'todo.sh -a ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 test_todo_completion 'all arguments beginning with b' 'todo.sh b' 'bar baz'
 test_todo_completion 'all arguments beginning with f after options' 'todo.sh -a -v f' 'foobar'
 test_todo_completion 'nothing after addon action' 'todo.sh foobar ' ''
@@ -58,7 +76,7 @@ removeCustomActions "$HOME/.todo.actions.d"
 #
 mkdir  "$HOME/.todo"
 makeCustomActions "$HOME/.todo/actions"
-test_todo_completion 'all arguments with actions from .todo/actions/' 'todo.sh ' "$ACTIONS $ADDONS $OPTIONS"
+test_todo_completion 'all arguments with actions from .todo/actions/' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 removeCustomActions "$HOME/.todo/actions"
 
 #
@@ -68,7 +86,7 @@ makeCustomActions "$HOME/addons"
 cat >> todo.cfg <<'EOF'
 export TODO_ACTIONS_DIR="$HOME/addons"
 EOF
-test_todo_completion 'all arguments with actions from addons/' 'todo.sh ' "$ACTIONS $ADDONS $OPTIONS"
+test_todo_completion 'all arguments with actions from addons/' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 removeCustomActions "$HOME/addons"
 
 test_done
