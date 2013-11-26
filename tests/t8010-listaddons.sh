@@ -70,8 +70,8 @@ EOF
 chmod -x .todo.actions.d/norris/norris
 # On Cygwin, clearing the executable flag may have no effect, as the Windows ACL
 # may still grant execution rights. In this case, we skip the test.
-if [ -x .todo.actions.d/foo ]; then
-    SKIP_TESTS="${SKIP_TESTS}${SKIP_TESTS+ }t8010.6"
+if [ -x .todo.actions.d/norris/norris ]; then
+    SKIP_TESTS="${SKIP_TESTS}${SKIP_TESTS+ }t8010.8"
 fi
 test_todo_session 'nonexecutable action in subfolder' <<EOF
 >>> todo.sh listaddons
