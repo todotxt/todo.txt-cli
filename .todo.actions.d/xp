@@ -1,0 +1,56 @@
+#!/usr/bin/bash
+# 2013 Chris Jones  christopher.donald.jones@gmail.com
+# License: GPL, http://www.gnu.org/copyleft/gpl.html
+
+re='^[0-9]+$'
+OPTION=$2
+
+
+if [[ "$OPTION" =~ $re ]] 
+then
+DAYS=$2
+elif [ "$OPTION" = "-o" ]
+then
+DAYS=$3
+elif [ "$OPTION" = "-h" ]
+then
+echo "XP - A todo.sh module designed to print a readable guide to what you've accomplished in any number of days."
+echo "Usage:"
+echo "      todo.sh xp [-oh] argument "
+echo "      Options:"
+echo "              o : Omit days on which no tasks were completed" 
+echo "              h : Print this help message." 
+exit
+else
+echo "Usage:"
+echo "      todo.sh xp [-oh] argument "
+echo "      Options:"
+echo "              o : Omit days on which no tasks were commited." 
+echo "              h : Print this help message." 
+exit
+fi;
+
+TODAY=$(date +%s)
+WEEK=604800
+DAY=$((604800 / 7))
+for i in $(eval echo "{$DAYS..0}")
+do
+DAYX=$(($TODAY - $DAY * $i))
+DAYTITLE=$(date -d "@"$DAYX +%Y-%m-%d\ )
+DAYWORD=$(date -d $DAYTITLE +%A)
+DAYCONTENT=$(grep $DAYTITLE $DONE_FILE)
+
+if [[ -z "$DAYCONTENT" && "$OPTION" != -o  ]]
+then
+echo "=========================="
+echo "$DAYWORD" ":" "$DAYTITLE"
+echo "=========================="
+echo  "$DAYCONTENT"
+elif [[ ! -z "$DAYCONTENT" ]]
+then
+echo "=========================="
+echo "$DAYWORD" ":" "$DAYTITLE"
+echo "=========================="
+echo  "$DAYCONTENT"
+fi;
+done
