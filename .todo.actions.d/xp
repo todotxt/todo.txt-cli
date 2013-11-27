@@ -14,7 +14,7 @@ then
 DAYS=$3
 elif [ "$OPTION" = "-h" ]
 then
-echo "XP - A todo.sh module designed to print a readable guide to what you've accomplished in any number of days."
+echo "XP - A todo.sh module designed to print a readable guide of what you've accomplished in any number of days."
 echo "Usage:"
 echo "      todo.sh xp [-oh] argument "
 echo "      Options:"
