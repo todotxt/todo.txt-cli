@@ -1,0 +1,6 @@
+# Note: "shell" would be more appropriate
+language: python
+
+install: make dist && sudo make install
+
+script: make test
