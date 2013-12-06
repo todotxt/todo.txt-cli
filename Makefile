@@ -31,12 +31,11 @@ clean:
 	rm -f $(DISTNAME).tar.gz $(DISTNAME).zip
 
 install:
-	cp todo.sh $(INSTALL_DIR)/todo
-	chmod a+x $(INSTALL_DIR)/todo
-	cp todo_completion /etc/bash_completion.d/todo
-	mkdir -p ~/.todo
-	cp -n todo.cfg ~/.todo/config 
-
+	install --mode=755 todo.sh $(INSTALL_DIR)
+	install --mode=644 todo_completion /etc/bash_completion.d/todo
+	mkdir -p /etc/todo
+	[ -e /etc/todo/config ] || \
+		sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > /etc/todo/config
 #
 # Testing
 #
