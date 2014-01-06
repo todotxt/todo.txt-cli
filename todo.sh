@@ -635,6 +635,9 @@ export COLOR_DATE=$NONE
 # Default color of metadata 
 export COLOR_META=$NONE
 
+# Default color of line number
+export COLOR_NUMBER=$NONE
+
 # Default highlight colors.
 export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
 
@@ -917,6 +920,9 @@ _format()
                 }
                 end_clr = (clr ? highlight("DEFAULT") : "")
 
+                num_beg = highlight("COLOR_NUMBER")
+                num_end = (num_beg ? (highlight("DEFAULT") clr) : "")
+
                 prj_beg = highlight("COLOR_PROJECT")
                 prj_end = (prj_beg ? (highlight("DEFAULT") clr) : "")
 
@@ -934,7 +940,9 @@ _format()
 
                 printf "%s", clr
                 for (i = 1; i <= len; ++i) {
-                    if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
+                    if (i == 1 && words[i] ~ /^[0-9]+$/ ) {
+                        printf "%s", num_beg words[i] num_end
+                    } else if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
                         printf "%s", prj_beg words[i] prj_end
                     } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
                         printf "%s", ctx_beg words[i] ctx_end
