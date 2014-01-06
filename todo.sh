@@ -946,7 +946,7 @@ _format()
                         printf "%s", prj_beg words[i] prj_end
                     } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
                         printf "%s", ctx_beg words[i] ctx_end
-                    } else if (words[i] ~ /(19|20)[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/) {
+                    } else if (words[i] ~ /^(19|20)[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/) {
                         printf "%s", dat_beg words[i] dat_end
                     } else if (words[i] ~ /^[[:alnum:]]+:[^ ]+$/) {
                         printf "%s", met_beg words[i] met_end
