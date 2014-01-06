@@ -632,6 +632,9 @@ export COLOR_CONTEXT=$NONE
 # Default color of dates
 export COLOR_DATE=$NONE
 
+# Default color of metadata 
+export COLOR_META=$NONE
+
 # Default highlight colors.
 export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
 
@@ -750,6 +753,7 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     COLOR_PROJECT=$NONE
     COLOR_CONTEXT=$NONE
     COLOR_DATE=$NONE
+    COLOR_META=$NONE
 fi
 
 [[ "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
@@ -922,6 +926,9 @@ _format()
                 dat_beg = highlight("COLOR_DATE")
                 dat_end = (dat_beg ? (highlight("DEFAULT") clr) : "")
 
+                met_beg = highlight("COLOR_META")
+                met_end = (met_beg ? (highlight("DEFAULT") clr) : "")
+
                 gsub(/[ \t][ \t]*/, "\n&\n")
                 len = split($0, words, /\n/)
 
@@ -933,6 +940,8 @@ _format()
                         printf "%s", ctx_beg words[i] ctx_end
                     } else if (words[i] ~ /(19|20)[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/) {
                         printf "%s", dat_beg words[i] dat_end
+                    } else if (words[i] ~ /^[[:alnum:]]+:[^ ]+$/) {
+                        printf "%s", met_beg words[i] met_end
                     } else {
                         printf "%s", words[i]
                     }
