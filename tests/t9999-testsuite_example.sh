@@ -36,14 +36,14 @@ TODO: 2 of 4 tasks shown
 TODO: 1 of 4 tasks shown
 
 >>> todo.sh -a do 2
-2 x 2009-02-13 notice the sunflowers
+2 x 2009-02-13 notice the sunflowers prio:A
 TODO: 2 marked as done.
 
 >>> todo.sh -p list
 1 (B) smell the uppercase Roses +flowers @outside
 4 smell the coffee +wakeup
 3 stop
-2 x 2009-02-13 notice the sunflowers
+2 x 2009-02-13 notice the sunflowers prio:A
 --
 TODO: 4 of 4 tasks shown
 
@@ -67,12 +67,12 @@ TODO: 6 added.
 4 smell the coffee +wakeup
 3 stop
 6 visit http://example.com
-2 x 2009-02-13 notice the sunflowers
+2 x 2009-02-13 notice the sunflowers prio:A
 --
 TODO: 6 of 6 tasks shown
 
 >>> todo.sh archive
-x 2009-02-13 notice the sunflowers
+x 2009-02-13 notice the sunflowers prio:A
 TODO: $HOME/todo.txt archived.
 
 >>> todo.sh -p list
