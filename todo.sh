@@ -1160,7 +1160,7 @@ case $action in
         if [ "${todo:0:2}" != "x " ]; then
             now=$(date '+%Y-%m-%d')
             # reformat priority once item is done
-            sed -i.bak $item's/^(\(.\)) \(.*$\)/\2 prio:\1/' "$TODO_FILE"
+            sed -i.bak $item's/^(\(.\)) \(.*$\)/\2 pri:\1/' "$TODO_FILE"
             sed -i.bak $item"s|^|x $now |" "$TODO_FILE"
             if [ $TODOTXT_VERBOSE -gt 0 ]; then
                 getNewtodo "$item"
