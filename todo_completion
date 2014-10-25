@@ -16,7 +16,13 @@ _todo()
         mv prepend prep pri p replace report shorthelp"
     local -r MOVE_COMMAND_PATTERN='^(move|mv)$'
 
+    # Useful check to define _todo_sh, so that perform bash completion properly
     local _todo_sh=${_todo_sh:-todo.sh}
+    local _todo_sh_alias="$(alias | grep todo.sh | cut -d '=' -f1 | cut -d ' ' -f2)"
+    if [ "x$_todo_sh_alias" != "x" ] ; then
+        _todo_sh=$_todo_sh_alias
+    fi
+
     local completions
     if [ $COMP_CWORD -eq 1 ]; then
         completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons) $OPTS"
