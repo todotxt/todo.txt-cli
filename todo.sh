@@ -49,7 +49,7 @@ shorthelp()
 		    addto DEST "TEXT TO ADD"
 		    append|app ITEM# "TEXT TO APPEND"
 		    archive
-		    command [ACTIONS]
+		    command|cmd [ACTIONS]
 		    deduplicate
 		    del|rm ITEM# [TERM]
 		    depri|dp ITEM#[, ITEM#, ITEM#, ...]
@@ -186,6 +186,7 @@ actionsHelp()
 		      Moves all done tasks from todo.txt to done.txt and removes blank lines.
 
 		    command [ACTIONS]
+		    cmd [ACTIONS]
 		      Runs the remaining arguments using only todo.sh builtins.
 		      Will not call any .todo.actions.d scripts.
 
@@ -964,11 +965,11 @@ export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr 'A-Z' 'a-z' )
 
-## If the first argument is "command", run the rest of the arguments
+## If the first argument is "command" or "cmd", run the rest of the arguments
 ## using todo.sh builtins.
 ## Else, run a actions script with the name of the command if it exists
 ## or fallback to using a builtin
-if [ "$action" == command ]
+if [ "$action" == command -o "$action" == cmd ]
 then
     ## Get rid of "command" from arguments list
     shift
