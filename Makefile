@@ -27,8 +27,9 @@ dist: $(DISTFILES) todo.sh
 	rm -r $(DISTNAME)
 
 .PHONY: clean
-clean:
+clean: test-pre-clean
 	rm -f $(DISTNAME).tar.gz $(DISTNAME).zip
+	rm VERSION-FILE
 
 install:
 	install --mode=755 todo.sh $(INSTALL_DIR)
