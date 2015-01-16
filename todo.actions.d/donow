@@ -1,0 +1,103 @@
+#!/bin/bash
+# Do-now add-on for Todo.txt
+
+# ====================================================
+# Configuration
+# ====================================================
+DESKTOP_NOTIFICATION=true        # Requires libnotify
+REMINDER_INTERVAL=2              # Intervals between desktop notifications
+
+
+ITEM=false
+if [ x"$1" = x"donow" ]; then
+    [[ -z $2 ]] && echo "Error: Item number not found" && exit 0
+    ITEM=$2
+    shift
+    shift
+fi
+
+# ====================================================
+# Some global variables
+# ====================================================
+WORKED_TIME=0
+ONE_SECOND=${ONE_SECOND-60}      # for tests reasons. Do not modify
+
+
+# ====================================================
+# Functions
+# ====================================================
+update_activity()
+{
+    echo
+    if [[ $curr_time_worked -eq 0 ]]; then
+        "$TODO_SH" command append $ITEM "min:$WORKED_TIME"
+    else
+        let "curr_time_worked = $curr_time_worked + $WORKED_TIME"
+        new_summary=`echo "$summary" | sed -E "s/min:[0-9]+/min:$curr_time_worked/g"`
+        "$TODO_SH" command replace $ITEM "$new_summary"
+    fi    
+    exit 1
+}
+
+# Wrapper function to pop-up a notification using libnotify
+signal()
+{
+    [[ $DESKTOP_NOTIFICATION = true ]] && notify-send -u critical -i appointment-soon -t 300 "$1" "$2"     
+}
+
+# Actual counter function
+do_now()
+{    
+    local SUMMARY="$1"
+    local COUNTER=0
+    local MILESTONE=$REMINDER_INTERVAL
+ 
+    # Every third of a Work interval a notification
+    #   will be displayed
+
+    signal "Do-Now" "${SUMMARY}"
+    echo "Working on: ${SUMMARY} "
+    
+    while true; do
+        sleep $ONE_SECOND
+        
+        let "COUNTER = $COUNTER + 1"
+        WORKED_TIME=$COUNTER
+        
+        echo -en "\r["$SUMMARY"] $COUNTER minute(s) passed"
+
+        if [ $COUNTER = $MILESTONE ]; then
+            signal "${SUMMARY}" "$COUNTER minutes passed "
+            let "MILESTONE = $MILESTONE + $MILESTONE"
+        fi
+    done
+}
+
+
+# ====================================================
+# Main
+# ====================================================
+
+# get the right activity and its summary
+counter=0
+while read line
+do
+    let "counter = counter + 1"
+    [ $counter = $ITEM ] && summary=$line
+done < "$TODO_FILE"
+
+[[ -z "$summary" ]] && echo "Could not find activity number $ITEM" && exit 0
+
+# get the activity's current worked time (if any)
+curr_time_worked=0
+for token in $summary; do
+    if [[ "$token" = min:* ]]; then
+       curr_time_worked=`echo "$token" | cut -d':' -f 2`
+    fi
+done
+
+
+trap 'update_activity' INT
+
+# run new session (new worked time will be available in WORKED_TIME variable)
+do_now "$summary"
