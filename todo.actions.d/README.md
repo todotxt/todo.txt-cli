@@ -10,7 +10,7 @@ Donow writes on the stdout the **current activity and the time spent on it** sin
 
 ## Donow item format
 
-When the timer is stopped using CTRL-C, donow will append a substring *min:<total-time-spent>* (being **time** expressed in minutes) to the activity description.
+When the timer is stopped using CTRL-C, donow will append a substring *min:total-time-spent* (being **time** expressed in minutes) to the activity description.
 When the pattern "min:number" already exists, Donow just update the counter.
 
 ## Example of use
