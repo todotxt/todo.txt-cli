@@ -5,12 +5,21 @@
 # Configuration
 # ====================================================
 DESKTOP_NOTIFICATION=true        # Requires libnotify
-REMINDER_INTERVAL=2              # Intervals between desktop notifications
+REMINDER_INTERVAL=10             # Intervals between desktop notifications
+
 
 
 ITEM=false
 if [ x"$1" = x"donow" ]; then
     [[ -z $2 ]] && echo "Error: Item number not found" && exit 0
+    [ "$2" = "usage" ] && {
+        echo
+        echo "  Select an item and start counting the time you work on it"
+        echo "  usage:"
+        echo "      todo.sh donow #ITEM"
+        echo
+        exit
+    }    
     ITEM=$2
     shift
     shift
