@@ -7,6 +7,7 @@ Donow add-on allows to keep track of the total time spent on an activity
 
 Donow writes on the stdout the **current activity and the time spent on it** since the last start. Each 10 minutes (configurable) a **desktop notification** will remind you the current running activity, to avoid to forget to stop the timer when not needed anymore.
 
+![donow-reminder](./donow-reminder.png)
 
 ## Donow item format
 
