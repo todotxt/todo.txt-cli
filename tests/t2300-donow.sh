@@ -14,7 +14,7 @@ Count the total time spent on TODOs'
 todo.sh add understand how test framework works >> /dev/null
 
 make_action "donow"
-cat  ../.todo.actions.d/donow >> .todo.actions.d/donow
+cat  ../../todo.actions.d/donow >> .todo.actions.d/donow
 
 test_todo_session 'donow on non existent item' <<EOF
 >>> todo.sh donow 10
