@@ -1082,7 +1082,8 @@ case $action in
     if [ -z "$3" ]; then
         if  [ $TODOTXT_FORCE = 0 ]; then
             echo "Delete '$todo'?  (y/n)"
-            read ANSWER
+            read -N 1 ANSWER
+            echo
         else
             ANSWER="y"
         fi
@@ -1278,7 +1279,8 @@ case $action in
     [ -z "$todo" ] && die "$item: No such item in $src."
     if  [ $TODOTXT_FORCE = 0 ]; then
         echo "Move '$todo' from $src to $dest? (y/n)"
-        read ANSWER
+        read -N 1 ANSWER
+        echo
     else
         ANSWER="y"
     fi
