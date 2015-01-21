@@ -37,14 +37,16 @@ ONE_SECOND=${ONE_SECOND-60}      # for tests reasons. Do not modify
 # ====================================================
 update_activity()
 {
-    echo
-    if [[ $curr_time_worked -eq 0 ]]; then
-        "$TODO_SH" command append $ITEM "min:$WORKED_TIME"
-    else
-        let "curr_time_worked = $curr_time_worked + $WORKED_TIME"
-        new_summary=`echo "$summary" | sed -E "s/min:[0-9]+/min:$curr_time_worked/g"`
-        "$TODO_SH" command replace $ITEM "$new_summary"
-    fi    
+    if [[ ! $WORKED_TIME -eq 0 ]]; then
+        echo
+        if [[ $curr_time_worked -eq 0 ]]; then
+            "$TODO_SH" command append $ITEM "min:$WORKED_TIME"
+        else
+            let "curr_time_worked = $curr_time_worked + $WORKED_TIME"
+            new_summary=`echo "$summary" | sed -E "s/min:[0-9]+/min:$curr_time_worked/g"`
+            "$TODO_SH" command replace $ITEM "$new_summary"
+        fi  
+    fi  
     exit 1
 }
 
