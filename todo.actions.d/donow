@@ -29,7 +29,7 @@ fi
 # Some global variables
 # ====================================================
 WORKED_TIME=0
-ONE_SECOND=${ONE_SECOND-60}      # for tests reasons. Do not modify
+ONE_MINUTE=${ONE_MINUTE-60}      # for tests reasons. Do not modify
 
 
 # ====================================================
@@ -69,7 +69,7 @@ do_now()
     echo "Working on: ${SUMMARY} "
     
     while true; do
-        sleep $ONE_SECOND
+        sleep $ONE_MINUTE
         
         let "COUNTER = $COUNTER + 1"
         WORKED_TIME=$COUNTER
