@@ -39,7 +39,7 @@ update_activity()
 {
     if [[ ! $WORKED_TIME -eq 0 ]]; then
         echo
-        if [[ $curr_time_worked -eq 0 ]]; then
+        if [[ ! $curr_time_worked ]]; then
             "$TODO_SH" command append $ITEM "min:$WORKED_TIME"
         else
             let "curr_time_worked = $curr_time_worked + $WORKED_TIME"
@@ -103,7 +103,7 @@ done < "$TODO_FILE"
 [[ -z "$summary" ]] && echo "Could not find activity number $ITEM" && exit 0
 
 # get the activity's current worked time (if any)
-curr_time_worked=0
+curr_time_worked=false
 for token in $summary; do
     if [[ "$token" = min:* ]]; then
        curr_time_worked=`echo "$token" | cut -d':' -f 2`
