@@ -65,11 +65,7 @@ do_now()
     local SUMMARY="$1"
     local COUNTER=0
     local MILESTONE=$REMINDER_INTERVAL
- 
-    # Every third of a Work interval a notification
-    #   will be displayed
 
-    signal "Do-Now" "${SUMMARY}"
     echo "Working on: ${SUMMARY} "
     
     while true; do
