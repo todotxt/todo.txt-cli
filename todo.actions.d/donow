@@ -39,7 +39,7 @@ update_activity()
 {
     if [[ ! $WORKED_TIME -eq 0 ]]; then
         echo
-        if [[ ! $curr_time_worked ]]; then
+        if [[ $curr_time_worked = false ]]; then
             "$TODO_SH" command append $ITEM "min:$WORKED_TIME"
         else
             let "curr_time_worked = $curr_time_worked + $WORKED_TIME"
