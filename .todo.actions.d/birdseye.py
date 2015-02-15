@@ -18,7 +18,7 @@ USAGE NOTES:
 	+writing draft Great American Novel
 	(B) smell the roses
 	
-	The done.txt file is a list of completed todo's from todo.txt.
+	The done.txt file is a list of completed todos from todo.txt.
 	
 	See more on todo.txt here:
 	http://todotxt.com
@@ -27,9 +27,9 @@ USAGE NOTES:
 OUTPUT:
 	Displays a list of:
 	- working projects and their percentage complete
-	- contexts in which open todo's exist
+	- contexts in which open todos exist
 	- contexts and projects with tasks that have been prioritized
-	- projects which are completely done (don't have any open todo's)
+	- projects which are completely done (don't have any open todos)
 
 CHANGELOG:
 	2006.07.29 - Now supports p:, p- and + project notation.  Tx, Pedro!
@@ -94,9 +94,9 @@ def printTaskGroup(p, pctage, star):
 			displayTotal = " %d%%"% (pctage, );
 		else:
 			displayTotal = "  %d%%"% (pctage, );
-		print("%s %s [%s] %s (%d todo's)"% (star, displayTotal, progressBar,  p[0], p[1],))
+		print("%s %s [%s] %s (%d todos)"% (star, displayTotal, progressBar,  p[0], p[1],))
 	else:
-		print("%s %s (%d todo's)"% (star, p[0], p[1], ))
+		print("%s %s (%d todos)"% (star, p[0], p[1], ))
 	
 def separator(c):
 	sep = ""
@@ -185,12 +185,12 @@ def main(argv):
 
 	separator("=")
 
-	printTaskGroups("Projects with Open TODO's", projects, projectPriority, projectPercentages)
-	printTaskGroups("Contexts with Open TODO's", contexts, contextPriority, projectPercentages)
-	printTaskGroups("Completed Projects (No open TODO's)", projectsWithNoIncompletes, projectPriority, projectPercentages)
+	printTaskGroups("Projects with Open TODOs", projects, projectPriority, projectPercentages)
+	printTaskGroups("Contexts with Open TODOs", contexts, contextPriority, projectPercentages)
+	printTaskGroups("Completed Projects (No open TODOs)", projectsWithNoIncompletes, projectPriority, projectPercentages)
 	print("")
 	print("* Projects and contexts with an asterisk next to them denote prioritized tasks.")
-	print("Project with prioritized tasks are listed first, then sorted by number of open todo's.")
+	print("Project with prioritized tasks are listed first, then sorted by number of open todos.")
 	print("")
 
 
