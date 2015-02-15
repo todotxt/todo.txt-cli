@@ -51,7 +51,7 @@ __history__ = """
 """
 
 def usage():
-	print "USAGE:  %s [todo.txt] [done.txt]"% (sys.argv[0], )
+	print "USAGE:  %s [todo.txt] [done.txt]" % (sys.argv[0], )
 
 def printTaskGroups(title, taskDict, priorityList, percentages):
 	print ""	
