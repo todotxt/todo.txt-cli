@@ -982,6 +982,13 @@ elif [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
     exit $?
+else
+    actionarray=($action)
+    if [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/${actionarray[0]}" ]
+    then
+      "$TODO_ACTIONS_DIR/${actionarray[0]}" $action
+      exit $?
+    fi
 fi
 
 ## Only run if $action isn't found in .todo.actions.d
