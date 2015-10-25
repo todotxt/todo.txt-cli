@@ -2,6 +2,8 @@
 # Makefile for todo.txt
 #
 INSTALL_DIR=/usr/local/bin
+CONFIG_DIR=/etc
+BASH_COMPLETION_DIR=/etc/bash_completion.d
 
 # Dynamically detect/generate version file as necessary
 # This file will define a variable called VERSION.
@@ -32,11 +34,13 @@ clean: test-pre-clean
 	rm VERSION-FILE
 
 install:
+	mkdir -p $(INSTALL_DIR)
 	install --mode=755 todo.sh $(INSTALL_DIR)
-	install --mode=644 todo_completion /etc/bash_completion.d/todo
-	mkdir -p /etc/todo
-	[ -e /etc/todo/config ] || \
-		sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > /etc/todo/config
+	mkdir -p $(BASH_COMPLETION_DIR)
+	install --mode=644 todo_completion $(BASH_COMPLETION_DIR)/todo
+	mkdir -p $(CONFIG_DIR)/todo
+	[ -e $(CONFIG_DIR)/todo/config ] || \
+		sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(CONFIG_DIR)/todo/config
 #
 # Testing
 #
