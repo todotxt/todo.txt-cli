@@ -13,10 +13,10 @@ version() {
 
 		First release: 5/11/2006
 		Original conception by: Gina Trapani (http://ginatrapani.org)
-		Contributors: http://github.com/ginatrapani/todo.txt-cli/network
-		License: GPL, http://www.gnu.org/copyleft/gpl.html
+		Contributors: https://github.com/ginatrapani/todo.txt-cli/network
+		License: GPL, https://www.gnu.org/copyleft/gpl.html
 		More information and mailing list at http://todotxt.com
-		Code repository: http://github.com/ginatrapani/todo.txt-cli/tree/master
+		Code repository: https://github.com/ginatrapani/todo.txt-cli/tree/master
 	EndVersion
     exit 1
 }
