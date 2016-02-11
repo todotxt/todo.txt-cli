@@ -1081,7 +1081,7 @@ case $action in
 
     if [ -z "$3" ]; then
         if  [ $TODOTXT_FORCE = 0 ]; then
-            echo "Delete '$todo'?  (y/n)"
+            echo -n "Delete '$todo'?  (y/n) "
             read ANSWER
         else
             ANSWER="y"
