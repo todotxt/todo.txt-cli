@@ -1,29 +1,29 @@
 #!/usr/bin/python
 
 """ TODO.TXT Bird's Eye View Reporter
-USAGE:  
+USAGE:
 	birdseye.py [todo.txt] [done.txt]
-	
+
 USAGE NOTES:
 	Expects two text files as parameters, each of which formatted as follows:
 	- One todo per line, ie, "call Mom"
 	- with an optional project association indicated as such: "+projectname"
 	- with the context in which the tasks should be completed, indicated as such: "@context"
 	- with the task priority optionally listed at the front of the line, in parens, ie, "(A)"
-	
+
 	For example, 4 lines of todo.txt might look like this:
 
 	+garagesale @phone schedule Goodwill pickup
 	(A) @phone Tell Mom I love her
 	+writing draft Great American Novel
 	(B) smell the roses
-	
+
 	The done.txt file is a list of completed todos from todo.txt.
-	
+
 	See more on todo.txt here:
 	http://todotxt.com
-	
-	
+
+
 OUTPUT:
 	Displays a list of:
 	- working projects and their percentage complete
@@ -54,7 +54,7 @@ def usage():
 	print("USAGE:  %s [todo.txt] [done.txt]" % (sys.argv[0], ))
 
 def printTaskGroups(title, taskDict, priorityList, percentages):
-	print("")	
+	print("")
 	print("%s"% (title,))
 	separator("-")
 	if not taskDict:
@@ -67,7 +67,7 @@ def printTaskGroups(title, taskDict, priorityList, percentages):
 		items.reverse()             # so largest is first
 		items = [(k, v) for v, k in items]
 
-		for item in items:	
+		for item in items:
 			if item[0] in priorityList:
 				if item[0] not in percentages:
 					printTaskGroup(item, -1, "*")
@@ -80,7 +80,7 @@ def printTaskGroups(title, taskDict, priorityList, percentages):
 					printTaskGroup(item, -1, " ")
 				else:
 					printTaskGroup(item, percentages[item[0]], " ")
-			
+
 def printTaskGroup(p, pctage, star):
 	if pctage > -1:
 		progressBar = ""
@@ -88,16 +88,16 @@ def printTaskGroup(p, pctage, star):
 		progressBar = "=" * numStars
 		numSpaces = 10 - numStars
 		for n in range(numSpaces):
-			progressBar += " "	
+			progressBar += " "
 
-		if pctage > 9:	
+		if pctage > 9:
 			displayTotal = " %d%%"% (pctage, );
 		else:
 			displayTotal = "  %d%%"% (pctage, );
 		print("%s %s [%s] %s (%d todos)"% (star, displayTotal, progressBar,  p[0], p[1],))
 	else:
 		print("%s %s (%d todos)"% (star, p[0], p[1], ))
-	
+
 def separator(c):
 	sep = ""
 	sep = c * 42
@@ -177,7 +177,7 @@ def main(argv):
 	for task in completedTasks:
 		if task not in projects:
 			projectsWithNoIncompletes[task] = 0
-	
+
 	# print out useful info
 	#print "TODO.TXT Bird's Eye View Report %s"% ( datetime.date.today().isoformat(), )
 	print("")
