@@ -106,6 +106,9 @@ def main(argv):
     print(summary)
     separator("-", len(summary))
 
+    # Warnings
+    crossCheckCompletedProjects(project_completions, goal_projects)
+
 
 # Return an array of goals with total tasks completed.
 def getGoalCompletions(goal_projects, project_completions):
@@ -183,6 +186,14 @@ def getProjectCompletions(argv, last_7_days_of_completions):
                     project_completions[word].append(task)
     return project_completions
 
+def crossCheckCompletedProjects(project_completions, goal_projects):
+    for project in project_completions:
+        goal_in_project = False
+        for goal in goal_projects:
+            if project in goal_projects[goal]:
+                goal_in_project = True
+        if goal_in_project == False:
+            print("WARNING: Project " + project + " not in goal.")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
