@@ -32,21 +32,23 @@ OUTPUT:
     - projects which are completely done (don't have any open todos)
 
 CHANGELOG:
+    2016.03.17 - Update for Python 3. Tx, JonathanReeve!
     2006.07.29 - Now supports p:, p- and + project notation.  Tx, Pedro!
     2006.05.02 - Released
 """
 
 
 import sys
-#import datetime
 
-__version__ = "1.1"
+__version__ = "1.2"
 __date__ = "2006/05/02"
-__updated__ = "2006/07/29"
+__updated__ = "2016/03/17"
 __author__ = "Gina Trapani (ginatrapani@gmail.com)"
-__copyright__ = "Copyright 2006, Gina Trapani"
+__copyright__ = "Copyright 2006 - 2016, Gina Trapani"
 __license__ = "GPL"
 __history__ = """
+1.2 - Update for Python 3. Tx, JonathanReeve!
+1.1 - Now supports p:, p- and + project notation.  Tx, Pedro!
 1.0 - Released.
 """
 
