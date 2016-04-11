@@ -648,15 +648,6 @@ export SENTENCE_DELIMITERS=',.:;'
 }
 
 [ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT="$HOME/.todo.cfg"
-
-    if [ -e "$CFG_FILE_ALT" ]
-    then
-        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
-    fi
-}
-
-[ -e "$TODOTXT_CFG_FILE" ] || {
     CFG_FILE_ALT=$(dirname "$0")"/todo.cfg"
 
     if [ -e "$CFG_FILE_ALT" ]
