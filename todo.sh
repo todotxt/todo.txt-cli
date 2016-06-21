@@ -46,6 +46,7 @@ shorthelp()
 		    add|a "THING I NEED TO DO +project @context"
 		    addm "THINGS I NEED TO DO
 		          MORE THINGS I NEED TO DO"
+		   	addr "THING I NEED TO DO +latestproject @latestcontext"
 		    addto DEST "TEXT TO ADD"
 		    append|app ITEM# "TEXT TO APPEND"
 		    archive
@@ -172,6 +173,10 @@ actionsHelp()
 		      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and
 		      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
 		      Project and context notation optional.
+
+		    addr "THING I NEED TO DO +latestproject @latestcontext"
+		      Append the tags of the most recently added item
+  	     	  to this item.
 
 		    addto DEST "TEXT TO ADD"
 		      Adds a line of text to any file located in the todo.txt directory.
@@ -1019,6 +1024,50 @@ case $action in
     done
     IFS=$SAVEIFS
     ;;
+
+"addr")
+    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
+        echo -n "Add: "
+        read input
+    else
+        [ -z "$2" ] && die "usage: $TODO_SH addr \"TODO ITEM\""
+        shift
+        input=$*
+    fi
+
+	# get the last line added and extract context
+	lastadded=`sed -n '$ =' "$TODO_FILE"`
+	# FIXME: Find a better way to add tasks (_addto function?)
+	"$TODO_FULL_SH" command add "$1"
+	newest=`sed -n '$ =' "$TODO_FILE"`
+
+	REGEX='[@|+][A-Za-z0-9]*'
+
+	echo "Appending:" $(sed $lastadded"q;d" "$TODO_FILE" | grep -o "$REGEX")
+
+	# add contexts and projects
+	sed $lastadded"q;d" "$TODO_FILE" | grep -o "$REGEX" | while read -r app
+	do
+		echo $app
+	# FIXME: Find a better way to append content
+	   	"$TODO_FULL_SH" command append "$newest" "$app"
+	done
+
+	# set priority
+	# PRIREGEX='\(([A-Z])\)'
+	# matchpri=`sed $lastadded"q;d" "$TODO_FILE" | grep -o "$PRIREGEX"`
+
+	# # if there is a proiority on the last one
+	# count=`echo $matchpri | wc -l`
+	# if [ $count -ne 0 ]; then
+	# 	# remove parentheses
+	# 	matchpri=`echo $matchpri | sed 's/[)(]//g'`
+
+	# 	echo "Prioritizing:" $matchpri
+	# 	"$TODO_FULL_SH" command pri "$newest" "$matchpri"
+	# fi
+
+	;;
 
 "addto" )
     [ -z "$2" ] && die "usage: $TODO_SH addto DEST \"TODO ITEM\""
