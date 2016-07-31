@@ -489,7 +489,7 @@ OVR_TODOTXT_USE_LOCAL="$TODOTXT_USE_LOCAL"
 GREP_OPTIONS=""
 
 # == PROCESS OPTIONS ==
-while getopts ":fhpcnNaAtTvVx+@Pd:" Option
+while getopts ":fhpcnNaAtTvVx+@PdlL:" Option
 do
   case $Option in
     '@' )
