@@ -595,6 +595,7 @@ TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 TODOTXT_DISABLE_FILTER=${TODOTXT_DISABLE_FILTER:-}
 TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
 TODOTXT_GLOBAL_CFG_FILE=${TODOTXT_GLOBAL_CFG_FILE:-/etc/todo/config}
+TODOTXT_EDITOR=${TODOTXT_EDITOR:-${EDITOR:-${VISUAL:-nano}}}
 
 # Export all TODOTXT_* variables
 export ${!TODOTXT_@}
@@ -834,6 +835,12 @@ _list() {
         echo "$(getPrefix "$src"): ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
     fi
 }
+
+_edit(){
+	echo "${TODOTXT_EDITOR}"
+	"${TODOTXT_EDITOR}" "$@"
+}
+
 getPadding()
 {
     ## We need one level of padding for each power of 10 $LINES uses.
@@ -1425,6 +1432,11 @@ note: PRIORITY must be anywhere from A to Z."
         done
     fi
     ;;
+
+"e"|"edit")
+	shift
+	_edit "$TODO_FILE" "$@"
+	;;
 
 * )
     usage;;
