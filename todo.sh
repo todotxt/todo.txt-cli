@@ -68,6 +68,7 @@ shorthelp()
 		    replace ITEM# "UPDATED TODO"
 		    report
 		    shorthelp
+		    vi
 
 		  Actions can be added and overridden using scripts in the actions
 		  directory.
@@ -284,6 +285,9 @@ actionsHelp()
 
 		    shorthelp
 		      List the one-line usage of all built-in and add-on actions.
+
+		    vi
+		      Edit your list with vi
 
 	EndActionsHelp
 }
@@ -1426,6 +1430,9 @@ note: PRIORITY must be anywhere from A to Z."
     fi
     ;;
 
+"vi" )
+  vi "$TODO_FILE"
+  ;;
 * )
     usage;;
 esac
