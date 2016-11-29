@@ -67,6 +67,7 @@ shorthelp()
 		    pri|p ITEM# PRIORITY
 		    replace ITEM# "UPDATED TODO"
 		    report
+		    repri|rp ITEM# PRIORITY
 		    shorthelp
 
 		  Actions can be added and overridden using scripts in the actions
@@ -281,6 +282,10 @@ actionsHelp()
 
 		    report
 		      Adds the number of open tasks and done tasks to report.txt.
+
+		    repri ITEM# PRIORITY
+		    rp ITEM# PRIORITY
+		      Reprioritizes the task on line ITEM# in todo.txt.
 
 		    shorthelp
 		      List the one-line usage of all built-in and add-on actions.
@@ -1143,6 +1148,11 @@ case $action in
 	    echo "TODO: $item is not prioritized."
 	fi
     done
+    ;;
+
+"repri" | "rp" )
+    $TODO_SH depri $2
+    $TODO_SH pri $2 $3
     ;;
 
 "do" )
