@@ -182,8 +182,9 @@ actionsHelp()
 		      Adds TEXT TO APPEND to the end of the task on line ITEM#.
 		      Quotes optional.
 
-		    archive
-		      Moves all done tasks from todo.txt to done.txt and removes blank lines.
+		    archive [SRC]
+		      Moves all done tasks from source file (defaults to todo.txt) to \$source-done 
+		      and removes blank lines.
 
 		    command [ACTIONS]
 		      Runs the remaining arguments using only todo.sh builtins.
@@ -1063,13 +1064,19 @@ case $action in
     ;;
 
 "archive" )
+    archive_file="$TODO_DIR/$2"
+    dest_file="$TODO_DIR/$2-done"
+
+    [ -z "$2" ] && archive_file="$TODO_FILE"
+    [ -z "$2" ] && dest_file="$DONE_FILE"
+
     # defragment blank lines
-    sed -i.bak -e '/./!d' "$TODO_FILE"
-    [ $TODOTXT_VERBOSE -gt 0 ] && grep "^x " "$TODO_FILE"
-    grep "^x " "$TODO_FILE" >> "$DONE_FILE"
-    sed -i.bak '/^x /d' "$TODO_FILE"
+    sed -i.bak -e '/./!d' "$archive_file"
+    [ $TODOTXT_VERBOSE -gt 0 ] && grep "^x " "$archive_file"
+    grep "^x " "$archive_file" >> "$dest_file"
+    sed -i.bak '/^x /d' "$archive_file"
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
-	echo "TODO: $TODO_FILE archived."
+	echo "TODO: $archive_file archived to $dest_file."
     fi
     ;;
 
