@@ -103,7 +103,7 @@ complete -F _todo todo.sh
 
 # If you use aliases to use different configuration(s), you need to add and use
 # a wrapper completion function for each configuration if you want to complete
-# fron the actual configured task locations:
+# from the actual configured task locations:
 #alias todo2='todo.sh -d "$HOME/todo2.cfg"'
 #_todo2()
 #{
