@@ -13,10 +13,10 @@ version() {
 
 		First release: 5/11/2006
 		Original conception by: Gina Trapani (http://ginatrapani.org)
-		Contributors: https://github.com/ginatrapani/todo.txt-cli/network
-		License: GPL, https://www.gnu.org/copyleft/gpl.html
+		Contributors: http://github.com/ginatrapani/todo.txt-cli/network
+		License: GPL, http://www.gnu.org/copyleft/gpl.html
 		More information and mailing list at http://todotxt.com
-		Code repository: https://github.com/ginatrapani/todo.txt-cli/tree/master
+		Code repository: http://github.com/ginatrapani/todo.txt-cli/tree/master
 	EndVersion
     exit 1
 }
@@ -43,31 +43,32 @@ shorthelp()
 		  Usage: $oneline_usage
 
 		  Actions:
-		    add|a "THING I NEED TO DO +project @context"
-		    addm "THINGS I NEED TO DO
+		    $TODO_COMMAND_ADD| $TODO_COMMAND_ADD_SHORT "THING I NEED TO DO +project @context"
+		    $TODO_COMMAND_ADDM "THINGS I NEED TO DO
 		          MORE THINGS I NEED TO DO"
-		    addto DEST "TEXT TO ADD"
-		    append|app ITEM# "TEXT TO APPEND"
-		    archive
+		    $TODO_COMMAND_ADDTO DEST "TEXT TO ADD"
+		    $TODO_COMMAND_APPEND|$TODO_COMMAND_APPEND_SHORT ITEM# "TEXT TO APPEND"
+		    $TODO_COMMAND_ARCHIVE
 		    command [ACTIONS]
-		    deduplicate
-		    del|rm ITEM# [TERM]
-		    depri|dp ITEM#[, ITEM#, ITEM#, ...]
-		    do ITEM#[, ITEM#, ITEM#, ...]
-		    help [ACTION...]
-		    list|ls [TERM...]
-		    listall|lsa [TERM...]
-		    listaddons
-		    listcon|lsc [TERM...]
-		    listfile|lf [SRC [TERM...]]
-		    listpri|lsp [PRIORITIES] [TERM...]
-		    listproj|lsprj [TERM...]
-		    move|mv ITEM# DEST [SRC]
-		    prepend|prep ITEM# "TEXT TO PREPEND"
-		    pri|p ITEM# PRIORITY
-		    replace ITEM# "UPDATED TODO"
-		    report
-		    shorthelp
+		    $TODO_COMMAND_DEDUPLICATE | $TODO_COMMAND_DEDUPLICAT_SHORT
+		    $TODO_COMMAND_DEL|$TODO_COMMAND_DEL_ALT ITEM# [TERM]
+		    $TODO_COMMAND_DEPRI|$TODO_COMMAND_DEPRI_SHORT ITEM#[, ITEM#, ITEM#, ...]
+            
+            $TODO_COMMAND_DO ITEM#[, ITEM#, ITEM#, ...]
+		    $TODO_COMMAND_HELP [ACTION...]
+		    $TODO_COMMAND_LIST|$TODO_COMMAND_LIST_SHORT [TERM...]
+		    $TODO_COMMAND_LISTALL|$TODO_COMMAND_LISTALL_SHORT [TERM...]
+		    $TODO_COMMAND_LISTADDONS | $TODO_COMMAND_LISTADDONS_SHORT
+		    $TODO_COMMAND_LISTCON|$TODO_COMMAND_LISTCON_SHORT [TERM...]
+		    $TODO_COMMAND_LISTFILE|$TODO_COMMAND_LISTFILE_SHORT [SRC [TERM...]]
+		    $TODO_COMMAND_LISTPRI|$TODO_COMMAND_LISTPRI_SHORT [PRIORITIES] [TERM...]
+		    $TODO_COMMAND_LISTPROJ|$TODO_COMMAND_LISTPROJ_SHORT [TERM...]
+		    $TODO_COMMAND_MOVE|$TODO_COMMAND_MOVE_SHORT ITEM# DEST [SRC]
+		    $TODO_COMMAND_PREPEND|$TODO_COMMAND_PREPEND_SHORT ITEM# "TEXT TO PREPEND"
+		    $TODO_COMMAND_PRI|$TODO_COMMAND_PRI_SHORT ITEM# PRIORITY
+		    $TODO_COMMAND_REPLACE | $TODO_COMMAND_REPLACE_SHORT ITEM# "UPDATED TODO"
+		    $TODO_COMMAND_REPORT | $TODO_COMMAND_REPORT_SHORT
+		    $TODO_COMMAND_HELP_SHORT
 
 		  Actions can be added and overridden using scripts in the actions
 		  directory.
@@ -79,7 +80,7 @@ shorthelp()
 
     cat <<-EndHelpFooter
 
-		  See "help" for more details.
+		  See $TODO_COMMAND_HELP for more details.
 	EndHelpFooter
 }
 
@@ -102,7 +103,8 @@ help()
 		    -f
 		        Forces actions without confirmation or interactive input
 		    -h
-		        Display a short help message; same as action "shorthelp"
+		        Display a short help message; same as action $TODO_COMMAND_HELP_SHORT
+                (Alternatively, can be invoked as --help)
 		    -p
 		        Plain mode turns off colors
 		    -P
@@ -161,56 +163,57 @@ actionsHelp()
 {
     cat <<-EndActionsHelp
 		  Built-in Actions:
-		    add "THING I NEED TO DO +project @context"
-		    a "THING I NEED TO DO +project @context"
+		    $TODO_COMMAND_ADD "THING I NEED TO DO +project @context"
+		    $TODO_COMMAND_ADD_SHORT "THING I NEED TO DO +project @context"
 		      Adds THING I NEED TO DO to your todo.txt file on its own line.
 		      Project and context notation optional.
 		      Quotes optional.
 
-		    addm "FIRST THING I NEED TO DO +project1 @context
+		    $TODO_COMMAND_ADDM "FIRST THING I NEED TO DO +project1 @context
 		    SECOND THING I NEED TO DO +project2 @context"
 		      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and
 		      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
 		      Project and context notation optional.
 
-		    addto DEST "TEXT TO ADD"
+		    $TODO_COMMAND_ADDTO DEST "TEXT TO ADD"
 		      Adds a line of text to any file located in the todo.txt directory.
 		      For example, addto inbox.txt "decide about vacation"
 
-		    append ITEM# "TEXT TO APPEND"
-		    app ITEM# "TEXT TO APPEND"
+		    $TODO_COMMAND_APPEND ITEM# "TEXT TO APPEND"
+		    $TODO_COMMAND_APPEND_SHORT ITEM# "TEXT TO APPEND"
 		      Adds TEXT TO APPEND to the end of the task on line ITEM#.
 		      Quotes optional.
 
-		    archive
+		    $TODO_COMMAND_ARCHIVE
 		      Moves all done tasks from todo.txt to done.txt and removes blank lines.
 
 		    command [ACTIONS]
 		      Runs the remaining arguments using only todo.sh builtins.
 		      Will not call any .todo.actions.d scripts.
 
-		    deduplicate
+		    $TODO_COMMAND_DEDUPLICATE 
+		    $TODO_COMMAND_DEDUPLICATE_SHORT
 		      Removes duplicate lines from todo.txt.
 
-		    del ITEM# [TERM]
-		    rm ITEM# [TERM]
+		    $TODO_COMMAND_DEL ITEM# [TERM]
+		    $TODO_COMMAND_DEL_ALT ITEM# [TERM]
 		      Deletes the task on line ITEM# in todo.txt.
 		      If TERM specified, deletes only TERM from the task.
 
-		    depri ITEM#[, ITEM#, ITEM#, ...]
-		    dp ITEM#[, ITEM#, ITEM#, ...]
+		    $TODO_COMMAND_DEPRI ITEM#[, ITEM#, ITEM#, ...]
+		    $TODO_COMMAND_DEPRI_SHORT ITEM#[, ITEM#, ITEM#, ...]
 		      Deprioritizes (removes the priority) from the task(s)
 		      on line ITEM# in todo.txt.
-
-		    do ITEM#[, ITEM#, ITEM#, ...]
+          
+		    $TODO_COMMAND_DO ITEM#[, ITEM#, ITEM#, ...]
 		      Marks task(s) on line ITEM# as done in todo.txt.
 
-		    help [ACTION...]
+		    $TODO_COMMAND_HELP [ACTION...]
 		      Display help about usage, options, built-in and add-on actions,
 		      or just the usage help for the passed ACTION(s).
 
-		    list [TERM...]
-		    ls [TERM...]
+		    $TODO_COMMAND_LIST [TERM...]
+		    $TODO_COMMAND_LIST_SHORT [TERM...]
 		      Displays all tasks that contain TERM(s) sorted by priority with line
 		      numbers.  Each task must match all TERM(s) (logical AND); to display
 		      tasks that contain any TERM (logical OR), use
@@ -218,24 +221,25 @@ actionsHelp()
 		      Hides all tasks that contain TERM(s) preceded by a
 		      minus sign (i.e. -TERM). If no TERM specified, lists entire todo.txt.
 
-		    listall [TERM...]
-		    lsa [TERM...]
+		    $TODO_COMMAND_LISTALL [TERM...]
+		    $TODO_COMMAND_LISTALL_SHORT [TERM...]
 		      Displays all the lines in todo.txt AND done.txt that contain TERM(s)
 		      sorted by priority with line  numbers.  Hides all tasks that
 		      contain TERM(s) preceded by a minus sign (i.e. -TERM).  If no
 		      TERM specified, lists entire todo.txt AND done.txt
 		      concatenated and sorted.
 
-		    listaddons
+		    $TODO_COMMAND_LISTADDONS
+		    $TODO_COMMAND_LISTADDONS_SHORT
 		      Lists all added and overridden actions in the actions directory.
 
-		    listcon [TERM...]
-		    lsc [TERM...]
+		    $TODO_COMMAND_LISTCON [TERM...]
+		    $TODO_COMMAND_LISTCON_SHORT [TERM...]
 		      Lists all the task contexts that start with the @ sign in todo.txt.
 		      If TERM specified, considers only tasks that contain TERM(s).
 
-		    listfile [SRC [TERM...]]
-		    lf [SRC [TERM...]]
+		    $TODO_COMMAND_LISTFILE [SRC [TERM...]]
+		    $TODO_COMMAND_LISTFILE_SHORT [SRC [TERM...]]
 		      Displays all the lines in SRC file located in the todo.txt directory,
 		      sorted by priority with line  numbers.  If TERM specified, lists
 		      all lines that contain TERM(s) in SRC file.  Hides all tasks that
@@ -243,8 +247,8 @@ actionsHelp()
 		      Without any arguments, the names of all text files in the todo.txt
 		      directory are listed.
 		
-		    listpri [PRIORITIES] [TERM...]
-		    lsp [PRIORITIES] [TERM...]
+		    $TODO_COMMAND_LISTPRI [PRIORITIES] [TERM...]
+		    $TODO_COMMAND_LISTPRI_SHORT [PRIORITIES] [TERM...]
 		      Displays all tasks prioritized PRIORITIES.
 		      PRIORITIES can be a single one (A) or a range (A-C).
 		      If no PRIORITIES specified, lists all prioritized tasks.
@@ -252,37 +256,39 @@ actionsHelp()
 		      Hides all tasks that contain TERM(s) preceded by a minus sign
 		      (i.e. -TERM).  
 
-		    listproj [TERM...]
-		    lsprj [TERM...]
+		    $TODO_COMMAND_LISTPROJ [TERM...]
+		    $TODO_COMMAND_LISTPROJ_SHORT [TERM...]
 		      Lists all the projects (terms that start with a + sign) in
 		      todo.txt.
 		      If TERM specified, considers only tasks that contain TERM(s).
 
-		    move ITEM# DEST [SRC]
-		    mv ITEM# DEST [SRC]
+		    $TODO_COMMAND_MOVE ITEM# DEST [SRC]
+		    $TODO_COMMAND_MOVE_SHORT ITEM# DEST [SRC]
 		      Moves a line from source text file (SRC) to destination text file (DEST).
 		      Both source and destination file must be located in the directory defined
-		      in the configuration directory.  When SRC is not defined
+              in the configuration directory (currently: $TODO_FILE).  When SRC is not defined
 		      it's by default todo.txt.
 
-		    prepend ITEM# "TEXT TO PREPEND"
-		    prep ITEM# "TEXT TO PREPEND"
+		    $TODO_COMMAND_PREPEND ITEM# "TEXT TO PREPEND"
+		    $TODO_COMMAND_PREPEND_SHORT ITEM# "TEXT TO PREPEND"
 		      Adds TEXT TO PREPEND to the beginning of the task on line ITEM#.
 		      Quotes optional.
 
-		    pri ITEM# PRIORITY
-		    p ITEM# PRIORITY
+		    $TODO_COMMAND_PRI ITEM# PRIORITY
+		    $TODO_COMMAND_PRI_SHORT ITEM# PRIORITY
 		      Adds PRIORITY to task on line ITEM#.  If the task is already
 		      prioritized, replaces current priority with new PRIORITY.
 		      PRIORITY must be a letter between A and Z.
 
-		    replace ITEM# "UPDATED TODO"
+		    $TODO_COMMAND_REPLACE ITEM# "UPDATED TODO"
+		    $TODO_COMMAND_REPLACE_SHORT ITEM# "UPDATED TODO"
 		      Replaces task on line ITEM# with UPDATED TODO.
 
-		    report
+		    $TODO_COMMAND_REPORT
+		    $TODO_COMMAND_REPORT_SHORT
 		      Adds the number of open tasks and done tasks to report.txt.
 
-		    shorthelp
+		    $TODO_COMMAND_HELP_SHORT
 		      List the one-line usage of all built-in and add-on actions.
 
 	EndActionsHelp
@@ -339,8 +345,8 @@ actionUsage()
 dieWithHelp()
 {
     case "$1" in
-        help)       help;;
-        shorthelp)  shorthelp;;
+        $TODO_COMMAND_HELP)       help;;
+        $TODO_COMMAND_HELP_SHORT)  shorthelp;;
     esac
     shift
 
@@ -535,7 +541,7 @@ do
         # Short-circuit option parsing and forward to the action.
         # Cannot just invoke shorthelp() because we need the configuration
         # processed to locate the add-on actions directory.
-        set -- '-h' 'shorthelp'
+        set -- '-h' '--help' $TODO_COMMAND_HELP_SHORT
         OPTIND=2
         ;;
     n )
@@ -986,24 +992,24 @@ fi
 
 ## Only run if $action isn't found in .todo.actions.d
 case $action in
-"add" | "a")
+$TODO_COMMAND_ADD | $TODO_COMMAND_ADD_SHORT)
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Add: "
         read input
     else
-        [ -z "$2" ] && die "usage: $TODO_SH add \"TODO ITEM\""
+        [ -z "$2" ] && die "usage: $TODO_SH $TODO_COMMAND_ADD \"TODO ITEM\""
         shift
         input=$*
     fi
     _addto "$TODO_FILE" "$input"
     ;;
 
-"addm")
+$TODO_COMMAND_ADDM)
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Add: "
         read input
     else
-        [ -z "$2" ] && die "usage: $TODO_SH addm \"TODO ITEM\""
+        [ -z "$2" ] && die "usage: $TODO_SH $TODO_COMMAND_ADDM \"TODO ITEM\""
         shift
         input=$*
     fi
@@ -1020,10 +1026,10 @@ case $action in
     IFS=$SAVEIFS
     ;;
 
-"addto" )
-    [ -z "$2" ] && die "usage: $TODO_SH addto DEST \"TODO ITEM\""
+$TODO_COMMAND_ADDTO )
+    [ -z "$2" ] && die "usage: $TODO_SH $TODO_COMMAND_ADDTO DEST \"TODO ITEM\""
     dest="$TODO_DIR/$2"
-    [ -z "$3" ] && die "usage: $TODO_SH addto DEST \"TODO ITEM\""
+    [ -z "$3" ] && die "usage: $TODO_SH $TODO_COMMAND_ADDTO DEST \"TODO ITEM\""
     shift
     shift
     input=$*
@@ -1035,8 +1041,8 @@ case $action in
     fi
     ;;
 
-"append" | "app" )
-    errmsg="usage: $TODO_SH append ITEM# \"TEXT TO APPEND\""
+$TODO_COMMAND_APPEND |$TODO_COMMAND_APPEND_SHORT)
+    errmsg="usage: $TODO_SH $TODO_COMMAND_APPEND ITEM# \"TEXT TO APPEND\""
     shift; item=$1; shift
     getTodo "$item"
 
@@ -1062,7 +1068,7 @@ case $action in
     fi
     ;;
 
-"archive" )
+$TODO_COMMAND_ARCHIVE )
     # defragment blank lines
     sed -i.bak -e '/./!d' "$TODO_FILE"
     [ $TODOTXT_VERBOSE -gt 0 ] && grep "^x " "$TODO_FILE"
@@ -1073,9 +1079,9 @@ case $action in
     fi
     ;;
 
-"del" | "rm" )
+$TODO_COMMAND_DEL| $TODO_COMMAND_DEL_ALT )
     # replace deleted line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
-    errmsg="usage: $TODO_SH del ITEM# [TERM]"
+    errmsg="usage: $TODO_SH $TODO_COMMAND_DEL ITEM# [TERM]"
     item=$2
     getTodo "$item"
 
@@ -1122,7 +1128,7 @@ case $action in
     fi
     ;;
 
-"depri" | "dp" )
+$TODO_COMMAND_DEPRI | $TODO_COMMAND_DEPRI_SHORT )
     errmsg="usage: $TODO_SH depri ITEM#[, ITEM#, ITEM#, ...]"
     shift;
     [ $# -eq 0 ] && die "$errmsg"
@@ -1145,8 +1151,8 @@ case $action in
     done
     ;;
 
-"do" )
-    errmsg="usage: $TODO_SH do ITEM#[, ITEM#, ITEM#, ...]"
+$TODO_COMMAND_DO )
+    errmsg="usage: $TODO_SH $TODO_COMMAND_DO ITEM#[, ITEM#, ITEM#, ...]"
     # shift so we get arguments to the do request
     shift;
     [ "$#" -eq 0 ] && die "$errmsg"
@@ -1179,7 +1185,7 @@ case $action in
     fi
     ;;
 
-"help" )
+$TODO_COMMAND_HELP )
     shift  ## Was help; new $1 is first help topic / action name
     if [ $# -gt 0 ]; then
         # Don't use PAGER here; we don't expect much usage output from one / few actions.
@@ -1195,7 +1201,7 @@ case $action in
     fi
     ;;
 
-"shorthelp" )
+$TODO_COMMAND_HELP_SHORT )
     if [ -t 1 ] ; then # STDOUT is a TTY
         if which "${PAGER:-less}" >/dev/null 2>&1; then
             # we have a working PAGER (or less as a default)
@@ -1205,12 +1211,13 @@ case $action in
     shorthelp # just in case something failed above, we go ahead and just spew to STDOUT
     ;;
 
-"list" | "ls" )
+$TODO_COMMAND_LIST |$TODO_COMMAND_LIST_SHORT )
     shift  ## Was ls; new $1 is first search term
+    clear
     _list "$TODO_FILE" "$@"
     ;;
 
-"listall" | "lsa" )
+$TODO_COMMAND_LISTALL |$TODO_COMMAND_LISTALL_SHORT)
     shift  ## Was lsa; new $1 is first search term
 
     TOTAL=$( sed -n '$ =' "$TODO_FILE" )
@@ -1230,7 +1237,7 @@ case $action in
     fi
     ;;
 
-"listfile" | "lf" )
+$TODO_COMMAND_LISTFILE |$TODO_COMMAND_LISTFILE_SHORT )
     shift  ## Was listfile, next $1 is file name
     if [ $# -eq 0 ]; then
         [ $TODOTXT_VERBOSE -gt 0 ] && echo "Files in the todo.txt directory:"
@@ -1243,17 +1250,17 @@ case $action in
     fi
     ;;
 
-"listcon" | "lsc" )
+$TODO_COMMAND_LISTCON |$TODO_COMMAND_LISTCON_SHORT )
     shift
     listWordsWithSigil '@' "$@"
     ;;
 
-"listproj" | "lsprj" )
+$TODO_COMMAND_LISTPROJ |$TODO_COMMAND_LISTPROJ_SHORT )
     shift
     listWordsWithSigil '+' "$@"
     ;;
 
-"listpri" | "lsp" )
+$TODO_COMMAND_LISTPRI |$TODO_COMMAND_LISTPRI_SHORT )
     shift ## was "listpri", new $1 is priority to list or first TERM
 
     pri=$(printf "%s\n" "$1" | tr 'a-z' 'A-Z' | grep -e '^[A-Z]$' -e '^[A-Z]-[A-Z]$') && shift || pri="A-Z"
@@ -1261,7 +1268,7 @@ case $action in
     _list "$TODO_FILE" "$@"
     ;;
 
-"move" | "mv" )
+$TODO_COMMAND_MOVE |$TODO_COMMAND_MOVE_SHORT )
     # replace moved line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
     errmsg="usage: $TODO_SH mv ITEM# DEST [SRC]"
     item=$2
@@ -1301,12 +1308,13 @@ case $action in
     fi
     ;;
 
-"prepend" | "prep" )
+$TODO_COMMAND_PREPEND |$TODO_COMMAND_PREPEND_SHORT )
     errmsg="usage: $TODO_SH prepend ITEM# \"TEXT TO PREPEND\""
     replaceOrPrepend 'prepend' "$@"
     ;;
 
-"pri" | "p" )
+
+$TODO_COMMAND_PRI |$TODO_COMMAND_PRI_SHORT )
     item=$2
     newpri=$( printf "%s\n" "$3" | tr 'a-z' 'A-Z' )
 
@@ -1341,12 +1349,12 @@ note: PRIORITY must be anywhere from A to Z."
     fi
     ;;
 
-"replace" )
+$TODO_COMMAND_REPLACE |$TODO_COMMAND_REPLACE_SHORT )
     errmsg="usage: $TODO_SH replace ITEM# \"UPDATED ITEM\""
     replaceOrPrepend 'replace' "$@"
     ;;
 
-"report" )
+$TODO_COMMAND_REPORT |$TODO_COMMAND_REPORT_SHORT )
     # archive first
     # Recursively invoke the script to allow overriding of the archive
     # action.
@@ -1368,7 +1376,7 @@ note: PRIORITY must be anywhere from A to Z."
     fi
     ;;
 
-"deduplicate" )
+$TODO_COMMAND_DEDUPLICATE |$TODO_COMMAND_DEDUPLICAT_SHORT )
     if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
         deduplicateSedCommand='d'
     else
@@ -1412,7 +1420,7 @@ note: PRIORITY must be anywhere from A to Z."
     fi
     ;;
 
-"listaddons" )
+$TODO_COMMAND_LISTADDONS |$TODO_COMMAND_LISTADDONS_SHORT )
     if [ -d "$TODO_ACTIONS_DIR" ]; then
         cd "$TODO_ACTIONS_DIR" || exit $?
         for action in *
