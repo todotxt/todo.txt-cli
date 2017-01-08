@@ -8,3 +8,6 @@ addx (symlink ax for fewer keystrokes)
 
 birdseye (requires Python in path and birdseye.py file)
 * Generates a textual report of open and complete tasks in all contexts and projects
+
+contextview
+* Shows all tasks grouped by context. Modified from projectview (https://github.com/the1ts/todo.txt-plugins/blob/master/actions/projectview/projectview)
