@@ -8,3 +8,6 @@ addx (symlink ax for fewer keystrokes)
 
 birdseye (requires Python in path and birdseye.py file)
 * Generates a textual report of open and complete tasks in all contexts and projects
+
+docs (requires GoogleCL configured)
+* Push and pull tasks with a Google Docs folder

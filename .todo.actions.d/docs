@@ -1,0 +1,131 @@
+#/bin/bash
+
+# Google DOCS extension for todotxt
+# First release: 7/10/2011
+# Author: Amaury Decrême - amaury.decreme at gmail.com
+# Licence: GPL http://www.gnu.org/copyleft/gpl.html
+#
+# With this add-on you can now sync your todo with Google Docs
+# Therefore, sharing your todos with people is now possible
+# This also let you sync your todos with aNotes on iPhone for example
+# Or you can display your Google managed todos on your terminal or desktop
+#
+# We explicitly omit the todotxt priority when Google Docs syncing
+#
+#
+
+function firstrun() {
+	echo "Welcome, for happiness verify the following:"
+	echo "- Google Docs account"
+	echo "- todo folder in docs (name stored in .docs file)"
+	echo "- Google CL installed (visit http://code.google.com/p/googlecl)"
+	echo "- Google CL with oAuth configured (run 'google docs list')"
+	echo "If you work in UTF-8, add 'default_encoding = utf-8' to the GENERAL section of ~/.config/googlecl/config"
+}
+
+function usage() {
+	echo "Usage: $TODO_SH docs <option>"
+	echo
+	echo "Options:"
+	echo "	pull	Pull todo from Google docs"
+	echo "	push 	Push todo to Google docs"
+	echo "	help	This help"
+	echo
+	firstrun
+}
+
+export googlst="/tmp/$(basename $0)_goog.txt"
+export todolst="/tmp/$(basename $0)_todo.txt"
+export DELIM='•'
+
+function mklst() {
+	$TODO_DIR/$TODO_SH -@+Ppf ls|grep '^[0-9]'|sed "s/\$DELIM/ /g"|sed 's/\s\{1,\}/ /g'|sed "s/\(^[0-9]*\)\ /\1$DELIM/" > $todolst
+
+	google docs list --fields title --folder "$FOLDER" 2>&1|sed 's/\s\{1,\}/ /g' > $googlst
+	if [ `grep 'No folder found' $googlst|wc -l` -ne 0 ] ; then
+		echo "$FOLDER not found"
+		rm -f $googlst 
+		exit 1
+	fi
+}
+
+DOCS=$(dirname $0)/.docs
+if [ ! -f "$DOCS" ] ; then
+	firstrun
+	echo "Type CTRL-C now if something is not ok"
+	echo
+	echo "Please, what is yout todo folder name in docs:"
+	read f
+	echo $f > "$DOCS"
+	echo "Hurray, docs pull push should work now."
+fi
+
+export FOLDER=$(cat "$DOCS")
+if [ -z "$FOLDER" ] ; then
+	echo 'TODO folder empty'
+	exit 1
+fi
+
+
+
+case $2 in
+'pull' )
+	mklst
+	cat $googlst|while read title ; do
+		if [ `awk -F$DELIM '{print $2}' "$todolst"|grep "^$title$"|wc -l` -eq 0 ] ; then
+			$TODO_DIR/$TODO_SH add "$title"
+		fi
+	done
+	cat $todolst|while read l; do
+		[ -z "$l" ] && continue
+		n=$(echo $l|awk -F$DELIM '{print $1}')
+		t=$(echo $l|awk -F$DELIM '{print $2}')
+		if [ `grep "^$t$" "$googlst"|wc -l` -eq 0 ] ; then
+			$TODO_DIR/$TODO_SH -f del "$n"
+		fi
+	done
+	;;
+'push' )
+	mklst
+	googn='/tmp/googn.txt'
+	touch $googn
+	cat $todolst|while read l; do
+		[ -z "$l" ] && continue
+		n=$(echo $l|awk -F$DELIM '{print $1}')
+		t=$(echo $l|awk -F$DELIM '{print $2}')
+		if [ `grep "^$t$" "$googlst"|wc -l` -eq 0 ] ; then
+			r=$(google docs upload --src "$googn" --title "$t" --folder "$FOLDER" 2>&1)
+			if [ `echo $r|grep 'Upload success'|wc -l` -eq 1 ] ; then
+				echo "DOCS: $t ADDED"
+			else
+				echo "DOCS: $t NOT ADDED"
+			fi
+		fi
+	done
+	rm -f $googn
+	
+	cat $googlst|while read title ; do
+		if [ `awk -F$DELIM '{print $2}' "$todolst"|grep "^$title$"|wc -l` -eq 0 ] ; then
+			r=$(google docs delete --title "^$title$" --folder "$FOLDER" --debug 2>&1 <<EOF
+y
+EOF
+)
+			if [ `echo $r|grep \'DELETE|wc -l` -eq 1 ] ; then
+				echo "DOCS: $title DELETED"
+			else
+				echo "DOCS: $title NOT DELETED"
+			fi
+		fi
+	done
+	;;
+'help' )
+	usage
+	;;
+*)
+	echo 'Unknown command. Type <todo> docs help'
+	;;
+esac
+
+rm -f $todolst
+rm -f $googlst
+
