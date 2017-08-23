@@ -1,31 +1,36 @@
-Todo.sh CHANGELOG
----
+# Changelog
+All notable changes to this project will be documented in this file.
 
-## 12/6/2013 v 2.10
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-* Enhancements:
-** Enable term filtering for listcon.
-** Add make install command.
-** Enable use of global config file in /etc/todo/config. make install installs
-a global config file.
-** Allow use of post_filter_command for listall and listpri.
-** Print usage help for custom action and all passed actions.
-** Allow configuring null data files (done.txt and report.txt) and don't create
+## [Unreleased]
+
+## [2.10] - 2013-12-06
+### Added
+- Enable term filtering for listcon.
+- Add make install command.
+- Enable use of global config file in /etc/todo/config. `make install` installs a global config file.
+- Allow use of `post_filter_command` for `listall` and `listpri`.
+- Print usage help for custom action and all passed actions.
+- Allow configuring null data files (done.txt and report.txt) and don't create
 them.
-** Color contexts and projects without an add-on, just by setting vars in the
+- Color contexts and projects without an add-on, just by setting vars in the
 config file.
-** Place add-ons in subfolders (for easier git clone).
+- Place add-ons in subfolders (for easier git clone).
 
-* Fixes:
-** Handle -h, shorthelp and help when a Fatal Error happens.
-** Properly replace date when replacing task with priority and date.
-** Fix todo_completion problem with Bash 3.1.
-** Improve code commenting/documentation.
-** Refactor code for speed/better organization.
-** Improve test coverage and test library.
 
-* todo_completion
-** Remove add date from line completion, ie, todo.sh ls 10[tab].
+### Changed
+- Handle `-h`, `shorthelp`, and `help` when a Fatal Error happens.
+- Properly replace date when replacing task with priority and date.
+- Fix `todo_completion` problem with Bash 3.1.
+- Improve code commenting/documentation.
+- Refactor code for speed/better organization.
+- Improve test coverage and test library.
+
+### Removed
+- Removed add date from line completion, ie, `todo.sh ls 10[tab]`.
+
 
 ## 4/8/2012 v 2.9
 
@@ -113,3 +118,6 @@ end of the line
 
 ## 4/2/2009 v 2.3
 * Separated _list function for reuse by various versions of l
+
+[Unreleased]: https://github.com/todotxt/todo.txt-cli/compare/v2.10...HEAD
+[2.10]: https://github.com/todotxt/todo.txt-cli/compare/v2.9...v2.10
