@@ -27,8 +27,9 @@ dist: $(DISTFILES) todo.sh
 	rm -r $(DISTNAME)
 
 .PHONY: clean
-clean:
+clean: test-pre-clean
 	rm -f $(DISTNAME).tar.gz $(DISTNAME).zip
+	rm VERSION-FILE
 
 install:
 	install --mode=755 todo.sh $(INSTALL_DIR)
@@ -48,7 +49,7 @@ test-pre-clean:
 aggregate-results: $(TESTS)
 
 $(TESTS): test-pre-clean
-	-cd tests && ./$(notdir $@) $(TEST_OPTIONS)
+	cd tests && ./$(notdir $@) $(TEST_OPTIONS)
 
 test: aggregate-results
 	tests/aggregate-results.sh tests/test-results/t*-*
