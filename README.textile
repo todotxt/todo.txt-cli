@@ -1,4 +1,5 @@
-h1. TODO.TXT Command Line Interface !https://secure.travis-ci.org/ginatrapani/todo.txt-cli.png?branch=master(Build Status)!:http://travis-ci.org/ginatrapani/todo.txt-cli
+h1. TODO.TXT Command Line Interface !https://secure.travis-ci.org/ginatrapani/todo.txt-cli.png?branch=master(Build Status)!:http://travis-ci.org/ginatrapani/todo.txt-cli !https://img.shields.io/gitter/room/TechnologyAdvice/Stardust.svg(Gitter.IM)!:https://gitter.im/todotxt/todo.txt-cli
+
 
 A simple and extensible shell script for managing your todo.txt file.
 
