@@ -657,6 +657,15 @@ export SENTENCE_DELIMITERS=',.:;'
 }
 
 [ -e "$TODOTXT_CFG_FILE" ] || {
+    CFG_FILE_ALT="${XDG_CONFIG_HOME:-$HOME/.config}/todo/config"
+
+    if [ -e "$CFG_FILE_ALT" ]
+    then
+        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
+    fi
+}
+
+[ -e "$TODOTXT_CFG_FILE" ] || {
     CFG_FILE_ALT=$(dirname "$0")"/todo.cfg"
 
     if [ -e "$CFG_FILE_ALT" ]
@@ -683,6 +692,15 @@ fi
 
 [ -d "$TODO_ACTIONS_DIR" ] || {
     TODO_ACTIONS_DIR_ALT="$HOME/.todo.actions.d"
+
+    if [ -d "$TODO_ACTIONS_DIR_ALT" ]
+    then
+        TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
+    fi
+}
+
+[ -d "$TODO_ACTIONS_DIR" ] || {
+    TODO_ACTIONS_DIR_ALT="${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"
 
     if [ -d "$TODO_ACTIONS_DIR_ALT" ]
     then
