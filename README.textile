@@ -2,9 +2,9 @@ h1. TODO.TXT Command Line Interface !https://secure.travis-ci.org/ginatrapani/to
 
 A simple and extensible shell script for managing your todo.txt file.
 
-h2. "Downloads":http://github.com/ginatrapani/todo.txt-cli/downloads
+h2. "Downloads":https://github.com/todotxt/todo.txt-cli/releases
 
-"Download the latest stable release":http://github.com/ginatrapani/todo.txt-cli/downloads for use on your desktop or server.
+"Download the latest stable release":https://github.com/todotxt/todo.txt-cli/releases for use on your desktop or server.
 
 h2. "Documentation":http://wiki.github.com/ginatrapani/todo.txt-cli
 
