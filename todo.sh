@@ -465,6 +465,20 @@ replaceOrPrepend()
   fi
 }
 
+uppercasePriority()
+{
+    # Precondition:  $input contains task text for which to uppercase priority.
+    # Postcondition: Modifies $input.
+
+    lower=( {a..z} )
+    upper=( {A..Z} )
+    for ((i=0; i<26; i++))
+    do
+        upperPriority="${upperPriority};s/^[(]${lower[i]}[)]/(${upper[i]})/"
+    done
+    input=$(echo $input | sed $upperPriority)
+}
+
 #Preserving environment variables so they don't get clobbered by the config file
 OVR_TODOTXT_AUTO_ARCHIVE="$TODOTXT_AUTO_ARCHIVE"
 OVR_TODOTXT_FORCE="$TODOTXT_FORCE"
@@ -773,6 +787,7 @@ _addto() {
     file="$1"
     input="$2"
     cleaninput
+    uppercasePriority
 
     if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
         now=$(date '+%Y-%m-%d')

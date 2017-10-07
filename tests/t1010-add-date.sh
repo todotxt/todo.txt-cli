@@ -22,7 +22,7 @@ TODO: 1 of 1 tasks shown
 EOF
 
 test_todo_session 'cmd line first day with priority' <<EOF
->>> todo.sh -pt add '(A) notice the daisies'
+>>> todo.sh -pt add '(a) notice the daisies'
 2 (A) 2009-02-13 notice the daisies
 TODO: 2 added.
 
