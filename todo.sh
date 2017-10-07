@@ -469,14 +469,13 @@ uppercasePriority()
 {
     # Precondition:  $input contains task text for which to uppercase priority.
     # Postcondition: Modifies $input.
-
     lower=( {a..z} )
     upper=( {A..Z} )
     for ((i=0; i<26; i++))
     do
         upperPriority="${upperPriority};s/^[(]${lower[i]}[)]/(${upper[i]})/"
     done
-    input=$(echo $input | sed $upperPriority)
+    input=$(echo "$input" | sed $upperPriority)
 }
 
 #Preserving environment variables so they don't get clobbered by the config file
