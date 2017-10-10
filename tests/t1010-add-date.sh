@@ -37,6 +37,22 @@ TODO: 2 of 2 tasks shown
 TODO: 2 deleted.
 EOF
 
+test_todo_session 'cmd line first day with lowercase priority' <<EOF
+>>> todo.sh -pt add '(b) notice the daisies'
+2 (B) 2009-02-13 notice the daisies
+TODO: 2 added.
+
+>>> todo.sh -p list
+2 (B) 2009-02-13 notice the daisies
+1 2009-02-13 notice the daisies
+--
+TODO: 2 of 2 tasks shown
+
+>>> todo.sh -npf del 2
+2 (B) 2009-02-13 notice the daisies
+TODO: 2 deleted.
+EOF
+
 test_tick
 
 test_todo_session 'cmd line second day' <<EOF
