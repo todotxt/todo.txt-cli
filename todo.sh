@@ -11,12 +11,10 @@ version() {
     cat <<-EndVersion
 		TODO.TXT Command Line Interface v$VERSION
 
-		First release: 5/11/2006
-		Original conception by: Gina Trapani (http://ginatrapani.org)
-		Contributors: https://github.com/ginatrapani/todo.txt-cli/network
-		License: GPL, https://www.gnu.org/copyleft/gpl.html
-		More information and mailing list at http://todotxt.com
-		Code repository: https://github.com/ginatrapani/todo.txt-cli/tree/master
+		Homepage: http://todotxt.org
+		Code repository: https://github.com/todotxt/todo.txt-cli/
+		Contributors: https://github.com/todotxt/todo.txt-cli/graphs/contributors
+		License: https://github.com/todotxt/todo.txt-cli/blob/master/LICENSE
 	EndVersion
     exit 1
 }
