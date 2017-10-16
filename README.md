@@ -23,6 +23,32 @@
 brew install todo-txt
 ```
 
+### Linux
+
+#### Arch linux (AUR)
+
+https://aur.archlinux.org/packages/todotxt-git/
+
+#### From command line
+
+```shell
+make
+make install
+make test
+```
+
+*NOTE:* Makefile defaults to several default paths for installed files. Adjust to your system
+
+- INSTALL_DIR: PATH for executables (default /usr/local/bin)
+- CONFIG_DIR: PATH for todo.txt config
+- BASH_COMPLETION: PATH for autocompletion scripts (default to /etc/bash_completion.d)
+
+Example: For arch linux
+
+```shell
+make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION_DIR=/usr/share/bash-completion/completions
+```
+
 ### Download
 Download the latest stable [release](https://github.com/todotxt/todo.txt-cli/releases) for use on your desktop or server.
 
