@@ -429,7 +429,7 @@ replaceOrPrepend()
 
   if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
     echo -n "$querytext"
-    read input
+    read -e -r input
   else
     input=$*
   fi
@@ -1021,7 +1021,7 @@ case $action in
 "add" | "a")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Add: "
-        read input
+        read -e -r input
     else
         [ -z "$2" ] && die "usage: $TODO_SH add \"TODO ITEM\""
         shift
@@ -1033,7 +1033,7 @@ case $action in
 "addm")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Add: "
-        read input
+        read -e -r input
     else
         [ -z "$2" ] && die "usage: $TODO_SH addm \"TODO ITEM\""
         shift
@@ -1074,7 +1074,7 @@ case $action in
 
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Append: "
-        read input
+        read -e -r input
     else
         input=$*
     fi
@@ -1114,7 +1114,7 @@ case $action in
     if [ -z "$3" ]; then
         if  [ $TODOTXT_FORCE = 0 ]; then
             echo "Delete '$todo'?  (y/n)"
-            read ANSWER
+            read -e -r ANSWER
         else
             ANSWER="y"
         fi
@@ -1310,7 +1310,7 @@ case $action in
     [ -z "$todo" ] && die "$item: No such item in $src."
     if  [ $TODOTXT_FORCE = 0 ]; then
         echo "Move '$todo' from $src to $dest? (y/n)"
-        read ANSWER
+        read -e -r ANSWER
     else
         ANSWER="y"
     fi
