@@ -82,7 +82,7 @@ See [CHANGELOG.md][CHANGELOG]
 
 ## Contributing
 
-We welcome all contributations. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get star [contributing][CONTRIBUTING] 
+We welcome all contributations. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started [contributing][CONTRIBUTING].
 
 ## License
 
