@@ -50,15 +50,15 @@ install: installdirs
 	$(INSTALL_PROGRAM) todo.sh $(DESTDIR)$(bindir)/todo.sh
 	$(INSTALL_DATA) todo_completion $(DESTDIR)$(datarootdir)/bash_completion.d/todo
 	[ -e $(DESTDIR)$(sysconfdir)/todo/config ] || \
-	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)/$(sysconfdir)/todo/config
+	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)$(sysconfdir)/todo/config
 
 uninstall:
 	rm -f $(DESTDIR)$(bindir)/todo.sh
 	rm -f $(DESTDIR)$(datarootdir)/bash_completion.d/todo
-	rm -f $(DESTDIR)/$(sysconfdir)/todo/config
+	rm -f $(DESTDIR)$(sysconfdir)/todo/config
 
 	rmdir $(DESTDIR)$(datarootdir)/bash_completion.d
-	rmdir $(DESTDIR)/$(sysconfdir)/todo
+	rmdir $(DESTDIR)$(sysconfdir)/todo
 
 installdirs:
 	mkdir -p $(DESTDIR)$(bindir) \
