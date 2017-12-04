@@ -1,9 +1,22 @@
 #
 # Makefile for todo.txt
 #
-INSTALL_DIR=/usr/local/bin
-CONFIG_DIR=/etc
-BASH_COMPLETION_DIR=/etc/bash_completion.d
+
+SHELL = /bin/sh
+
+INSTALL = /usr/bin/install
+INSTALL_PROGRAM = $(INSTALL)
+INSTALL_DATA = $(INSTALL) -m 644
+
+prefix = /usr/local
+
+# The directory to install todo.sh in.
+bindir = $(prefix)/bin
+
+# The directory to install the config file in.
+sysconfdir = $(prefix)/etc
+
+datarootdir = $(prefix)/share
 
 # Dynamically detect/generate version file as necessary
 # This file will define a variable called VERSION.
@@ -33,14 +46,25 @@ clean: test-pre-clean
 	rm -f $(DISTNAME).tar.gz $(DISTNAME).zip
 	rm VERSION-FILE
 
-install:
-	mkdir -p $(INSTALL_DIR)
-	install --mode=755 todo.sh $(INSTALL_DIR)
-	mkdir -p $(BASH_COMPLETION_DIR)
-	install --mode=644 todo_completion $(BASH_COMPLETION_DIR)/todo
-	mkdir -p $(CONFIG_DIR)/todo
-	[ -e $(CONFIG_DIR)/todo/config ] || \
-		sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(CONFIG_DIR)/todo/config
+install: installdirs
+	$(INSTALL_PROGRAM) todo.sh $(DESTDIR)$(bindir)/todo.sh
+	$(INSTALL_DATA) todo_completion $(DESTDIR)$(datarootdir)/bash_completion.d/todo
+	[ -e $(DESTDIR)$(sysconfdir)/todo/config ] || \
+	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)$(sysconfdir)/todo/config
+
+uninstall:
+	rm -f $(DESTDIR)$(bindir)/todo.sh
+	rm -f $(DESTDIR)$(datarootdir)/bash_completion.d/todo
+	rm -f $(DESTDIR)$(sysconfdir)/todo/config
+
+	rmdir $(DESTDIR)$(datarootdir)/bash_completion.d
+	rmdir $(DESTDIR)$(sysconfdir)/todo
+
+installdirs:
+	mkdir -p $(DESTDIR)$(bindir) \
+	         $(DESTDIR)$(sysconfdir)/todo \
+	         $(DESTDIR)$(datarootdir)/bash_completion.d
+
 #
 # Testing
 #
