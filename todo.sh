@@ -11,12 +11,10 @@ version() {
     cat <<-EndVersion
 		TODO.TXT Command Line Interface v$VERSION
 
-		First release: 5/11/2006
-		Original conception by: Gina Trapani (http://ginatrapani.org)
-		Contributors: https://github.com/ginatrapani/todo.txt-cli/network
-		License: GPL, https://www.gnu.org/copyleft/gpl.html
-		More information and mailing list at http://todotxt.com
-		Code repository: https://github.com/ginatrapani/todo.txt-cli/tree/master
+		Homepage: http://todotxt.org
+		Code repository: https://github.com/todotxt/todo.txt-cli/
+		Contributors: https://github.com/todotxt/todo.txt-cli/graphs/contributors
+		License: https://github.com/todotxt/todo.txt-cli/blob/master/LICENSE
 	EndVersion
     exit 1
 }
@@ -429,7 +427,7 @@ replaceOrPrepend()
 
   if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
     echo -n "$querytext"
-    read input
+    read -e -r input
   else
     input=$*
   fi
@@ -1021,7 +1019,7 @@ case $action in
 "add" | "a")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Add: "
-        read input
+        read -e -r input
     else
         [ -z "$2" ] && die "usage: $TODO_SH add \"TODO ITEM\""
         shift
@@ -1033,7 +1031,7 @@ case $action in
 "addm")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Add: "
-        read input
+        read -e -r input
     else
         [ -z "$2" ] && die "usage: $TODO_SH addm \"TODO ITEM\""
         shift
@@ -1074,7 +1072,7 @@ case $action in
 
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
         echo -n "Append: "
-        read input
+        read -e -r input
     else
         input=$*
     fi
@@ -1114,7 +1112,7 @@ case $action in
     if [ -z "$3" ]; then
         if  [ $TODOTXT_FORCE = 0 ]; then
             echo "Delete '$todo'?  (y/n)"
-            read ANSWER
+            read -e -r ANSWER
         else
             ANSWER="y"
         fi
@@ -1310,7 +1308,7 @@ case $action in
     [ -z "$todo" ] && die "$item: No such item in $src."
     if  [ $TODOTXT_FORCE = 0 ]; then
         echo "Move '$todo' from $src to $dest? (y/n)"
-        read ANSWER
+        read -e -r ANSWER
     else
         ANSWER="y"
     fi
