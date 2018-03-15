@@ -142,6 +142,7 @@ help()
 		    TODOTXT_PRESERVE_LINE_NUMBERS   is same as option -n (0)/-N (1)
 		    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
 		    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
+		    TODOTXT_PRIORITY_ON_ADD=pri     default priority A-Z
 		    TODOTXT_VERBOSE=1               is same as option -v
 		    TODOTXT_DISABLE_FILTER=1        is same as option -x
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
@@ -482,6 +483,7 @@ OVR_TODOTXT_FORCE="$TODOTXT_FORCE"
 OVR_TODOTXT_PRESERVE_LINE_NUMBERS="$TODOTXT_PRESERVE_LINE_NUMBERS"
 OVR_TODOTXT_PLAIN="$TODOTXT_PLAIN"
 OVR_TODOTXT_DATE_ON_ADD="$TODOTXT_DATE_ON_ADD"
+OVR_TODOTXT_PRIORITY_ON_ADD="$TODOTXT_PRIORITY_ON_ADD"
 OVR_TODOTXT_DISABLE_FILTER="$TODOTXT_DISABLE_FILTER"
 OVR_TODOTXT_VERBOSE="$TODOTXT_VERBOSE"
 OVR_TODOTXT_DEFAULT_ACTION="$TODOTXT_DEFAULT_ACTION"
@@ -601,6 +603,7 @@ TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
+TODOTXT_PRIORITY_ON_ADD=${TODOTXT_PRIORITY_ON_ADD:-}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
 TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 TODOTXT_DISABLE_FILTER=${TODOTXT_DISABLE_FILTER:-}
@@ -740,6 +743,9 @@ fi
 if [ -n "$OVR_TODOTXT_DATE_ON_ADD" ] ; then
   TODOTXT_DATE_ON_ADD="$OVR_TODOTXT_DATE_ON_ADD"
 fi
+if [ -n "$OVR_TODOTXT_PRIORITY_ON_ADD" ] ; then
+    TODOTXT_PRIORITY_ON_ADD="$OVR_TODOTXT_PRIORITY_ON_ADD"
+fi
 if [ -n "$OVR_TODOTXT_DISABLE_FILTER" ] ; then
   TODOTXT_DISABLE_FILTER="$OVR_TODOTXT_DISABLE_FILTER"
 fi
@@ -761,6 +767,9 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 [ -z "$ACTION" ]    && usage
 [ -d "$TODO_DIR" ]  || mkdir -p $TODO_DIR 2> /dev/null || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
 ( cd "$TODO_DIR" )  || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
+[ -z "$TODOTXT_PRIORITY_ON_ADD" ] \
+    || echo "$TODOTXT_PRIORITY_ON_ADD" | grep -q "^[A-Z]$" \
+    || die "TODOTXT_PRIORITY_ON_ADD should be a capital letter from A to Z (it is now \"$TODOTXT_PRIORITY_ON_ADD\")."
 
 [ -f "$TODO_FILE" -o -c "$TODO_FILE" ] || > "$TODO_FILE"
 [ -f "$DONE_FILE" -o -c "$DONE_FILE" ] || > "$DONE_FILE"
@@ -789,6 +798,11 @@ _addto() {
     if [[ $TODOTXT_DATE_ON_ADD = 1 ]]; then
         now=$(date '+%Y-%m-%d')
         input=$(echo "$input" | sed -e 's/^\(([A-Z]) \)\{0,1\}/\1'"$now /")
+    fi
+    if [[ -n "$TODOTXT_PRIORITY_ON_ADD" ]]; then
+        if ! echo "$input" | grep -q '^([A-Z])'; then
+            input=$(echo -n "($TODOTXT_PRIORITY_ON_ADD) " ; echo "$input")
+        fi
     fi
     echo "$input" >> "$file"
     if [ $TODOTXT_VERBOSE -gt 0 ]; then
