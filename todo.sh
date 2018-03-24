@@ -427,7 +427,7 @@ replaceOrPrepend()
 
   if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
     echo -n "$querytext"
-    read -i $todo -e input -r
+    read -r -i $todo -e input
   else
     input=$*
   fi
