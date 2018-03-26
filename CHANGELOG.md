@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.11.0] - 2018-03-26
+### Added
+- Added support for `$XDG_CONFIG_HOME` config file/actions location
+- Created [CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md) ([#217])
+- Created [CHANGELOG.md](/CHANGELOG.md) ([#218])
+
+
+### Changed
+- Updated `add` command to accept lowercase priority ([#230])
+- Clean tests and version file in Makefile. Don't ignore errors in tests.
+- Updated [README.md](/README.md) ([#219])
+- Update Downloads links to point at the Releases page ([#228])
+- Set the executable bit when preparing releases ([#156])
+
+### Fixes 
+- Update links to use https
+- Suppress todo.sh error messages when invoked during completion ([#8])
+
+
 ## [2.10.0] - 2013-12-06
 ### Added
 - Enable term filtering for listcon.
@@ -352,7 +371,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Consolidated into one master script with usage notes and released.
 
 
-[Unreleased]: https://github.com/todotxt/todo.txt-cli/compare/v2.10.0...HEAD
+[Unreleased]: https://github.com/todotxt/todo.txt-cli/compare/v2.11.0...HEAD
+[2.11.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.8.0...v2.9.0
 [2.8.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.7.0...v2.8.0
@@ -380,3 +400,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [1.3.0]: https://github.com/todotxt/todo.txt-cli/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/todotxt/todo.txt-cli/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/todotxt/todo.txt-cli/compare/v1.0.0...v1.1.0
+
+[#230]: https://github.com/todotxt/todo.txt-cli/pull/230
+[#228]: https://github.com/todotxt/todo.txt-cli/pull/228
+[#219]: https://github.com/todotxt/todo.txt-cli/pull/219
+[#218]: https://github.com/todotxt/todo.txt-cli/pull/218
+[#217]: https://github.com/todotxt/todo.txt-cli/pull/217
+[#156]: https://github.com/todotxt/todo.txt-cli/pull/156
+[#8]: https://github.com/todotxt/todo.txt-cli/pull/8
