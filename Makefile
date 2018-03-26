@@ -1,7 +1,22 @@
 #
 # Makefile for todo.txt
 #
-INSTALL_DIR=/usr/local/bin
+
+SHELL = /bin/sh
+
+INSTALL = /usr/bin/install
+INSTALL_PROGRAM = $(INSTALL)
+INSTALL_DATA = $(INSTALL) -m 644
+
+prefix = /usr/local
+
+# The directory to install todo.sh in.
+bindir = $(prefix)/bin
+
+# The directory to install the config file in.
+sysconfdir = $(prefix)/etc
+
+datarootdir = $(prefix)/share
 
 # Dynamically detect/generate version file as necessary
 # This file will define a variable called VERSION.
@@ -21,21 +36,36 @@ dist: $(DISTFILES) todo.sh
 	mkdir -p $(DISTNAME)
 	cp -f $(DISTFILES) $(DISTNAME)/
 	sed -e 's/@DEV_VERSION@/'$(VERSION)'/' todo.sh > $(DISTNAME)/todo.sh
+	chmod +x $(DISTNAME)/todo.sh
 	tar cf $(DISTNAME).tar $(DISTNAME)/
 	gzip -f -9 $(DISTNAME).tar
 	zip -9r $(DISTNAME).zip $(DISTNAME)/
 	rm -r $(DISTNAME)
 
 .PHONY: clean
-clean:
+clean: test-pre-clean
 	rm -f $(DISTNAME).tar.gz $(DISTNAME).zip
+	rm VERSION-FILE
 
-install:
-	install --mode=755 todo.sh $(INSTALL_DIR)
-	install --mode=644 todo_completion /etc/bash_completion.d/todo
-	mkdir -p /etc/todo
-	[ -e /etc/todo/config ] || \
-		sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > /etc/todo/config
+install: installdirs
+	$(INSTALL_PROGRAM) todo.sh $(DESTDIR)$(bindir)/todo.sh
+	$(INSTALL_DATA) todo_completion $(DESTDIR)$(datarootdir)/bash_completion.d/todo
+	[ -e $(DESTDIR)$(sysconfdir)/todo/config ] || \
+	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)$(sysconfdir)/todo/config
+
+uninstall:
+	rm -f $(DESTDIR)$(bindir)/todo.sh
+	rm -f $(DESTDIR)$(datarootdir)/bash_completion.d/todo
+	rm -f $(DESTDIR)$(sysconfdir)/todo/config
+
+	rmdir $(DESTDIR)$(datarootdir)/bash_completion.d
+	rmdir $(DESTDIR)$(sysconfdir)/todo
+
+installdirs:
+	mkdir -p $(DESTDIR)$(bindir) \
+	         $(DESTDIR)$(sysconfdir)/todo \
+	         $(DESTDIR)$(datarootdir)/bash_completion.d
+
 #
 # Testing
 #
@@ -48,7 +78,7 @@ test-pre-clean:
 aggregate-results: $(TESTS)
 
 $(TESTS): test-pre-clean
-	-cd tests && ./$(notdir $@) $(TEST_OPTIONS)
+	cd tests && ./$(notdir $@) $(TEST_OPTIONS)
 
 test: aggregate-results
 	tests/aggregate-results.sh tests/test-results/t*-*
