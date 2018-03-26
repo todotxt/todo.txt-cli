@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [2.11.0] - 2017-10-10
+## [2.11.0] - 2018-03-26
 ### Added
 - Added support for `$XDG_CONFIG_HOME` config file/actions location
 - Created [CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md) ([#217])
@@ -371,7 +371,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Consolidated into one master script with usage notes and released.
 
 
-[Unreleased]: https://github.com/todotxt/todo.txt-cli/compare/v2.10.0...HEAD
+[Unreleased]: https://github.com/todotxt/todo.txt-cli/compare/v2.11.0...HEAD
 [2.11.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.8.0...v2.9.0
