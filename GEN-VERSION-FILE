@@ -2,7 +2,7 @@
 # Based on git's GIT-VERSION-GEN.
 
 VF=VERSION-FILE
-DEF_VER=v2.2
+DEF_VER=v2.10
 
 LF='
 '
