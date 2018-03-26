@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Clean tests and version file in Makefile. Don't ignore errors in tests.
 - Updated [README.md](/README.md) ([#219])
 - Update Downloads links to point at the Releases page ([#228])
+- Set the executable bit when preparing releases ([#156])
 
 ### Fixes 
 - Update links to use https
@@ -405,4 +406,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#219]: https://github.com/todotxt/todo.txt-cli/pull/219
 [#218]: https://github.com/todotxt/todo.txt-cli/pull/218
 [#217]: https://github.com/todotxt/todo.txt-cli/pull/217
+[#156]: https://github.com/todotxt/todo.txt-cli/pull/156
 [#8]: https://github.com/todotxt/todo.txt-cli/pull/8
