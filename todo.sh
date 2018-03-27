@@ -97,6 +97,12 @@ help()
 		        Color mode
 		    -d CONFIG_FILE
 		        Use a configuration file other than the default ~/.todo/config
+		    -l
+		    	Use a (local) todo.txt that is found in the current directory
+		    	or up the directory tree
+		    -L
+		    	Use global todo.txt from the config file, not the local one
+		    	(default).
 		    -f
 		        Forces actions without confirmation or interactive input
 		    -h
@@ -139,6 +145,7 @@ help()
 		    TODOTXT_AUTO_ARCHIVE            is same as option -a (0)/-A (1)
 		    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
 		    TODOTXT_FORCE=1                 is same as option -f
+		    TODOTXT_USE_LOCAL               is same as option -l (0)/-L (1)
 		    TODOTXT_PRESERVE_LINE_NUMBERS   is same as option -n (0)/-N (1)
 		    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
 		    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
@@ -487,12 +494,13 @@ OVR_TODOTXT_VERBOSE="$TODOTXT_VERBOSE"
 OVR_TODOTXT_DEFAULT_ACTION="$TODOTXT_DEFAULT_ACTION"
 OVR_TODOTXT_SORT_COMMAND="$TODOTXT_SORT_COMMAND"
 OVR_TODOTXT_FINAL_FILTER="$TODOTXT_FINAL_FILTER"
+OVR_TODOTXT_USE_LOCAL="$TODOTXT_USE_LOCAL"
 
 # Prevent GREP_OPTIONS from malforming grep's output
 GREP_OPTIONS=""
 
 # == PROCESS OPTIONS ==
-while getopts ":fhpcnNaAtTvVx+@Pd:" Option
+while getopts ":fhpcnNaAlLtTvVx+@Pd:" Option
 do
   case $Option in
     '@' )
@@ -548,6 +556,12 @@ do
         # processed to locate the add-on actions directory.
         set -- '-h' 'shorthelp'
         OPTIND=2
+        ;;
+    l )
+        OVR_TODOTXT_USE_LOCAL=1
+        ;;
+    L )
+        OVR_TODOTXT_USE_LOCAL=0
         ;;
     n )
         OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
@@ -606,6 +620,7 @@ TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 TODOTXT_DISABLE_FILTER=${TODOTXT_DISABLE_FILTER:-}
 TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
 TODOTXT_GLOBAL_CFG_FILE=${TODOTXT_GLOBAL_CFG_FILE:-/etc/todo/config}
+TODOTXT_USE_LOCAL=${TODOTXT_USE_LOCAL:-0}
 
 # Export all TODOTXT_* variables
 export ${!TODOTXT_@}
@@ -755,8 +770,27 @@ fi
 if [ -n "$OVR_TODOTXT_FINAL_FILTER" ] ; then
   TODOTXT_FINAL_FILTER="$OVR_TODOTXT_FINAL_FILTER"
 fi
+if [ -n "$OVR_TODOTXT_USE_LOCAL" ] ; then
+  TODOTXT_USE_LOCAL="$OVR_TODOTXT_USE_LOCAL"
+fi
 
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
+
+if [ $TODOTXT_USE_LOCAL -gt 0 ]; then
+# search for todo.txt up the directory tree
+	S="${PWD}"
+	while [ -n "${S}" ] && [ ! -f "${S}/todo.txt" ] ; do
+	    S=${S%/*}
+	done
+# if found before reaching root, this is the TODO_DIR
+	if [ -n "${S}" ] ; then
+	    TODO_DIR="${S}"
+	fi
+fi
+
+TODO_FILE=${TODO_FILE:-"$TODO_DIR/todo.txt"}
+DONE_FILE=${DONE_FILE:-"$TODO_DIR/done.txt"}
+REPORT_FILE=${REPORT_FILE:-"$TODO_DIR/report.txt"}
 
 [ -z "$ACTION" ]    && usage
 [ -d "$TODO_DIR" ]  || mkdir -p $TODO_DIR 2> /dev/null || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
