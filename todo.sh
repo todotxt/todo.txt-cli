@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 # === HEAVY LIFTING ===
 shopt -s extglob extquote
@@ -428,7 +428,7 @@ replaceOrPrepend()
 
   if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
     echo -n "$querytext"
-    read -e -r input
+    read -r -i $todo -e input
   else
     input=$*
   fi
