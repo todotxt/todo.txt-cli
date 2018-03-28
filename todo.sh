@@ -496,7 +496,7 @@ export GREP_OPTIONS=""
 while getopts ":fhpcnNaAtTvVx+@Pd:" Option
 do
   case $Option in
-    '@' )
+    '@')
         ## HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
         ##   (true) the first time this flag is seen. Each time the flag
         ##   is seen after that, increment it again so that an even
@@ -512,7 +512,7 @@ do
             export HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[[:graph:]]\{1,\}'
         fi
         ;;
-    '+' )
+    '+')
         ## HIDE_PROJECT_NAMES starts at zero (false); increment it to one
         ##   (true) the first time this flag is seen. Each time the flag
         ##   is seen after that, increment it again so that an even
@@ -528,38 +528,38 @@ do
             export HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][[:graph:]]\{1,\}'
         fi
         ;;
-    a )
+    a)
         OVR_TODOTXT_AUTO_ARCHIVE=0
         ;;
-    A )
+    A)
         OVR_TODOTXT_AUTO_ARCHIVE=1
         ;;
-    c )
+    c)
         OVR_TODOTXT_PLAIN=0
         ;;
-    d )
+    d)
         TODOTXT_CFG_FILE=$OPTARG
         ;;
-    f )
+    f)
         OVR_TODOTXT_FORCE=1
         ;;
-    h )
+    h)
         # Short-circuit option parsing and forward to the action.
         # Cannot just invoke shorthelp() because we need the configuration
         # processed to locate the add-on actions directory.
         set -- '-h' 'shorthelp'
         OPTIND=2
         ;;
-    n )
+    n)
         OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
         ;;
-    N )
+    N)
         OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1
         ;;
-    p )
+    p)
         OVR_TODOTXT_PLAIN=1
         ;;
-    P )
+    P)
         ## HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
         ##   (true) the first time this flag is seen. Each time the flag
         ##   is seen after that, increment it again so that an even
@@ -575,20 +575,23 @@ do
             export HIDE_PRIORITY_SUBSTITUTION="([A-Z])[[:space:]]"
         fi
         ;;
-    t )
+    t)
         OVR_TODOTXT_DATE_ON_ADD=1
         ;;
-    T )
+    T)
         OVR_TODOTXT_DATE_ON_ADD=0
         ;;
-    v )
+    v)
         : $(( TODOTXT_VERBOSE++ ))
         ;;
-    V )
+    V)
         version
         ;;
-    x )
+    x)
         OVR_TODOTXT_DISABLE_FILTER=1
+        ;;
+    *) 
+        : $(( TODOTXT_VERBOSE++ ))
         ;;
   esac
 done
