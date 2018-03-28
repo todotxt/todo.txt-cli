@@ -428,7 +428,7 @@ replaceOrPrepend()
 
   if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
     echo -n "$querytext"
-    read -r -i $todo -e input
+    read -r -i "$todo" -e input
   else
     input=$*
   fi
@@ -609,7 +609,7 @@ TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
 TODOTXT_GLOBAL_CFG_FILE=${TODOTXT_GLOBAL_CFG_FILE:-/etc/todo/config}
 
 # Export all TODOTXT_* variables
-export ${!TODOTXT_@}
+export "${!TODOTXT_@}"
 
 # Default color map
 export NONE=''
@@ -769,7 +769,7 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
 if [ $TODOTXT_PLAIN = 1 ]; then
     for clr in ${!PRI_@}; do
-        export $clr=$NONE
+        export "$clr"=$NONE
     done
     PRI_X=$NONE
     DEFAULT=$NONE
@@ -1083,7 +1083,7 @@ case $action in
     esac
     cleaninput "for sed"
 
-    if sed -i.bak $item" s|^.*|&${appendspace}${input}|" "$TODO_FILE"; then
+    if sed -i.bak "$item"" s|^.*|&${appendspace}${input}|" "$TODO_FILE"; then
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
             getNewtodo "$item"
             echo "$item $newtodo"
@@ -1120,10 +1120,10 @@ case $action in
         if [ "$ANSWER" = "y" ]; then
             if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
                 # delete line (changes line numbers)
-                sed -i.bak -e $item"s/^.*//" -e '/./!d' "$TODO_FILE"
+                sed -i.bak -e "$item""s/^.*//" -e '/./!d' "$TODO_FILE"
             else
                 # leave blank line behind (preserves line numbers)
-                sed -i.bak -e $item"s/^.*//" "$TODO_FILE"
+                sed -i.bak -e "$item""s/^.*//" "$TODO_FILE"
             fi
             if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
                 echo "$item $todo"
@@ -1134,11 +1134,11 @@ case $action in
         fi
     else
         sed -i.bak \
-            -e $item"s/^\((.) \)\{0,1\} *$3 */\1/g" \
-            -e $item"s/ *$3 *\$//g" \
-            -e $item"s/  *$3 */ /g" \
-            -e $item"s/ *$3  */ /g" \
-            -e $item"s/$3//g" \
+            -e "$item""s/^\((.) \)\{0,1\} *$3 */\1/g" \
+            -e "$item""s/ *$3 *\$//g" \
+            -e "$item""s/  *$3 */ /g" \
+            -e "$item""s/ *$3  */ /g" \
+            -e "$item""s/$3//g" \
             "$TODO_FILE"
         getNewtodo "$item"
         if [ "$todo" = "$newtodo" ]; then
@@ -1164,7 +1164,7 @@ case $action in
         getTodo "$item"
 
 	if [[ "$todo" = \(?\)\ * ]]; then
-	    sed -i.bak -e $item"s/^(.) //" "$TODO_FILE"
+	    sed -i.bak -e "$item""s/^(.) //" "$TODO_FILE"
 	    if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
 		getNewtodo "$item"
 		echo "$item $newtodo"
@@ -1191,8 +1191,8 @@ case $action in
         if [ "${todo:0:2}" != "x " ]; then
             now=$(date '+%Y-%m-%d')
             # remove priority once item is done
-            sed -i.bak $item"s/^(.) //" "$TODO_FILE"
-            sed -i.bak $item"s|^|x $now |" "$TODO_FILE"
+            sed -i.bak "$item""s/^(.) //" "$TODO_FILE"
+            sed -i.bak "$item""s|^|x $now |" "$TODO_FILE"
             if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
                 getNewtodo "$item"
                 echo "$item $newtodo"
@@ -1316,10 +1316,10 @@ case $action in
     if [ "$ANSWER" = "y" ]; then
         if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
             # delete line (changes line numbers)
-            sed -i.bak -e $item"s/^.*//" -e '/./!d' "$src"
+            sed -i.bak -e "$item""s/^.*//" -e '/./!d' "$src"
         else
             # leave blank line behind (preserves line numbers)
-            sed -i.bak -e $item"s/^.*//" "$src"
+            sed -i.bak -e "$item""s/^.*//" "$src"
         fi
         echo "$todo" >> "$dest"
 
@@ -1354,7 +1354,7 @@ note: PRIORITY must be anywhere from A to Z."
     fi
 
     if [ "$oldpri" != "$newpri" ]; then
-        sed -i.bak -e $item"s/^(.) //" -e $item"s/^/($newpri) /" "$TODO_FILE"
+        sed -i.bak -e "$item""s/^(.) //" -e "$item""s/^/($newpri) /" "$TODO_FILE"
     fi
     if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
         getNewtodo "$item"
