@@ -584,7 +584,7 @@ do
         OVR_TODOTXT_DATE_ON_ADD=0
         ;;
     v)
-        : $(( TODOTXT_VERBOSE++ ))
+        usage
         ;;
     V)
         version
@@ -593,7 +593,7 @@ do
         OVR_TODOTXT_DISABLE_FILTER=1
         ;;
     *)
-        : $(( TODOTXT_VERBOSE++ ))
+        usage
         ;;
   esac
 done
