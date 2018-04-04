@@ -584,7 +584,7 @@ do
         OVR_TODOTXT_DATE_ON_ADD=0
         ;;
     v)
-        usage
+        : $(( TODOTXT_VERBOSE++ ))
         ;;
     V)
         version
