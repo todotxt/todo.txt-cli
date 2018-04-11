@@ -51,7 +51,7 @@ shorthelp()
 		    deduplicate
 		    del|rm ITEM# [TERM]
 		    depri|dp ITEM#[, ITEM#, ITEM#, ...]
-		    do ITEM#[, ITEM#, ITEM#, ...]
+		    done|do ITEM#[, ITEM#, ITEM#, ...]
 		    help [ACTION...]
 		    list|ls [TERM...]
 		    listall|lsa [TERM...]
@@ -201,6 +201,7 @@ actionsHelp()
 		      Deprioritizes (removes the priority) from the task(s)
 		      on line ITEM# in todo.txt.
 
+		    done ITEM#[, ITEM#, ITEM#, ...]
 		    do ITEM#[, ITEM#, ITEM#, ...]
 		      Marks task(s) on line ITEM# as done in todo.txt.
 
@@ -1193,7 +1194,7 @@ case $action in
     done
     ;;
 
-"do" )
+"do" | "done" )
     errmsg="usage: $TODO_SH do ITEM#[, ITEM#, ITEM#, ...]"
     # shift so we get arguments to the do request
     shift;
