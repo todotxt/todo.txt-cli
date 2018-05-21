@@ -647,6 +647,7 @@ export PRI_X=$WHITE         # color unless explicitly defined
 # Default project and context colors.
 export COLOR_PROJECT=$NONE
 export COLOR_CONTEXT=$NONE
+export COLOR_DUE=$NONE
 
 # Default highlight colors.
 export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
@@ -789,10 +790,12 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     COLOR_DONE=$NONE
     COLOR_PROJECT=$NONE
     COLOR_CONTEXT=$NONE
+    COLOR_DUE=$NONE
 fi
 
 [[ "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
 [[ "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
+[[ "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_DUE="$NONE"
 
 _addto() {
     file="$1"
@@ -964,6 +967,9 @@ _format()
                 ctx_beg = highlight("COLOR_CONTEXT")
                 ctx_end = (ctx_beg ? (highlight("DEFAULT") clr) : "")
 
+                due_beg = highlight("COLOR_DUE")
+                due_end = (due_beg ? (highlight("DEFAULT") clr) : "")
+
                 gsub(/[ \t][ \t]*/, "\n&\n")
                 len = split($0, words, /\n/)
 
@@ -973,6 +979,8 @@ _format()
                         printf "%s", prj_beg words[i] prj_end
                     } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
                         printf "%s", ctx_beg words[i] ctx_end
+                    } else if (words[i] ~ /^due:[0-9]{4}-[0-9]{2}-[0-9]{2}$/) {
+                        printf "%s", due_beg words[i] due_end
                     } else {
                         printf "%s", words[i]
                     }
