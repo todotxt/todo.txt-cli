@@ -979,7 +979,7 @@ _format()
                         printf "%s", prj_beg words[i] prj_end
                     } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
                         printf "%s", ctx_beg words[i] ctx_end
-                    } else if (words[i] ~ /^due:[0-9]{4}-[0-9]{2}-[0-9]{2}$/) {
+                    } else if (words[i] ~ /^due:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/) {
                         printf "%s", due_beg words[i] due_end
                     } else {
                         printf "%s", words[i]
