@@ -10,13 +10,28 @@ INSTALL_DATA = $(INSTALL) -m 644
 
 prefix = /usr/local
 
+# ifdef check allows the user to pass custom dirs
+# as per the README
+
 # The directory to install todo.sh in.
-INSTALL_DIR = $(prefix)/bin
+ifdef INSTALL_DIR
+	bindir = $(INSTALL_DIR)
+else
+	bindir = $(prefix)/bin
+endif
 
 # The directory to install the config file in.
-CONFIG_DIR = $(prefix)/etc
+ifdef CONFIG_DIR
+	sysconfdir = $(CONFIG_DIR)
+else
+	sysconfdir = $(prefix)/etc
+endif
 
-BASH_COMPLETION = $(prefix)/share
+ifdef BASH_COMPLETION
+	datarootdir = $(BASH_COMPLETION)
+else
+	datarootdir = $(prefix)/share
+endif
 
 # Dynamically detect/generate version file as necessary
 # This file will define a variable called VERSION.
@@ -48,23 +63,23 @@ clean: test-pre-clean
 	rm VERSION-FILE
 
 install: installdirs
-	$(INSTALL_PROGRAM) todo.sh $(DESTDIR)$(INSTALL_DIR)/todo.sh
-	$(INSTALL_DATA) todo_completion $(DESTDIR)$(BASH_COMPLETION)/bash_completion.d/todo
-	[ -e $(DESTDIR)$(CONFIG_DIR)/todo/config ] || \
-	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)$(CONFIG_DIR)/todo/config
+	$(INSTALL_PROGRAM) todo.sh $(DESTDIR)$(bindir)/todo.sh
+	$(INSTALL_DATA) todo_completion $(DESTDIR)$(datarootdir)/bash_completion.d/todo
+	[ -e $(DESTDIR)$(sysconfdir)/todo/config ] || \
+	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)$(sysconfdir)/todo/config
 
 uninstall:
-	rm -f $(DESTDIR)$(INSTALL_DIR)/todo.sh
-	rm -f $(DESTDIR)$(BASH_COMPLETION)/bash_completion.d/todo
-	rm -f $(DESTDIR)$(CONFIG_DIR)/todo/config
+	rm -f $(DESTDIR)$(bindir)/todo.sh
+	rm -f $(DESTDIR)$(datarootdir)/bash_completion.d/todo
+	rm -f $(DESTDIR)$(sysconfdir)/todo/config
 
-	rmdir $(DESTDIR)$(BASH_COMPLETION)/bash_completion.d
-	rmdir $(DESTDIR)$(CONFIG_DIR)/todo
+	rmdir $(DESTDIR)$(datarootdir)/bash_completion.d
+	rmdir $(DESTDIR)$(sysconfdir)/todo
 
 installdirs:
-	mkdir -p $(DESTDIR)$(INSTALL_DIR) \
-	         $(DESTDIR)$(CONFIG_DIR)/todo \
-	         $(DESTDIR)$(BASH_COMPLETION)/bash_completion.d
+	mkdir -p $(DESTDIR)$(bindir) \
+	         $(DESTDIR)$(sysconfdir)/todo \
+	         $(DESTDIR)$(datarootdir)/bash_completion.d
 
 #
 # Testing
