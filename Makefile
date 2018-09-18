@@ -48,23 +48,23 @@ clean: test-pre-clean
 	rm VERSION-FILE
 
 install: installdirs
-	$(INSTALL_PROGRAM) todo.sh $(INSTALL_DIR)/todo.sh
-	$(INSTALL_DATA) todo_completion $(BASH_COMPLETION)/bash_completion.d/todo
-	[ -e $(CONFIG_DIR)/todo/config ] || \
-	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(CONFIG_DIR)/todo/config
+	$(INSTALL_PROGRAM) todo.sh $(DESTDIR)$(INSTALL_DIR)/todo.sh
+	$(INSTALL_DATA) todo_completion $(DESTDIR)$(BASH_COMPLETION)/bash_completion.d/todo
+	[ -e $(DESTDIR)$(CONFIG_DIR)/todo/config ] || \
+	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)$(CONFIG_DIR)/todo/config
 
 uninstall:
-	rm -f $(INSTALL_DIR)/todo.sh
-	rm -f $(BASH_COMPLETION)/bash_completion.d/todo
-	rm -f $(CONFIG_DIR)/todo/config
+	rm -f $(DESTDIR)$(INSTALL_DIR)/todo.sh
+	rm -f $(DESTDIR)$(BASH_COMPLETION)/bash_completion.d/todo
+	rm -f $(DESTDIR)$(CONFIG_DIR)/todo/config
 
-	rmdir $(BASH_COMPLETION)/bash_completion.d
-	rmdir $(CONFIG_DIR)/todo
+	rmdir $(DESTDIR)$(BASH_COMPLETION)/bash_completion.d
+	rmdir $(DESTDIR)$(CONFIG_DIR)/todo
 
 installdirs:
-	mkdir -p $(INSTALL_DIR) \
-	         $(CONFIG_DIR)/todo \
-	         $(BASH_COMPLETION)/bash_completion.d
+	mkdir -p $(DESTDIR)$(INSTALL_DIR) \
+	         $(DESTDIR)$(CONFIG_DIR)/todo \
+	         $(DESTDIR)$(BASH_COMPLETION)/bash_completion.d
 
 #
 # Testing
