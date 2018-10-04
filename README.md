@@ -42,7 +42,7 @@ make test
 - `BASH_COMPLETION`: PATH for autocompletion scripts (default to /etc/bash_completion.d)
 
 ```shell
-make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION_DIR=/usr/share/bash-completion/completions
+make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION=/usr/share/bash-completion/completions
 ```
 
 #### Arch Linux (AUR)
