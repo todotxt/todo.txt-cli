@@ -972,7 +972,7 @@ _format()
 
                 printf "%s", clr
 	       	for (i = 1; i <= len; ++i) {
-                    if (words[i] ~ /^[0-9]+$/) {
+		    if ((i == 1) && (words[i] ~ /^[0-9]+$/)) {
                         printf "%s", id_beg words[i] id_end
 		    } else if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
                         printf "%s", prj_beg words[i] prj_end

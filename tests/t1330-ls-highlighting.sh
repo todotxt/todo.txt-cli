@@ -182,4 +182,26 @@ test_todo_session 'highlighting priority position' <<EOF
 TODO: 3 of 3 tasks shown
 EOF
 
+# check highlighting of task ids
+#
+TEST_TODO_CUSTOM=todo-custom.cfg
+cat todo.cfg > "$TEST_TODO_CUSTOM"
+cat >> "$TEST_TODO_CUSTOM" <<'EOF'
+export PRI_A=$RED
+export COLOR_ID=$YELLOW
+EOF
+cat > todo.txt <<EOF
+(A) some prioritized task
+1 task containing 3 various numbers 15
+simple task with id
+EOF
+test_todo_session 'highlighting task id' <<'EOF'
+>>> todo.sh -d "$TEST_TODO_CUSTOM" ls
+[0;31m[1;33m1[0m[0;31m (A) some prioritized task[0m
+[1;33m2[0m 1 task containing 3 various numbers 15
+[1;33m3[0m simple task with id
+--
+TODO: 3 of 3 tasks shown
+EOF
+
 test_done
