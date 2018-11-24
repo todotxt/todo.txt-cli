@@ -957,8 +957,8 @@ _format()
                     }
                 }
                 end_clr = (clr ? highlight("DEFAULT") : "")
-
-		id_beg = highlight("COLOR_ID")
+		
+                id_beg = highlight("COLOR_ID")
                 id_end = ( id_beg ? (highlight("DEFAULT") clr) : "")
 
                 prj_beg = highlight("COLOR_PROJECT")
@@ -971,10 +971,10 @@ _format()
                 len = split($0, words, /\n/)
 
                 printf "%s", clr
-	       	for (i = 1; i <= len; ++i) {
-		    if ((i == 1) && (words[i] ~ /^[0-9]+$/)) {
+                for (i = 1; i <= len; ++i) {
+                    if ((i == 1) && (words[i] ~ /^[0-9]+$/)) {
                         printf "%s", id_beg words[i] id_end
-		    } else if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
+                    } else if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
                         printf "%s", prj_beg words[i] prj_end
                     } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
                         printf "%s", ctx_beg words[i] ctx_end
