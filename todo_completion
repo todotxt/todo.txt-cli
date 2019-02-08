@@ -14,15 +14,15 @@ _todo()
         rm depri dp do help list ls listaddons listall lsa listcon  \
         lsc listfile lf listpri lsp listproj lsprj move \
         mv prepend prep pri p replace report shorthelp"
-    local -r MOVE_COMMAND_PATTERN='^(move|mv)$'
+    local -r MOVE_COMMAND_PATTERN='move|mv'
 
     local _todo_sh=${_todo_sh:-todo.sh}
     local completions
     if [ $COMP_CWORD -eq 1 ]; then
         completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons 2>/dev/null) $OPTS"
     elif [[ $COMP_CWORD -gt 2 && ( \
-        "${COMP_WORDS[COMP_CWORD-2]}" =~ $MOVE_COMMAND_PATTERN || \
-        "${COMP_WORDS[COMP_CWORD-3]}" =~ $MOVE_COMMAND_PATTERN ) ]]; then
+        "${COMP_WORDS[COMP_CWORD-2]}" =~ ^($MOVE_COMMAND_PATTERN)$ || \
+        "${COMP_WORDS[COMP_CWORD-3]}" =~ ^($MOVE_COMMAND_PATTERN)$ ) ]]; then
         # "move ITEM# DEST [SRC]" has file arguments on positions 2 and 3.
         completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listfile 2>/dev/null)
     else
