@@ -101,7 +101,8 @@ help()
 		        Use a configuration file other than the default ~/.todo/config
 		    -l
 		    	Use a (local) todo.txt that is found in the current directory
-		    	or up the directory tree
+		    	or up the directory tree, falling back to the configured (global)
+				TODO_DIR if no local one is found
 		    -L
 		    	Use global todo.txt from the config file, not the local one
 		    	(default).
