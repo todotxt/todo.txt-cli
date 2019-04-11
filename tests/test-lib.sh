@@ -495,6 +495,12 @@ test_init_todo () {
 	#...
 	if date --version 2>&1 | grep -q "GNU"; then
 		DATE_STYLE=GNU
+	# on Mac OS X 10.13:
+	# date: illegal option -- -
+	# usage: date [-jnRu] [-d dst] [-r seconds] [-t west] [-v[+|-]val[ymwdHMS]] ... 
+	# [-f fmt date | [[[mm]dd]HH]MM[[cc]yy][.ss]] [+format]
+	elif date --version 2>&1 | grep -q -e "-jnRu"; then
+		DATE_STYLE=Mac10.13
 	# on Mac OS X 10.5:
 	#date --version
 	#date: illegal option -- -
@@ -516,6 +522,13 @@ test_init_todo () {
 			cat > bin/date <<-EOF
 			#!/bin/sh
 			exec "$TODO_TEST_REAL_DATE" -d @\$TODO_TEST_TIME \$@
+			EOF
+			chmod 755 bin/date
+		;;
+		Mac10.13)
+			cat > bin/date <<-EOF
+			#!/bin/sh
+			exec "$TODO_TEST_REAL_DATE" -j -f %s \$TODO_TEST_TIME \$@
 			EOF
 			chmod 755 bin/date
 		;;
