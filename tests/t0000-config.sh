@@ -35,6 +35,17 @@ touch used_config
 EOF
 
 rm -f used_config
+test_expect_success 'config file ($PWD location)' '
+    mkdir tmp
+    cp test.cfg tmp/todo.cfg
+    cd tmp
+    todo.sh > ../output;
+    cd ..
+    test_cmp expect output && test -f tmp/used_config &&
+        rm -rf tmp
+'
+
+rm -f used_config
 test_expect_success 'config file (default location 1)' '
     mkdir .todo
     cp test.cfg .todo/config
