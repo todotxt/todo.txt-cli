@@ -500,7 +500,7 @@ test_init_todo () {
 	#date: illegal option -- -
 	#usage: date [-jnu] [-d dst] [-r seconds] [-t west] [-v[+|-]val[ymwdHMS]] ...
 	#[-f fmt date | [[[mm]dd]HH]MM[[cc]yy][.ss]] [+format]
-	elif date --version 2>&1 | grep -q -e "-jnu"; then
+	elif date --version 2>&1 | grep -q -e "-jnR\?u"; then
 		DATE_STYLE=Mac10.5
 	# on Mac OS X 10.4:
 	#date --version
