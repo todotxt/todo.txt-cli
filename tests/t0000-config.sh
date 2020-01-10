@@ -79,4 +79,18 @@ test_expect_success 'config file (env variable)' '
     test_cmp expect output && test -f used_config
 '
 
+cat > minimal.cfg << EOF
+export TODO_DIR=.
+touch used_config
+EOF
+
+rm -f used_config
+test_expect_success 'config file (minimal)' '
+    mkdir .todo
+    cp minimal.cfg .todo/config
+    todo.sh > output;
+    test_cmp expect output && test -f used_config &&
+        rm -rf .todo
+'
+
 test_done
