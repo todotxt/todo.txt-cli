@@ -8,8 +8,6 @@ checks that no such empty files are created.
 '
 . ./test-lib.sh
 
-rm -f todo.cfg
-
 cat > test.cfg << EOF
 export TODO_DIR=.
 export TODO_FILE="\$TODO_DIR/todo.txt"

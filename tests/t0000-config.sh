@@ -37,7 +37,7 @@ EOF
 rm -f used_config
 test_expect_success 'config file ($PWD location)' '
     mkdir tmp
-    cp test.cfg tmp/todo.cfg
+    cp test.cfg tmp/todos.cfg
     cd tmp
     todo.sh > ../output;
     cd ..
