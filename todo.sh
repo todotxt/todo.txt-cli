@@ -657,6 +657,12 @@ export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
 # (todo.sh add 42 ", foo") syntactically correct.
 export SENTENCE_DELIMITERS=',.:;'
 
+CFG_FILE_ALT=$(pwd)"/todo.cfg"
+
+[ -e "$CFG_FILE_ALT" ] && {
+    TODOTXT_CFG_FILE="$CFG_FILE_ALT"
+}
+
 [ -e "$TODOTXT_CFG_FILE" ] || {
     CFG_FILE_ALT="$HOME/todo.cfg"
 
