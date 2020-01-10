@@ -776,6 +776,10 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
     || echo "$TODOTXT_PRIORITY_ON_ADD" | grep -q "^[A-Z]$" \
     || die "TODOTXT_PRIORITY_ON_ADD should be a capital letter from A to Z (it is now \"$TODOTXT_PRIORITY_ON_ADD\")."
 
+[ -z "$TODO_FILE" ] && TODO_FILE="$TODO_DIR/todo.txt"
+[ -z "$DONE_FILE" ] && DONE_FILE="$TODO_DIR/done.txt"
+[ -z "$REPORT_FILE" ] && REPORT_FILE="$TODO_DIR/report.txt"
+
 [ -f "$TODO_FILE" ] || [ -c "$TODO_FILE" ] || > "$TODO_FILE"
 [ -f "$DONE_FILE" ] || [ -c "$DONE_FILE" ] || > "$DONE_FILE"
 [ -f "$REPORT_FILE" ] || [ -c "$REPORT_FILE" ] || > "$REPORT_FILE"
