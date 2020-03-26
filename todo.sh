@@ -809,6 +809,7 @@ _addto() {
             input=$(echo -n "($TODOTXT_PRIORITY_ON_ADD) " ; echo "$input")
         fi
     fi
+    sed -i.bak -e '$a\' "$file"
     echo "$input" >> "$file"
     if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
         TASKNUM=$(sed -n '$ =' "$file")
