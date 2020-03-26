@@ -466,6 +466,12 @@ replaceOrPrepend()
   fi
 }
 
+fixMissingEndOfLine()
+{
+    # Parameters:    $1: todo file; empty means $TODO_FILE.
+    sed -i.bak -e '$a\' "${1:-$TODO_FILE}"
+}
+
 uppercasePriority()
 {
     # Precondition:  $input contains task text for which to uppercase priority.
@@ -809,7 +815,7 @@ _addto() {
             input=$(echo -n "($TODOTXT_PRIORITY_ON_ADD) " ; echo "$input")
         fi
     fi
-    sed -i.bak -e '$a\' "$file"
+    fixMissingEndOfLine "$file"
     echo "$input" >> "$file"
     if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
         TASKNUM=$(sed -n '$ =' "$file")
@@ -1340,7 +1346,7 @@ case $action in
             # leave blank line behind (preserves line numbers)
             sed -i.bak -e "${item}s/^.*//" "$src"
         fi
-        sed -i.bak -e '$a\' "$dest"
+        fixMissingEndOfLine "$dest"
         echo "$todo" >> "$dest"
 
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
