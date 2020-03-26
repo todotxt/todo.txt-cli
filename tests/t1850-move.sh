@@ -49,4 +49,26 @@ TODO: 2 of 2 tasks shown
 DONE: 2 of 2 tasks shown
 EOF
 
+echo -n 'this is a first task without newline' > todo.txt
+cat > done.txt <<EOF
+x 2009-02-13 make the coffee +wakeup
+x 2009-02-13 smell the coffee +wakeup
+EOF
+test_todo_session 'move to destination without EOL' <<EOF
+>>> todo.sh -f move 2 todo.txt done.txt | sed "s#'[^']\+/\([^/']\+\)'#'\1'#g"
+2 x 2009-02-13 smell the coffee +wakeup
+TODO: 2 moved from 'done.txt' to 'todo.txt'.
+
+>>> todo.sh -p ls
+1 this is a first task without newline
+2 x 2009-02-13 smell the coffee +wakeup
+--
+TODO: 2 of 2 tasks shown
+
+>>> todo.sh -p listfile done.txt
+1 x 2009-02-13 make the coffee +wakeup
+--
+DONE: 1 of 1 tasks shown
+EOF
+
 test_done

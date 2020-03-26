@@ -1340,6 +1340,7 @@ case $action in
             # leave blank line behind (preserves line numbers)
             sed -i.bak -e "${item}s/^.*//" "$src"
         fi
+        sed -i.bak -e '$a\' "$dest"
         echo "$todo" >> "$dest"
 
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
