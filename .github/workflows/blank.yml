@@ -22,7 +22,12 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
-    - name: Run test
+    - name: make dist
+      run: make dist
+
+    - name: make install
+      run: make dist
+
+    - name: make test
       run: make test
 
