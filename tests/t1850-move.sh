@@ -14,7 +14,7 @@ x 2009-02-13 make the coffee +wakeup
 x 2009-02-13 smell the coffee +wakeup
 EOF
 test_todo_session 'basic move with implicit source' <<EOF
->>> todo.sh -f move 1 done.txt | sed "s#'[^']\+/\([^/']\+\)'#'\1'#g"
+>>> todo.sh -f move 1 done.txt | sed "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g"
 1 (B) smell the uppercase Roses +flowers @outside
 TODO: 1 moved from 'todo.txt' to 'done.txt'.
 
@@ -32,7 +32,7 @@ DONE: 3 of 3 tasks shown
 EOF
 
 test_todo_session 'basic move with passed source' <<EOF
->>> todo.sh -f move 2 todo.txt done.txt | sed "s#'[^']\+/\([^/']\+\)'#'\1'#g"
+>>> todo.sh -f move 2 todo.txt done.txt | sed "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g"
 2 x 2009-02-13 smell the coffee +wakeup
 TODO: 2 moved from 'done.txt' to 'todo.txt'.
 
@@ -55,7 +55,7 @@ x 2009-02-13 make the coffee +wakeup
 x 2009-02-13 smell the coffee +wakeup
 EOF
 test_todo_session 'move to destination without EOL' <<EOF
->>> todo.sh -f move 2 todo.txt done.txt | sed "s#'[^']\+/\([^/']\+\)'#'\1'#g"
+>>> todo.sh -f move 2 todo.txt done.txt | sed "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g"
 2 x 2009-02-13 smell the coffee +wakeup
 TODO: 2 moved from 'done.txt' to 'todo.txt'.
 
