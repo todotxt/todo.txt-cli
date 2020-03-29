@@ -110,4 +110,17 @@ TODO: 1 added.
 TODO: 1 of 1 tasks shown
 EOF
 
+echo -n 'this is a first task without newline' > todo.txt
+test_todo_session 'add to file without EOL' <<EOF
+>>> todo.sh add "a second task"
+2 a second task
+TODO: 2 added.
+
+>>> todo.sh list
+2 a second task
+1 this is a first task without newline
+--
+TODO: 2 of 2 tasks shown
+EOF
+
 test_done
