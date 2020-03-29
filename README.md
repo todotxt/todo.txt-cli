@@ -2,7 +2,7 @@
 
 > A simple and extensible shell script for managing your todo.txt file.
 
-[![Build Status](https://travis-ci.org/todotxt/todo.txt-cli.svg?branch=master)](https://travis-ci.org/todotxt/todo.txt-cli)
+![CI](https://github.com/todotxt/todo.txt-cli/workflows/CI/badge.svg)
 [![GitHub issues](https://img.shields.io/github/issues/todotxt/todo.txt-cli.svg)](https://github.com/todotxt/todo.txt-cli/issues) 
 [![GitHub forks](https://img.shields.io/github/forks/todotxt/todo.txt-cli.svg)](https://github.com/todotxt/todo.txt-cli/network)
 [![GitHub stars](https://img.shields.io/github/stars/todotxt/todo.txt-cli.svg)](https://github.com/todotxt/todo.txt-cli/stargazers)
