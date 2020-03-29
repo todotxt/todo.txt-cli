@@ -37,9 +37,9 @@ dist: $(DISTFILES) todo.sh
 	cp -f $(DISTFILES) $(DISTNAME)/
 	sed -e 's/@DEV_VERSION@/'$(VERSION)'/' todo.sh > $(DISTNAME)/todo.sh
 	chmod +x $(DISTNAME)/todo.sh
-	tar cf $(DISTNAME).tar $(DISTNAME)/
+	tar cf $(DISTNAME).tar $(DISTNAME)
 	gzip -f -9 $(DISTNAME).tar
-	zip -9r $(DISTNAME).zip $(DISTNAME)/
+	tar cf $(DISTNAME).zip $(DISTNAME)
 	rm -r $(DISTNAME)
 
 .PHONY: clean
