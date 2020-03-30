@@ -99,7 +99,7 @@ test_todo_session 'listcon allowing parentheses around contexts' <<EOF
 @y
 EOF
 test_todo_session 'listcon with all customizations combined' <<EOF
->>> TODOTXT_SIGIL_VALID_PATTERN='.\{2,\}' TODOTXT_SIGIL_BEFORE_PATTERN='\(w:\|(\)\{0,1\}' TODOTXT_SIGIL_AFTER_PATTERN=')\{0,1\}' todo.sh listcon
+>>> TODOTXT_SIGIL_VALID_PATTERN='.\{2,\}' TODOTXT_SIGIL_BEFORE_PATTERN='\(w:\)\{0,1\}\((\)\{0,1\}' TODOTXT_SIGIL_AFTER_PATTERN=')\{0,1\}' todo.sh listcon
 @GinaTrapani
 @OtherContributors
 @home
