@@ -75,6 +75,33 @@ test_todo_session 'listproj with context' <<EOF
 +sunflowers
 EOF
 
+cat > todo.txt <<EOF
+(B) give a +1 to this project
+(C) notice the sunflowers +sunflowers [+gardening] [+landscape]
+stop
+EOF
+test_todo_session 'listproj with default configuration' <<EOF
+>>> todo.sh listproj
++1
++sunflowers
+EOF
+test_todo_session 'listproj limiting to alphabetic characters' <<EOF
+>>> TODOTXT_SIGIL_VALID_PATTERN='[a-zA-Z]\{1,\}' todo.sh listproj
++sunflowers
+EOF
+test_todo_session 'listproj allowing brackets around projects' <<EOF
+>>> TODOTXT_SIGIL_BEFORE_PATTERN='\[\{0,1\}' TODOTXT_SIGIL_AFTER_PATTERN='\]\{0,1\}' todo.sh listproj
++1
++gardening
++landscape
++sunflowers
+EOF
+
+cat > todo.txt <<EOF
+(B) smell the uppercase Roses +roses @outside +shared
+(C) notice the sunflowers +sunflowers @garden +shared +landscape
+stop
+EOF
 TEST_TODO_CUSTOM=todo-custom.cfg
 cat todo.cfg > "$TEST_TODO_CUSTOM"
 cat >> "$TEST_TODO_CUSTOM" <<'EOF'
