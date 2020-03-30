@@ -93,5 +93,5 @@ The core team looks at Pull Requests on a regular basis. After feedback has been
 You can chat with the core team on https://gitter.im/todotxt/.
 
 [todo.txt]: https://github.com/todotxt/
-[Code of Conduct]: /CODE_OF_CONDUCT.md
+[Code of Conduct]: ./CODE_OF_CONDUCT.md
 [Gitter.im]: https://gitter.im/todotxt/
