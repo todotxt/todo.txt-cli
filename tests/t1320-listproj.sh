@@ -90,7 +90,7 @@ test_todo_session 'listproj limiting to alphabetic characters' <<EOF
 +sunflowers
 EOF
 test_todo_session 'listproj allowing brackets around projects' <<EOF
->>> TODOTXT_SIGIL_BEFORE_PATTERN='\[\?' TODOTXT_SIGIL_AFTER_PATTERN='\]\?' todo.sh listproj
+>>> TODOTXT_SIGIL_BEFORE_PATTERN='\[\{0,1\}' TODOTXT_SIGIL_AFTER_PATTERN='\]\{0,1\}' todo.sh listproj
 +1
 +gardening
 +landscape
