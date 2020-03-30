@@ -66,6 +66,47 @@ test_todo_session 'listcon with project' <<EOF
 EOF
 
 cat > todo.txt <<EOF
+(B) +math (@school or @home) integrate @x and @y
+(C) say thanks @GinaTrapani w:@OtherContributors
+stop
+EOF
+test_todo_session 'listcon with default configuration' <<EOF
+>>> todo.sh listcon
+@GinaTrapani
+@home)
+@x
+@y
+EOF
+test_todo_session 'listcon limiting to multi-character sequences' <<EOF
+>>> TODOTXT_SIGIL_VALID_PATTERN='.\{2,\}' todo.sh listcon
+@GinaTrapani
+@home)
+EOF
+test_todo_session 'listcon allowing w: marker before contexts' <<EOF
+>>> TODOTXT_SIGIL_BEFORE_PATTERN='\(w:\)\{0,1\}' todo.sh listcon
+@GinaTrapani
+@OtherContributors
+@home)
+@x
+@y
+EOF
+test_todo_session 'listcon allowing parentheses around contexts' <<EOF
+>>> TODOTXT_SIGIL_BEFORE_PATTERN='(\{0,1\}' TODOTXT_SIGIL_AFTER_PATTERN=')\{0,1\}' todo.sh listcon
+@GinaTrapani
+@home
+@school
+@x
+@y
+EOF
+test_todo_session 'listcon with all customizations combined' <<EOF
+>>> TODOTXT_SIGIL_VALID_PATTERN='.\{2,\}' TODOTXT_SIGIL_BEFORE_PATTERN='\(w:\)\{0,1\}\((\)\{0,1\}' TODOTXT_SIGIL_AFTER_PATTERN=')\{0,1\}' todo.sh listcon
+@GinaTrapani
+@OtherContributors
+@home
+@school
+EOF
+
+cat > todo.txt <<EOF
 @con01 -- Some context 1 task
 EOF
 cat > done.txt <<EOF
