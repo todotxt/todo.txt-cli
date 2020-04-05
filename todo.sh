@@ -149,6 +149,9 @@ help()
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
 		    TODOTXT_SOURCEVAR=\$DONE_FILE   use another source for listcon, listproj
+		    TODOTXT_SIGIL_BEFORE_PATTERN="" optionally allow chars preceding +p / @c
+		    TODOTXT_SIGIL_VALID_PATTERN=.*  tweak the allowed chars for +p and @c
+		    TODOTXT_SIGIL_AFTER_PATTERN=""  optionally allow chars after +p / @c
 
 
 	EndVerboseHelp
@@ -466,6 +469,12 @@ replaceOrPrepend()
   fi
 }
 
+fixMissingEndOfLine()
+{
+    # Parameters:    $1: todo file; empty means $TODO_FILE.
+    sed -i.bak -e '$a\' "${1:-$TODO_FILE}"
+}
+
 uppercasePriority()
 {
     # Precondition:  $input contains task text for which to uppercase priority.
@@ -614,6 +623,9 @@ TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 TODOTXT_DISABLE_FILTER=${TODOTXT_DISABLE_FILTER:-}
 TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
 TODOTXT_GLOBAL_CFG_FILE=${TODOTXT_GLOBAL_CFG_FILE:-/etc/todo/config}
+TODOTXT_SIGIL_BEFORE_PATTERN=${TODOTXT_SIGIL_BEFORE_PATTERN:-}	# Allow any other non-whitespace entity before +project and @context; should be an optional match; example: \(w:\)\{0,1\} to allow w:@context.
+TODOTXT_SIGIL_VALID_PATTERN=${TODOTXT_SIGIL_VALID_PATTERN:-.*}	# Limit the valid characters (from the default any non-whitespace sequence) for +project and @context; example: [a-zA-Z]\{3,\} to only allow alphabetic ones that are at least three characters long.
+TODOTXT_SIGIL_AFTER_PATTERN=${TODOTXT_SIGIL_AFTER_PATTERN:-}	# Allow any other non-whitespace entity after +project and @context; should be an optional match; example: )\{0,1\} to allow (with the corresponding TODOTXT_SIGIL_BEFORE_PATTERN) enclosing in parentheses.
 
 # Export all TODOTXT_* variables
 export "${!TODOTXT_@}"
@@ -644,9 +656,12 @@ export PRI_B=$GREEN         # color for B priority
 export PRI_C=$LIGHT_BLUE    # color for C priority
 export PRI_X=$WHITE         # color unless explicitly defined
 
-# Default project and context colors.
+# Default project, context, date, item number, and metadata key:value pairs colors.
 export COLOR_PROJECT=$NONE
 export COLOR_CONTEXT=$NONE
+export COLOR_DATE=$NONE
+export COLOR_NUMBER=$NONE
+export COLOR_META=$NONE
 
 # Default highlight colors.
 export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
@@ -776,6 +791,10 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
     || echo "$TODOTXT_PRIORITY_ON_ADD" | grep -q "^[A-Z]$" \
     || die "TODOTXT_PRIORITY_ON_ADD should be a capital letter from A to Z (it is now \"$TODOTXT_PRIORITY_ON_ADD\")."
 
+[ -z "$TODO_FILE" ] && TODO_FILE="$TODO_DIR/todo.txt"
+[ -z "$DONE_FILE" ] && DONE_FILE="$TODO_DIR/done.txt"
+[ -z "$REPORT_FILE" ] && REPORT_FILE="$TODO_DIR/report.txt"
+
 [ -f "$TODO_FILE" ] || [ -c "$TODO_FILE" ] || > "$TODO_FILE"
 [ -f "$DONE_FILE" ] || [ -c "$DONE_FILE" ] || > "$DONE_FILE"
 [ -f "$REPORT_FILE" ] || [ -c "$REPORT_FILE" ] || > "$REPORT_FILE"
@@ -789,6 +808,9 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     COLOR_DONE=$NONE
     COLOR_PROJECT=$NONE
     COLOR_CONTEXT=$NONE
+    COLOR_DATE=$NONE
+    COLOR_NUMBER=$NONE
+    COLOR_META=$NONE
 fi
 
 [[ "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
@@ -809,6 +831,7 @@ _addto() {
             input=$(echo -n "($TODOTXT_PRIORITY_ON_ADD) " ; echo "$input")
         fi
     fi
+    fixMissingEndOfLine "$file"
     echo "$input" >> "$file"
     if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
         TASKNUM=$(sed -n '$ =' "$file")
@@ -964,15 +987,30 @@ _format()
                 ctx_beg = highlight("COLOR_CONTEXT")
                 ctx_end = (ctx_beg ? (highlight("DEFAULT") clr) : "")
 
+                dat_beg = highlight("COLOR_DATE")
+                dat_end = (dat_beg ? (highlight("DEFAULT") clr) : "")
+
+                num_beg = highlight("COLOR_NUMBER")
+                num_end = (num_beg ? (highlight("DEFAULT") clr) : "")
+
+                met_beg = highlight("COLOR_META")
+                met_end = (met_beg ? (highlight("DEFAULT") clr) : "")
+
                 gsub(/[ \t][ \t]*/, "\n&\n")
                 len = split($0, words, /\n/)
 
                 printf "%s", clr
                 for (i = 1; i <= len; ++i) {
-                    if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
+                    if (i == 1 && words[i] ~ /^[0-9]+$/ ) {
+                        printf "%s", num_beg words[i] num_end
+                    } else if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
                         printf "%s", prj_beg words[i] prj_end
                     } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
                         printf "%s", ctx_beg words[i] ctx_end
+                    } else if (words[i] ~ /^(19|20)[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/) {
+                        printf "%s", dat_beg words[i] dat_end
+                    } else if (words[i] ~ /^[[:alnum:]]+:[^ ]+$/) {
+                        printf "%s", met_beg words[i] met_end
                     } else {
                         printf "%s", words[i]
                     }
@@ -1005,7 +1043,13 @@ listWordsWithSigil()
 
     FILE=$TODO_FILE
     [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
-    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" | grep -o "[^ ]*${sigil}[^ ]\\+" | grep "^$sigil" | sort -u
+	eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" \
+		| grep -o "[^ ]*${sigil}[^ ]\\+" \
+		| sed -n \
+			-e "s#^${TODOTXT_SIGIL_BEFORE_PATTERN//#/\\#}##" \
+			-e "s#${TODOTXT_SIGIL_AFTER_PATTERN//#/\\#}\$##" \
+			-e "/^${sigil}${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
+		| sort -u
 }
 
 export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list listWordsWithSigil getPadding _format die
@@ -1339,6 +1383,7 @@ case $action in
             # leave blank line behind (preserves line numbers)
             sed -i.bak -e "${item}s/^.*//" "$src"
         fi
+        fixMissingEndOfLine "$dest"
         echo "$todo" >> "$dest"
 
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then

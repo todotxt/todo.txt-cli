@@ -2,7 +2,7 @@
 
 > A simple and extensible shell script for managing your todo.txt file.
 
-[![Build Status](https://travis-ci.org/todotxt/todo.txt-cli.svg?branch=master)](https://travis-ci.org/todotxt/todo.txt-cli)
+![CI](https://github.com/todotxt/todo.txt-cli/workflows/CI/badge.svg)
 [![GitHub issues](https://img.shields.io/github/issues/todotxt/todo.txt-cli.svg)](https://github.com/todotxt/todo.txt-cli/issues) 
 [![GitHub forks](https://img.shields.io/github/forks/todotxt/todo.txt-cli.svg)](https://github.com/todotxt/todo.txt-cli/network)
 [![GitHub stars](https://img.shields.io/github/stars/todotxt/todo.txt-cli.svg)](https://github.com/todotxt/todo.txt-cli/stargazers)
@@ -42,7 +42,7 @@ make test
 - `BASH_COMPLETION`: PATH for autocompletion scripts (default to /etc/bash_completion.d)
 
 ```shell
-make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION_DIR=/usr/share/bash-completion/completions
+make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION=/usr/share/bash-completion/completions
 ```
 
 #### Arch Linux (AUR)
@@ -95,5 +95,5 @@ GNU General Public License v3.0 © [todo.txt org][github]
 [github]: https://github.com/todotxt
 [USAGE]: ./USAGE.md
 [CHANGELOG]: ./CHANGELOG.md
-[CODE_OF_CONDUCT]: ./CODE_OF_CONDUCT.md
-[CONTRIBUTING]: ./CONTRIBUTING.md
+[CODE_OF_CONDUCT]: .github/CODE_OF_CONDUCT.md
+[CONTRIBUTING]: .github/CONTRIBUTING.md

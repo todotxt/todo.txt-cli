@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [2.11.0] - 2018-03-26
 ### Added
 - Added support for `$XDG_CONFIG_HOME` config file/actions location
-- Created [CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md) ([#217])
+- Created [CODE_OF_CONDUCT.md](.github/CODE_OF_CONDUCT.md) ([#217])
 - Created [CHANGELOG.md](/CHANGELOG.md) ([#218])
 
 
