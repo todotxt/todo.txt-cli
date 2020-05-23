@@ -3,7 +3,7 @@
 > A simple and extensible shell script for managing your todo.txt file.
 
 ![CI](https://github.com/todotxt/todo.txt-cli/workflows/CI/badge.svg)
-[![GitHub issues](https://img.shields.io/github/issues/todotxt/todo.txt-cli.svg)](https://github.com/todotxt/todo.txt-cli/issues) 
+[![GitHub issues](https://img.shields.io/github/issues/todotxt/todo.txt-cli.svg)](https://github.com/todotxt/todo.txt-cli/issues)
 [![GitHub forks](https://img.shields.io/github/forks/todotxt/todo.txt-cli.svg)](https://github.com/todotxt/todo.txt-cli/network)
 [![GitHub stars](https://img.shields.io/github/stars/todotxt/todo.txt-cli.svg)](https://github.com/todotxt/todo.txt-cli/stargazers)
 [![GitHub license](https://img.shields.io/github/license/todotxt/todo.txt-cli.svg)](https://raw.githubusercontent.com/todotxt/todo.txt-cli/master/LICENSE)
@@ -11,7 +11,7 @@
 
 ![gif](./.github/example.gif)
 
-*Read our [contributing guide](CONTRIBUTING.md) if you're looking to contribute (issues/PRs/etc).*
+*Read our [contributing guide][CONTRIBUTING] if you're looking to contribute (issues/PRs/etc).*
 
 
 ## Installation
