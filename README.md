@@ -47,7 +47,7 @@ make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION=/usr/share/bas
 
 #### Arch Linux (AUR)
 
-https://aur.archlinux.org/packages/todotxt-git/
+https://aur.archlinux.org/packages/todotxt/
 
 
 ## Usage
