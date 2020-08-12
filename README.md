@@ -23,7 +23,10 @@ Download the latest stable [release][release] for use on your desktop or server.
 
 ```shell
 brew install todo-txt
+cp -n /usr/local/opt/todo-txt/todo.cfg ~/.todo.cfg
 ```
+
+**Note**: The `-n` flag for `cp` makes sure you do not overwrite an existing file.
 
 ### Linux
 
