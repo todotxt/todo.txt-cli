@@ -54,7 +54,7 @@ dist: $(DISTFILES) todo.sh
 	chmod +x $(DISTNAME)/todo.sh
 	tar cf $(DISTNAME).tar $(DISTNAME)
 	gzip -f -9 $(DISTNAME).tar
-	tar cf $(DISTNAME).zip $(DISTNAME)
+	zip -r -9 $(DISTNAME).zip $(DISTNAME)
 	rm -r $(DISTNAME)
 
 .PHONY: clean
