@@ -14,68 +14,75 @@ _todo()
         rm depri dp do help list ls listaddons listall lsa listcon  \
         lsc listfile lf listpri lsp listproj lsprj move \
         mv prepend prep pri p replace report shorthelp"
-    local -r MOVE_COMMAND_PATTERN='^(move|mv)$'
+    local -r MOVE_COMMAND_PATTERN='move|mv'
 
     local _todo_sh=${_todo_sh:-todo.sh}
     local completions
     if [ $COMP_CWORD -eq 1 ]; then
-        completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons) $OPTS"
+        completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons 2>/dev/null) $OPTS"
     elif [[ $COMP_CWORD -gt 2 && ( \
-        "${COMP_WORDS[COMP_CWORD-2]}" =~ $MOVE_COMMAND_PATTERN || \
-        "${COMP_WORDS[COMP_CWORD-3]}" =~ $MOVE_COMMAND_PATTERN ) ]]; then
+        "${COMP_WORDS[COMP_CWORD-2]}" =~ ^($MOVE_COMMAND_PATTERN${_todo_file2_actions:+|${_todo_file2_actions}})$ || \
+        "${COMP_WORDS[COMP_CWORD-3]}" =~ ^($MOVE_COMMAND_PATTERN${_todo_file3_actions:+|${_todo_file3_actions}})$ ) ]]; then
         # "move ITEM# DEST [SRC]" has file arguments on positions 2 and 3.
-        completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listfile)
+        completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listfile 2>/dev/null)
     else
         case "$prev" in
             command)
                 completions=$COMMANDS;;
             help)
-                completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons)";;
-            addto|listfile|lf)
-                completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listfile);;
-            -*) completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons) $OPTS";;
-            *)  case "$cur" in
-                    +*) completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listproj)
-                        COMPREPLY=( $( compgen -W "$completions" -- $cur ))
-                        [ ${#COMPREPLY[@]} -gt 0 ] && return 0
-                        # Fall back to projects extracted from done tasks.
-                        completions=$(eval 'TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE' $_todo_sh command listproj)
-                        ;;
-                    @*) completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listcon)
-                        COMPREPLY=( $( compgen -W "$completions" -- $cur ))
-                        [ ${#COMPREPLY[@]} -gt 0 ] && return 0
-                        # Fall back to contexts extracted from done tasks.
-                        completions=$(eval 'TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE' $_todo_sh command listcon)
-                        ;;
-                    *)  if [[ "$cur" =~ ^[0-9]+$ ]]; then
-                            # Remove the (padded) task number; we prepend the
-                            # user-provided $cur instead.
-                            # Remove the timestamp prepended by the -t option,
-                            # and the done date (for done tasks); there's no
-                            # todo.txt option for that yet.
-                            # But keep priority and "x"; they're short and may
-                            # provide useful context.
-                            # Remove any trailing whitespace; the Bash
-                            # completion inserts a trailing space itself.
-                            # Finally, limit the output to a single line just as
-                            # a safety check of the ls action output.
-                            local todo=$( \
-                                eval TODOTXT_VERBOSE=0 $_todo_sh '-@ -+ -p -x command ls "^ *${cur} "' | \
-                                sed -e 's/^ *[0-9]\{1,\} //' -e 's/^\((.) \)\{0,1\}[0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} /\1/' \
-                                    -e 's/^\([xX] \)\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{1,2\}/\1/' \
-                                    -e 's/[[:space:]]*$//' \
-                                    -e '1q' \
-                            )
-                            # Append task text as a shell comment. This
-                            # completion can be a safety check before a
-                            # destructive todo.txt operation.
-                            [ "$todo" ] && COMPREPLY[0]="$cur # $todo"
-                            return 0
-                        else
-                            return 0
-                        fi
-                        ;;
-                esac
+                completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons 2>/dev/null)";;
+            -*) completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons 2>/dev/null) $OPTS";;
+            *)  if [[ "$prev" =~ ^(addto|listfile|lf${_todo_file1_actions:+|${_todo_file1_actions}})$ ]]; then
+                    completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listfile 2>/dev/null)
+                else
+                    case "$cur" in
+                        +*) completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listproj 2>/dev/null)
+                            COMPREPLY=( $( compgen -W "$completions" -- $cur ))
+                            [ ${#COMPREPLY[@]} -gt 0 ] && return 0
+                            # Fall back to projects extracted from done tasks.
+                            completions=$(eval 'TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE' $_todo_sh command listproj 2>/dev/null)
+                            ;;
+                        @*) completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listcon 2>/dev/null)
+                            COMPREPLY=( $( compgen -W "$completions" -- $cur ))
+                            [ ${#COMPREPLY[@]} -gt 0 ] && return 0
+                            # Fall back to contexts extracted from done tasks.
+                            completions=$(eval 'TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE' $_todo_sh command listcon 2>/dev/null)
+                            ;;
+                        *)  if [[ "$cur" =~ ^[0-9]+$ ]]; then
+                                declare -a sedTransformations=(
+                                    # Remove the (padded) task number; we prepend the
+                                    # user-provided $cur instead.
+                                    -e 's/^ *[0-9]\{1,\} //'
+                                    # Remove the timestamp prepended by the -t option,
+                                    # but keep any priority (as it's short and may
+                                    # provide useful context).
+                                    -e 's/^\((.) \)\{0,1\}[0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} /\1/'
+                                    # Remove the done date and (if there) the timestamp.
+                                    # Keep the "x" (as it's short and may provide useful
+                                    # context)
+                                    -e 's/^\([xX] \)\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{1,2\}/\1/'
+                                    # Remove any trailing whitespace; the Bash
+                                    # completion inserts a trailing space itself.
+                                    -e 's/[[:space:]]*$//'
+                                    # Finally, limit the output to a single line just as
+                                    # a safety check of the ls action output.
+                                    -e '1q'
+                                )
+                                local todo=$( \
+                                    eval TODOTXT_VERBOSE=0 $_todo_sh '-@ -+ -p -x command ls "^ *${cur} "' 2>/dev/null | \
+                                    sed "${sedTransformations[@]}" \
+                                )
+                                # Append task text as a shell comment. This
+                                # completion can be a safety check before a
+                                # destructive todo.txt operation.
+                                [ "$todo" ] && COMPREPLY[0]="$cur # $todo"
+                                return 0
+                            else
+                                return 0
+                            fi
+                            ;;
+                    esac
+                fi
                 ;;
         esac
     fi
@@ -103,7 +110,7 @@ complete -F _todo todo.sh
 
 # If you use aliases to use different configuration(s), you need to add and use
 # a wrapper completion function for each configuration if you want to complete
-# fron the actual configured task locations:
+# from the actual configured task locations:
 #alias todo2='todo.sh -d "$HOME/todo2.cfg"'
 #_todo2()
 #{
