@@ -1129,7 +1129,7 @@ case $action in
     fi
 
 	# get the last line added and extract context
-	lastadded=`sed -n '$ =' "$TODO_FILE"`
+	lastadded=$(sed -n '$ =' "$TODO_FILE")
 	# FIXME: Find a better way to add tasks (_addto function?)
 	"$TODO_FULL_SH" command add "$1"
 	newest=$(sed -n '$ =' "$TODO_FILE")
