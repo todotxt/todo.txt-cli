@@ -1148,13 +1148,13 @@ case $action in
 
 	# set priority
 	# PRIREGEX='\(([A-Z])\)'
-	# matchpri=`sed $lastadded"q;d" "$TODO_FILE" | grep -o "$PRIREGEX"`
+	# matchpri=$(sed $lastadded"q;d" "$TODO_FILE" | grep -o "$PRIREGEX")
 
 	# # if there is a proiority on the last one
-	# count=`echo $matchpri | wc -l`
+	# count=$(echo $matchpri | wc -l)
 	# if [ $count -ne 0 ]; then
 	# 	# remove parentheses
-	# 	matchpri=`echo $matchpri | sed 's/[)(]//g'`
+	# 	matchpri=$(echo $matchpri | sed 's/[)(]//g')
 
 	# 	echo "Prioritizing:" $matchpri
 	# 	"$TODO_FULL_SH" command pri "$newest" "$matchpri"
