@@ -74,8 +74,8 @@ See [CHANGELOG.md][CHANGELOG]
 
 ## Support
 
+- [Github Discussions](https://github.com/todotxt/todo.txt-cli/discussions)
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/todotxt)
-- [Gitter chat](https://gitter.im/todotxt/todo.txt-cli)
 - [Twitter](https://twitter.com/todotxt)
 
 
