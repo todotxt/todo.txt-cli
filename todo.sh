@@ -217,9 +217,13 @@ actionsHelp()
 		      Displays all tasks that contain TERM(s) sorted by priority with line
 		      numbers.  Each task must match all TERM(s) (logical AND); to display
 		      tasks that contain any TERM (logical OR), use
-		      "TERM1\|TERM2\|..." (with quotes), or TERM1\\\|TERM2 (unquoted).
+		      'TERM1\|TERM2\|...' (with quotes), or TERM1\\\|TERM2 (unquoted).
 		      Hides all tasks that contain TERM(s) preceded by a
-		      minus sign (i.e. -TERM). If no TERM specified, lists entire todo.txt.
+		      minus sign (i.e. -TERM).
+		      TERM(s) are grep-style basic regular expressions; for literal matching,
+		      put a single backslash before any [ ] \ $ * . ^ and enclose the entire
+		      TERM in single quotes, or use double backslashes and extra shell-quoting.
+		      If no TERM specified, lists entire todo.txt.
 
 		    listall [TERM...]
 		    lsa [TERM...]
