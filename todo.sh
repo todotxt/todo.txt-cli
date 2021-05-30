@@ -83,6 +83,8 @@ shorthelp()
 
 help()
 {
+    local indentedJoinedConfigFileLocations
+    printf -v indentedJoinedConfigFileLocations '          %s\n' "${configFileLocations[@]}"
     cat <<-EndOptionsHelp
 		  Usage: $oneline_usage
 
@@ -96,7 +98,8 @@ help()
 		    -c
 		        Color mode
 		    -d CONFIG_FILE
-		        Use a configuration file other than the default ~/.todo/config
+		        Use a configuration file other than one of the defaults:
+$indentedJoinedConfigFileLocations
 		    -f
 		        Forces actions without confirmation or interactive input
 		    -h
@@ -675,14 +678,16 @@ export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
 # (todo.sh add 42 ", foo") syntactically correct.
 export SENTENCE_DELIMITERS=',.:;'
 
-
-[ -e "$TODOTXT_CFG_FILE" ] || for CFG_FILE_ALT in \
-    "$HOME/.todo/config" \
-    "$HOME/todo.cfg" \
-    "$HOME/.todo.cfg" \
-    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/config" \
-    "$(dirname "$0")/todo.cfg" \
+configFileLocations=(
+    "$HOME/.todo/config"
+    "$HOME/todo.cfg"
+    "$HOME/.todo.cfg"
+    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/config"
+    "$(dirname "$0")/todo.cfg"
     "$TODOTXT_GLOBAL_CFG_FILE"
+)
+
+[ -e "$TODOTXT_CFG_FILE" ] || for CFG_FILE_ALT in "${configFileLocations[@]}"
 do
     if [ -e "$CFG_FILE_ALT" ]
     then
@@ -711,7 +716,7 @@ done
 
 
 # === SANITY CHECKS (thanks Karl!) ===
-[ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file ${TODOTXT_CFG_FILE:-$HOME/.todo/config}"
+[ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file ${TODOTXT_CFG_FILE:-${configFileLocations[0]}}"
 
 . "$TODOTXT_CFG_FILE"
 
