@@ -3,8 +3,8 @@
 # === HEAVY LIFTING ===
 shopt -s extglob extquote
 
-# NOTE:  Todo.sh requires the .todo/config configuration file to run.
-# Place the .todo/config file in your home directory or use the -d option for a custom location.
+# NOTE:  Todo.sh requires a configuration file to run.
+# Place it in one of the default locations or use the -d option for a custom location.
 
 [ -f VERSION-FILE ] && . VERSION-FILE || VERSION="@DEV_VERSION@"
 version() {
