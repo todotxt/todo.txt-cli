@@ -221,7 +221,7 @@ Hide project names in list output. Use twice to show project names (default).
 Color mode
 
 ### `-d CONFIG_FILE`
-Use a configuration file other than the default `~/.todo/config`
+Use a configuration file other than one of the defaults (e.g. `~/.todo/config`)
 
 ### `-f`
 Forces actions without confirmation or interactive input.
