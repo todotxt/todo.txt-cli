@@ -616,7 +616,6 @@ shift $((OPTIND - 1))
 # defaults if not yet defined
 TODOTXT_VERBOSE=${TODOTXT_VERBOSE:-1}
 TODOTXT_PLAIN=${TODOTXT_PLAIN:-0}
-TODOTXT_CFG_FILE=${TODOTXT_CFG_FILE:-$HOME/.todo/config}
 TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
@@ -678,6 +677,7 @@ export SENTENCE_DELIMITERS=',.:;'
 
 
 [ -e "$TODOTXT_CFG_FILE" ] || for CFG_FILE_ALT in \
+    "$HOME/.todo/config" \
     "$HOME/todo.cfg" \
     "$HOME/.todo.cfg" \
     "${XDG_CONFIG_HOME:-$HOME/.config}/todo/config" \
@@ -711,7 +711,7 @@ done
 
 
 # === SANITY CHECKS (thanks Karl!) ===
-[ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file $TODOTXT_CFG_FILE"
+[ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file ${TODOTXT_CFG_FILE:-$HOME/.todo/config}"
 
 . "$TODOTXT_CFG_FILE"
 
