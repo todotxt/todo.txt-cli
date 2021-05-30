@@ -676,50 +676,20 @@ export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
 # (todo.sh add 42 ", foo") syntactically correct.
 export SENTENCE_DELIMITERS=',.:;'
 
-[ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT="$HOME/todo.cfg"
 
+[ -e "$TODOTXT_CFG_FILE" ] || for CFG_FILE_ALT in \
+    "$HOME/todo.cfg" \
+    "$HOME/.todo.cfg" \
+    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/config" \
+    "$(dirname "$0")/todo.cfg" \
+    "$TODOTXT_GLOBAL_CFG_FILE"
+do
     if [ -e "$CFG_FILE_ALT" ]
     then
         TODOTXT_CFG_FILE="$CFG_FILE_ALT"
+        break
     fi
-}
-
-[ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT="$HOME/.todo.cfg"
-
-    if [ -e "$CFG_FILE_ALT" ]
-    then
-        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
-    fi
-}
-
-[ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT="${XDG_CONFIG_HOME:-$HOME/.config}/todo/config"
-
-    if [ -e "$CFG_FILE_ALT" ]
-    then
-        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
-    fi
-}
-
-[ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT=$(dirname "$0")"/todo.cfg"
-
-    if [ -e "$CFG_FILE_ALT" ]
-    then
-        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
-    fi
-}
-
-[ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT="$TODOTXT_GLOBAL_CFG_FILE"
-
-    if [ -e "$CFG_FILE_ALT" ]
-    then
-        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
-    fi
-}
+done
 
 
 if [ -z "$TODO_ACTIONS_DIR" ] || [ ! -d "$TODO_ACTIONS_DIR" ]
@@ -728,23 +698,17 @@ then
     export TODO_ACTIONS_DIR
 fi
 
-[ -d "$TODO_ACTIONS_DIR" ] || {
-    TODO_ACTIONS_DIR_ALT="$HOME/.todo.actions.d"
-
+[ -d "$TODO_ACTIONS_DIR" ] || for TODO_ACTIONS_DIR_ALT in \
+    "$HOME/.todo.actions.d" \
+    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"
+do
     if [ -d "$TODO_ACTIONS_DIR_ALT" ]
     then
         TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
+        break
     fi
-}
+done
 
-[ -d "$TODO_ACTIONS_DIR" ] || {
-    TODO_ACTIONS_DIR_ALT="${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"
-
-    if [ -d "$TODO_ACTIONS_DIR_ALT" ]
-    then
-        TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
-    fi
-}
 
 # === SANITY CHECKS (thanks Karl!) ===
 [ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file $TODOTXT_CFG_FILE"
