@@ -693,6 +693,8 @@ cd -P "$test" || exit 1
 # but use something specified by the framework.
 HOME=$(pwd)
 export HOME
+# Unset XDG_CONFIG_HOME as that is used as a config alternative.
+unset XDG_CONFIG_HOME
 
 this_test=${0##*/}
 this_test=${this_test%%-*}
