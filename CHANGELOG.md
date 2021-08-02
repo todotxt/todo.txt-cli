@@ -147,7 +147,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Changed odd tabs to spaces.
-- Faster help/useage document outputs.
+- Faster help/usage document outputs.
 - Consolidated `TODOTXT_VERBOSE` tests.
 - Refactored various add functionality to one function.
 - Updated `_list()` output to match updated `addto`.
@@ -436,7 +436,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- `list` is case insenstive. ie, `todo list Mac` will match lines with "mac" and "Mac"
+- `list` is case insensitive. ie, `todo list Mac` will match lines with "mac" and "Mac"
 
 ### Changed
 

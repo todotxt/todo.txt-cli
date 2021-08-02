@@ -85,7 +85,7 @@ See [CHANGELOG.md][CHANGELOG]
 
 ## Contributing
 
-We welcome all contributations. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started [contributing][CONTRIBUTING].
+We welcome all contributions. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started [contributing][CONTRIBUTING].
 
 ## License
 
@@ -94,7 +94,7 @@ GNU General Public License v3.0 © [todo.txt org][github]
 
 
 [release]: https://github.com/todotxt/todo.txt-cli/releases
-[website]: http://todotxt.org
+[website]: http://todotxt.org/
 [github]: https://github.com/todotxt
 [USAGE]: ./USAGE.md
 [CHANGELOG]: ./CHANGELOG.md

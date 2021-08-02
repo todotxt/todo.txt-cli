@@ -266,7 +266,7 @@ and the dates and timestamps will be artificially fixed.
 Then the session can be used to make a unit test thanks to
 test_todo_session, see the existing tests as examples.
 
-Be careful to replace all occurences of the full path to the test
+Be careful to replace all occurrences of the full path to the test
 directory by $HOME as testshell.sh will explain you when you execute it
 otherwise the tests will work properly only on your own computer.
 

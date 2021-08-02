@@ -1110,7 +1110,7 @@ case $action in
     SAVEIFS=$IFS
     IFS=$'\n'
 
-    # Treat each line seperately
+    # Treat each line separately
     for line in $input ; do
         _addto "$TODO_FILE" "$line"
     done
