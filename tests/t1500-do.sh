@@ -83,4 +83,5 @@ TODO: 3 marked as done.
 >>> todo.sh -a do 3
 TODO: 3 is already marked done.
 EOF
+
 test_done
