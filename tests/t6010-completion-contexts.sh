@@ -1,5 +1,4 @@
 #!/bin/bash
-#
 
 test_description='Bash context completion functionality
 

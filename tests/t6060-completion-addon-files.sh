@@ -1,5 +1,4 @@
 #!/bin/bash
-#
 
 test_description='Bash add-on action file completion functionality
 

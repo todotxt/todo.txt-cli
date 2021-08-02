@@ -1,5 +1,4 @@
 #!/bin/bash
-#
 
 test_description='todo.sh configuration with a sole todo.txt data file.
 
