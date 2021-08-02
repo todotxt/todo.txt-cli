@@ -98,7 +98,7 @@ $(TESTS): test-pre-clean
 test: aggregate-results
 	tests/aggregate-results.sh tests/test-results/t*-*
 	rm -rf tests/test-results
-    
+
 # Force tests to get run every time
 .PHONY: test test-pre-clean aggregate-results $(TESTS)
 

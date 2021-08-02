@@ -66,7 +66,7 @@ test_todo_session 'basic listfile filtering' <<EOF
 --
 GARDEN: 1 of 2 tasks shown
 
->>> todo.sh listfile garden.txt smell  
+>>> todo.sh listfile garden.txt smell
 2 smell the roses
 --
 GARDEN: 1 of 2 tasks shown
@@ -89,7 +89,7 @@ test_todo_session 'addto with &' <<EOF
 4 dig the garden & water the flowers
 GARDEN: 4 added.
 
->>> todo.sh listfile garden.txt 
+>>> todo.sh listfile garden.txt
 4 dig the garden & water the flowers
 1 notice the daisies
 2 smell the roses

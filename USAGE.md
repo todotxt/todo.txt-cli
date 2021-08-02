@@ -7,9 +7,9 @@ todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
 ## Actions
 
 ### `add`
-Adds THING I NEED TO DO to your todo.txt file on its own line.  
+Adds THING I NEED TO DO to your todo.txt file on its own line.
 
-Project and context notation optional.  
+Project and context notation optional.
 
 Quotes optional.
 
@@ -28,7 +28,7 @@ todo.sh addm "FIRST THING I NEED TO DO +project1 @context
 SECOND THING I NEED TO DO +project2 @context"
 ```
 
-### `addto`      
+### `addto`
 Adds a line of text to any file located in the todo.txt directory.
 
 For example, `addto inbox.txt "decide about vacation"`
@@ -101,10 +101,10 @@ todo.sh help [ACTION...]
 ```
 
 ### `list`
-Displays all tasks that contain TERM(s) sorted by priority with line numbers.  Each task must match all TERM(s) (logical AND); to display tasks that contain any TERM (logical OR), use `"TERM1\|TERM2\|..."` (with quotes), or `TERM1\\|TERM2` (unquoted). Hides all tasks that contain TERM(s) preceded by a minus sign (i.e. `-TERM`). 
+Displays all tasks that contain TERM(s) sorted by priority with line numbers.  Each task must match all TERM(s) (logical AND); to display tasks that contain any TERM (logical OR), use `"TERM1\|TERM2\|..."` (with quotes), or `TERM1\\|TERM2` (unquoted). Hides all tasks that contain TERM(s) preceded by a minus sign (i.e. `-TERM`).
 
 If no TERM specified, lists entire todo.txt.
-​    
+
 ```shell
 todo.sh list [TERM...]
 todo.sh ls [TERM...]
