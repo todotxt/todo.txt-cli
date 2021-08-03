@@ -414,12 +414,12 @@ test_done () {
 	mkdir -p "$test_results_dir"
 	test_results_path="$test_results_dir/${0%.sh}-$$"
 
-	echo "total $test_count" >> $test_results_path
-	echo "success $test_success" >> $test_results_path
-	echo "fixed $test_fixed" >> $test_results_path
-	echo "broken $test_broken" >> $test_results_path
-	echo "failed $test_failure" >> $test_results_path
-	echo "" >> $test_results_path
+	echo "total $test_count" >> "$test_results_path"
+	echo "success $test_success" >> "$test_results_path"
+	echo "fixed $test_fixed" >> "$test_results_path"
+	echo "broken $test_broken" >> "$test_results_path"
+	echo "failed $test_failure" >> "$test_results_path"
+	echo "" >> "$test_results_path"
 
 	if test "$test_fixed" != 0
 	then
@@ -476,7 +476,7 @@ test_init_todo () {
 	mkdir -p "$root"
 	cd "$root" || error "Cannot setup todo dir in $root"
 	# Initialize the configuration file. Carefully quoted.
-	sed -e 's|TODO_DIR=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' $TEST_DIRECTORY/../todo.cfg > todo.cfg
+	sed -e 's|TODO_DIR=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' "$TEST_DIRECTORY/../todo.cfg" > todo.cfg
 
 	# Install latest todo.sh
 	mkdir bin
