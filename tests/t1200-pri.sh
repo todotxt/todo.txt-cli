@@ -6,7 +6,7 @@ test_description='basic priority functionality
 
 test_todo_session 'priority usage' <<EOF
 >>> todo.sh pri B B
-usage: todo.sh pri ITEM# PRIORITY
+usage: todo.sh pri ITEM# PRIORITY[, ITEM# PRIORITY, ...]
 note: PRIORITY must be anywhere from A to Z.
 === 1
 EOF
@@ -99,5 +99,40 @@ TODO: 2 already prioritized (A).
 3 stop
 --
 TODO: 3 of 3 tasks shown
+EOF
+
+cat > todo.txt <<EOF
+smell the uppercase Roses +flowers @outside
+notice the sunflowers
+stop
+EOF
+test_todo_session 'multiple priority' <<EOF
+>>> todo.sh pri 1 A 2 B
+1 (A) smell the uppercase Roses +flowers @outside
+TODO: 1 prioritized (A).
+2 (B) notice the sunflowers
+TODO: 2 prioritized (B).
+EOF
+
+test_todo_session 'multiple reprioritize' <<EOF
+>>> todo.sh pri 1 Z 2 X
+1 (Z) smell the uppercase Roses +flowers @outside
+TODO: 1 re-prioritized from (A) to (Z).
+2 (X) notice the sunflowers
+TODO: 2 re-prioritized from (B) to (X).
+EOF
+
+test_todo_session 'multiple prioritize error' <<EOF
+>>> todo.sh pri 1 B 4 B
+=== 1
+1 (B) smell the uppercase Roses +flowers @outside
+TODO: 1 re-prioritized from (Z) to (B).
+TODO: No task 4.
+
+>>> todo.sh pri 1 C 4 B 3 A
+=== 1
+1 (C) smell the uppercase Roses +flowers @outside
+TODO: 1 re-prioritized from (B) to (C).
+TODO: No task 4.
 EOF
 test_done

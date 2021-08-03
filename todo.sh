@@ -62,7 +62,7 @@ shorthelp()
 		    listproj|lsprj [TERM...]
 		    move|mv ITEM# DEST [SRC]
 		    prepend|prep ITEM# "TEXT TO PREPEND"
-		    pri|p ITEM# PRIORITY
+		    pri|p ITEM# PRIORITY[, ITEM# PRIORITY, ...]
 		    replace ITEM# "UPDATED TODO"
 		    report
 		    shorthelp
@@ -1405,38 +1405,42 @@ case $action in
     ;;
 
 "pri" | "p" )
-    item=$2
-    newpri=$( printf "%s\n" "$3" | tr '[:lower:]' '[:upper:]' )
+    shift
+    while [ "$#" -gt 0 ] ; do
+        item=$1
+        newpri=$( printf "%s\n" "$2" | tr '[:lower:]' '[:upper:]' )
 
-    errmsg="usage: $TODO_SH pri ITEM# PRIORITY
+        errmsg="usage: $TODO_SH pri ITEM# PRIORITY[, ITEM# PRIORITY, ...]
 note: PRIORITY must be anywhere from A to Z."
 
-    [ "$#" -ne 3 ] && die "$errmsg"
-    [[ "$newpri" = @([A-Z]) ]] || die "$errmsg"
-    getTodo "$item"
+        [ "$#" -lt 2 ] && die "$errmsg"
+        [[ "$newpri" = @([A-Z]) ]] || die "$errmsg"
+        getTodo "$item"
 
-    oldpri=
-    if [[ "$todo" = \(?\)\ * ]]; then
-        oldpri=${todo:1:1}
-    fi
+        oldpri=
+        if [[ "$todo" = \(?\)\ * ]]; then
+            oldpri=${todo:1:1}
+        fi
 
-    if [ "$oldpri" != "$newpri" ]; then
-        sed -i.bak -e "${item}s/^(.) //" -e "${item}s/^/($newpri) /" "$TODO_FILE"
-    fi
-    if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-        getNewtodo "$item"
-        echo "$item $newtodo"
         if [ "$oldpri" != "$newpri" ]; then
-            if [ "$oldpri" ]; then
-                echo "TODO: $item re-prioritized from ($oldpri) to ($newpri)."
-            else
-                echo "TODO: $item prioritized ($newpri)."
+            sed -i.bak -e "${item}s/^(.) //" -e "${item}s/^/($newpri) /" "$TODO_FILE"
+        fi
+        if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+            getNewtodo "$item"
+            echo "$item $newtodo"
+            if [ "$oldpri" != "$newpri" ]; then
+                if [ "$oldpri" ]; then
+                    echo "TODO: $item re-prioritized from ($oldpri) to ($newpri)."
+                else
+                    echo "TODO: $item prioritized ($newpri)."
+                fi
             fi
         fi
-    fi
-    if [ "$oldpri" = "$newpri" ]; then
-        echo "TODO: $item already prioritized ($newpri)."
-    fi
+        if [ "$oldpri" = "$newpri" ]; then
+            echo "TODO: $item already prioritized ($newpri)."
+        fi
+    shift; shift
+    done
     ;;
 
 "replace" )
