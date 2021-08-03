@@ -27,8 +27,6 @@ _todo2()
 
 test_todo_custom_completion _todo2 'all todo2 contexts' 'todo2 list @' '@garden @outdoor @outside'
 
-
-
 # Remove the test environment's bin directory from the PATH, so that our test
 # executable must be launched with an explicit path.
 PATH=${PATH##"${PWD}/bin:"}

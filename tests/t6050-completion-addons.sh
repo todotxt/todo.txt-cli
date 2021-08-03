@@ -73,7 +73,7 @@ removeCustomActions "$HOME/.todo.actions.d"
 #
 # Test resolution of an alternative TODO_ACTIONS_DIR.
 #
-mkdir  "$HOME/.todo"
+mkdir "$HOME/.todo"
 makeCustomActions "$HOME/.todo/actions"
 test_todo_completion 'all arguments with actions from .todo/actions/' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 removeCustomActions "$HOME/.todo/actions"

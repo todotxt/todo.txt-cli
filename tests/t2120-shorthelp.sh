@@ -35,7 +35,6 @@ test_todo_session 'shorthelp output with custom action' <<EOF
   See "help" for more details.
 EOF
 
-
 # Verify that custom configuration is actually processed (when the -d option
 # precedes the -h option) by specifying a different actions directory and moving
 # our custom action there. The help output should mention the "Add-On Actions".

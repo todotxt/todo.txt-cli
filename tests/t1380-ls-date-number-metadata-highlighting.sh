@@ -31,7 +31,6 @@ test_todo_session 'highlighting for date, item numbers and metadata' <<'EOF'
 TODO: 3 of 3 tasks shown
 EOF
 
-
 test_todo_session 'suppressing highlighting for date, item numbers and metadata' <<'EOF'
 >>> todo.sh -p -d "$TEST_TODO_LABEL_COLORS" ls
 1 2018-11-11 task with date

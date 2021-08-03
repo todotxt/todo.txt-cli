@@ -116,7 +116,6 @@ test_todo_session 'listproj with context special cases' <<EOF
 +sunflowers
 EOF
 
-
 cat > todo.txt <<EOF
 +prj01 -- Some project 1 task
 EOF

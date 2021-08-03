@@ -17,7 +17,7 @@ test_todo_session 'append usage' <<EOF
 usage: todo.sh append ITEM# "TEXT TO APPEND"
 EOF
 
-test_todo_session 'append error' << EOF
+test_todo_session 'append error' <<EOF
 >>> todo.sh append 10 "hej!"
 === 1
 TODO: No task 10.

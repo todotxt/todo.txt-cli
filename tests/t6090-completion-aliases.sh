@@ -45,7 +45,6 @@ test_todo_session 'todo 1 and 2 contexts' <<EOF
 @oriental
 EOF
 
-
 # Define a second completion function that injects the different configuration
 # file. In real use, this would be installed via
 #   complete -F _todo2 todo2

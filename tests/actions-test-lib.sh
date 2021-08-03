@@ -21,7 +21,7 @@ make_action_in_folder()
 {
     unset TODO_ACTIONS_DIR
     [ -d .todo.actions.d ] || mkdir .todo.actions.d
-    mkdir .todo.actions.d/$1
+    mkdir ".todo.actions.d/$1"
     cat > ".todo.actions.d/$1/$1" <<EOF
 #!/bin/bash
 [ "\$1" = "usage" ] && {
