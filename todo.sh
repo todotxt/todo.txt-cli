@@ -3,8 +3,8 @@
 # === HEAVY LIFTING ===
 shopt -s extglob extquote
 
-# NOTE:  Todo.sh requires the .todo/config configuration file to run.
-# Place the .todo/config file in your home directory or use the -d option for a custom location.
+# NOTE:  Todo.sh requires a configuration file to run.
+# Place it in one of the default locations or use the -d option for a custom location.
 
 [ -f VERSION-FILE ] && . VERSION-FILE || VERSION="@DEV_VERSION@"
 version() {
@@ -83,6 +83,8 @@ shorthelp()
 
 help()
 {
+    local indentedJoinedConfigFileLocations
+    printf -v indentedJoinedConfigFileLocations '          %s\n' "${configFileLocations[@]}"
     cat <<-EndOptionsHelp
 		  Usage: $oneline_usage
 
@@ -96,7 +98,8 @@ help()
 		    -c
 		        Color mode
 		    -d CONFIG_FILE
-		        Use a configuration file other than the default ~/.todo/config
+		        Use a configuration file other than one of the defaults:
+$indentedJoinedConfigFileLocations
 		    -f
 		        Forces actions without confirmation or interactive input
 		    -h
@@ -616,7 +619,6 @@ shift $((OPTIND - 1))
 # defaults if not yet defined
 TODOTXT_VERBOSE=${TODOTXT_VERBOSE:-1}
 TODOTXT_PLAIN=${TODOTXT_PLAIN:-0}
-TODOTXT_CFG_FILE=${TODOTXT_CFG_FILE:-$HOME/.todo/config}
 TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
@@ -676,50 +678,23 @@ export COLOR_DONE=$LIGHT_GREY   # color for done (but not yet archived) tasks
 # (todo.sh add 42 ", foo") syntactically correct.
 export SENTENCE_DELIMITERS=',.:;'
 
-[ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT="$HOME/todo.cfg"
+configFileLocations=(
+    "$HOME/.todo/config"
+    "$HOME/todo.cfg"
+    "$HOME/.todo.cfg"
+    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/config"
+    "$(dirname "$0")/todo.cfg"
+    "$TODOTXT_GLOBAL_CFG_FILE"
+)
 
+[ -e "$TODOTXT_CFG_FILE" ] || for CFG_FILE_ALT in "${configFileLocations[@]}"
+do
     if [ -e "$CFG_FILE_ALT" ]
     then
         TODOTXT_CFG_FILE="$CFG_FILE_ALT"
+        break
     fi
-}
-
-[ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT="$HOME/.todo.cfg"
-
-    if [ -e "$CFG_FILE_ALT" ]
-    then
-        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
-    fi
-}
-
-[ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT="${XDG_CONFIG_HOME:-$HOME/.config}/todo/config"
-
-    if [ -e "$CFG_FILE_ALT" ]
-    then
-        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
-    fi
-}
-
-[ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT=$(dirname "$0")"/todo.cfg"
-
-    if [ -e "$CFG_FILE_ALT" ]
-    then
-        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
-    fi
-}
-
-[ -e "$TODOTXT_CFG_FILE" ] || {
-    CFG_FILE_ALT="$TODOTXT_GLOBAL_CFG_FILE"
-
-    if [ -e "$CFG_FILE_ALT" ]
-    then
-        TODOTXT_CFG_FILE="$CFG_FILE_ALT"
-    fi
-}
+done
 
 
 if [ -z "$TODO_ACTIONS_DIR" ] || [ ! -d "$TODO_ACTIONS_DIR" ]
@@ -728,26 +703,20 @@ then
     export TODO_ACTIONS_DIR
 fi
 
-[ -d "$TODO_ACTIONS_DIR" ] || {
-    TODO_ACTIONS_DIR_ALT="$HOME/.todo.actions.d"
-
+[ -d "$TODO_ACTIONS_DIR" ] || for TODO_ACTIONS_DIR_ALT in \
+    "$HOME/.todo.actions.d" \
+    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"
+do
     if [ -d "$TODO_ACTIONS_DIR_ALT" ]
     then
         TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
+        break
     fi
-}
+done
 
-[ -d "$TODO_ACTIONS_DIR" ] || {
-    TODO_ACTIONS_DIR_ALT="${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"
-
-    if [ -d "$TODO_ACTIONS_DIR_ALT" ]
-    then
-        TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
-    fi
-}
 
 # === SANITY CHECKS (thanks Karl!) ===
-[ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file $TODOTXT_CFG_FILE"
+[ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file ${TODOTXT_CFG_FILE:-${configFileLocations[0]}}"
 
 . "$TODOTXT_CFG_FILE"
 
