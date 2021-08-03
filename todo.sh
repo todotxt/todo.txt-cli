@@ -131,7 +131,6 @@ help()
 		    -x
 		        Disables TODOTXT_FINAL_FILTER
 
-
 	EndOptionsHelp
 
     [ "$TODOTXT_VERBOSE" -gt 1 ] && cat <<-'EndVerboseHelp'
@@ -152,7 +151,6 @@ help()
 		    TODOTXT_SIGIL_BEFORE_PATTERN="" optionally allow chars preceding +p / @c
 		    TODOTXT_SIGIL_VALID_PATTERN=.*  tweak the allowed chars for +p and @c
 		    TODOTXT_SIGIL_AFTER_PATTERN=""  optionally allow chars after +p / @c
-
 
 	EndVerboseHelp
         actionsHelp
@@ -721,7 +719,6 @@ export SENTENCE_DELIMITERS=',.:;'
     fi
 }
 
-
 if [ -z "$TODO_ACTIONS_DIR" ] || [ ! -d "$TODO_ACTIONS_DIR" ]
 then
     TODO_ACTIONS_DIR="$HOME/.todo/actions"
@@ -805,7 +802,7 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
 if [ $TODOTXT_PLAIN = 1 ]; then
     for clr in ${!PRI_@}; do
-        export "$clr"=$NONE
+        export "$clr"="$NONE"
     done
     PRI_X=$NONE
     DEFAULT=$NONE
@@ -1153,7 +1150,7 @@ case $action in
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
             getNewtodo "$item"
             echo "$item $newtodo"
-	fi
+    fi
     else
         die "TODO: Error appending task $item."
     fi
@@ -1166,7 +1163,7 @@ case $action in
     grep "^x " "$TODO_FILE" >> "$DONE_FILE"
     sed -i.bak '/^x /d' "$TODO_FILE"
     if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-	echo "TODO: $TODO_FILE archived."
+        echo "TODO: $TODO_FILE archived."
     fi
     ;;
 
@@ -1263,7 +1260,7 @@ case $action in
                 getNewtodo "$item"
                 echo "$item $newtodo"
                 echo "TODO: $item marked as done."
-	    fi
+        fi
         else
             echo "TODO: $item is already marked done."
         fi
