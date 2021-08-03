@@ -1,5 +1,7 @@
-#!/bin/bash source-this-script
-[ "$BASH_VERSION" ] || return
+# bash completion for todo.txt-cli
+
+# Check for bash
+[ -z "$BASH_VERSION" ] && return
 
 _todo()
 {
@@ -18,7 +20,7 @@ _todo()
 
     local _todo_sh=${_todo_sh:-todo.sh}
     local completions
-    if [ $COMP_CWORD -eq 1 ]; then
+    if [ "$COMP_CWORD" -eq 1 ]; then
         completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons 2>/dev/null) $OPTS"
     elif [[ $COMP_CWORD -gt 2 && ( \
         "${COMP_WORDS[COMP_CWORD-2]}" =~ ^($MOVE_COMMAND_PATTERN${_todo_file2_actions:+|${_todo_file2_actions}})$ || \
