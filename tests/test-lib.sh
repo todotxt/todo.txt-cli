@@ -693,6 +693,13 @@ cd -P "$test" || exit 1
 # but use something specified by the framework.
 HOME=$(pwd)
 export HOME
+# Unset XDG_CONFIG_HOME as that is used as a config alternative.
+unset XDG_CONFIG_HOME
+# User add-ons may override built-in commands; these could have incompatible
+# behavior that makes the tests fail. Avoid picking up user add-ons by
+# explicitly configuring the first default location (which with the redirected
+# HOME lies within the test directory and usually does not exist).
+export TODO_ACTIONS_DIR="$HOME/.todo/actions"
 
 this_test=${0##*/}
 this_test=${this_test%%-*}
