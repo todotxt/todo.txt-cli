@@ -12,9 +12,9 @@ shift
   exit
 }
 
-if "$TODO_SH" command add "$@"; then
+if "$TODO_FULL_SH" command add "$@"; then
     # figure out the line of what we just added, and prioritize it A
     line=`sed -n '$ =' "$TODO_FILE"`
     echo "$line"
-    "$TODO_SH" command pri "$line" A 
+    "$TODO_FULL_SH" command pri "$line" A
 fi
