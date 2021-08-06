@@ -4,6 +4,8 @@ test_description='basic del functionality
 '
 . ./test-lib.sh
 
+SPACE=' '
+
 test_todo_session 'del usage' <<EOF
 >>> todo.sh del B
 usage: todo.sh del ITEM# [TERM]
@@ -58,7 +60,7 @@ test_todo_session 'del with confirmation' <<EOF
 TODO: 3 of 3 tasks shown
 
 >>> printf n | todo.sh del 1
-Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)
+Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)$SPACE
 TODO: No tasks were deleted.
 
 >>> todo.sh -p list
@@ -69,15 +71,15 @@ TODO: No tasks were deleted.
 TODO: 3 of 3 tasks shown
 
 >>> printf x | todo.sh del 1
-Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)
+Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)$SPACE
 TODO: No tasks were deleted.
 
 >>> echo | todo.sh del 1
-Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)
+Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)$SPACE
 TODO: No tasks were deleted.
 
 >>> printf y | todo.sh del 1
-Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)
+Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)$SPACE
 1 (B) smell the uppercase Roses +flowers @outside
 TODO: 1 deleted.
 

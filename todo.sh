@@ -366,7 +366,7 @@ confirm()
 {
     [ $TODOTXT_FORCE = 0 ] || return 0
 
-    printf %s "${1:?}? (y/n)"
+    printf %s "${1:?}? (y/n) "
     local answer
     read -e -N 1 -r answer
     echo
