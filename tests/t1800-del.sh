@@ -57,6 +57,25 @@ test_todo_session 'del with confirmation' <<EOF
 --
 TODO: 3 of 3 tasks shown
 
+>>> printf n | todo.sh del 1
+Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)
+TODO: No tasks were deleted.
+
+>>> todo.sh -p list
+2 (A) notice the sunflowers
+1 (B) smell the uppercase Roses +flowers @outside
+3 stop
+--
+TODO: 3 of 3 tasks shown
+
+>>> printf x | todo.sh del 1
+Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)
+TODO: No tasks were deleted.
+
+>>> echo | todo.sh del 1
+Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)
+TODO: No tasks were deleted.
+
 >>> printf y | todo.sh del 1
 Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)
 1 (B) smell the uppercase Roses +flowers @outside
