@@ -49,6 +49,31 @@ cat > todo.txt <<EOF
 (A) notice the sunflowers
 stop
 EOF
+test_todo_session 'del with confirmation' <<EOF
+>>> todo.sh -p list
+2 (A) notice the sunflowers
+1 (B) smell the uppercase Roses +flowers @outside
+3 stop
+--
+TODO: 3 of 3 tasks shown
+
+>>> yes | todo.sh del 1
+Delete '(B) smell the uppercase Roses +flowers @outside'?  (y/n)
+1 (B) smell the uppercase Roses +flowers @outside
+TODO: 1 deleted.
+
+>>> todo.sh -p list
+2 (A) notice the sunflowers
+3 stop
+--
+TODO: 2 of 2 tasks shown
+EOF
+
+cat > todo.txt <<EOF
+(B) smell the uppercase Roses +flowers @outside
+(A) notice the sunflowers
+stop
+EOF
 test_todo_session 'del preserving line numbers' <<EOF
 >>> todo.sh -f del 1
 1 (B) smell the uppercase Roses +flowers @outside
