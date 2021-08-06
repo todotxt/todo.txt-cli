@@ -364,15 +364,12 @@ die()
 
 confirm()
 {
-    local ANSWER
-    if  [ $TODOTXT_FORCE = 0 ]; then
-        echo "${1:?}? (y/n)"
-        read -e -r ANSWER
-    else
-        ANSWER="y"
-    fi
+    [ $TODOTXT_FORCE = 0 ] || return 0
 
-    [ "$ANSWER" = "y" ]
+    echo "${1:?}? (y/n)"
+    local answer
+    read -e -r answer
+    [ "$answer" = "y" ]
 }
 
 cleaninput()
