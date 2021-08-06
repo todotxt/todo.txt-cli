@@ -58,7 +58,7 @@ test_todo_session 'del with confirmation' <<EOF
 TODO: 3 of 3 tasks shown
 
 >>> yes | todo.sh del 1
-Delete '(B) smell the uppercase Roses +flowers @outside'?  (y/n)
+Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)
 1 (B) smell the uppercase Roses +flowers @outside
 TODO: 1 deleted.
 
