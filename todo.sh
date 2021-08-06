@@ -367,8 +367,11 @@ confirm()
     [ $TODOTXT_FORCE = 0 ] || return 0
 
     printf %s "${1:?}? (y/n) "
+    local readArgs=(-e -r)
+    [ -n "${BASH_VERSINFO:-}" ] && [ \( ${BASH_VERSINFO[0]} -eq 4 -a ${BASH_VERSINFO[1]} -ge 1 \) -o ${BASH_VERSINFO[0]} -gt 4 ] &&
+        readArgs+=(-N 1)    # Bash 4.1+ supports -N nchars
     local answer
-    read -e -N 1 -r answer
+    read "${readArgs[@]}" answer
     echo
     [ "$answer" = "y" ]
 }
