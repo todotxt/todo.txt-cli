@@ -362,6 +362,20 @@ die()
     exit 1
 }
 
+confirm()
+{
+    [ $TODOTXT_FORCE = 0 ] || return 0
+
+    printf %s "${1:?}? (y/n) "
+    local readArgs=(-e -r)
+    [ -n "${BASH_VERSINFO:-}" ] && [ \( ${BASH_VERSINFO[0]} -eq 4 -a ${BASH_VERSINFO[1]} -ge 1 \) -o ${BASH_VERSINFO[0]} -gt 4 ] &&
+        readArgs+=(-N 1)    # Bash 4.1+ supports -N nchars
+    local answer
+    read "${readArgs[@]}" answer
+    echo
+    [ "$answer" = "y" ]
+}
+
 cleaninput()
 {
     # Parameters:    When $1 = "for sed", performs additional escaping for use
@@ -1146,13 +1160,7 @@ case $action in
     getTodo "$item"
 
     if [ -z "$3" ]; then
-        if  [ $TODOTXT_FORCE = 0 ]; then
-            echo "Delete '$todo'?  (y/n)"
-            read -e -r ANSWER
-        else
-            ANSWER="y"
-        fi
-        if [ "$ANSWER" = "y" ]; then
+        if confirm "Delete '$todo'"; then
             if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
                 # delete line (changes line numbers)
                 sed -i.bak -e "${item}s/^.*//" -e '/./!d' "$TODO_FILE"
@@ -1342,13 +1350,7 @@ case $action in
 
     getTodo "$item" "$src"
     [ -z "$todo" ] && die "$item: No such item in $src."
-    if  [ $TODOTXT_FORCE = 0 ]; then
-        echo "Move '$todo' from $src to $dest? (y/n)"
-        read -e -r ANSWER
-    else
-        ANSWER="y"
-    fi
-    if [ "$ANSWER" = "y" ]; then
+    if confirm "Move '$todo' from $src to $dest"; then
         if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
             # delete line (changes line numbers)
             sed -i.bak -e "${item}s/^.*//" -e '/./!d' "$src"
