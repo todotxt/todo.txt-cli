@@ -40,7 +40,7 @@ x 2009-02-13 make the coffee +wakeup
 x 2009-02-13 smell the coffee +wakeup
 EOF
 test_todo_session 'basic move with confirmation' <<EOF
->>> yes | todo.sh move 1 done.txt 2>&1 | sed -e "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g" -e 's#from .\{1,\}/\([^/]\{1,\}\) to .\{1,\}/\([^/]\{1,\}\)?#from \1 to \2?#g'
+>>> printf y | todo.sh move 1 done.txt 2>&1 | sed -e "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g" -e 's#from .\{1,\}/\([^/]\{1,\}\) to .\{1,\}/\([^/]\{1,\}\)?#from \1 to \2?#g'
 Move '(B) smell the uppercase Roses +flowers @outside' from todo.txt to done.txt? (y/n)
 1 (B) smell the uppercase Roses +flowers @outside
 TODO: 1 moved from 'todo.txt' to 'done.txt'.
