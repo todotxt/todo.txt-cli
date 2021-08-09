@@ -45,7 +45,7 @@ grow some corn
 thrash some hay
 chase the chickens
 EOF
-test_todo_session 'replace error' << EOF
+test_todo_session 'replace error' <<EOF
 >>> todo.sh replace 10 "hej!"
 === 1
 TODO: No task 10.
@@ -82,7 +82,7 @@ TODO: Replaced task with:
 EOF
 
 echo 'jump on hay' > todo.txt
-test_todo_session 'replace with &' << EOF
+test_todo_session 'replace with &' <<EOF
 >>> todo.sh replace 1 "thrash the hay & thrash the wheat"
 1 jump on hay
 TODO: Replaced task with:

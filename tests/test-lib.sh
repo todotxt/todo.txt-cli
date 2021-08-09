@@ -172,12 +172,12 @@ test_set_editor () {
 # the text_expect_* functions instead.
 
 test_ok_ () {
-	test_success=$(($test_success + 1))
+	test_success=$((test_success + 1))
 	say_color "" "  ok $test_count: $@"
 }
 
 test_failure_ () {
-	test_failure=$(($test_failure + 1))
+	test_failure=$((test_failure + 1))
 	say_color error "FAIL $test_count: $1"
 	shift
 	echo "$@"
@@ -185,12 +185,12 @@ test_failure_ () {
 }
 
 test_known_broken_ok_ () {
-	test_fixed=$(($test_fixed+1))
+	test_fixed=$((test_fixed + 1))
 	say_color "" "  FIXED $test_count: $@"
 }
 
 test_known_broken_failure_ () {
-	test_broken=$(($test_broken+1))
+	test_broken=$((test_broken + 1))
 	say_color skip "  still broken $test_count: $@"
 }
 
@@ -206,7 +206,7 @@ test_run_ () {
 }
 
 test_skip () {
-	test_count=$(($test_count+1))
+	test_count=$((test_count + 1))
 	to_skip=
 	for skp in $SKIP_TESTS
 	do
@@ -364,7 +364,7 @@ test_external_without_stderr () {
 		test_ok_ "$descr"
 	else
 		if [ "$verbose" = t ]; then
-			output=`echo; echo Stderr is:; cat "$stderr"`
+			output=$(echo; echo Stderr is:; cat "$stderr")
 		else
 			output=
 		fi
@@ -428,7 +428,7 @@ test_done () {
 	if test "$test_broken" != 0
 	then
 		say_color error "still have $test_broken known breakage(s)"
-		msg="remaining $(($test_count-$test_broken)) test(s)"
+		msg="remaining $((test_count - test_broken)) test(s)"
 	else
 		msg="$test_count test(s)"
 	fi
@@ -471,7 +471,7 @@ rm -fr "$test" || {
 test_init_todo () {
 	test "$#" = 1 ||
 	error "bug in the test script: not 1 parameter to test_init_todo"
-	owd=`pwd`
+	owd=$(pwd)
 	root="$1"
 	mkdir -p "$root"
 	cd "$root" || error "Cannot setup todo dir in $root"
@@ -548,7 +548,7 @@ test_init_todo () {
 
 # Usage: test_tick [increment]
 test_tick () {
-	TODO_TEST_TIME=$(($TODO_TEST_TIME + ${1:-86400}))
+	TODO_TEST_TIME=$((TODO_TEST_TIME + ${1:-86400}))
 }
 
 # Generate and run a series of tests based on a transcript.
@@ -581,14 +581,14 @@ test_todo_session () {
 	    status=${line#=== }
 	    ;;
 	"")
-	    if [ ! -z "$cmd" ]; then
-		if [ $status = 0 ]; then
+	    if [ -n "$cmd" ]; then
+		if [ "$status" = 0 ]; then
 		    test_expect_output "$1 $subnum" "$cmd"
 		else
 		    test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
 		fi
 
-		subnum=$(($subnum + 1))
+		subnum=$((subnum + 1))
 		cmd=""
 		status=0
 		> expect
@@ -602,8 +602,8 @@ test_todo_session () {
 	    ;;
 	esac
     done
-    if [ ! -z "$cmd" ]; then
-	if [ $status = 0 ]; then
+    if [ -n "$cmd" ]; then
+	if [ "$status" = 0 ]; then
 	    test_expect_output "$1 $subnum" "$cmd"
 	else
 	    test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
@@ -645,7 +645,7 @@ test_todo_custom_completion () {
 		SAVEIFS=$IFS
 		IFS=' ' set -- $2
 		COMP_WORDS=("$@")
-		COMP_CWORD=$(($# - $offset))
+		COMP_CWORD=$(($# - offset))
 		IFS=' ' eval "set -- $expected"
 		EXPECT=("$@")
 

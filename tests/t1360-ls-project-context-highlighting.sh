@@ -1,5 +1,4 @@
 #!/bin/bash
-#
 
 test_description='highlighting projects and contexts
 

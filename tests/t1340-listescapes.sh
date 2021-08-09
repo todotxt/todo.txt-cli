@@ -1,5 +1,4 @@
 #!/bin/bash
-#
 
 test_description='list with escape sequences
 

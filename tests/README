@@ -18,14 +18,14 @@ The easiest way to run tests is to say "make test" from the top-level.
 This runs all the tests.
 
     rm -rf tests/test-results "tests/trash directory"*
-    cd tests && sh t0000-config.sh 
+    cd tests && sh t0000-config.sh
     *   ok 1: no config file
     *   ok 2: config file (default location 1)
     *   ok 3: config file (default location 2)
     *   ok 4: config file (command line)
     *   ok 5: config file (env variable)
     * passed all 5 test(s)
-    cd tests && sh t0001-null.sh 
+    cd tests && sh t0001-null.sh
     *   ok 1: null ls
     * passed all 1 test(s)
     rm -rf tests/test-results
@@ -33,7 +33,7 @@ This runs all the tests.
 Or you can run each test individually from command line, like
 this:
 
-    $ ./t0001-null.sh 
+    $ ./t0001-null.sh
     *   ok 1: null ls
     * passed all 1 test(s)
 
@@ -42,27 +42,27 @@ You can pass --verbose (or -v), --debug (or -d), and --immediate
 appropriately before running "make".
 
 --verbose::
-	This makes the test more verbose.  Specifically, the
-	command being run and their output if any are also
-	output.
+    This makes the test more verbose.  Specifically, the
+    command being run and their output if any are also
+    output.
 
 --debug::
-	This may help the person who is developing a new test.
-	It causes the command defined with test_debug to run.
+    This may help the person who is developing a new test.
+    It causes the command defined with test_debug to run.
 
 --immediate::
-	This causes the test to immediately exit upon the first
-	failed test.
+    This causes the test to immediately exit upon the first
+    failed test.
 
 --long-tests::
-	This causes additional long-running tests to be run (where
-	available), for more exhaustive testing.
+    This causes additional long-running tests to be run (where
+    available), for more exhaustive testing.
 
 --tee::
-	In addition to printing the test output to the terminal,
-	write it to files named 't/test-results/$TEST_NAME.out'.
-	As the names depend on the tests' file names, it is safe to
-	run the tests with this option in parallel.
+    In addition to printing the test output to the terminal,
+    write it to files named 't/test-results/$TEST_NAME.out'.
+    As the names depend on the tests' file names, it is safe to
+    run the tests with this option in parallel.
 
 Skipping Tests
 --------------
@@ -97,15 +97,15 @@ Naming Tests
 
 The test files are named as:
 
-	tNNNN-commandname-details.sh
+    tNNNN-commandname-details.sh
 
 where N is a decimal digit.
 
 First digit tells the family:
 
-	0 - the absolute basics and global stuff
-	1 - basic every-day usage
-	2 - add ins
+    0 - the absolute basics and global stuff
+    1 - basic every-day usage
+    2 - add ins
 
 Second digit tells the particular command we are testing.
 
@@ -128,15 +128,15 @@ The test script is written as a shell script.  It should start
 with the standard "#!/bin/bash" with copyright notices, and an
 assignment to variable 'test_description', like this:
 
-	#!/bin/bash
-	#
-	# Copyright (c) 2005 Junio C Hamano
-	#
+    #!/bin/bash
+    #
+    # Copyright (c) 2005 Junio C Hamano
+    #
 
-	test_description='xxx test (option --frotz)
+    test_description='xxx test (option --frotz)
 
-	This test registers the following structure in the cache
-	and tries to run git-ls-files with option --frotz.'
+    This test registers the following structure in the cache
+    and tries to run git-ls-files with option --frotz.'
 
 
 Source 'test-lib.sh'
@@ -145,7 +145,7 @@ Source 'test-lib.sh'
 After assigning test_description, the test script should source
 test-lib.sh like this:
 
-	. ./test-lib.sh
+    . ./test-lib.sh
 
 This test harness library does the following things:
 
@@ -219,9 +219,9 @@ library for your script to use.
 
    Example:
 
-	test_expect_success \
-	    'git-write-tree should be able to write an empty tree.' \
-	    'tree=$(git-write-tree)'
+    test_expect_success \
+        'git-write-tree should be able to write an empty tree.' \
+        'tree=$(git-write-tree)'
 
  - test_expect_code <code> <message> <script>
 
@@ -266,7 +266,7 @@ and the dates and timestamps will be artificially fixed.
 Then the session can be used to make a unit test thanks to
 test_todo_session, see the existing tests as examples.
 
-Be careful to replace all occurences of the full path to the test
+Be careful to replace all occurrences of the full path to the test
 directory by $HOME as testshell.sh will explain you when you execute it
 otherwise the tests will work properly only on your own computer.
 
