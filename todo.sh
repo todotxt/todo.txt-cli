@@ -534,7 +534,7 @@ while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
         ##   number shows context names and an odd number hides context
         ##   names.
         : $(( HIDE_CONTEXT_NAMES++ ))
-        if [ $(( HIDE_CONTEXT_NAMES % 2 )) -eq 0 ]; then
+        if (( HIDE_CONTEXT_NAMES % 2 == 0 )); then
             ## Zero or even value -- show context names
             unset HIDE_CONTEXTS_SUBSTITUTION
         else
@@ -549,7 +549,7 @@ while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
         ##   number shows project names and an odd number hides project
         ##   names.
         : $(( HIDE_PROJECT_NAMES++ ))
-        if [ $(( HIDE_PROJECT_NAMES % 2 )) -eq 0 ]; then
+        if (( HIDE_PROJECT_NAMES % 2 == 0 )); then
             ## Zero or even value -- show project names
             unset HIDE_PROJECTS_SUBSTITUTION
         else
@@ -595,7 +595,7 @@ while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
         ##   number shows priority labels and an odd number hides priority
         ##   labels.
         : $(( HIDE_PRIORITY_LABELS++ ))
-        if [ $(( HIDE_PRIORITY_LABELS % 2 )) -eq 0 ]; then
+        if (( HIDE_PRIORITY_LABELS % 2 == 0 )); then
             ## Zero or even value -- show priority labels
             unset HIDE_PRIORITY_SUBSTITUTION
         else
