@@ -303,8 +303,7 @@ addonHelp()
 {
     if [ -d "$TODO_ACTIONS_DIR" ]; then
         didPrintAddonActionsHeader=
-        for action in "$TODO_ACTIONS_DIR"/*
-        do
+        for action in "$TODO_ACTIONS_DIR"/*; do
             if [ -f "$action" ] && [ -x "$action" ]; then
                 if [ -z "$didPrintAddonActionsHeader" ]; then
                     cat <<-EndAddonActionsHeader
@@ -328,8 +327,7 @@ addonHelp()
 
 actionUsage()
 {
-    for actionName
-    do
+    for actionName; do
         action="${TODO_ACTIONS_DIR}/${actionName}"
         if [ -f "$action" ] && [ -x "$action" ]; then
             "$action" usage
@@ -501,8 +499,7 @@ uppercasePriority()
     # Postcondition: Modifies $input.
     lower=( {a..z} )
     upper=( {A..Z} )
-    for ((i=0; i<26; i++))
-    do
+    for ((i=0; i<26; i++)); do
         upperPriority="${upperPriority};s/^[(]${lower[i]}[)]/(${upper[i]})/"
     done
     input=$(echo "$input" | sed "$upperPriority")
@@ -525,8 +522,7 @@ OVR_TODOTXT_FINAL_FILTER="$TODOTXT_FINAL_FILTER"
 export GREP_OPTIONS=""
 
 # == PROCESS OPTIONS ==
-while getopts ":fhpcnNaAtTvVx+@Pd:" Option
-do
+while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
   case $Option in
     '@')
         ## HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
@@ -535,8 +531,7 @@ do
         ##   number shows context names and an odd number hides context
         ##   names.
         : $(( HIDE_CONTEXT_NAMES++ ))
-        if [ $(( HIDE_CONTEXT_NAMES % 2 )) -eq 0 ]
-        then
+        if [ $(( HIDE_CONTEXT_NAMES % 2 )) -eq 0 ]; then
             ## Zero or even value -- show context names
             unset HIDE_CONTEXTS_SUBSTITUTION
         else
@@ -551,8 +546,7 @@ do
         ##   number shows project names and an odd number hides project
         ##   names.
         : $(( HIDE_PROJECT_NAMES++ ))
-        if [ $(( HIDE_PROJECT_NAMES % 2 )) -eq 0 ]
-        then
+        if [ $(( HIDE_PROJECT_NAMES % 2 )) -eq 0 ]; then
             ## Zero or even value -- show project names
             unset HIDE_PROJECTS_SUBSTITUTION
         else
@@ -598,8 +592,7 @@ do
         ##   number shows priority labels and an odd number hides priority
         ##   labels.
         : $(( HIDE_PRIORITY_LABELS++ ))
-        if [ $(( HIDE_PRIORITY_LABELS % 2 )) -eq 0 ]
-        then
+        if [ $(( HIDE_PRIORITY_LABELS % 2 )) -eq 0 ]; then
             ## Zero or even value -- show priority labels
             unset HIDE_PRIORITY_SUBSTITUTION
         else
@@ -700,27 +693,22 @@ configFileLocations=(
     "$TODOTXT_GLOBAL_CFG_FILE"
 )
 
-[ -e "$TODOTXT_CFG_FILE" ] || for CFG_FILE_ALT in "${configFileLocations[@]}"
-do
-    if [ -e "$CFG_FILE_ALT" ]
-    then
+[ -e "$TODOTXT_CFG_FILE" ] || for CFG_FILE_ALT in "${configFileLocations[@]}"; do
+    if [ -e "$CFG_FILE_ALT" ]; then
         TODOTXT_CFG_FILE="$CFG_FILE_ALT"
         break
     fi
 done
 
-if [ -z "$TODO_ACTIONS_DIR" ] || [ ! -d "$TODO_ACTIONS_DIR" ]
-then
+if [ -z "$TODO_ACTIONS_DIR" ] || [ ! -d "$TODO_ACTIONS_DIR" ]; then
     TODO_ACTIONS_DIR="$HOME/.todo/actions"
     export TODO_ACTIONS_DIR
 fi
 
 [ -d "$TODO_ACTIONS_DIR" ] || for TODO_ACTIONS_DIR_ALT in \
     "$HOME/.todo.actions.d" \
-    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"
-do
-    if [ -d "$TODO_ACTIONS_DIR_ALT" ]
-    then
+    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"; do
+    if [ -d "$TODO_ACTIONS_DIR_ALT" ]; then
         TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
         break
     fi
@@ -837,11 +825,9 @@ filtercommand()
     post_filter=${1:-}
     shift
 
-    for search_term
-    do
+    for search_term; do
         ## See if the first character of $search_term is a dash
-        if [ "${search_term:0:1}" != '-' ]
-        then
+        if [ "${search_term:0:1}" != '-' ]; then
             ## First character isn't a dash: hide lines that don't match
             ## this $search_term
             filter="${filter:-}${filter:+ | }grep -i $(shellquote "$search_term")"
@@ -1046,18 +1032,15 @@ action=$( printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]' )
 ## using todo.sh builtins.
 ## Else, run a actions script with the name of the command if it exists
 ## or fallback to using a builtin
-if [ "$action" == command ]
-then
+if [ "$action" == command ]; then
     ## Get rid of "command" from arguments list
     shift
     ## Reset action to new first argument
-    action=$( printf "%s\n" "$1" | tr '[:upper:]' '[:lower:]' )
-elif [ -d "$TODO_ACTIONS_DIR/$action" ] && [ -x "$TODO_ACTIONS_DIR/$action/$action" ]
-then
+    action=$(printf "%s\n" "$1" | tr '[:upper:]' '[:lower:]')
+elif [ -d "$TODO_ACTIONS_DIR/$action" ] && [ -x "$TODO_ACTIONS_DIR/$action/$action" ]; then
     "$TODO_ACTIONS_DIR/$action/$action" "$@"
     exit $?
-elif [ -d "$TODO_ACTIONS_DIR" ] && [ -x "$TODO_ACTIONS_DIR/$action" ]
-then
+elif [ -d "$TODO_ACTIONS_DIR" ] && [ -x "$TODO_ACTIONS_DIR/$action" ]; then
     "$TODO_ACTIONS_DIR/$action" "$@"
     exit $?
 fi
@@ -1244,7 +1227,7 @@ case $action in
         fi
     done
 
-    if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
+    if [ "$TODOTXT_AUTO_ARCHIVE" = 1 ]; then
         # Recursively invoke the script to allow overriding of the archive
         # action.
         "$TODO_FULL_SH" archive
@@ -1486,8 +1469,7 @@ note: PRIORITY must be anywhere from A to Z."
 "listaddons" )
     if [ -d "$TODO_ACTIONS_DIR" ]; then
         cd "$TODO_ACTIONS_DIR" || exit $?
-        for action in *
-        do
+        for action in *; do
             if [ -f "$action" ] && [ -x "$action" ]; then
                 echo "$action"
             elif [ -d "$action" ] && [ -x "$action/$action" ]; then
