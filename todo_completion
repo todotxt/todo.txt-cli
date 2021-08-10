@@ -78,7 +78,7 @@ _todo()
                                 # Append task text as a shell comment. This
                                 # completion can be a safety check before a
                                 # destructive todo.txt operation.
-                                [ "$todo" ] && COMPREPLY[0]="$cur # $todo"
+                                [ -n "$todo" ] && COMPREPLY[0]="$cur # $todo"
                                 return 0
                             else
                                 return 0

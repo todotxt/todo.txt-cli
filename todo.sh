@@ -306,7 +306,7 @@ addonHelp()
         for action in "$TODO_ACTIONS_DIR"/*
         do
             if [ -f "$action" ] && [ -x "$action" ]; then
-                if [ ! "$didPrintAddonActionsHeader" ]; then
+                if [ -z "$didPrintAddonActionsHeader" ]; then
                     cat <<-EndAddonActionsHeader
 		  Add-on Actions:
 	EndAddonActionsHeader
@@ -314,7 +314,7 @@ addonHelp()
                 fi
                 "$action" usage
             elif [ -d "$action" ] && [ -x "$action"/"$(basename "$action")" ]; then
-                if [ ! "$didPrintAddonActionsHeader" ]; then
+                if [ -z "$didPrintAddonActionsHeader" ]; then
                     cat <<-EndAddonActionsHeader
 		  Add-on Actions:
 	EndAddonActionsHeader
@@ -337,7 +337,7 @@ actionUsage()
             "$action"/"$(basename "$action")" usage
         else
             builtinActionUsage=$(actionsHelp | sed -n -e "/^    ${actionName//\//\\/} /,/^\$/p" -e "/^    ${actionName//\//\\/}$/,/^\$/p")
-            if [ "$builtinActionUsage" ]; then
+            if [ -n "$builtinActionUsage" ]; then
                 echo "$builtinActionUsage"
                 echo
             else
@@ -414,11 +414,12 @@ getTodo()
 
     local item=$1
     [ -z "$item" ] && die "$errmsg"
-    [ "${item//[0-9]/}" ] && die "$errmsg"
+    [ -n "${item//[0-9]/}" ] && die "$errmsg"
 
     todo=$(sed "$item!d" "${2:-$TODO_FILE}")
     [ -z "$todo" ] && die "$(getPrefix "$2"): No task $item."
 }
+
 getNewtodo()
 {
     # Parameters:    $1: task number
@@ -428,7 +429,7 @@ getNewtodo()
 
     local item=$1
     [ -z "$item" ] && die "Programming error: $item should exist."
-    [ "${item//[0-9]/}" ] && die "Programming error: $item should be numeric."
+    [ -n "${item//[0-9]/}" ] && die "Programming error: $item should be numeric."
 
     newtodo=$(sed "$item!d" "${2:-$TODO_FILE}")
     [ -z "$newtodo" ] && die "$(getPrefix "$2"): No updated task $item."
@@ -462,7 +463,7 @@ replaceOrPrepend()
   priority=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\1/" "$TODO_FILE")
   prepdate=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\2/" "$TODO_FILE")
 
-  if [ "$prepdate" ] && [ "$action" = "replace" ] && [ "$(echo "$input"|sed -e "s/${priAndDateExpr}.*/\\1\\2/")" ]; then
+  if [ -n "$prepdate" ] && [ "$action" = "replace" ] && [ -n "$(echo "$input" | sed -e "s/${priAndDateExpr}.*/\\1\\2/")" ]; then
       # If the replaced text starts with a [priority +] date, it will replace
       # the existing date, too.
     prepdate=
@@ -797,8 +798,8 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     COLOR_META=$NONE
 fi
 
-[[ "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
-[[ "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
+[[ -n "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
+[[ -n "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
 
 _addto() {
     file="$1"
@@ -916,7 +917,7 @@ _format()
         TODOTXT_FINAL_FILTER="cat"
     fi
     items=$(
-        if [ "$FILE" ]; then
+        if [ -n "$FILE" ]; then
             sed = "$FILE"
         else
             sed =
@@ -931,7 +932,7 @@ _format()
 
     ## Build and apply the filter.
     filter_command=$(filtercommand "${pre_filter_command:-}" "${post_filter_command:-}" "$@")
-    if [ "${filter_command}" ]; then
+    if [ -n "${filter_command}" ]; then
         filtered_items=$(echo -n "$items" | eval "${filter_command}")
     else
         filtered_items=$items
@@ -1009,7 +1010,7 @@ _format()
           '''                                                   \
         | eval ${TODOTXT_FINAL_FILTER}                          \
     )
-    [ "$filtered_items" ] && echo "$filtered_items"
+    [ -n "$filtered_items" ] && echo "$filtered_items"
 
     if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
         NUMTASKS=$( echo -n "$filtered_items" | sed -n '$ =' )
@@ -1026,14 +1027,14 @@ listWordsWithSigil()
     shift
 
     FILE=$TODO_FILE
-    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
-	eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" \
-		| grep -o "[^ ]*${sigil}[^ ]\\+" \
-		| sed -n \
-			-e "s#^${TODOTXT_SIGIL_BEFORE_PATTERN//#/\\#}##" \
-			-e "s#${TODOTXT_SIGIL_AFTER_PATTERN//#/\\#}\$##" \
-			-e "/^${sigil}${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
-		| sort -u
+    [ -n "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
+    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" \
+        | grep -o "[^ ]*${sigil}[^ ]\\+" \
+        | sed -n \
+            -e "s#^${TODOTXT_SIGIL_BEFORE_PATTERN//#/\\#}##" \
+            -e "s#${TODOTXT_SIGIL_AFTER_PATTERN//#/\\#}\$##" \
+            -e "/^${sigil}${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
+        | sort -u
 }
 
 export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list listWordsWithSigil getPadding _format die
@@ -1397,7 +1398,7 @@ note: PRIORITY must be anywhere from A to Z."
             getNewtodo "$item"
             echo "$item $newtodo"
             if [ "$oldpri" != "$newpri" ]; then
-                if [ "$oldpri" ]; then
+                if [ -n "$oldpri" ]; then
                     echo "TODO: $item re-prioritized from ($oldpri) to ($newpri)."
                 else
                     echo "TODO: $item prioritized ($newpri)."
