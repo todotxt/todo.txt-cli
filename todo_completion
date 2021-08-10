@@ -70,8 +70,9 @@ _todo()
                                     # a safety check of the ls action output.
                                     -e '1q'
                                 )
-                                local todo=$( \
-                                    eval TODOTXT_VERBOSE=0 $_todo_sh '-@ -+ -p -x command ls "^ *${cur} "' 2>/dev/null | \
+                                local todo
+                                todo=$( \
+                                    eval TODOTXT_VERBOSE=0 "$_todo_sh" '-@ -+ -p -x command ls "^ *${cur} "' 2>/dev/null | \
                                     sed "${sedTransformations[@]}" \
                                 )
                                 # Append task text as a shell comment. This
