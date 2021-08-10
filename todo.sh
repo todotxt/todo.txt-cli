@@ -365,7 +365,7 @@ die()
 
 confirm()
 {
-    [ $TODOTXT_FORCE = 0 ] || return 0
+    [ "$TODOTXT_FORCE" = 0 ] || return 0
 
     printf %s "${1:?}? (y/n) "
     local answer
@@ -784,7 +784,7 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 [ -f "$DONE_FILE" ] || [ -c "$DONE_FILE" ] || : > "$DONE_FILE"
 [ -f "$REPORT_FILE" ] || [ -c "$REPORT_FILE" ] || : > "$REPORT_FILE"
 
-if [ $TODOTXT_PLAIN = 1 ]; then
+if [ "$TODOTXT_PLAIN" = 1 ]; then
     for clr in ${!PRI_@}; do
         export "$clr"="$NONE"
     done
@@ -1007,8 +1007,8 @@ _format()
             s/'"${HIDE_PROJECTS_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_CONTEXTS_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_CUSTOM_SUBSTITUTION:-^}"'//g
-          '''                                                   \
-        | eval ${TODOTXT_FINAL_FILTER}                          \
+          ''' \
+        | eval "${TODOTXT_FINAL_FILTER}" \
     )
     [ -n "$filtered_items" ] && echo "$filtered_items"
 
@@ -1159,7 +1159,7 @@ case $action in
 
     if [ -z "$3" ]; then
         if confirm "Delete '$todo'"; then
-            if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
+            if [ "$TODOTXT_PRESERVE_LINE_NUMBERS" = 0 ]; then
                 # delete line (changes line numbers)
                 sed -i.bak -e "${item}s/^.*//" -e '/./!d' "$TODO_FILE"
             else
@@ -1349,7 +1349,7 @@ case $action in
     getTodo "$item" "$src"
     [ -z "$todo" ] && die "$item: No such item in $src."
     if confirm "Move '$todo' from $src to $dest"; then
-        if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
+        if [ "$TODOTXT_PRESERVE_LINE_NUMBERS" = 0 ]; then
             # delete line (changes line numbers)
             sed -i.bak -e "${item}s/^.*//" -e '/./!d' "$src"
         else
@@ -1476,7 +1476,7 @@ note: PRIORITY must be anywhere from A to Z."
 
     newTaskNum=$( sed -e '/./!d' "$TODO_FILE" | sed -n '$ =' )
     deduplicateNum=$(( originalTaskNum - newTaskNum ))
-    if [ $deduplicateNum -eq 0 ]; then
+    if [ "$deduplicateNum" -eq 0 ]; then
         echo "TODO: No duplicate tasks found"
     else
         echo "TODO: $deduplicateNum duplicate task(s) removed"

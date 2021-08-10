@@ -21,34 +21,34 @@ _todo()
     local _todo_sh=${_todo_sh:-todo.sh}
     local completions
     if [ "$COMP_CWORD" -eq 1 ]; then
-        completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons 2>/dev/null) $OPTS"
+        completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 "$_todo_sh" command listaddons 2>/dev/null) $OPTS"
     elif [[ $COMP_CWORD -gt 2 && ( \
         "${COMP_WORDS[COMP_CWORD-2]}" =~ ^($MOVE_COMMAND_PATTERN${_todo_file2_actions:+|${_todo_file2_actions}})$ || \
         "${COMP_WORDS[COMP_CWORD-3]}" =~ ^($MOVE_COMMAND_PATTERN${_todo_file3_actions:+|${_todo_file3_actions}})$ ) ]]; then
         # "move ITEM# DEST [SRC]" has file arguments on positions 2 and 3.
-        completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listfile 2>/dev/null)
+        completions=$(eval TODOTXT_VERBOSE=0 "$_todo_sh" command listfile 2>/dev/null)
     else
         case "$prev" in
             command)
                 completions=$COMMANDS;;
             help)
-                completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons 2>/dev/null)";;
-            -*) completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 $_todo_sh command listaddons 2>/dev/null) $OPTS";;
+                completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 "$_todo_sh" command listaddons 2>/dev/null)";;
+            -*) completions="$COMMANDS $(eval TODOTXT_VERBOSE=0 "$_todo_sh" command listaddons 2>/dev/null) $OPTS";;
             *)  if [[ "$prev" =~ ^(addto|listfile|lf${_todo_file1_actions:+|${_todo_file1_actions}})$ ]]; then
-                    completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listfile 2>/dev/null)
+                    completions=$(eval TODOTXT_VERBOSE=0 "$_todo_sh" command listfile 2>/dev/null)
                 else
                     case "$cur" in
-                        +*) completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listproj 2>/dev/null)
-                            COMPREPLY=( $( compgen -W "$completions" -- $cur ))
+                        +*) completions=$(eval TODOTXT_VERBOSE=0 "$_todo_sh" command listproj 2>/dev/null)
+                            COMPREPLY=( $(compgen -W "$completions" -- "$cur"))
                             [ ${#COMPREPLY[@]} -gt 0 ] && return 0
                             # Fall back to projects extracted from done tasks.
-                            completions=$(eval 'TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE' $_todo_sh command listproj 2>/dev/null)
+                            completions=$(eval 'TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE' "$_todo_sh" command listproj 2>/dev/null)
                             ;;
-                        @*) completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listcon 2>/dev/null)
-                            COMPREPLY=( $( compgen -W "$completions" -- $cur ))
+                        @*) completions=$(eval TODOTXT_VERBOSE=0 "$_todo_sh" command listcon 2>/dev/null)
+                            COMPREPLY=( $(compgen -W "$completions" -- "$cur"))
                             [ ${#COMPREPLY[@]} -gt 0 ] && return 0
                             # Fall back to contexts extracted from done tasks.
-                            completions=$(eval 'TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE' $_todo_sh command listcon 2>/dev/null)
+                            completions=$(eval 'TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE' "$_todo_sh" command listcon 2>/dev/null)
                             ;;
                         *)  if [[ "$cur" =~ ^[0-9]+$ ]]; then
                                 declare -a sedTransformations=(
@@ -90,7 +90,7 @@ _todo()
         esac
     fi
 
-    COMPREPLY=( $( compgen -W "$completions" -- $cur ))
+    COMPREPLY=( $(compgen -W "$completions" -- "$cur"))
     return 0
 }
 complete -F _todo todo.sh
