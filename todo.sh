@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Check bash version
+(( BASH_VERSINFO[0] > 4 || BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 1 )) || { printf 'Bash 4.1 or newer requried\n' >&2; exit 1; }
+
 # === HEAVY LIFTING ===
 shopt -s extglob extquote
 
@@ -365,11 +368,8 @@ confirm()
     [ $TODOTXT_FORCE = 0 ] || return 0
 
     printf %s "${1:?}? (y/n) "
-    local readArgs=(-e -r)
-    [ -n "${BASH_VERSINFO:-}" ] && [ \( ${BASH_VERSINFO[0]} -eq 4 -a ${BASH_VERSINFO[1]} -ge 1 \) -o ${BASH_VERSINFO[0]} -gt 4 ] &&
-        readArgs+=(-N 1)    # Bash 4.1+ supports -N nchars
     local answer
-    read "${readArgs[@]}" answer
+    read -r -e -N 1 answer
     echo
     [ "$answer" = "y" ]
 }
