@@ -12,8 +12,8 @@ _todo()
 
     local -r OPTS="-@ -@@ -+ -++ -d -f -h -p -P -PP -a -n -t -v -vv -V -x"
     local -r COMMANDS="\
-        add a addto addm append app archive command del  \
-        rm depri dp do help list ls listaddons listall lsa listcon  \
+        add a addto addm append app archive command del \
+        rm depri dp do help list ls listaddons listall lsa listcon \
         lsc listfile lf listpri lsp listproj lsprj move \
         mv prepend prep pri p replace report shorthelp"
     local -r MOVE_COMMAND_PATTERN='move|mv'
