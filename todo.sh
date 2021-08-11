@@ -17,7 +17,7 @@ version()
 		Contributors: https://github.com/todotxt/todo.txt-cli/graphs/contributors
 		License: https://github.com/todotxt/todo.txt-cli/blob/master/LICENSE
 	EndVersion
-    exit 1
+    exit 0
 }
 
 # Set script name and full path early.
