@@ -818,7 +818,8 @@ _addto()
 
 shellquote()
 {
-    typeset -r qq=\'; printf %s\\n "'${1//\'/${qq}\\${qq}${qq}}'";
+    local -r qq=$'\''
+    printf "%s\n" "'${1//\'/${qq}\\${qq}${qq}}'"
 }
 
 filtercommand()
