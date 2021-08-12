@@ -300,7 +300,7 @@ actionsHelp()
 addonHelp()
 {
     if [ -d "$TODO_ACTIONS_DIR" ]; then
-        didPrintAddonActionsHeader=
+        local didPrintAddonActionsHeader
         for action in "$TODO_ACTIONS_DIR"/*; do
             if [ -f "$action" ] && [ -x "$action" ]; then
                 if [ -z "$didPrintAddonActionsHeader" ]; then
@@ -799,6 +799,7 @@ _addto()
     uppercasePriority
 
     if [[ "$TODOTXT_DATE_ON_ADD" -eq 1 ]]; then
+        local now
         now=$(date '+%Y-%m-%d')
         input=$(echo "$input" | sed -e 's/^\(([A-Z]) \)\{0,1\}/\1'"$now /")
     fi
