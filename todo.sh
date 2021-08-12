@@ -528,32 +528,32 @@ export GREP_OPTIONS=""
 while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
   case $Option in
     '@')
-        ## HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
-        ##   (true) the first time this flag is seen. Each time the flag
-        ##   is seen after that, increment it again so that an even
-        ##   number shows context names and an odd number hides context
-        ##   names.
+        # HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
+        #   (true) the first time this flag is seen. Each time the flag
+        #   is seen after that, increment it again so that an even
+        #   number shows context names and an odd number hides context
+        #   names.
         : $(( HIDE_CONTEXT_NAMES++ ))
         if (( HIDE_CONTEXT_NAMES % 2 == 0 )); then
-            ## Zero or even value -- show context names
+            # Zero or even value -- show context names
             unset HIDE_CONTEXTS_SUBSTITUTION
         else
-            ## One or odd value -- hide context names
+            # One or odd value -- hide context names
             export HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[[:graph:]]\{1,\}'
         fi
         ;;
     '+')
-        ## HIDE_PROJECT_NAMES starts at zero (false); increment it to one
-        ##   (true) the first time this flag is seen. Each time the flag
-        ##   is seen after that, increment it again so that an even
-        ##   number shows project names and an odd number hides project
-        ##   names.
+        # HIDE_PROJECT_NAMES starts at zero (false); increment it to one
+        #   (true) the first time this flag is seen. Each time the flag
+        #   is seen after that, increment it again so that an even
+        #   number shows project names and an odd number hides project
+        #   names.
         : $(( HIDE_PROJECT_NAMES++ ))
         if (( HIDE_PROJECT_NAMES % 2 == 0 )); then
-            ## Zero or even value -- show project names
+            # Zero or even value -- show project names
             unset HIDE_PROJECTS_SUBSTITUTION
         else
-            ## One or odd value -- hide project names
+            # One or odd value -- hide project names
             export HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][[:graph:]]\{1,\}'
         fi
         ;;
@@ -589,17 +589,17 @@ while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
         OVR_TODOTXT_PLAIN=1
         ;;
     P)
-        ## HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
-        ##   (true) the first time this flag is seen. Each time the flag
-        ##   is seen after that, increment it again so that an even
-        ##   number shows priority labels and an odd number hides priority
-        ##   labels.
+        # HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
+        #   (true) the first time this flag is seen. Each time the flag
+        #   is seen after that, increment it again so that an even
+        #   number shows priority labels and an odd number hides priority
+        #   labels.
         : $(( HIDE_PRIORITY_LABELS++ ))
         if (( HIDE_PRIORITY_LABELS % 2 == 0 )); then
-            ## Zero or even value -- show priority labels
+            # Zero or even value -- show priority labels
             unset HIDE_PRIORITY_SUBSTITUTION
         else
-            ## One or odd value -- hide priority labels
+            # One or odd value -- hide priority labels
             export HIDE_PRIORITY_SUBSTITUTION="([A-Z])[[:space:]]"
         fi
         ;;
@@ -828,16 +828,16 @@ filtercommand()
     shift
 
     for search_term; do
-        ## See if the first character of $search_term is a dash
+        # See if the first character of $search_term is a dash
         if [ "${search_term:0:1}" != '-' ]; then
-            ## First character isn't a dash: hide lines that don't match
-            ## this $search_term
+            # First character isn't a dash: hide lines that don't match
+            # this $search_term
             filter="${filter:-}${filter:+ | }grep -i $(shellquote "$search_term")"
         else
-            ## First character is a dash: hide lines that match this
-            ## $search_term
+            # First character is a dash: hide lines that match this
+            # $search_term
             #
-            ## Remove the first character (-) before adding to our filter command
+            # Remove the first character (-) before adding to our filter command
             filter="${filter:-}${filter:+ | }grep -v -i $(shellquote "${search_term:1}")"
         fi
     done
@@ -851,26 +851,26 @@ filtercommand()
 
 _list() {
     local FILE="$1"
-    ## If the file starts with a "/" use absolute path. Otherwise,
-    ## try to find it in either $TODO_DIR or using a relative path
+    # If the file starts with a "/" use absolute path. Otherwise,
+    # try to find it in either $TODO_DIR or using a relative path
     if [ "${1:0:1}" == / ]; then
-        ## Absolute path
+        # Absolute path
         src="$FILE"
     elif [ -f "$TODO_DIR/$FILE" ]; then
-        ## Path relative to todo.sh directory
+        # Path relative to todo.sh directory
         src="$TODO_DIR/$FILE"
     elif [ -f "$FILE" ]; then
-        ## Path relative to current working directory
+        # Path relative to current working directory
         src="$FILE"
     elif [ -f "$TODO_DIR/${FILE}.txt" ]; then
-        ## Path relative to todo.sh directory, missing file extension
+        # Path relative to todo.sh directory, missing file extension
         src="$TODO_DIR/${FILE}.txt"
     else
         die "TODO: File $FILE does not exist."
     fi
 
-    ## Get our search arguments, if any
-    shift ## was file name, new $1 is first search term
+    # Get our search arguments, if any
+    shift # was file name, new $1 is first search term
 
     _format "$src" '' "$@"
 
@@ -882,7 +882,7 @@ _list() {
 
 getPadding()
 {
-    ## We need one level of padding for each power of 10 $LINES uses.
+    # We need one level of padding for each power of 10 $LINES uses.
     LINES=$(sed -n '$ =' "${1:-$TODO_FILE}")
     printf %s ${#LINES}
 }
@@ -897,12 +897,12 @@ _format()
     FILE=$1
     shift
 
-    ## Figure out how much padding we need to use, unless this was passed to us.
+    # Figure out how much padding we need to use, unless this was passed to us.
     PADDING=${1:-$(getPadding "$FILE")}
     shift
 
-    ## Number the file, then run the filter command,
-    ## then sort and mangle output some more
+    # Number the file, then run the filter command,
+    # then sort and mangle output some more
     if [[ $TODOTXT_DISABLE_FILTER = 1 ]]; then
         TODOTXT_FINAL_FILTER="cat"
     fi
@@ -920,7 +920,7 @@ _format()
          '''
     )
 
-    ## Build and apply the filter.
+    # Build and apply the filter.
     filter_command=$(filtercommand "${pre_filter_command:-}" "${post_filter_command:-}" "$@")
     if [ -n "${filter_command}" ]; then
         filtered_items=$(echo -n "$items" | eval "${filter_command}")
@@ -1032,14 +1032,14 @@ export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list
 # == HANDLE ACTION ==
 action=$(printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]')
 
-## If the first argument is "command", run the rest of the arguments
-## using todo.sh builtins.
-## Else, run a actions script with the name of the command if it exists
-## or fallback to using a builtin
+# If the first argument is "command", run the rest of the arguments
+# using todo.sh builtins.
+# Else, run a actions script with the name of the command if it exists
+# or fallback to using a builtin
 if [ "$action" == command ]; then
-    ## Get rid of "command" from arguments list
+    # Get rid of "command" from arguments list
     shift
-    ## Reset action to new first argument
+    # Reset action to new first argument
     action=$(printf "%s\n" "$1" | tr '[:upper:]' '[:lower:]')
 elif [ -d "$TODO_ACTIONS_DIR/$action" ] && [ -x "$TODO_ACTIONS_DIR/$action/$action" ]; then
     "$TODO_ACTIONS_DIR/$action/$action" "$@"
@@ -1049,7 +1049,7 @@ elif [ -d "$TODO_ACTIONS_DIR" ] && [ -x "$TODO_ACTIONS_DIR/$action" ]; then
     exit $?
 fi
 
-## Only run if $action isn't found in .todo.actions.d
+# Only run if $action isn't found in .todo.actions.d
 case $action in
 "add" | "a")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
@@ -1239,7 +1239,7 @@ case $action in
     ;;
 
 "help")
-    shift  ## Was help; new $1 is first help topic / action name
+    shift  # Was help; new $1 is first help topic / action name
     if [ $# -gt 0 ]; then
         # Don't use PAGER here; we don't expect much usage output from one / few actions.
         actionUsage "$@"
@@ -1265,12 +1265,12 @@ case $action in
     ;;
 
 "list" | "ls")
-    shift  ## Was ls; new $1 is first search term
+    shift  # Was ls; new $1 is first search term
     _list "$TODO_FILE" "$@"
     ;;
 
 "listall" | "lsa")
-    shift  ## Was lsa; new $1 is first search term
+    shift  # Was lsa; new $1 is first search term
 
     TOTAL=$(sed -n '$ =' "$TODO_FILE")
     PADDING=${#TOTAL}
@@ -1290,13 +1290,13 @@ case $action in
     ;;
 
 "listfile" | "lf")
-    shift  ## Was listfile, next $1 is file name
+    shift  # Was listfile, next $1 is file name
     if [ $# -eq 0 ]; then
         [ "$TODOTXT_VERBOSE" -gt 0 ] && echo "Files in the todo.txt directory:"
         cd "$TODO_DIR" && ls -1 -- *.txt
     else
         FILE="$1"
-        shift  ## Was filename; next $1 is first search term
+        shift  # Was filename; next $1 is first search term
 
         _list "$FILE" "$@"
     fi
@@ -1313,7 +1313,7 @@ case $action in
     ;;
 
 "listpri" | "lsp")
-    shift ## was "listpri", new $1 is priority to list or first TERM
+    shift # was "listpri", new $1 is priority to list or first TERM
 
     pri=$(printf "%s\n" "$1" | tr '[:lower:]' '[:upper:]' | grep -e '^[A-Z]$' -e '^[A-Z]-[A-Z]$') && shift || pri="A-Z"
     post_filter_command="${post_filter_command:-}${post_filter_command:+ | }grep '^ *[0-9]\+ ([${pri}]) '"
