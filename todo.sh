@@ -1040,7 +1040,7 @@ action=$(printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]')
 # using todo.sh builtins.
 # Else, run a actions script with the name of the command if it exists
 # or fallback to using a builtin
-if [ "$action" == command ]; then
+if [ "$action" == "command" ]; then
     # Get rid of "command" from arguments list
     shift
     # Reset action to new first argument
