@@ -1212,7 +1212,7 @@ case $action in
     errmsg="usage: $TODO_SH do ITEM#[, ITEM#, ITEM#, ...]"
     # shift so we get arguments to the do request
     shift;
-    [ "$#" -eq 0 ] && die "$errmsg"
+    [ $# -eq 0 ] && die "$errmsg"
 
     # Split multiple do's, if comma separated change to whitespace separated
     # Loop the 'do' function for each item
@@ -1366,14 +1366,14 @@ case $action in
 
 "pri" | "p")
     shift
-    while [ "$#" -gt 0 ]; do
+    while [ $# -gt 0 ]; do
         item=$1
         newpri=$(printf "%s\n" "$2" | tr '[:lower:]' '[:upper:]')
 
         errmsg="usage: $TODO_SH pri ITEM# PRIORITY[, ITEM# PRIORITY, ...]
 note: PRIORITY must be anywhere from A to Z."
 
-        [ "$#" -lt 2 ] && die "$errmsg"
+        [ $# -lt 2 ] && die "$errmsg"
         [[ "$newpri" = @([A-Z]) ]] || die "$errmsg"
         getTodo "$item"
 
