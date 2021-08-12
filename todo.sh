@@ -791,7 +791,8 @@ fi
 [[ -n "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
 [[ -n "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
 
-_addto() {
+_addto()
+{
     file="$1"
     input="$2"
     cleaninput
@@ -849,7 +850,8 @@ filtercommand()
     printf %s "$filter"
 }
 
-_list() {
+_list()
+{
     local FILE="$1"
     # If the file starts with a "/" use absolute path. Otherwise,
     # try to find it in either $TODO_DIR or using a relative path
