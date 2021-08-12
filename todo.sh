@@ -761,7 +761,7 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
 [ -z "$ACTION" ] && usage
 [ -d "$TODO_DIR" ] || mkdir -p "$TODO_DIR" 2>/dev/null || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
-( cd "$TODO_DIR" ) || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
+( cd -- "$TODO_DIR" ) || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
 [ -z "$TODOTXT_PRIORITY_ON_ADD" ] \
     || echo "$TODOTXT_PRIORITY_ON_ADD" | grep -q "^[A-Z]$" \
     || die "TODOTXT_PRIORITY_ON_ADD should be a capital letter from A to Z (it is now \"$TODOTXT_PRIORITY_ON_ADD\")."
@@ -1293,7 +1293,7 @@ case $action in
     shift  # Was listfile, next $1 is file name
     if [ $# -eq 0 ]; then
         [ "$TODOTXT_VERBOSE" -gt 0 ] && echo "Files in the todo.txt directory:"
-        cd "$TODO_DIR" && ls -1 -- *.txt
+        cd -- "$TODO_DIR" && ls -1 -- *.txt
     else
         FILE="$1"
         shift  # Was filename; next $1 is first search term
@@ -1472,7 +1472,7 @@ note: PRIORITY must be anywhere from A to Z."
 
 "listaddons")
     if [ -d "$TODO_ACTIONS_DIR" ]; then
-        cd "$TODO_ACTIONS_DIR" || exit $?
+        cd -- "$TODO_ACTIONS_DIR" || exit $?
         for action in *; do
             if [ -f "$action" ] && [ -x "$action" ]; then
                 echo "$action"
