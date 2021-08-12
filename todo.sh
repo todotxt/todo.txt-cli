@@ -438,56 +438,56 @@ getNewtodo()
 
 replaceOrPrepend()
 {
-  action=$1; shift
-  case "$action" in
-    replace)
-      backref=
-      querytext="Replacement: "
-      ;;
-    prepend)
-      backref=' &'
-      querytext="Prepend: "
-      ;;
-  esac
-  shift; item=$1; shift
-  getTodo "$item"
-
-  if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
-    echo -n "$querytext"
-    read -r -i "$todo" -e input
-  else
-    input=$*
-  fi
-
-  # Retrieve existing priority and prepended date
-  local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
-  priority=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\1/" "$TODO_FILE")
-  prepdate=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\2/" "$TODO_FILE")
-
-  if [ -n "$prepdate" ] && [ "$action" = "replace" ] && [ -n "$(echo "$input" | sed -e "s/${priAndDateExpr}.*/\\1\\2/")" ]; then
-      # If the replaced text starts with a [priority +] date, it will replace
-      # the existing date, too.
-    prepdate=
-  fi
-
-  # Temporarily remove any existing priority and prepended date, perform the
-  # change (replace/prepend) and re-insert the existing priority and prepended
-  # date again.
-  cleaninput "for sed"
-  sed -i.bak -e "$item s/^${priority}${prepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
-  if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-    getNewtodo "$item"
+    action=$1; shift
     case "$action" in
       replace)
-        echo "$item $todo"
-        echo "TODO: Replaced task with:"
-        echo "$item $newtodo"
+        backref=
+        querytext="Replacement: "
         ;;
       prepend)
-        echo "$item $newtodo"
+        backref=' &'
+        querytext="Prepend: "
         ;;
     esac
-  fi
+    shift; item=$1; shift
+    getTodo "$item"
+
+    if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
+        echo -n "$querytext"
+        read -r -i "$todo" -e input
+    else
+        input=$*
+    fi
+
+    # Retrieve existing priority and prepended date
+    local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
+    priority=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\1/" "$TODO_FILE")
+    prepdate=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\2/" "$TODO_FILE")
+
+    if [ -n "$prepdate" ] && [ "$action" = "replace" ] && [ -n "$(echo "$input" | sed -e "s/${priAndDateExpr}.*/\\1\\2/")" ]; then
+        # If the replaced text starts with a [priority +] date, it will replace
+        # the existing date, too.
+        prepdate=
+    fi
+
+    # Temporarily remove any existing priority and prepended date, perform the
+    # change (replace/prepend) and re-insert the existing priority and prepended
+    # date again.
+    cleaninput "for sed"
+    sed -i.bak -e "$item s/^${priority}${prepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
+    if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+        getNewtodo "$item"
+        case "$action" in
+          replace)
+            echo "$item $todo"
+            echo "TODO: Replaced task with:"
+            echo "$item $newtodo"
+            ;;
+          prepend)
+            echo "$item $newtodo"
+            ;;
+        esac
+    fi
 }
 
 fixMissingEndOfLine()
