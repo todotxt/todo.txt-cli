@@ -1036,6 +1036,11 @@ listWordsWithSigil()
 		| sort -u
 }
 
+hasCustomAction()
+{
+    [ -d "${1:?}" ] && [ -x "${1:?}/${2:?}" ]
+}
+
 export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list listWordsWithSigil getPadding _format die
 
 # == HANDLE ACTION ==
@@ -1051,11 +1056,11 @@ then
     shift
     ## Reset action to new first argument
     action=$( printf "%s\n" "$1" | tr '[:upper:]' '[:lower:]' )
-elif [ -d "$TODO_ACTIONS_DIR/$action" ] && [ -x "$TODO_ACTIONS_DIR/$action/$action" ]
+elif hasCustomAction "$TODO_ACTIONS_DIR/$action" "$action"
 then
     "$TODO_ACTIONS_DIR/$action/$action" "$@"
     exit $?
-elif [ -d "$TODO_ACTIONS_DIR" ] && [ -x "$TODO_ACTIONS_DIR/$action" ]
+elif hasCustomAction "$TODO_ACTIONS_DIR" "$action"
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
     exit $?
