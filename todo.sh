@@ -1038,7 +1038,13 @@ listWordsWithSigil()
 
 hasCustomAction()
 {
-    [ -d "${1:?}" ] && [ -x "${1:?}/${2:?}" ]
+    [ -d "${1:?}" ] || return 1
+    [ -x "$1/${2:?}" ] && return 0
+    if [ -h "$1/$2" ] && [ ! -e "$1/$2" ]
+    then
+        dieWithHelp "$2" "Fatal Error: Broken link to custom action: '$1/$2'"
+    fi
+    return 1
 }
 
 export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list listWordsWithSigil getPadding _format die
