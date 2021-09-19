@@ -159,7 +159,7 @@ TODO: 6 of 6 tasks shown
 TODO: 6 of 6 tasks shown
 
 >>> todo.sh remdup
-Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+Usage: todo.sh [-fhpamntvV] [-d todo_config] action [task_number] [task_description]
 Try 'todo.sh -h' for more information.
 === 1
 EOF

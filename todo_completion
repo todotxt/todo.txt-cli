@@ -10,7 +10,7 @@ _todo()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    local -r OPTS="-@ -@@ -+ -++ -d -f -h -p -P -PP -a -n -t -v -vv -V -x"
+    local -r OPTS="-@ -@@ -+ -++ -d -f -h -p -P -PP -a -m -n -t -v -vv -V -x"
     local -r COMMANDS="\
         add a addto addm append app archive command del  \
         rm depri dp do help list ls listaddons listall lsa listcon  \

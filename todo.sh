@@ -24,7 +24,7 @@ TODO_SH=$(basename "$0")
 TODO_FULL_SH="$0"
 export TODO_SH TODO_FULL_SH
 
-oneline_usage="$TODO_SH [-fhpantvV] [-d todo_config] action [task_number] [task_description]"
+oneline_usage="$TODO_SH [-fhpamntvV] [-d todo_config] action [task_number] [task_description]"
 
 usage()
 {
@@ -113,6 +113,8 @@ $indentedJoinedConfigFileLocations
 		        Don't auto-archive tasks automatically on completion
 		    -A
 		        Auto-archive tasks automatically on completion
+		    -m
+		        Maintain priority field on completion
 		    -n
 		        Don't preserve line numbers; automatically remove blank lines
 		        on task deletion
@@ -142,6 +144,7 @@ $indentedJoinedConfigFileLocations
 		    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
 		    TODOTXT_FORCE=1                 is same as option -f
 		    TODOTXT_PRESERVE_LINE_NUMBERS   is same as option -n (0)/-N (1)
+		    TODOTXT_PRESERVE_PRIORITY=1     is same as option -m
 		    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
 		    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
 		    TODOTXT_PRIORITY_ON_ADD=pri     default priority A-Z
@@ -510,6 +513,7 @@ uppercasePriority()
 #Preserving environment variables so they don't get clobbered by the config file
 OVR_TODOTXT_AUTO_ARCHIVE="$TODOTXT_AUTO_ARCHIVE"
 OVR_TODOTXT_FORCE="$TODOTXT_FORCE"
+OVR_TODOTXT_PRESERVE_PRIORITY="$TODOTXT_PRESERVE_PRIORITY"
 OVR_TODOTXT_PRESERVE_LINE_NUMBERS="$TODOTXT_PRESERVE_LINE_NUMBERS"
 OVR_TODOTXT_PLAIN="$TODOTXT_PLAIN"
 OVR_TODOTXT_DATE_ON_ADD="$TODOTXT_DATE_ON_ADD"
@@ -524,7 +528,7 @@ OVR_TODOTXT_FINAL_FILTER="$TODOTXT_FINAL_FILTER"
 export GREP_OPTIONS=""
 
 # == PROCESS OPTIONS ==
-while getopts ":fhpcnNaAtTvVx+@Pd:" Option
+while getopts ":fhpcmnNaAtTvVx+@Pd:" Option
 do
   case $Option in
     '@')
@@ -581,7 +585,10 @@ do
         set -- '-h' 'shorthelp'
         OPTIND=2
         ;;
-    n)
+    m )
+        OVR_TODOTXT_PRESERVE_PRIORITY=1
+        ;;
+    n )
         OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
         ;;
     N)
@@ -632,6 +639,7 @@ shift $((OPTIND - 1))
 TODOTXT_VERBOSE=${TODOTXT_VERBOSE:-1}
 TODOTXT_PLAIN=${TODOTXT_PLAIN:-0}
 TODOTXT_FORCE=${TODOTXT_FORCE:-0}
+TODOTXT_PRESERVE_PRIORITY=${TODOTXT_PRESERVE_PRIORITY:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
@@ -737,6 +745,9 @@ if [ -n "$OVR_TODOTXT_AUTO_ARCHIVE" ] ; then
 fi
 if [ -n "$OVR_TODOTXT_FORCE" ] ; then
   TODOTXT_FORCE="$OVR_TODOTXT_FORCE"
+fi
+if [ -n "$OVR_TODOTXT_PRESERVE_PRIORITY" ] ; then
+  TODOTXT_PRESERVE_PRIORITY="$OVR_TODOTXT_PRESERVE_PRIORITY"
 fi
 if [ -n "$OVR_TODOTXT_PRESERVE_LINE_NUMBERS" ] ; then
   TODOTXT_PRESERVE_LINE_NUMBERS="$OVR_TODOTXT_PRESERVE_LINE_NUMBERS"
@@ -1231,7 +1242,7 @@ case $action in
         if [ "${todo:0:2}" != "x " ]; then
             now=$(date '+%Y-%m-%d')
             # remove priority once item is done
-            sed -i.bak "${item}s/^(.) //" "$TODO_FILE"
+            [[ "$TODOTXT_PRESERVE_PRIORITY" = "1" ]] || sed -i.bak $item"s/^(.) //" "$TODO_FILE"
             sed -i.bak "${item}s|^|x $now |" "$TODO_FILE"
             if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
                 getNewtodo "$item"
