@@ -23,7 +23,12 @@ Download the latest stable [release][release] for use on your desktop or server.
 
 ```shell
 brew install todo-txt
+
+# For macOS on x86 CPU 
 cp -n /usr/local/opt/todo-txt/todo.cfg ~/.todo.cfg
+
+# For macOS on arm CPU
+cp -n /opt/homebrew/opt/todo-txt/todo.cfg ~/.todo.cfg
 ```
 
 **Note**: The `-n` flag for `cp` makes sure you do not overwrite an existing file.
