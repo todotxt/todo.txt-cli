@@ -46,7 +46,7 @@ make test
 *NOTE:* Makefile defaults to several default paths for installed files. Adjust to your system:
 
 - `INSTALL_DIR`: PATH for executables (default /usr/local/bin)
-- `CONFIG_DIR`: PATH for todo.txt config
+- `CONFIG_DIR`: PATH for the todo.txt configuration template
 - `BASH_COMPLETION`: PATH for autocompletion scripts (default to /etc/bash_completion.d)
 
 ```shell
