@@ -824,11 +824,6 @@ _addto() {
     fi
 }
 
-shellquote()
-{
-    typeset -r qq=\'; printf %s\\n "'${1//\'/${qq}\\${qq}${qq}}'";
-}
-
 filtercommand()
 {
     filter=${1:-}
@@ -843,13 +838,13 @@ filtercommand()
         then
             ## First character isn't a dash: hide lines that don't match
             ## this $search_term
-            filter="${filter:-}${filter:+ | }grep -i $(shellquote "$search_term")"
+            printf -v filter '%sgrep -i %q' "${filter:-}${filter:+ | }" "$search_term"
         else
             ## First character is a dash: hide lines that match this
             ## $search_term
             #
             ## Remove the first character (-) before adding to our filter command
-            filter="${filter:-}${filter:+ | }grep -v -i $(shellquote "${search_term:1}")"
+            printf -v filter '%sgrep -v -i %q' "${filter:-}${filter:+ | }" "${search_term:1}"
         fi
     done
 
@@ -1047,7 +1042,7 @@ hasCustomAction()
     return 1
 }
 
-export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list listWordsWithSigil getPadding _format die
+export -f cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die
 
 # == HANDLE ACTION ==
 action=$( printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]' )
