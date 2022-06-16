@@ -172,4 +172,11 @@ TODO: Replaced task with:
 1 (B) 2010-07-04 this also has a new date
 EOF
 
+echo '(A) 2022-06-16 replace me using stdin' > todo.txt
+test_todo_session 'replace with prepended priority using stdin' <<EOF
+>>> todo.sh replace 1 <<< "(A) 2022-06-16 the text is now replaced"
+TODO: Replaced task with:
+1 (A) 2022-06-16 the text is now replaced
+EOF
+
 test_done
