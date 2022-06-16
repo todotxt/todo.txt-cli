@@ -33,6 +33,8 @@ chmod -x .todo.actions.d/foo
 # may still grant execution rights. In this case, we skip the test.
 if [ -x .todo.actions.d/foo ]; then
     SKIP_TESTS="${SKIP_TESTS}${SKIP_TESTS+ }t8010.4"
+    # foo is effectively ignored so just straight out delete it.
+    rm .todo.actions.d/foo
 fi
 test_todo_session 'nonexecutable action' <<EOF
 >>> todo.sh listaddons
@@ -72,6 +74,7 @@ chmod -x .todo.actions.d/norris/norris
 # may still grant execution rights. In this case, we skip the test.
 if [ -x .todo.actions.d/norris/norris ]; then
     SKIP_TESTS="${SKIP_TESTS}${SKIP_TESTS+ }t8010.8"
+    rm .todo.actions.d/norris/norris
 fi
 test_todo_session 'nonexecutable action in subfolder' <<EOF
 >>> todo.sh listaddons
