@@ -30,9 +30,11 @@ EOF
 
 chmod -x .todo.actions.d/foo
 # On Cygwin, clearing the executable flag may have no effect, as the Windows ACL
-# may still grant execution rights. In this case, we skip the test.
+# may still grant execution rights. In this case, we skip the test, and remove
+# the (still valid) custom action so that it doesn't break following tests.
 if [ -x .todo.actions.d/foo ]; then
     SKIP_TESTS="${SKIP_TESTS}${SKIP_TESTS+ }t8010.4"
+    rm .todo.actions.d/foo
 fi
 test_todo_session 'nonexecutable action' <<EOF
 >>> todo.sh listaddons
@@ -69,9 +71,11 @@ EOF
 # nthorne: shamelessly stolen from above..
 chmod -x .todo.actions.d/norris/norris
 # On Cygwin, clearing the executable flag may have no effect, as the Windows ACL
-# may still grant execution rights. In this case, we skip the test.
+# may still grant execution rights. In this case, we skip the test, and remove
+# the (still valid) custom action so that it doesn't break following tests.
 if [ -x .todo.actions.d/norris/norris ]; then
     SKIP_TESTS="${SKIP_TESTS}${SKIP_TESTS+ }t8010.8"
+    rm .todo.actions.d/norris/norris
 fi
 test_todo_session 'nonexecutable action in subfolder' <<EOF
 >>> todo.sh listaddons
