@@ -452,7 +452,8 @@ replaceOrPrepend()
 
   if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
     echo -n "$querytext"
-    read -r -i "$todo" -e input
+    todo_removed_prio=$(echo $todo | sed -e "s/([A-Z]) *//g")
+    read -r -i "$todo_removed_prio" -e input
   else
     input=$*
   fi
