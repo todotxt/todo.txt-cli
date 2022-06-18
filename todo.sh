@@ -364,12 +364,11 @@ confirm()
 {
     [ $TODOTXT_FORCE = 0 ] || return 0
 
-    printf %s "${1:?}? (y/n) "
     local readArgs=(-e -r)
     [ -n "${BASH_VERSINFO:-}" ] && [ \( ${BASH_VERSINFO[0]} -eq 4 -a ${BASH_VERSINFO[1]} -ge 1 \) -o ${BASH_VERSINFO[0]} -gt 4 ] &&
         readArgs+=(-N 1)    # Bash 4.1+ supports -N nchars
     local answer
-    read "${readArgs[@]}" answer
+    read -p "${1:?}? (y/n) " "${readArgs[@]}" answer
     echo
     [ "$answer" = "y" ]
 }
@@ -451,8 +450,7 @@ replaceOrPrepend()
   getTodo "$item"
 
   if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
-    echo -n "$querytext"
-    read -r -i "$todo" -e input
+    read -p "$querytext" -r -i "$todo" -e input
   else
     input=$*
   fi
@@ -1082,8 +1080,7 @@ fi
 case $action in
 "add" | "a")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
-        echo -n "Add: "
-        read -e -r input
+        read -p "Add: " -e -r input
     else
         [ -z "$2" ] && die "usage: $TODO_SH add \"TODO ITEM\""
         shift
@@ -1094,8 +1091,7 @@ case $action in
 
 "addm")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
-        echo -n "Add: "
-        read -e -r input
+        read -p "Add: " -e -r input
     else
         [ -z "$2" ] && die "usage: $TODO_SH addm \"TODO ITEM\""
         shift
@@ -1135,8 +1131,7 @@ case $action in
     getTodo "$item"
 
     if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
-        echo -n "Append: "
-        read -e -r input
+        read -p "Append: " -e -r input
     else
         input=$*
     fi
