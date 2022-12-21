@@ -1142,8 +1142,8 @@ case $action in
 "archive" )
     # defragment blank lines
     sed -i.bak -e '/./!d' "$TODO_FILE"
-    if grep "^x " "$TODO_FILE"; then
-        grep "^x " "$TODO_FILE" >> "$DONE_FILE"
+    if grep "^x " "$TODO_FILE" >> "$DONE_FILE"; then
+	[ "$TODOTXT_VERBOSE" -gt 0 ] && grep "^x " "$TODO_FILE"   
         sed -i.bak '/^x /d' "$TODO_FILE"
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
             echo "TODO: $TODO_FILE archived."
