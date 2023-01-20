@@ -14,7 +14,7 @@ todo.sh add notice the daisies > /dev/null
 test_todo_session 'replace usage' <<EOF
 >>> todo.sh replace adf asdfa
 === 1
-usage: todo.sh replace ITEM# "UPDATED ITEM"
+usage: todo.sh replace NR "UPDATED ITEM"
 EOF
 
 test_todo_session 'basic replace' <<EOF
