@@ -349,14 +349,14 @@ dieWithHelp()
     case "$1" in
         help)       help;;
         shorthelp)  shorthelp;;
-    esac
+    esac >&2
     shift
 
     die "$@"
 }
 die()
 {
-    echo "$*"
+    echo >&2 "$*"
     exit 1
 }
 
