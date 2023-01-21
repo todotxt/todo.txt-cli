@@ -864,7 +864,7 @@ _list() {
     local FILE="$1"
     ## If the file starts with a "/" use absolute path. Otherwise,
     ## try to find it in either $TODO_DIR or using a relative path
-    if [ "${1:0:1}" == / ]; then
+    if [ "${1:0:1}" == / ] && [ -f "$FILE" ]; then
         ## Absolute path
         src="$FILE"
     elif [ -f "$TODO_DIR/$FILE" ]; then
@@ -1485,14 +1485,22 @@ note: PRIORITY must be anywhere from A to Z."
 "listaddons" )
     if [ -d "$TODO_ACTIONS_DIR" ]; then
         cd "$TODO_ACTIONS_DIR" || exit $?
+        VALID=0
         for action in *
         do
             if [ -f "$action" ] && [ -x "$action" ]; then
                 echo "$action"
+                VALID+=1
             elif [ -d "$action" ] && [ -x "$action/$action" ]; then
                 echo "$action"
+                VALID+=1
             fi
         done
+        if ! [ "$VALID" -gt 0 ]; then
+             echo "TODO: '$TODO_ACTIONS_DIR' does not contain valid actions."
+        fi 
+    else
+        [ "$TODOTXT_VERBOSE" -gt 0 ] && echo "TODO: '$TODO_ACTIONS_DIR' does not exist." 
     fi
     ;;
 

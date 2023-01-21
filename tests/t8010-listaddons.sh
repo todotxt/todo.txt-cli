@@ -9,6 +9,7 @@ This test checks listing of custom actions.
 
 test_todo_session 'no custom actions' <<EOF
 >>> todo.sh listaddons
+TODO: '$TODO_ACTIONS_DIR' does not exist.
 EOF
 
 make_action "foo"
