@@ -60,6 +60,7 @@ test_todo_session 'del with confirmation' <<EOF
 TODO: 3 of 3 tasks shown
 
 >>> printf n | todo.sh del 1
+=== 1
 Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)$SPACE
 TODO: No tasks were deleted.
 
@@ -71,10 +72,12 @@ TODO: No tasks were deleted.
 TODO: 3 of 3 tasks shown
 
 >>> printf x | todo.sh del 1
+=== 1
 Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)$SPACE
 TODO: No tasks were deleted.
 
 >>> echo | todo.sh del 1
+=== 1
 Delete '(B) smell the uppercase Roses +flowers @outside'? (y/n)$SPACE
 TODO: No tasks were deleted.
 
