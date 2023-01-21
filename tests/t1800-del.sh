@@ -4,6 +4,8 @@ test_description='basic del functionality
 '
 . ./test-lib.sh
 
+SPACE=' '
+
 test_todo_session 'del usage' <<EOF
 >>> todo.sh del B
 usage: todo.sh del ITEM# [TERM]
@@ -60,6 +62,7 @@ TODO: 3 of 3 tasks shown
 >>> printf n | todo.sh del 1
 \\
 TODO: No tasks were deleted.
+=== 1
 
 >>> todo.sh -p list
 2 (A) notice the sunflowers
@@ -71,10 +74,12 @@ TODO: 3 of 3 tasks shown
 >>> printf x | todo.sh del 1
 \\
 TODO: No tasks were deleted.
+=== 1
 
 >>> echo | todo.sh del 1
 \\
 TODO: No tasks were deleted.
+=== 1
 
 >>> printf y | todo.sh del 1
 \\

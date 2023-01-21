@@ -349,14 +349,14 @@ dieWithHelp()
     case "$1" in
         help)       help;;
         shorthelp)  shorthelp;;
-    esac
+    esac >&2
     shift
 
     die "$@"
 }
 die()
 {
-    echo "$*"
+    echo >&2 "$*"
     exit 1
 }
 
@@ -1182,7 +1182,7 @@ case $action in
                 echo "TODO: $item deleted."
             fi
         else
-            echo "TODO: No tasks were deleted."
+            die "TODO: No tasks were deleted."
         fi
     else
         sed -i.bak \
@@ -1212,6 +1212,7 @@ case $action in
 
     # Split multiple depri's, if comma separated change to whitespace separated
     # Loop the 'depri' function for each item
+    status=0
     for item in ${*//,/ }; do
         getTodo "$item"
 
@@ -1223,9 +1224,11 @@ case $action in
 		echo "TODO: $item deprioritized."
 	    fi
 	else
-	    echo "TODO: $item is not prioritized."
+	    echo >&2 "TODO: $item is not prioritized."
+	    status=1
 	fi
     done
+    exit $status
     ;;
 
 "do" | "done" )
@@ -1236,6 +1239,7 @@ case $action in
 
     # Split multiple do's, if comma separated change to whitespace separated
     # Loop the 'do' function for each item
+    status=0
     for item in ${*//,/ }; do
         getTodo "$item"
 
@@ -1251,15 +1255,17 @@ case $action in
                 echo "TODO: $item marked as done."
         fi
         else
-            echo "TODO: $item is already marked done."
+            echo >&2 "TODO: $item is already marked done."
+            status=1
         fi
     done
 
     if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
         # Recursively invoke the script to allow overriding of the archive
         # action.
-        "$TODO_FULL_SH" archive
+        "$TODO_FULL_SH" archive || status=$?
     fi
+    exit $status
     ;;
 
 "help" )
@@ -1375,7 +1381,7 @@ case $action in
             echo "TODO: $item moved from '$src' to '$dest'."
         fi
     else
-        echo "TODO: No tasks moved."
+        die "TODO: No tasks moved."
     fi
     ;;
 
@@ -1386,6 +1392,7 @@ case $action in
 
 "pri" | "p" )
     shift
+    status=0
     while [ "$#" -gt 0 ] ; do
         item=$1
         newpri=$( printf "%s\n" "$2" | tr '[:lower:]' '[:upper:]' )
@@ -1417,10 +1424,12 @@ note: PRIORITY must be anywhere from A to Z."
             fi
         fi
         if [ "$oldpri" = "$newpri" ]; then
-            echo "TODO: $item already prioritized ($newpri)."
+            echo >&2 "TODO: $item already prioritized ($newpri)."
+            status=1
         fi
     shift; shift
     done
+    exit $status
     ;;
 
 "replace" )
@@ -1488,7 +1497,7 @@ note: PRIORITY must be anywhere from A to Z."
     newTaskNum=$( sed -e '/./!d' "$TODO_FILE" | sed -n '$ =' )
     deduplicateNum=$(( originalTaskNum - newTaskNum ))
     if [ $deduplicateNum -eq 0 ]; then
-        echo "TODO: No duplicate tasks found"
+        die "TODO: No duplicate tasks found"
     else
         echo "TODO: $deduplicateNum duplicate task(s) removed"
     fi
