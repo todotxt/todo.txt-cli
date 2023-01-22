@@ -354,9 +354,10 @@ dieWithHelp()
 
     die "$@"
 }
+
 die()
 {
-    echo "$*"
+    echo >&2 "$*"
     exit 1
 }
 
@@ -1485,22 +1486,27 @@ note: PRIORITY must be anywhere from A to Z."
 "listaddons" )
     if [ -d "$TODO_ACTIONS_DIR" ]; then
         cd "$TODO_ACTIONS_DIR" || exit $?
-        VALID=0
+        actionsCnt=0
         for action in *
         do
             if [ -f "$action" ] && [ -x "$action" ]; then
                 echo "$action"
-                VALID+=1
+                ((actionsCnt+=1))
             elif [ -d "$action" ] && [ -x "$action/$action" ]; then
                 echo "$action"
-                VALID+=1
+                ((actionsCnt+=1))
             fi
         done
-        if ! [ "$VALID" -gt 0 ]; then
-             echo "TODO: '$TODO_ACTIONS_DIR' does not contain valid actions."
+        if ! [ "$actionsCnt" -gt 0 ]; then
+             die "TODO: '$TODO_ACTIONS_DIR' does not contain valid actions."
+        else
+            if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+                echo "--"
+                echo "TODO: $actionsCnt valid addon actions found."
+            fi
         fi 
     else
-        [ "$TODOTXT_VERBOSE" -gt 0 ] && echo "TODO: '$TODO_ACTIONS_DIR' does not exist." 
+        die "TODO: '$TODO_ACTIONS_DIR' does not exist." 
     fi
     ;;
 
