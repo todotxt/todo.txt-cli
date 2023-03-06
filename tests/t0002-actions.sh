@@ -16,10 +16,9 @@ echo "TODO: foo"
 EOF
 chmod +x foo
 
-cat > foo2 << EOF
-if [ "$#" -eq 0 ]; then
-    echo "TODO: foo"
-fi
+cat > foo2 << 'EOF'
+shift
+echo "TODO: $*"
 EOF
 chmod +x foo2
 
@@ -47,7 +46,7 @@ test_expect_success 'custom action (env variable)' '
 test_expect_success 'custom action (default action)' '
     mkdir .todo.actions.d
     cp foo2 .todo.actions.d/
-    TODOTXT_DEFAULT_ACTION="foo2 bar" todo.sh > output;
+    TODOTXT_DEFAULT_ACTION="foo2 foo" todo.sh > output;
     test_cmp expect output && rm -rf .todo.actions.d
 '
 

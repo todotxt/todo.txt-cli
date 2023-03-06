@@ -987,7 +987,7 @@ else
     actionarray=($action)
     if [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/${actionarray[0]}" ]
     then
-      "$TODO_ACTIONS_DIR/${actionarray[0]}" $action
+      "$TODO_ACTIONS_DIR/${actionarray[0]}" "${actionarray[@]}"
       exit $?
     fi
 fi
