@@ -16,6 +16,13 @@ echo "TODO: foo"
 EOF
 chmod +x foo
 
+cat > foo2 << EOF
+if [ "$#" -eq 0 ]; then
+    echo "TODO: foo"
+fi
+EOF
+chmod +x foo2
+
 test_expect_success 'custom action (default location 1)' '
     mkdir .todo.actions.d
     cp foo .todo.actions.d/
@@ -35,6 +42,13 @@ test_expect_success 'custom action (env variable)' '
     cp foo myactions/
     TODO_ACTIONS_DIR=myactions todo.sh foo > output;
     test_cmp expect output && rm -rf myactions
+'
+
+test_expect_success 'custom action (default action)' '
+    mkdir .todo.actions.d
+    cp foo2 .todo.actions.d/
+    TODOTXT_DEFAULT_ACTION="foo2 bar" todo.sh > output;
+    test_cmp expect output && rm -rf .todo.actions.d
 '
 
 test_done

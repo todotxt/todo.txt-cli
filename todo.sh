@@ -983,6 +983,7 @@ then
     "$TODO_ACTIONS_DIR/$action" "$@"
     exit $?
 else
+    ## Use eventually given parameters
     actionarray=($action)
     if [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/${actionarray[0]}" ]
     then
