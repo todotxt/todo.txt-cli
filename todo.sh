@@ -727,7 +727,13 @@ if [ -n "$OVR_TODOTXT_FINAL_FILTER" ] ; then
   TODOTXT_FINAL_FILTER="$OVR_TODOTXT_FINAL_FILTER"
 fi
 
-ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
+isDefaultAction=
+if [ -n "$1" ]; then
+    ACTION=$1
+else
+    ACTION=$TODOTXT_DEFAULT_ACTION
+    isDefaultAction=t
+fi
 
 [ -z "$ACTION" ]    && usage
 [ -d "$TODO_DIR" ]  || mkdir -p $TODO_DIR 2> /dev/null || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
@@ -982,15 +988,10 @@ elif [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
     exit $?
-else
-    ## Use eventually given parameters
-    eval "actionarray=($ACTION)"    # Note: Need to use original $ACTION to avoid that arguments are getting lowercased, too.
-    action=$( printf "%s\n" "${actionarray[0]}" | tr 'A-Z' 'a-z' )
-    if [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
-    then
-      "$TODO_ACTIONS_DIR/$action" "${actionarray[@]}"
-      exit $?
-    fi
+elif [ "$isDefaultAction" ] && [ -n "$TODOTXT_DEFAULT_ACTION" ]; then
+    # Recursive invocation with the contents of the default action parsed as a
+    # command-line.
+    eval "exec \"\${BASH_SOURCE[0]}\" $TODOTXT_DEFAULT_ACTION"
 fi
 
 ## Only run if $action isn't found in .todo.actions.d

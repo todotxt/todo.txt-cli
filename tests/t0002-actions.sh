@@ -51,6 +51,12 @@ test_expect_success 'custom action (default action)' '
     test_cmp expect output && rm -rf .todo.actions.d
 '
 
+test_todo_session 'default built-in action with multiple arguments' <<EOF
+>>> TODOTXT_DEFAULT_ACTION='add +foo @bar baz' todo.sh
+1 +foo @bar baz
+TODO: 1 added.
+EOF
+
 test_todo_session 'default custom action with multiple arguments' <<EOF
 >>> mkdir -p .todo.actions.d && cp foo2 .todo.actions.d/
 
@@ -58,6 +64,15 @@ test_todo_session 'default custom action with multiple arguments' <<EOF
 TODO: foo-bar-baz
 EOF
 
+: > todo.txt
+export TODOTXT_DEFAULT_ACTION="add foo\\ bar \\\$HOSTNAME O\\'Really\\? \\\"quoted\\\""
+test_todo_session 'default built-in action with arguments that have special characters' <<EOF
+>>> todo.sh
+1 foo bar \$HOSTNAME O'Really? "quoted"
+TODO: 1 added.
+EOF
+
+: > todo.txt
 export TODOTXT_DEFAULT_ACTION="foo2 foo\\ bar \\\$HOSTNAME O\\'Really\\? \\\"quoted\\\""
 test_todo_session 'default custom action with arguments that have special characters' <<EOF
 >>> mkdir -p .todo.actions.d && cp foo2 .todo.actions.d/
