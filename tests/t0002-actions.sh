@@ -18,7 +18,8 @@ chmod +x foo
 
 cat > foo2 << 'EOF'
 shift
-echo "TODO: $*"
+IFS=- # Print arguments separated with dashes to recognize the individual arguments.
+printf 'TODO: %s\n' "$*"
 EOF
 chmod +x foo2
 
@@ -49,5 +50,20 @@ test_expect_success 'custom action (default action)' '
     TODOTXT_DEFAULT_ACTION="foo2 foo" todo.sh > output;
     test_cmp expect output && rm -rf .todo.actions.d
 '
+
+test_todo_session 'default custom action with multiple arguments' <<EOF
+>>> mkdir -p .todo.actions.d && cp foo2 .todo.actions.d/
+
+>>> TODOTXT_DEFAULT_ACTION='foo2 foo bar baz' todo.sh
+TODO: foo-bar-baz
+EOF
+
+export TODOTXT_DEFAULT_ACTION="foo2 foo\\ bar \\\$HOSTNAME O\\'Really\\? \\\"quoted\\\""
+test_todo_session 'default custom action with arguments that have special characters' <<EOF
+>>> mkdir -p .todo.actions.d && cp foo2 .todo.actions.d/
+
+>>> todo.sh
+TODO: foo bar-\$HOSTNAME-O'Really?-"quoted"
+EOF
 
 test_done

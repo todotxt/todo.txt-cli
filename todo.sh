@@ -984,10 +984,11 @@ then
     exit $?
 else
     ## Use eventually given parameters
-    actionarray=($action)
-    if [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/${actionarray[0]}" ]
+    eval "actionarray=($ACTION)"    # Note: Need to use original $ACTION to avoid that arguments are getting lowercased, too.
+    action=$( printf "%s\n" "${actionarray[0]}" | tr 'A-Z' 'a-z' )
+    if [ -d "$TODO_ACTIONS_DIR" -a -x "$TODO_ACTIONS_DIR/$action" ]
     then
-      "$TODO_ACTIONS_DIR/${actionarray[0]}" "${actionarray[@]}"
+      "$TODO_ACTIONS_DIR/$action" "${actionarray[@]}"
       exit $?
     fi
 fi
