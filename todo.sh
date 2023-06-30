@@ -491,7 +491,8 @@ replaceOrPrepend()
 fixMissingEndOfLine()
 {
     # Parameters:    $1: todo file; empty means $TODO_FILE.
-    sed -i.bak -e '$a\' "${1:-$TODO_FILE}"
+    todo_path="${1:-$TODO_FILE}"
+    [[ -f $todo_path && $(tail -c1 "$todo_path") ]] && echo "" >> "$todo_path"    
 }
 
 uppercasePriority()
