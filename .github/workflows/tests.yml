@@ -9,12 +9,16 @@ on:
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
-        platform: [ubuntu-20.04, macos-11]
-    runs-on: ${{ matrix.platform }}
+        os: [Ubuntu-22.04, Ubuntu-20.04, macOS-12, macOS-11]
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - run: make
-    - run: make dist
-    - run: make test
+      - uses: actions/checkout@v3
+      - name: Recompile Makefile
+        run: make
+      - name: Build Zipfile 
+        run: make dist
+      - name: Execute Tests
+        run: make test
 
