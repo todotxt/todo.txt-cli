@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 make_action()
 {
     unset TODO_ACTIONS_DIR
     [ -d .todo.actions.d ] || mkdir .todo.actions.d
     cat > ".todo.actions.d/$1" <<EOF
-#!/bin/bash
+#!/usr/bin/env bash
 [ "\$1" = "usage" ] && {
     echo "    $1 ITEM#[, ITEM#, ...] [TERM...]"
     echo "      This custom action does $1."
@@ -23,7 +23,7 @@ make_action_in_folder()
     [ -d .todo.actions.d ] || mkdir .todo.actions.d
     mkdir ".todo.actions.d/$1"
     cat > ".todo.actions.d/$1/$1" <<EOF
-#!/bin/bash
+#!/usr/bin/env bash
 [ "\$1" = "usage" ] && {
     echo "    $1 ITEM#[, ITEM#, ...] [TERM...]"
     echo "      This custom action does $1."

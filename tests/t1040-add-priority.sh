@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='test the priority on add feature'
 . ./test-lib.sh
