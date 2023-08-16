@@ -125,10 +125,10 @@ Writing Tests
 -------------
 
 The test script is written as a shell script.  It should start
-with the standard "#!/bin/bash" with copyright notices, and an
+with the standard "#!/usr/bin/env bash" with copyright notices, and an
 assignment to variable 'test_description', like this:
 
-    #!/bin/bash
+    #!/usr/bin/env bash
     #
     # Copyright (c) 2005 Junio C Hamano
     #

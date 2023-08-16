@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 [ "x$TERM" != "xdumb" ] && (
 		export TERM &&
