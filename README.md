@@ -46,7 +46,7 @@ make test
 *NOTE:* Makefile defaults to several default paths for installed files. Adjust to your system:
 
 - `INSTALL_DIR`: PATH for executables (default /usr/local/bin)
-- `CONFIG_DIR`: PATH for todo.txt config
+- `CONFIG_DIR`: PATH for the todo.txt configuration template
 - `BASH_COMPLETION`: PATH for autocompletion scripts (default to /etc/bash_completion.d)
 
 ```shell
@@ -57,6 +57,11 @@ make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION=/usr/share/bas
 
 https://aur.archlinux.org/packages/todotxt/
 
+
+## Configuration
+
+No configuration is required; however, most users tweak the default settings (e.g. relocating the todo.txt directory to a subdirectory of the user's home directory, or onto a cloud drive (via the `TODO_DIR` variable)), modify the colors, add additional highlighting of projects, contexts, dates, and so on. A configuration template with a commented-out list of all available options is included.
+It is recommended to _copy_ that template into one of the locations listed by `todo.sh help` on `-d CONFIG_FILE`, even if it is installed in the global configuration location (`/etc/todo/config`).
 
 ## Usage
 ```shell
