@@ -81,6 +81,7 @@ test_todo_session 'fail multiple do attempts' <<EOF
 TODO: 3 marked as done.
 
 >>> todo.sh -a do 3
+=== 1
 TODO: 3 is already marked done.
 EOF
 
