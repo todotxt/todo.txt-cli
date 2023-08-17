@@ -362,14 +362,15 @@ die()
 
 confirm()
 {
-    [ $TODOTXT_FORCE = 0 ] || return 0
+    [ "$TODOTXT_FORCE" = 0 ] || return 0
 
     printf %s "${1:?}? (y/n) "
     local readArgs=(-e -r)
-    [ -n "${BASH_VERSINFO:-}" ] && [ \( ${BASH_VERSINFO[0]} -eq 4 -a ${BASH_VERSINFO[1]} -ge 1 \) -o ${BASH_VERSINFO[0]} -gt 4 ] &&
+    if [ -n "${BASH_VERSINFO:-}" ] && ((BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 1) )); then
         readArgs+=(-N 1)    # Bash 4.1+ supports -N nchars
+    fi
     local answer
-    read "${readArgs[@]}" answer
+    read -r "${readArgs[@]}" answer
     echo
     [ "$answer" = "y" ]
 }
@@ -730,6 +731,7 @@ done
 # === SANITY CHECKS (thanks Karl!) ===
 [ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file ${TODOTXT_CFG_FILE:-${configFileLocations[0]}}"
 
+# shellcheck source=./todo.cfg
 . "$TODOTXT_CFG_FILE"
 
 # === APPLY OVERRIDES
@@ -918,16 +920,18 @@ _format()
     fi
     items=$(
         if [ "$FILE" ]; then
+            # shellcheck disable=SC2283
             sed = "$FILE"
         else
+            # shellcheck disable=SC2283
             sed =
         fi                                                      \
-        | sed -e '''
+        | sed -e '
             N
             s/^/     /
             s/ *\([ 0-9]\{'"$PADDING"',\}\)\n/\1 /
             /^[ 0-9]\{1,\} *$/d
-         '''
+         '
     )
 
     ## Build and apply the filter.
@@ -1003,12 +1007,12 @@ _format()
                 printf "%s\n", end_clr
             }
           '''  \
-        | sed '''
+        | sed '
             s/'"${HIDE_PROJECTS_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_CONTEXTS_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_CUSTOM_SUBSTITUTION:-^}"'//g
-          '''                                                   \
-        | eval ${TODOTXT_FINAL_FILTER}                          \
+          '                                                   \
+        | eval ${TODOTXT_FINAL_FILTER}                        \
     )
     [ "$filtered_items" ] && echo "$filtered_items"
 
