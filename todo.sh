@@ -1037,6 +1037,17 @@ listWordsWithSigil()
 		| sort -u
 }
 
+hasCustomAction()
+{
+    [ -d "${1:?}" ] || return 1
+    [ -x "$1/${2:?}" ] && return 0
+    if [ -h "$1/$2" ] && [ ! -e "$1/$2" ]
+    then
+        dieWithHelp "$2" "Fatal Error: Broken link to custom action: '$1/$2'"
+    fi
+    return 1
+}
+
 export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list listWordsWithSigil getPadding _format die
 
 # == HANDLE ACTION ==
@@ -1052,11 +1063,11 @@ then
     shift
     ## Reset action to new first argument
     action=$( printf "%s\n" "$1" | tr '[:upper:]' '[:lower:]' )
-elif [ -d "$TODO_ACTIONS_DIR/$action" ] && [ -x "$TODO_ACTIONS_DIR/$action/$action" ]
+elif hasCustomAction "$TODO_ACTIONS_DIR/$action" "$action"
 then
     "$TODO_ACTIONS_DIR/$action/$action" "$@"
     exit $?
-elif [ -d "$TODO_ACTIONS_DIR" ] && [ -x "$TODO_ACTIONS_DIR/$action" ]
+elif hasCustomAction "$TODO_ACTIONS_DIR" "$action"
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
     exit $?
