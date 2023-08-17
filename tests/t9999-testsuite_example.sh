@@ -85,7 +85,7 @@ TODO: $HOME/todo.txt archived.
 TODO: 5 of 5 tasks shown
 
 >>> todo.sh report
-TODO: $HOME/todo.txt archived.
+TODO: $HOME/todo.txt does not contain any done tasks.
 2009-02-13T04:40:00 5 1
 TODO: Report file updated.
 
