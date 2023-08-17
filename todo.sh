@@ -459,20 +459,31 @@ replaceOrPrepend()
 
   # Retrieve existing priority and prepended date
   local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
-  priority=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\1/" "$TODO_FILE")
-  prepdate=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\2/" "$TODO_FILE")
-
-  if [ "$prepdate" ] && [ "$action" = "replace" ] && [ "$(echo "$input"|sed -e "s/${priAndDateExpr}.*/\\1\\2/")" ]; then
+  originalPriority=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\1/" "$TODO_FILE")
+  priority="$originalPriority"
+  originalPrepdate=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\2/" "$TODO_FILE")
+  prepdate="$originalPrepdate"
+  if [ "$action" = "replace" ]; then
+    replacementPrepdate="$(echo "$input"|sed -e "s/${priAndDateExpr}.*/\\2/")"
+    if [ "$replacementPrepdate" ]; then
       # If the replaced text starts with a [priority +] date, it will replace
       # the existing date, too.
-    prepdate=
+      prepdate="$replacementPrepdate"
+    fi
+    replacementPriority="$(echo "$input"|sed -e "s/${priAndDateExpr}.*/\\1/")"
+    if [ "$replacementPriority" ]; then
+      # If the replaced text starts with a priority, it will replace
+      # the existing priority, too.
+      priority="$replacementPriority"
+    fi
+    input="$(echo "$input"|sed -e "s/${priAndDateExpr}//")"
   fi
 
   # Temporarily remove any existing priority and prepended date, perform the
   # change (replace/prepend) and re-insert the existing priority and prepended
   # date again.
   cleaninput "for sed"
-  sed -i.bak -e "$item s/^${priority}${prepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
+  sed -i.bak -e "$item s/^${originalPriority}${originalPrepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
   if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
     getNewtodo "$item"
     case "$action" in
