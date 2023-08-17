@@ -21,7 +21,7 @@ test_expect_success 'no config file' '
 
 # All the below tests will output the usage message.
 cat > expect <<EOF
-Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+Usage: todo.sh [-fhpamntvV] [-d todo_config] action [task_number] [task_description]
 Try 'todo.sh -h' for more information.
 EOF
 

@@ -11,7 +11,7 @@ This test covers the output of the -h option and the shorthelp action.
 # check for the section headers.
 test_todo_session '-h output' <<EOF
 >>> todo.sh -h | sed '/^  [A-Z]/!d'
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  Usage: todo.sh [-fhpamntvV] [-d todo_config] action [task_number] [task_description]
   Actions:
   Actions can be added and overridden using scripts in the actions
   See "help" for more details.
@@ -19,7 +19,7 @@ EOF
 
 test_todo_session 'shorthelp output' <<EOF
 >>> todo.sh shorthelp | sed '/^  [A-Z]/!d'
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  Usage: todo.sh [-fhpamntvV] [-d todo_config] action [task_number] [task_description]
   Actions:
   Actions can be added and overridden using scripts in the actions
   See "help" for more details.
@@ -28,7 +28,7 @@ EOF
 make_action "foo"
 test_todo_session 'shorthelp output with custom action' <<EOF
 >>> todo.sh -v shorthelp | sed '/^  [A-Z]/!d'
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  Usage: todo.sh [-fhpamntvV] [-d todo_config] action [task_number] [task_description]
   Actions:
   Actions can be added and overridden using scripts in the actions
   Add-on Actions:
@@ -48,7 +48,7 @@ export TODOTXT_GLOBAL_CFG_FILE=global.cfg
 
 test_todo_session '-h and fatal error without config' <<EOF
 >>> todo.sh -h | sed '/^ \\{0,2\\}[A-Z]/!d'
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  Usage: todo.sh [-fhpamntvV] [-d todo_config] action [task_number] [task_description]
   Actions:
   Actions can be added and overridden using scripts in the actions
   See "help" for more details.
@@ -59,7 +59,7 @@ EOF
 # Config option comes too late; "Add-on Actions" is *not* mentioned here.
 test_todo_session '-h and fatal error with trailing custom config' <<EOF
 >>> todo.sh -h -d custom.cfg | sed '/^ \\{0,2\\}[A-Z]/!d'
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  Usage: todo.sh [-fhpamntvV] [-d todo_config] action [task_number] [task_description]
   Actions:
   Actions can be added and overridden using scripts in the actions
   See "help" for more details.
@@ -70,7 +70,7 @@ EOF
 # Config option processed; "Add-on Actions" is mentioned here.
 test_todo_session '-h output with preceding custom config' <<EOF
 >>> todo.sh -d custom.cfg -h | sed '/^ \\{0,2\\}[A-Z]/!d'
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  Usage: todo.sh [-fhpamntvV] [-d todo_config] action [task_number] [task_description]
   Actions:
   Actions can be added and overridden using scripts in the actions
   Add-on Actions:

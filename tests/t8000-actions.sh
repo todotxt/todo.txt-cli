@@ -21,7 +21,7 @@ if [ -x .todo.actions.d/foo ]; then
 fi
 test_todo_session 'nonexecutable action' <<EOF
 >>> todo.sh foo
-Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+Usage: todo.sh [-fhpamntvV] [-d todo_config] action [task_number] [task_description]
 Try 'todo.sh -h' for more information.
 === 1
 EOF
