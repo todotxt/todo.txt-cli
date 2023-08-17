@@ -32,24 +32,24 @@ test_todo_session 'multiple actions help' <<'EOF'
     shorthelp
       List the one-line usage of all built-in and add-on actions.
 \
-    append ITEM# "TEXT TO APPEND"
-    app ITEM# "TEXT TO APPEND"
-      Adds TEXT TO APPEND to the end of the task on line ITEM#.
+    append NR "TEXT TO APPEND"
+    app NR "TEXT TO APPEND"
+      Adds TEXT TO APPEND to the end of the task on line NR.
       Quotes optional.
 \
 EOF
 
 test_todo_session 'short and long form of action help' <<'EOF'
 >>> todo.sh help append
-    append ITEM# "TEXT TO APPEND"
-    app ITEM# "TEXT TO APPEND"
-      Adds TEXT TO APPEND to the end of the task on line ITEM#.
+    append NR "TEXT TO APPEND"
+    app NR "TEXT TO APPEND"
+      Adds TEXT TO APPEND to the end of the task on line NR.
       Quotes optional.
 \
 
 >>> todo.sh help app
-    app ITEM# "TEXT TO APPEND"
-      Adds TEXT TO APPEND to the end of the task on line ITEM#.
+    app NR "TEXT TO APPEND"
+      Adds TEXT TO APPEND to the end of the task on line NR.
       Quotes optional.
 \
 EOF
