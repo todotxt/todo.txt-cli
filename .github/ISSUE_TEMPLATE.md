@@ -10,7 +10,7 @@
 **What is the expected behavior?**
 
 
-**Which versions todo.sh are you using?**
+**Which version of todo.sh are you using?**
 > Run `todo.sh -V`
 
 
@@ -19,4 +19,3 @@
 
 **Which version of bash are you using?**
 > Run `bash --version`
-

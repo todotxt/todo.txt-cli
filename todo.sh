@@ -3,20 +3,21 @@
 # === HEAVY LIFTING ===
 shopt -s extglob extquote
 
-# NOTE:  Todo.sh requires a configuration file to run.
+# NOTE: Todo.sh requires a configuration file to run.
 # Place it in one of the default locations or use the -d option for a custom location.
 
 [ -f VERSION-FILE ] && . VERSION-FILE || VERSION="@DEV_VERSION@"
-version() {
+version()
+{
     cat <<-EndVersion
 		TODO.TXT Command Line Interface v$VERSION
 
-		Homepage: http://todotxt.org
-		Code repository: https://github.com/todotxt/todo.txt-cli/
+		Homepage: http://todotxt.org/
+		Code repository: https://github.com/todotxt/todo.txt-cli
 		Contributors: https://github.com/todotxt/todo.txt-cli/graphs/contributors
 		License: https://github.com/todotxt/todo.txt-cli/blob/master/LICENSE
 	EndVersion
-    exit 1
+    exit 0
 }
 
 # Set script name and full path early.
@@ -156,8 +157,8 @@ $indentedJoinedConfigFileLocations
 		    TODOTXT_SIGIL_AFTER_PATTERN=""  optionally allow chars after +p / @c
 
 	EndVerboseHelp
-        actionsHelp
-        addonHelp
+    actionsHelp
+    addonHelp
 }
 
 actionsHelp()
@@ -229,7 +230,7 @@ actionsHelp()
 		    listall [TERM...]
 		    lsa [TERM...]
 		      Displays all the lines in todo.txt AND done.txt that contain TERM(s)
-		      sorted by priority with line  numbers.  Hides all tasks that
+		      sorted by priority with line numbers.  Hides all tasks that
 		      contain TERM(s) preceded by a minus sign (i.e. -TERM).  If no
 		      TERM specified, lists entire todo.txt AND done.txt
 		      concatenated and sorted.
@@ -245,7 +246,7 @@ actionsHelp()
 		    listfile [SRC [TERM...]]
 		    lf [SRC [TERM...]]
 		      Displays all the lines in SRC file located in the todo.txt directory,
-		      sorted by priority with line  numbers.  If TERM specified, lists
+		      sorted by priority with line numbers.  If TERM specified, lists
 		      all lines that contain TERM(s) in SRC file.  Hides all tasks that
 		      contain TERM(s) preceded by a minus sign (i.e. -TERM).
 		      Without any arguments, the names of all text files in the todo.txt
@@ -299,22 +300,21 @@ actionsHelp()
 addonHelp()
 {
     if [ -d "$TODO_ACTIONS_DIR" ]; then
-        didPrintAddonActionsHeader=
-        for action in "$TODO_ACTIONS_DIR"/*
-        do
+        local didPrintAddonActionsHeader
+        for action in "$TODO_ACTIONS_DIR"/*; do
             if [ -f "$action" ] && [ -x "$action" ]; then
-                if [ ! "$didPrintAddonActionsHeader" ]; then
+                if [ -z "$didPrintAddonActionsHeader" ]; then
                     cat <<-EndAddonActionsHeader
-		  Add-on Actions:
-	EndAddonActionsHeader
+					  Add-on Actions:
+					EndAddonActionsHeader
                     didPrintAddonActionsHeader=1
                 fi
                 "$action" usage
             elif [ -d "$action" ] && [ -x "$action"/"$(basename "$action")" ]; then
-                if [ ! "$didPrintAddonActionsHeader" ]; then
+                if [ -z "$didPrintAddonActionsHeader" ]; then
                     cat <<-EndAddonActionsHeader
-		  Add-on Actions:
-	EndAddonActionsHeader
+					  Add-on Actions:
+					EndAddonActionsHeader
                     didPrintAddonActionsHeader=1
                 fi
                 "$action"/"$(basename "$action")" usage
@@ -325,8 +325,7 @@ addonHelp()
 
 actionUsage()
 {
-    for actionName
-    do
+    for actionName; do
         action="${TODO_ACTIONS_DIR}/${actionName}"
         if [ -f "$action" ] && [ -x "$action" ]; then
             "$action" usage
@@ -334,7 +333,7 @@ actionUsage()
             "$action"/"$(basename "$action")" usage
         else
             builtinActionUsage=$(actionsHelp | sed -n -e "/^    ${actionName//\//\\/} /,/^\$/p" -e "/^    ${actionName//\//\\/}$/,/^\$/p")
-            if [ "$builtinActionUsage" ]; then
+            if [ -n "$builtinActionUsage" ]; then
                 echo "$builtinActionUsage"
                 echo
             else
@@ -354,6 +353,7 @@ dieWithHelp()
 
     die "$@"
 }
+
 die()
 {
     echo "$*"
@@ -362,14 +362,15 @@ die()
 
 confirm()
 {
-    [ $TODOTXT_FORCE = 0 ] || return 0
+    [ "$TODOTXT_FORCE" = 0 ] || return 0
 
     printf %s "${1:?}? (y/n) "
-    local readArgs=(-e -r)
-    [ -n "${BASH_VERSINFO:-}" ] && [ \( ${BASH_VERSINFO[0]} -eq 4 -a ${BASH_VERSINFO[1]} -ge 1 \) -o ${BASH_VERSINFO[0]} -gt 4 ] &&
-        readArgs+=(-N 1)    # Bash 4.1+ supports -N nchars
     local answer
-    read "${readArgs[@]}" answer
+    if (( BASH_VERSINFO[0] > 4 || BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 1 )); then
+        read -r -e -N 1 answer
+    else
+        read -r -e answer
+    fi
     echo
     [ "$answer" = "y" ]
 }
@@ -414,11 +415,12 @@ getTodo()
 
     local item=$1
     [ -z "$item" ] && die "$errmsg"
-    [ "${item//[0-9]/}" ] && die "$errmsg"
+    [ -n "${item//[0-9]/}" ] && die "$errmsg"
 
     todo=$(sed "$item!d" "${2:-$TODO_FILE}")
     [ -z "$todo" ] && die "$(getPrefix "$2"): No task $item."
 }
+
 getNewtodo()
 {
     # Parameters:    $1: task number
@@ -428,7 +430,7 @@ getNewtodo()
 
     local item=$1
     [ -z "$item" ] && die "Programming error: $item should exist."
-    [ "${item//[0-9]/}" ] && die "Programming error: $item should be numeric."
+    [ -n "${item//[0-9]/}" ] && die "Programming error: $item should be numeric."
 
     newtodo=$(sed "$item!d" "${2:-$TODO_FILE}")
     [ -z "$newtodo" ] && die "$(getPrefix "$2"): No updated task $item."
@@ -436,56 +438,56 @@ getNewtodo()
 
 replaceOrPrepend()
 {
-  action=$1; shift
-  case "$action" in
-    replace)
-      backref=
-      querytext="Replacement: "
-      ;;
-    prepend)
-      backref=' &'
-      querytext="Prepend: "
-      ;;
-  esac
-  shift; item=$1; shift
-  getTodo "$item"
-
-  if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
-    echo -n "$querytext"
-    read -r -i "$todo" -e input
-  else
-    input=$*
-  fi
-
-  # Retrieve existing priority and prepended date
-  local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
-  priority=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\1/" "$TODO_FILE")
-  prepdate=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\2/" "$TODO_FILE")
-
-  if [ "$prepdate" ] && [ "$action" = "replace" ] && [ "$(echo "$input"|sed -e "s/${priAndDateExpr}.*/\\1\\2/")" ]; then
-      # If the replaced text starts with a [priority +] date, it will replace
-      # the existing date, too.
-    prepdate=
-  fi
-
-  # Temporarily remove any existing priority and prepended date, perform the
-  # change (replace/prepend) and re-insert the existing priority and prepended
-  # date again.
-  cleaninput "for sed"
-  sed -i.bak -e "$item s/^${priority}${prepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
-  if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-    getNewtodo "$item"
+    action=$1; shift
     case "$action" in
       replace)
-        echo "$item $todo"
-        echo "TODO: Replaced task with:"
-        echo "$item $newtodo"
+        backref=
+        querytext="Replacement: "
         ;;
       prepend)
-        echo "$item $newtodo"
+        backref=' &'
+        querytext="Prepend: "
         ;;
     esac
-  fi
+    shift; item=$1; shift
+    getTodo "$item"
+
+    if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
+        echo -n "$querytext"
+        read -r -i "$todo" -e input
+    else
+        input=$*
+    fi
+
+    # Retrieve existing priority and prepended date
+    local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
+    priority=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\1/" "$TODO_FILE")
+    prepdate=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\2/" "$TODO_FILE")
+
+    if [ -n "$prepdate" ] && [ "$action" = "replace" ] && [ -n "$(echo "$input" | sed -e "s/${priAndDateExpr}.*/\\1\\2/")" ]; then
+        # If the replaced text starts with a [priority +] date, it will replace
+        # the existing date, too.
+        prepdate=
+    fi
+
+    # Temporarily remove any existing priority and prepended date, perform the
+    # change (replace/prepend) and re-insert the existing priority and prepended
+    # date again.
+    cleaninput "for sed"
+    sed -i.bak -e "$item s/^${priority}${prepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
+    if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+        getNewtodo "$item"
+        case "$action" in
+          replace)
+            echo "$item $todo"
+            echo "TODO: Replaced task with:"
+            echo "$item $newtodo"
+            ;;
+          prepend)
+            echo "$item $newtodo"
+            ;;
+        esac
+    fi
 }
 
 fixMissingEndOfLine()
@@ -501,14 +503,13 @@ uppercasePriority()
     # Postcondition: Modifies $input.
     lower=( {a..z} )
     upper=( {A..Z} )
-    for ((i=0; i<26; i++))
-    do
+    for ((i=0; i<26; i++)); do
         upperPriority="${upperPriority};s/^[(]${lower[i]}[)]/(${upper[i]})/"
     done
     input=$(echo "$input" | sed "$upperPriority")
 }
 
-#Preserving environment variables so they don't get clobbered by the config file
+# Preserving environment variables so they don't get clobbered by the config file
 OVR_TODOTXT_AUTO_ARCHIVE="$TODOTXT_AUTO_ARCHIVE"
 OVR_TODOTXT_FORCE="$TODOTXT_FORCE"
 OVR_TODOTXT_PRESERVE_LINE_NUMBERS="$TODOTXT_PRESERVE_LINE_NUMBERS"
@@ -525,38 +526,35 @@ OVR_TODOTXT_FINAL_FILTER="$TODOTXT_FINAL_FILTER"
 export GREP_OPTIONS=""
 
 # == PROCESS OPTIONS ==
-while getopts ":fhpcnNaAtTvVx+@Pd:" Option
-do
+while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
   case $Option in
     '@')
-        ## HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
-        ##   (true) the first time this flag is seen. Each time the flag
-        ##   is seen after that, increment it again so that an even
-        ##   number shows context names and an odd number hides context
-        ##   names.
+        # HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
+        #   (true) the first time this flag is seen. Each time the flag
+        #   is seen after that, increment it again so that an even
+        #   number shows context names and an odd number hides context
+        #   names.
         : $(( HIDE_CONTEXT_NAMES++ ))
-        if [ $(( HIDE_CONTEXT_NAMES % 2 )) -eq 0 ]
-        then
-            ## Zero or even value -- show context names
+        if (( HIDE_CONTEXT_NAMES % 2 == 0 )); then
+            # Zero or even value -- show context names
             unset HIDE_CONTEXTS_SUBSTITUTION
         else
-            ## One or odd value -- hide context names
+            # One or odd value -- hide context names
             export HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[[:graph:]]\{1,\}'
         fi
         ;;
     '+')
-        ## HIDE_PROJECT_NAMES starts at zero (false); increment it to one
-        ##   (true) the first time this flag is seen. Each time the flag
-        ##   is seen after that, increment it again so that an even
-        ##   number shows project names and an odd number hides project
-        ##   names.
+        # HIDE_PROJECT_NAMES starts at zero (false); increment it to one
+        #   (true) the first time this flag is seen. Each time the flag
+        #   is seen after that, increment it again so that an even
+        #   number shows project names and an odd number hides project
+        #   names.
         : $(( HIDE_PROJECT_NAMES++ ))
-        if [ $(( HIDE_PROJECT_NAMES % 2 )) -eq 0 ]
-        then
-            ## Zero or even value -- show project names
+        if (( HIDE_PROJECT_NAMES % 2 == 0 )); then
+            # Zero or even value -- show project names
             unset HIDE_PROJECTS_SUBSTITUTION
         else
-            ## One or odd value -- hide project names
+            # One or odd value -- hide project names
             export HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][[:graph:]]\{1,\}'
         fi
         ;;
@@ -592,18 +590,17 @@ do
         OVR_TODOTXT_PLAIN=1
         ;;
     P)
-        ## HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
-        ##   (true) the first time this flag is seen. Each time the flag
-        ##   is seen after that, increment it again so that an even
-        ##   number shows priority labels and an odd number hides priority
-        ##   labels.
+        # HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
+        #   (true) the first time this flag is seen. Each time the flag
+        #   is seen after that, increment it again so that an even
+        #   number shows priority labels and an odd number hides priority
+        #   labels.
         : $(( HIDE_PRIORITY_LABELS++ ))
-        if [ $(( HIDE_PRIORITY_LABELS % 2 )) -eq 0 ]
-        then
-            ## Zero or even value -- show priority labels
+        if (( HIDE_PRIORITY_LABELS % 2 == 0 )); then
+            # Zero or even value -- show priority labels
             unset HIDE_PRIORITY_SUBSTITUTION
         else
-            ## One or odd value -- hide priority labels
+            # One or odd value -- hide priority labels
             export HIDE_PRIORITY_SUBSTITUTION="([A-Z])[[:space:]]"
         fi
         ;;
@@ -642,9 +639,9 @@ TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 TODOTXT_DISABLE_FILTER=${TODOTXT_DISABLE_FILTER:-}
 TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
 TODOTXT_GLOBAL_CFG_FILE=${TODOTXT_GLOBAL_CFG_FILE:-/etc/todo/config}
-TODOTXT_SIGIL_BEFORE_PATTERN=${TODOTXT_SIGIL_BEFORE_PATTERN:-}	# Allow any other non-whitespace entity before +project and @context; should be an optional match; example: \(w:\)\{0,1\} to allow w:@context.
-TODOTXT_SIGIL_VALID_PATTERN=${TODOTXT_SIGIL_VALID_PATTERN:-.*}	# Limit the valid characters (from the default any non-whitespace sequence) for +project and @context; example: [a-zA-Z]\{3,\} to only allow alphabetic ones that are at least three characters long.
-TODOTXT_SIGIL_AFTER_PATTERN=${TODOTXT_SIGIL_AFTER_PATTERN:-}	# Allow any other non-whitespace entity after +project and @context; should be an optional match; example: )\{0,1\} to allow (with the corresponding TODOTXT_SIGIL_BEFORE_PATTERN) enclosing in parentheses.
+TODOTXT_SIGIL_BEFORE_PATTERN=${TODOTXT_SIGIL_BEFORE_PATTERN:-}    # Allow any other non-whitespace entity before +project and @context; should be an optional match; example: \(w:\)\{0,1\} to allow w:@context.
+TODOTXT_SIGIL_VALID_PATTERN=${TODOTXT_SIGIL_VALID_PATTERN:-.*}    # Limit the valid characters (from the default any non-whitespace sequence) for +project and @context; example: [a-zA-Z]\{3,\} to only allow alphabetic ones that are at least three characters long.
+TODOTXT_SIGIL_AFTER_PATTERN=${TODOTXT_SIGIL_AFTER_PATTERN:-}    # Allow any other non-whitespace entity after +project and @context; should be an optional match; example: )\{0,1\} to allow (with the corresponding TODOTXT_SIGIL_BEFORE_PATTERN) enclosing in parentheses.
 
 # Export all TODOTXT_* variables
 export "${!TODOTXT_@}"
@@ -700,32 +697,26 @@ configFileLocations=(
     "$TODOTXT_GLOBAL_CFG_FILE"
 )
 
-[ -e "$TODOTXT_CFG_FILE" ] || for CFG_FILE_ALT in "${configFileLocations[@]}"
-do
-    if [ -e "$CFG_FILE_ALT" ]
-    then
+[ -e "$TODOTXT_CFG_FILE" ] || for CFG_FILE_ALT in "${configFileLocations[@]}"; do
+    if [ -e "$CFG_FILE_ALT" ]; then
         TODOTXT_CFG_FILE="$CFG_FILE_ALT"
         break
     fi
 done
 
-if [ -z "$TODO_ACTIONS_DIR" ] || [ ! -d "$TODO_ACTIONS_DIR" ]
-then
+if [ -z "$TODO_ACTIONS_DIR" ] || [ ! -d "$TODO_ACTIONS_DIR" ]; then
     TODO_ACTIONS_DIR="$HOME/.todo/actions"
     export TODO_ACTIONS_DIR
 fi
 
 [ -d "$TODO_ACTIONS_DIR" ] || for TODO_ACTIONS_DIR_ALT in \
     "$HOME/.todo.actions.d" \
-    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"
-do
-    if [ -d "$TODO_ACTIONS_DIR_ALT" ]
-    then
+    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"; do
+    if [ -d "$TODO_ACTIONS_DIR_ALT" ]; then
         TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
         break
     fi
 done
-
 
 # === SANITY CHECKS (thanks Karl!) ===
 [ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file ${TODOTXT_CFG_FILE:-${configFileLocations[0]}}"
@@ -733,45 +724,45 @@ done
 . "$TODOTXT_CFG_FILE"
 
 # === APPLY OVERRIDES
-if [ -n "$OVR_TODOTXT_AUTO_ARCHIVE" ] ; then
-  TODOTXT_AUTO_ARCHIVE="$OVR_TODOTXT_AUTO_ARCHIVE"
+if [ -n "$OVR_TODOTXT_AUTO_ARCHIVE" ]; then
+    TODOTXT_AUTO_ARCHIVE="$OVR_TODOTXT_AUTO_ARCHIVE"
 fi
-if [ -n "$OVR_TODOTXT_FORCE" ] ; then
-  TODOTXT_FORCE="$OVR_TODOTXT_FORCE"
+if [ -n "$OVR_TODOTXT_FORCE" ]; then
+    TODOTXT_FORCE="$OVR_TODOTXT_FORCE"
 fi
-if [ -n "$OVR_TODOTXT_PRESERVE_LINE_NUMBERS" ] ; then
-  TODOTXT_PRESERVE_LINE_NUMBERS="$OVR_TODOTXT_PRESERVE_LINE_NUMBERS"
+if [ -n "$OVR_TODOTXT_PRESERVE_LINE_NUMBERS" ]; then
+    TODOTXT_PRESERVE_LINE_NUMBERS="$OVR_TODOTXT_PRESERVE_LINE_NUMBERS"
 fi
-if [ -n "$OVR_TODOTXT_PLAIN" ] ; then
-  TODOTXT_PLAIN="$OVR_TODOTXT_PLAIN"
+if [ -n "$OVR_TODOTXT_PLAIN" ]; then
+    TODOTXT_PLAIN="$OVR_TODOTXT_PLAIN"
 fi
-if [ -n "$OVR_TODOTXT_DATE_ON_ADD" ] ; then
-  TODOTXT_DATE_ON_ADD="$OVR_TODOTXT_DATE_ON_ADD"
+if [ -n "$OVR_TODOTXT_DATE_ON_ADD" ]; then
+    TODOTXT_DATE_ON_ADD="$OVR_TODOTXT_DATE_ON_ADD"
 fi
-if [ -n "$OVR_TODOTXT_PRIORITY_ON_ADD" ] ; then
+if [ -n "$OVR_TODOTXT_PRIORITY_ON_ADD" ]; then
     TODOTXT_PRIORITY_ON_ADD="$OVR_TODOTXT_PRIORITY_ON_ADD"
 fi
-if [ -n "$OVR_TODOTXT_DISABLE_FILTER" ] ; then
-  TODOTXT_DISABLE_FILTER="$OVR_TODOTXT_DISABLE_FILTER"
+if [ -n "$OVR_TODOTXT_DISABLE_FILTER" ]; then
+    TODOTXT_DISABLE_FILTER="$OVR_TODOTXT_DISABLE_FILTER"
 fi
-if [ -n "$OVR_TODOTXT_VERBOSE" ] ; then
-  TODOTXT_VERBOSE="$OVR_TODOTXT_VERBOSE"
+if [ -n "$OVR_TODOTXT_VERBOSE" ]; then
+    TODOTXT_VERBOSE="$OVR_TODOTXT_VERBOSE"
 fi
-if [ -n "$OVR_TODOTXT_DEFAULT_ACTION" ] ; then
-  TODOTXT_DEFAULT_ACTION="$OVR_TODOTXT_DEFAULT_ACTION"
+if [ -n "$OVR_TODOTXT_DEFAULT_ACTION" ]; then
+    TODOTXT_DEFAULT_ACTION="$OVR_TODOTXT_DEFAULT_ACTION"
 fi
-if [ -n "$OVR_TODOTXT_SORT_COMMAND" ] ; then
-  TODOTXT_SORT_COMMAND="$OVR_TODOTXT_SORT_COMMAND"
+if [ -n "$OVR_TODOTXT_SORT_COMMAND" ]; then
+    TODOTXT_SORT_COMMAND="$OVR_TODOTXT_SORT_COMMAND"
 fi
-if [ -n "$OVR_TODOTXT_FINAL_FILTER" ] ; then
-  TODOTXT_FINAL_FILTER="$OVR_TODOTXT_FINAL_FILTER"
+if [ -n "$OVR_TODOTXT_FINAL_FILTER" ]; then
+    TODOTXT_FINAL_FILTER="$OVR_TODOTXT_FINAL_FILTER"
 fi
 
 ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 
-[ -z "$ACTION" ]    && usage
-[ -d "$TODO_DIR" ]  || mkdir -p "$TODO_DIR" 2> /dev/null || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
-( cd "$TODO_DIR" )  || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
+[ -z "$ACTION" ] && usage
+[ -d "$TODO_DIR" ] || mkdir -p "$TODO_DIR" 2>/dev/null || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
+( cd -- "$TODO_DIR" ) || dieWithHelp "$1" "Fatal Error: Unable to cd to $TODO_DIR"
 [ -z "$TODOTXT_PRIORITY_ON_ADD" ] \
     || echo "$TODOTXT_PRIORITY_ON_ADD" | grep -q "^[A-Z]$" \
     || die "TODOTXT_PRIORITY_ON_ADD should be a capital letter from A to Z (it is now \"$TODOTXT_PRIORITY_ON_ADD\")."
@@ -780,11 +771,11 @@ ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
 [ -z "$DONE_FILE" ] && DONE_FILE="$TODO_DIR/done.txt"
 [ -z "$REPORT_FILE" ] && REPORT_FILE="$TODO_DIR/report.txt"
 
-[ -f "$TODO_FILE" ] || [ -c "$TODO_FILE" ] || > "$TODO_FILE"
-[ -f "$DONE_FILE" ] || [ -c "$DONE_FILE" ] || > "$DONE_FILE"
-[ -f "$REPORT_FILE" ] || [ -c "$REPORT_FILE" ] || > "$REPORT_FILE"
+[ -f "$TODO_FILE" ] || [ -c "$TODO_FILE" ] || : > "$TODO_FILE"
+[ -f "$DONE_FILE" ] || [ -c "$DONE_FILE" ] || : > "$DONE_FILE"
+[ -f "$REPORT_FILE" ] || [ -c "$REPORT_FILE" ] || : > "$REPORT_FILE"
 
-if [ $TODOTXT_PLAIN = 1 ]; then
+if [ "$TODOTXT_PLAIN" = 1 ]; then
     for clr in ${!PRI_@}; do
         export "$clr"="$NONE"
     done
@@ -798,22 +789,24 @@ if [ $TODOTXT_PLAIN = 1 ]; then
     COLOR_META=$NONE
 fi
 
-[[ "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
-[[ "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
+[[ -n "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
+[[ -n "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
 
-_addto() {
+_addto()
+{
     file="$1"
     input="$2"
     cleaninput
     uppercasePriority
 
     if [[ "$TODOTXT_DATE_ON_ADD" -eq 1 ]]; then
+        local now
         now=$(date '+%Y-%m-%d')
         input=$(echo "$input" | sed -e 's/^\(([A-Z]) \)\{0,1\}/\1'"$now /")
     fi
     if [[ -n "$TODOTXT_PRIORITY_ON_ADD" ]]; then
         if ! echo "$input" | grep -q '^([A-Z])'; then
-            input=$(echo -n "($TODOTXT_PRIORITY_ON_ADD) " ; echo "$input")
+            input=$(echo -n "($TODOTXT_PRIORITY_ON_ADD) "; echo "$input")
         fi
     fi
     fixMissingEndOfLine "$file"
@@ -827,7 +820,8 @@ _addto() {
 
 shellquote()
 {
-    typeset -r qq=\'; printf %s\\n "'${1//\'/${qq}\\${qq}${qq}}'";
+    local -r qq=$'\''
+    printf "%s\n" "'${1//\'/${qq}\\${qq}${qq}}'"
 }
 
 filtercommand()
@@ -837,19 +831,17 @@ filtercommand()
     post_filter=${1:-}
     shift
 
-    for search_term
-    do
-        ## See if the first character of $search_term is a dash
-        if [ "${search_term:0:1}" != '-' ]
-        then
-            ## First character isn't a dash: hide lines that don't match
-            ## this $search_term
+    for search_term; do
+        # See if the first character of $search_term is a dash
+        if [ "${search_term:0:1}" != '-' ]; then
+            # First character isn't a dash: hide lines that don't match
+            # this $search_term
             filter="${filter:-}${filter:+ | }grep -i $(shellquote "$search_term")"
         else
-            ## First character is a dash: hide lines that match this
-            ## $search_term
+            # First character is a dash: hide lines that match this
+            # $search_term
             #
-            ## Remove the first character (-) before adding to our filter command
+            # Remove the first character (-) before adding to our filter command
             filter="${filter:-}${filter:+ | }grep -v -i $(shellquote "${search_term:1}")"
         fi
     done
@@ -861,28 +853,29 @@ filtercommand()
     printf %s "$filter"
 }
 
-_list() {
+_list()
+{
     local FILE="$1"
-    ## If the file starts with a "/" use absolute path. Otherwise,
-    ## try to find it in either $TODO_DIR or using a relative path
+    # If the file starts with a "/" use absolute path. Otherwise,
+    # try to find it in either $TODO_DIR or using a relative path
     if [ "${1:0:1}" == / ]; then
-        ## Absolute path
+        # Absolute path
         src="$FILE"
     elif [ -f "$TODO_DIR/$FILE" ]; then
-        ## Path relative to todo.sh directory
+        # Path relative to todo.sh directory
         src="$TODO_DIR/$FILE"
     elif [ -f "$FILE" ]; then
-        ## Path relative to current working directory
+        # Path relative to current working directory
         src="$FILE"
     elif [ -f "$TODO_DIR/${FILE}.txt" ]; then
-        ## Path relative to todo.sh directory, missing file extension
+        # Path relative to todo.sh directory, missing file extension
         src="$TODO_DIR/${FILE}.txt"
     else
         die "TODO: File $FILE does not exist."
     fi
 
-    ## Get our search arguments, if any
-    shift ## was file name, new $1 is first search term
+    # Get our search arguments, if any
+    shift # was file name, new $1 is first search term
 
     _format "$src" '' "$@"
 
@@ -891,12 +884,14 @@ _list() {
         echo "$(getPrefix "$src"): ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
     fi
 }
+
 getPadding()
 {
-    ## We need one level of padding for each power of 10 $LINES uses.
+    # We need one level of padding for each power of 10 $LINES uses.
     LINES=$(sed -n '$ =' "${1:-$TODO_FILE}")
     printf %s ${#LINES}
 }
+
 _format()
 {
     # Parameters:    $1: todo input file; when empty formats stdin
@@ -907,21 +902,21 @@ _format()
     FILE=$1
     shift
 
-    ## Figure out how much padding we need to use, unless this was passed to us.
+    # Figure out how much padding we need to use, unless this was passed to us.
     PADDING=${1:-$(getPadding "$FILE")}
     shift
 
-    ## Number the file, then run the filter command,
-    ## then sort and mangle output some more
+    # Number the file, then run the filter command,
+    # then sort and mangle output some more
     if [[ $TODOTXT_DISABLE_FILTER = 1 ]]; then
         TODOTXT_FINAL_FILTER="cat"
     fi
     items=$(
-        if [ "$FILE" ]; then
+        if [ -n "$FILE" ]; then
             sed = "$FILE"
         else
             sed =
-        fi                                                      \
+        fi \
         | sed -e '''
             N
             s/^/     /
@@ -930,15 +925,15 @@ _format()
          '''
     )
 
-    ## Build and apply the filter.
+    # Build and apply the filter.
     filter_command=$(filtercommand "${pre_filter_command:-}" "${post_filter_command:-}" "$@")
-    if [ "${filter_command}" ]; then
+    if [ -n "${filter_command}" ]; then
         filtered_items=$(echo -n "$items" | eval "${filter_command}")
     else
         filtered_items=$items
     fi
     filtered_items=$(
-        echo -n "$filtered_items"                              \
+        echo -n "$filtered_items" \
         | sed '''
             s/^     /00000/;
             s/^    /0000/;
@@ -948,7 +943,7 @@ _format()
           ''' \
         | eval "${TODOTXT_SORT_COMMAND}" \
         | awk '''
-            function highlight(colorVar,      color) {
+            function highlight(colorVar, color) {
                 color = ENVIRON[colorVar]
                 gsub(/\\+033/, "\033", color)
                 return color
@@ -1002,19 +997,19 @@ _format()
                 }
                 printf "%s\n", end_clr
             }
-          '''  \
+          ''' \
         | sed '''
             s/'"${HIDE_PROJECTS_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_CONTEXTS_SUBSTITUTION:-^}"'//g
             s/'"${HIDE_CUSTOM_SUBSTITUTION:-^}"'//g
-          '''                                                   \
-        | eval ${TODOTXT_FINAL_FILTER}                          \
+          ''' \
+        | eval "${TODOTXT_FINAL_FILTER}" \
     )
-    [ "$filtered_items" ] && echo "$filtered_items"
+    [ -n "$filtered_items" ] && echo "$filtered_items"
 
     if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-        NUMTASKS=$( echo -n "$filtered_items" | sed -n '$ =' )
-        TOTALTASKS=$( echo -n "$items" | sed -n '$ =' )
+        NUMTASKS=$(echo -n "$filtered_items" | sed -n '$ =')
+        TOTALTASKS=$(echo -n "$items" | sed -n '$ =')
     fi
     if [ "$TODOTXT_VERBOSE" -gt 1 ]; then
         echo "TODO DEBUG: Filter Command was: ${filter_command:-cat}"
@@ -1027,42 +1022,39 @@ listWordsWithSigil()
     shift
 
     FILE=$TODO_FILE
-    [ "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
-	eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" \
-		| grep -o "[^ ]*${sigil}[^ ]\\+" \
-		| sed -n \
-			-e "s#^${TODOTXT_SIGIL_BEFORE_PATTERN//#/\\#}##" \
-			-e "s#${TODOTXT_SIGIL_AFTER_PATTERN//#/\\#}\$##" \
-			-e "/^${sigil}${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
-		| sort -u
+    [ -n "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
+    eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" \
+        | grep -o "[^ ]*${sigil}[^ ]\\+" \
+        | sed -n \
+            -e "s#^${TODOTXT_SIGIL_BEFORE_PATTERN//#/\\#}##" \
+            -e "s#${TODOTXT_SIGIL_AFTER_PATTERN//#/\\#}\$##" \
+            -e "/^${sigil}${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
+        | sort -u
 }
 
 export -f cleaninput getPrefix getTodo getNewtodo shellquote filtercommand _list listWordsWithSigil getPadding _format die
 
 # == HANDLE ACTION ==
-action=$( printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]' )
+action=$(printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]')
 
-## If the first argument is "command", run the rest of the arguments
-## using todo.sh builtins.
-## Else, run a actions script with the name of the command if it exists
-## or fallback to using a builtin
-if [ "$action" == command ]
-then
-    ## Get rid of "command" from arguments list
+# If the first argument is "command", run the rest of the arguments
+# using todo.sh builtins.
+# Else, run a actions script with the name of the command if it exists
+# or fallback to using a builtin
+if [ "$action" == "command" ]; then
+    # Get rid of "command" from arguments list
     shift
-    ## Reset action to new first argument
-    action=$( printf "%s\n" "$1" | tr '[:upper:]' '[:lower:]' )
-elif [ -d "$TODO_ACTIONS_DIR/$action" ] && [ -x "$TODO_ACTIONS_DIR/$action/$action" ]
-then
+    # Reset action to new first argument
+    action=$(printf "%s\n" "$1" | tr '[:upper:]' '[:lower:]')
+elif [ -d "$TODO_ACTIONS_DIR/$action" ] && [ -x "$TODO_ACTIONS_DIR/$action/$action" ]; then
     "$TODO_ACTIONS_DIR/$action/$action" "$@"
     exit $?
-elif [ -d "$TODO_ACTIONS_DIR" ] && [ -x "$TODO_ACTIONS_DIR/$action" ]
-then
+elif [ -d "$TODO_ACTIONS_DIR" ] && [ -x "$TODO_ACTIONS_DIR/$action" ]; then
     "$TODO_ACTIONS_DIR/$action" "$@"
     exit $?
 fi
 
-## Only run if $action isn't found in .todo.actions.d
+# Only run if $action isn't found in .todo.actions.d
 case $action in
 "add" | "a")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
@@ -1092,13 +1084,13 @@ case $action in
     IFS=$'\n'
 
     # Treat each line separately
-    for line in $input ; do
+    for line in $input; do
         _addto "$TODO_FILE" "$line"
     done
     IFS=$SAVEIFS
     ;;
 
-"addto" )
+"addto")
     [ -z "$2" ] && die "usage: $TODO_SH addto DEST \"TODO ITEM\""
     dest="$TODO_DIR/$2"
     [ -z "$3" ] && die "usage: $TODO_SH addto DEST \"TODO ITEM\""
@@ -1113,7 +1105,7 @@ case $action in
     fi
     ;;
 
-"append" | "app" )
+"append" | "app")
     errmsg="usage: $TODO_SH append ITEM# \"TEXT TO APPEND\""
     shift; item=$1; shift
     getTodo "$item"
@@ -1140,7 +1132,7 @@ case $action in
     fi
     ;;
 
-"archive" )
+"archive")
     # defragment blank lines
     sed -i.bak -e '/./!d' "$TODO_FILE"
     [ "$TODOTXT_VERBOSE" -gt 0 ] && grep "^x " "$TODO_FILE"
@@ -1151,7 +1143,7 @@ case $action in
     fi
     ;;
 
-"del" | "rm" )
+"del" | "rm")
     # replace deleted line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
     errmsg="usage: $TODO_SH del ITEM# [TERM]"
     item=$2
@@ -1159,7 +1151,7 @@ case $action in
 
     if [ -z "$3" ]; then
         if confirm "Delete '$todo'"; then
-            if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
+            if [ "$TODOTXT_PRESERVE_LINE_NUMBERS" = 0 ]; then
                 # delete line (changes line numbers)
                 sed -i.bak -e "${item}s/^.*//" -e '/./!d' "$TODO_FILE"
             else
@@ -1194,7 +1186,7 @@ case $action in
     fi
     ;;
 
-"depri" | "dp" )
+"depri" | "dp")
     errmsg="usage: $TODO_SH depri ITEM#[, ITEM#, ITEM#, ...]"
     shift;
     [ $# -eq 0 ] && die "$errmsg"
@@ -1204,24 +1196,24 @@ case $action in
     for item in ${*//,/ }; do
         getTodo "$item"
 
-	if [[ "$todo" = \(?\)\ * ]]; then
-	    sed -i.bak -e "${item}s/^(.) //" "$TODO_FILE"
-	    if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-		getNewtodo "$item"
-		echo "$item $newtodo"
-		echo "TODO: $item deprioritized."
-	    fi
-	else
-	    echo "TODO: $item is not prioritized."
-	fi
+    if [[ "$todo" = \(?\)\ * ]]; then
+        sed -i.bak -e "${item}s/^(.) //" "$TODO_FILE"
+        if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+            getNewtodo "$item"
+            echo "$item $newtodo"
+            echo "TODO: $item deprioritized."
+        fi
+    else
+        echo "TODO: $item is not prioritized."
+    fi
     done
     ;;
 
-"do" | "done" )
+"do" | "done")
     errmsg="usage: $TODO_SH do ITEM#[, ITEM#, ITEM#, ...]"
     # shift so we get arguments to the do request
     shift;
-    [ "$#" -eq 0 ] && die "$errmsg"
+    [ $# -eq 0 ] && die "$errmsg"
 
     # Split multiple do's, if comma separated change to whitespace separated
     # Loop the 'do' function for each item
@@ -1244,20 +1236,20 @@ case $action in
         fi
     done
 
-    if [ $TODOTXT_AUTO_ARCHIVE = 1 ]; then
+    if [ "$TODOTXT_AUTO_ARCHIVE" = 1 ]; then
         # Recursively invoke the script to allow overriding of the archive
         # action.
         "$TODO_FULL_SH" archive
     fi
     ;;
 
-"help" )
-    shift  ## Was help; new $1 is first help topic / action name
+"help")
+    shift  # Was help; new $1 is first help topic / action name
     if [ $# -gt 0 ]; then
         # Don't use PAGER here; we don't expect much usage output from one / few actions.
         actionUsage "$@"
     else
-        if [ -t 1 ] ; then # STDOUT is a TTY
+        if [ -t 1 ]; then # STDOUT is a TTY
             if command -v "${PAGER:-less}" >/dev/null 2>&1; then
                 # we have a working PAGER (or less as a default)
                 help | "${PAGER:-less}" && exit 0
@@ -1267,8 +1259,8 @@ case $action in
     fi
     ;;
 
-"shorthelp" )
-    if [ -t 1 ] ; then # STDOUT is a TTY
+"shorthelp")
+    if [ -t 1 ]; then # STDOUT is a TTY
         if command -v "${PAGER:-less}" >/dev/null 2>&1; then
             # we have a working PAGER (or less as a default)
             shorthelp | "${PAGER:-less}" && exit 0
@@ -1277,22 +1269,22 @@ case $action in
     shorthelp # just in case something failed above, we go ahead and just spew to STDOUT
     ;;
 
-"list" | "ls" )
-    shift  ## Was ls; new $1 is first search term
+"list" | "ls")
+    shift  # Was ls; new $1 is first search term
     _list "$TODO_FILE" "$@"
     ;;
 
-"listall" | "lsa" )
-    shift  ## Was lsa; new $1 is first search term
+"listall" | "lsa")
+    shift  # Was lsa; new $1 is first search term
 
-    TOTAL=$( sed -n '$ =' "$TODO_FILE" )
+    TOTAL=$(sed -n '$ =' "$TODO_FILE")
     PADDING=${#TOTAL}
 
     post_filter_command="${post_filter_command:-}${post_filter_command:+ | }awk -v TOTAL=$TOTAL -v PADDING=$PADDING '{ \$1 = sprintf(\"%\" PADDING \"d\", (\$1 > TOTAL ? 0 : \$1)); print }' "
     cat "$TODO_FILE" "$DONE_FILE" | TODOTXT_VERBOSE=0 _format '' "$PADDING" "$@"
 
     if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-        TDONE=$( sed -n '$ =' "$DONE_FILE" )
+        TDONE=$(sed -n '$ =' "$DONE_FILE")
         TASKNUM=$(TODOTXT_PLAIN=1 TODOTXT_VERBOSE=0 _format "$TODO_FILE" 1 "$@" | sed -n '$ =')
         DONENUM=$(TODOTXT_PLAIN=1 TODOTXT_VERBOSE=0 _format "$DONE_FILE" 1 "$@" | sed -n '$ =')
         echo "--"
@@ -1302,38 +1294,38 @@ case $action in
     fi
     ;;
 
-"listfile" | "lf" )
-    shift  ## Was listfile, next $1 is file name
+"listfile" | "lf")
+    shift  # Was listfile, next $1 is file name
     if [ $# -eq 0 ]; then
         [ "$TODOTXT_VERBOSE" -gt 0 ] && echo "Files in the todo.txt directory:"
-        cd "$TODO_DIR" && ls -1 -- *.txt
+        cd -- "$TODO_DIR" && ls -1 -- *.txt
     else
         FILE="$1"
-        shift  ## Was filename; next $1 is first search term
+        shift  # Was filename; next $1 is first search term
 
         _list "$FILE" "$@"
     fi
     ;;
 
-"listcon" | "lsc" )
+"listcon" | "lsc")
     shift
     listWordsWithSigil '@' "$@"
     ;;
 
-"listproj" | "lsprj" )
+"listproj" | "lsprj")
     shift
     listWordsWithSigil '+' "$@"
     ;;
 
-"listpri" | "lsp" )
-    shift ## was "listpri", new $1 is priority to list or first TERM
+"listpri" | "lsp")
+    shift # was "listpri", new $1 is priority to list or first TERM
 
     pri=$(printf "%s\n" "$1" | tr '[:lower:]' '[:upper:]' | grep -e '^[A-Z]$' -e '^[A-Z]-[A-Z]$') && shift || pri="A-Z"
     post_filter_command="${post_filter_command:-}${post_filter_command:+ | }grep '^ *[0-9]\+ ([${pri}]) '"
     _list "$TODO_FILE" "$@"
     ;;
 
-"move" | "mv" )
+"move" | "mv")
     # replace moved line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
     errmsg="usage: $TODO_SH mv ITEM# DEST [SRC]"
     item=$2
@@ -1349,7 +1341,7 @@ case $action in
     getTodo "$item" "$src"
     [ -z "$todo" ] && die "$item: No such item in $src."
     if confirm "Move '$todo' from $src to $dest"; then
-        if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
+        if [ "$TODOTXT_PRESERVE_LINE_NUMBERS" = 0 ]; then
             # delete line (changes line numbers)
             sed -i.bak -e "${item}s/^.*//" -e '/./!d' "$src"
         else
@@ -1368,21 +1360,21 @@ case $action in
     fi
     ;;
 
-"prepend" | "prep" )
+"prepend" | "prep")
     errmsg="usage: $TODO_SH prepend ITEM# \"TEXT TO PREPEND\""
     replaceOrPrepend 'prepend' "$@"
     ;;
 
-"pri" | "p" )
+"pri" | "p")
     shift
-    while [ "$#" -gt 0 ] ; do
+    while [ $# -gt 0 ]; do
         item=$1
-        newpri=$( printf "%s\n" "$2" | tr '[:lower:]' '[:upper:]' )
+        newpri=$(printf "%s\n" "$2" | tr '[:lower:]' '[:upper:]')
 
         errmsg="usage: $TODO_SH pri ITEM# PRIORITY[, ITEM# PRIORITY, ...]
 note: PRIORITY must be anywhere from A to Z."
 
-        [ "$#" -lt 2 ] && die "$errmsg"
+        [ $# -lt 2 ] && die "$errmsg"
         [[ "$newpri" = @([A-Z]) ]] || die "$errmsg"
         getTodo "$item"
 
@@ -1398,7 +1390,7 @@ note: PRIORITY must be anywhere from A to Z."
             getNewtodo "$item"
             echo "$item $newtodo"
             if [ "$oldpri" != "$newpri" ]; then
-                if [ "$oldpri" ]; then
+                if [ -n "$oldpri" ]; then
                     echo "TODO: $item re-prioritized from ($oldpri) to ($newpri)."
                 else
                     echo "TODO: $item prioritized ($newpri)."
@@ -1412,19 +1404,19 @@ note: PRIORITY must be anywhere from A to Z."
     done
     ;;
 
-"replace" )
+"replace")
     errmsg="usage: $TODO_SH replace ITEM# \"UPDATED ITEM\""
     replaceOrPrepend 'replace' "$@"
     ;;
 
-"report" )
+"report")
     # archive first
     # Recursively invoke the script to allow overriding of the archive
     # action.
     "$TODO_FULL_SH" archive
 
-    TOTAL=$( sed -n '$ =' "$TODO_FILE" )
-    TDONE=$( sed -n '$ =' "$DONE_FILE" )
+    TOTAL=$(sed -n '$ =' "$TODO_FILE")
+    TDONE=$(sed -n '$ =' "$DONE_FILE")
     NEWDATA="${TOTAL:-0} ${TDONE:-0}"
     LASTREPORT=$(sed -ne '$p' "$REPORT_FILE")
     LASTDATA=${LASTREPORT#* }   # Strip timestamp.
@@ -1439,8 +1431,8 @@ note: PRIORITY must be anywhere from A to Z."
     fi
     ;;
 
-"deduplicate" )
-    if [ $TODOTXT_PRESERVE_LINE_NUMBERS = 0 ]; then
+"deduplicate")
+    if [ "$TODOTXT_PRESERVE_LINE_NUMBERS" = 0 ]; then
         deduplicateSedCommand='d'
     else
         deduplicateSedCommand='s/^.*//; p'
@@ -1448,7 +1440,7 @@ note: PRIORITY must be anywhere from A to Z."
 
     # To determine the difference when deduplicated lines are preserved, only
     # non-empty lines must be counted.
-    originalTaskNum=$( sed -e '/./!d' "$TODO_FILE" | sed -n '$ =' )
+    originalTaskNum=$(sed -e '/./!d' "$TODO_FILE" | sed -n '$ =')
 
     # Look for duplicate lines and discard the second occurrence.
     # We start with an empty hold space on the first line.  For each line:
@@ -1474,20 +1466,19 @@ note: PRIORITY must be anywhere from A to Z."
         -e "$deduplicateSedCommand" \
         "$TODO_FILE"
 
-    newTaskNum=$( sed -e '/./!d' "$TODO_FILE" | sed -n '$ =' )
+    newTaskNum=$(sed -e '/./!d' "$TODO_FILE" | sed -n '$ =')
     deduplicateNum=$(( originalTaskNum - newTaskNum ))
-    if [ $deduplicateNum -eq 0 ]; then
+    if [ "$deduplicateNum" -eq 0 ]; then
         echo "TODO: No duplicate tasks found"
     else
         echo "TODO: $deduplicateNum duplicate task(s) removed"
     fi
     ;;
 
-"listaddons" )
+"listaddons")
     if [ -d "$TODO_ACTIONS_DIR" ]; then
-        cd "$TODO_ACTIONS_DIR" || exit $?
-        for action in *
-        do
+        cd -- "$TODO_ACTIONS_DIR" || exit $?
+        for action in *; do
             if [ -f "$action" ] && [ -x "$action" ]; then
                 echo "$action"
             elif [ -d "$action" ] && [ -x "$action/$action" ]; then
@@ -1497,6 +1488,6 @@ note: PRIORITY must be anywhere from A to Z."
     fi
     ;;
 
-* )
+*)
     usage;;
 esac

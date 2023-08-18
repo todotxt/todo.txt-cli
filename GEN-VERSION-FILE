@@ -24,13 +24,13 @@ fi
 
 VN=$(expr "$VN" : v*'\(.*\)')
 
-if test -r $VF
+if test -r "$VF"
 then
-	VC=$(sed -e 's/^VERSION=//' <$VF)
+	VC=$(sed -e 's/^VERSION=//' <"$VF")
 else
 	VC=unset
 fi
 test "$VN" = "$VC" || {
 	echo >&2 "VERSION=$VN"
-	echo "VERSION=$VN" >$VF
+	echo "VERSION=$VN" >"$VF"
 }
