@@ -27,6 +27,24 @@ export TODO_SH TODO_FULL_SH
 
 oneline_usage="$TODO_SH [-fhpantvV] [-d todo_config] action [task_number] [task_description]"
 
+# Assumption: The in-place argument is the first
+# Assumption: Only a single file is processed with sed
+sed() {
+    if command -v gsed &>/dev/null; then
+        gsed "$@"
+    elif [ "$1" = '-i.bak' ]; then
+        if ! shift; then
+            die "Failed to shift"
+        fi
+
+        filepath=${!#}
+        filepath_temp=/tmp/todo.sh-sed.$RANDOM.$$
+        command sed "$@" > "$filepath_temp" && mv "$filepath_temp" "$filepath"
+    else
+        command sed "$@"
+    fi
+}
+
 usage()
 {
     cat <<-EndUsage
