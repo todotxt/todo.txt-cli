@@ -9,12 +9,36 @@
 [![GitHub license](https://img.shields.io/github/license/todotxt/todo.txt-cli.svg)](https://raw.githubusercontent.com/todotxt/todo.txt-cli/master/LICENSE)
 [![Gitter](https://badges.gitter.im/join_chat.svg)](https://gitter.im/todotxt/todo.txt-cli)
 
+
+**Table of Contents**
+- [Introduction](#introduction)
+- [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Download](#download)
+    - [OS X / macOS](#os-x--macos)
+    - [Linux](#linux)
+    - [Arch Linux (AUR)](#arch-linux-aur)
+- [Usage](#usage)
+- [Release History](#release-history)
+- [Support and Community](#support-and-community)
+- [Code of Conduct](#code-of-conduct)
+- [Contributing](#contributing)
+- [License](#license)
+
 ![gif](./.github/example.gif)
 
 *Read our [contributing guide][CONTRIBUTING] if you're looking to contribute (issues/PRs/etc).*
 
+## Introduction
+
+todo.txt-cli is a simple and extensible shell script for managing your todo.txt file. It provides an efficient way to keep track of your tasks using a plain text file.
 
 ## Installation
+
+
+Before you begin, make sure you have the following installed:
+
+- [List of prerequisites or dependencies]
 
 ### Download
 Download the latest stable [release][release] for use on your desktop or server.
