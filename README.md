@@ -57,6 +57,13 @@ make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION=/usr/share/bas
 
 https://aur.archlinux.org/packages/todotxt/
 
+#### Docker
+
+```
+docker build . -t todo.txt:latest
+docker run -d todo.txt:latest todo_txt
+alias t='docker exec -it todo_txt todo.sh'
+```
 
 ## Usage
 ```shell
