@@ -54,7 +54,7 @@ dist: $(DISTFILES) todo.sh
 	chmod +x $(DISTNAME)/todo.sh
 	tar cf $(DISTNAME).tar $(DISTNAME)
 	gzip -f -9 $(DISTNAME).tar
-	tar cf $(DISTNAME).zip $(DISTNAME)
+	zip -r -9 $(DISTNAME).zip $(DISTNAME)
 	rm -r $(DISTNAME)
 
 .PHONY: clean
@@ -98,7 +98,7 @@ $(TESTS): test-pre-clean
 test: aggregate-results
 	tests/aggregate-results.sh tests/test-results/t*-*
 	rm -rf tests/test-results
-    
+
 # Force tests to get run every time
 .PHONY: test test-pre-clean aggregate-results $(TESTS)
 

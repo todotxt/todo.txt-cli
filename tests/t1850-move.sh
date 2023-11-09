@@ -1,9 +1,10 @@
 #!/bin/bash
-#
 
 test_description='basic move functionality
 '
 . ./test-lib.sh
+
+SPACE=' '
 
 cat > todo.txt <<EOF
 (B) smell the uppercase Roses +flowers @outside
@@ -15,6 +16,33 @@ x 2009-02-13 smell the coffee +wakeup
 EOF
 test_todo_session 'basic move with implicit source' <<EOF
 >>> todo.sh -f move 1 done.txt | sed "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g"
+1 (B) smell the uppercase Roses +flowers @outside
+TODO: 1 moved from 'todo.txt' to 'done.txt'.
+
+>>> todo.sh -p ls
+2 (A) notice the sunflowers
+--
+TODO: 1 of 1 tasks shown
+
+>>> todo.sh -p listfile done.txt
+3 (B) smell the uppercase Roses +flowers @outside
+1 x 2009-02-13 make the coffee +wakeup
+2 x 2009-02-13 smell the coffee +wakeup
+--
+DONE: 3 of 3 tasks shown
+EOF
+
+cat > todo.txt <<EOF
+(B) smell the uppercase Roses +flowers @outside
+(A) notice the sunflowers
+EOF
+cat > done.txt <<EOF
+x 2009-02-13 make the coffee +wakeup
+x 2009-02-13 smell the coffee +wakeup
+EOF
+test_todo_session 'basic move with confirmation' <<EOF
+>>> printf y | todo.sh move 1 done.txt 2>&1 | sed -e "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g" -e 's#from .\{1,\}/\([^/]\{1,\}\) to .\{1,\}/\([^/]\{1,\}\)?#from \1 to \2?#g'
+Move '(B) smell the uppercase Roses +flowers @outside' from todo.txt to done.txt? (y/n)$SPACE
 1 (B) smell the uppercase Roses +flowers @outside
 TODO: 1 moved from 'todo.txt' to 'done.txt'.
 

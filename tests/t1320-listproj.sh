@@ -1,5 +1,4 @@
 #!/bin/bash
-#
 
 test_description='listproj functionality
 
@@ -116,7 +115,6 @@ test_todo_session 'listproj with context special cases' <<EOF
 +shared
 +sunflowers
 EOF
-
 
 cat > todo.txt <<EOF
 +prj01 -- Some project 1 task

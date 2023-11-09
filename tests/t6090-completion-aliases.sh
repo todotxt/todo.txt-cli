@@ -1,5 +1,4 @@
 #!/bin/bash
-#
 
 test_description='Bash completion with different aliases functionality
 
@@ -45,7 +44,6 @@ test_todo_session 'todo 1 and 2 contexts' <<EOF
 @home
 @oriental
 EOF
-
 
 # Define a second completion function that injects the different configuration
 # file. In real use, this would be installed via

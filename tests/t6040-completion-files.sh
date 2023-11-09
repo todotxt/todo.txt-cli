@@ -1,5 +1,4 @@
 #!/bin/bash
-#
 
 test_description='Bash todo file completion functionality
 

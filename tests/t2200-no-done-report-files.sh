@@ -1,5 +1,4 @@
 #!/bin/bash
-#
 
 test_description='todo.sh configuration with a sole todo.txt data file.
 
@@ -8,7 +7,7 @@ checks that no such empty files are created.
 '
 . ./test-lib.sh
 
-cat > test.cfg << EOF
+cat > test.cfg <<EOF
 export TODO_DIR=.
 export TODO_FILE="\$TODO_DIR/todo.txt"
 export DONE_FILE=/dev/null

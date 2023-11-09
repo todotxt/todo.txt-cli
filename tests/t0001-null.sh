@@ -59,7 +59,6 @@ test_expect_success 'null list filter' '
     todo.sh listall filter > output && test_cmp expect output
 '
 
-
 #
 # lsc|listcon
 #

@@ -7,11 +7,11 @@ This test just makes sure that todo.sh can locate custom actions.
 . ./test-lib.sh
 
 # All the below tests will output the custom action message
-cat > expect << EOF
+cat > expect <<EOF
 TODO: foo
 EOF
 
-cat > foo << EOF
+cat > foo <<EOF
 echo "TODO: foo"
 EOF
 chmod +x foo

@@ -15,7 +15,7 @@ case "$1" in
 esac
 
 if test -n "$color"; then
-	say_color () {
+	say_color() {
 		(
 		export TERM
 		case "$1" in
@@ -67,15 +67,15 @@ do
 		'')
 			continue ;;
 		fixed)
-			fixed=$(($fixed + $value)) ;;
+			fixed=$((fixed + $value)) ;;
 		success)
-			success=$(($success + $value)) ;;
+			success=$((success + $value)) ;;
 		failed)
-			failed=$(($failed + $value)) ;;
+			failed=$((failed + $value)) ;;
 		broken)
-			broken=$(($broken + $value)) ;;
+			broken=$((broken + $value)) ;;
 		total)
-			total=$(($total + $value)) ;;
+			total=$((total + $value)) ;;
 		esac
 	done <"$file"
 done

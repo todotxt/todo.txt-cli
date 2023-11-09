@@ -23,7 +23,15 @@ Download the latest stable [release][release] for use on your desktop or server.
 
 ```shell
 brew install todo-txt
+
+# For macOS on x86 CPU 
+cp -n /usr/local/opt/todo-txt/todo.cfg ~/.todo.cfg
+
+# For macOS on arm CPU
+cp -n /opt/homebrew/opt/todo-txt/todo.cfg ~/.todo.cfg
 ```
+
+**Note**: The `-n` flag for `cp` makes sure you do not overwrite an existing file.
 
 ### Linux
 
@@ -47,7 +55,7 @@ make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION=/usr/share/bas
 
 #### Arch Linux (AUR)
 
-https://aur.archlinux.org/packages/todotxt-git/
+https://aur.archlinux.org/packages/todotxt/
 
 
 ## Usage
@@ -71,8 +79,8 @@ See [CHANGELOG.md][CHANGELOG]
 
 ## Support
 
+- [Github Discussions](https://github.com/todotxt/todo.txt-cli/discussions)
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/todotxt)
-- [Gitter chat](https://gitter.im/todotxt/todo.txt-cli)
 - [Twitter](https://twitter.com/todotxt)
 
 
@@ -82,7 +90,7 @@ See [CHANGELOG.md][CHANGELOG]
 
 ## Contributing
 
-We welcome all contributations. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started [contributing][CONTRIBUTING].
+We welcome all contributions. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started [contributing][CONTRIBUTING].
 
 ## License
 
@@ -91,7 +99,7 @@ GNU General Public License v3.0 © [todo.txt org][github]
 
 
 [release]: https://github.com/todotxt/todo.txt-cli/releases
-[website]: http://todotxt.org
+[website]: http://todotxt.org/
 [github]: https://github.com/todotxt
 [USAGE]: ./USAGE.md
 [CHANGELOG]: ./CHANGELOG.md
