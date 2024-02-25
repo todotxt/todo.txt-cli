@@ -1251,6 +1251,32 @@ case $action in
     fi
     ;;
 
+"start" | "begin" )
+    errmsg="usage: $TODO_SH start ITEM#[, ITEM#, ITEM#, ...]"
+    # shift so we get arguments to the start request
+    shift;
+    [ "$#" -eq 0 ] && die "$errmsg"
+
+    # Split multiple starts, if comma separated change to whitespace separated
+    # Loop the 'start' function for each item
+    for item in ${*//,/ }; do
+        getTodo "$item"
+
+        # Check if this item has already been started or done
+        if [[ "$todo" != *"- ["* ]]; then
+            now="$(date +'%Y-%m-%d') $(date +'%H:%M:%S')"
+            sed -i.bak "${item}s|^|- [$now] |" "$TODO_FILE"
+            if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+                getNewtodo "$item"
+                echo "$item $newtodo"
+                echo "TODO: $item marked as in progress."
+            fi
+        else
+            echo "TODO: $item is already marked in progress."
+        fi
+    done
+    ;;
+
 "help" )
     shift  ## Was help; new $1 is first help topic / action name
     if [ $# -gt 0 ]; then
