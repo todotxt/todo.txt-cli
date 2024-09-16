@@ -254,7 +254,7 @@ actionsHelp()
 		    listpri [PRIORITIES] [TERM...]
 		    lsp [PRIORITIES] [TERM...]
 		      Displays all tasks prioritized PRIORITIES.
-		      PRIORITIES can be a single one (A) or a range (A-C).
+		      PRIORITIES can be a [concatenation of] single (A) or range (A-C).
 		      If no PRIORITIES specified, lists all prioritized tasks.
 		      If TERM specified, lists only prioritized tasks that contain TERM(s).
 		      Hides all tasks that contain TERM(s) preceded by a minus sign
@@ -1346,8 +1346,8 @@ case $action in
 "listpri" | "lsp" )
     shift ## was "listpri", new $1 is priority to list or first TERM
 
-    pri=$(printf "%s\n" "$1" | tr '[:lower:]' '[:upper:]' | grep -e '^[A-Z]$' -e '^[A-Z]-[A-Z]$') && shift || pri="A-Z"
-    post_filter_command="${post_filter_command:-}${post_filter_command:+ | }grep '^ *[0-9]\+ ([${pri}]) '"
+    pri=$(printf "%s\n" "$1" | grep '^\([A-Za-z]\|[A-Za-z]-[A-Za-z]\|[A-Z][A-Z-]*[A-Z]\)$') && shift || pri="A-Z"
+    post_filter_command="${post_filter_command:-}${post_filter_command:+ | }grep '^ *[0-9]\+ ([${pri^^}]) '"
     _list "$TODO_FILE" "$@"
     ;;
 
