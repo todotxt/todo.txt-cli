@@ -5,6 +5,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
 
 jobs:
   test:
