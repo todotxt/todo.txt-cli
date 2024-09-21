@@ -13,7 +13,7 @@ jobs:
         platform: [ubuntu-24.04, macos-14]
     runs-on: ${{ matrix.platform }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - run: make
     - run: make dist
     - run: make test
