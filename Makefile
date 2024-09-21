@@ -64,7 +64,7 @@ clean: test-pre-clean
 
 install: installdirs
 	$(INSTALL_PROGRAM) todo.sh $(DESTDIR)$(bindir)/todo.sh
-	$(INSTALL_DATA) todo_completion $(DESTDIR)$(datarootdir)/todo
+	$(INSTALL_DATA) todo_completion $(DESTDIR)$(datarootdir)/todo.sh
 	[ -e $(DESTDIR)$(sysconfdir)/todo/config ] || \
 	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)$(sysconfdir)/todo/config
 
