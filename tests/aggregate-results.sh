@@ -85,3 +85,5 @@ say_color "$(get_color "$success" 'pass')" "$(printf "%-8s%d\n" success $success
 say_color "$(get_color "$failed" 'error')" "$(printf "%-8s%d\n" failed $failed)"
 say_color "$(get_color "$broken" 'error')" "$(printf "%-8s%d\n" broken $broken)"
 say_color 'info'                           "$(printf "%-8s%d\n" total $total)"
+
+[ $broken -eq 0 -a $failed -eq 0 ]
