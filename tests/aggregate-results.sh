@@ -18,12 +18,11 @@ if test -n "$color"; then
 	say_color() {
 		(
 		export TERM
-		case "$1" in
+		case "${1:?}" in
 			error) tput bold; tput setaf 1;; # bold red
 			skip)  tput bold; tput setaf 2;; # bold green
 			pass)  tput setaf 2;;            # green
 			info)  tput setaf 3;;            # brown
-			*) test -n "$quiet" && return;;
 		esac
 		shift
 		printf "* %s" "$*"
@@ -33,7 +32,6 @@ if test -n "$color"; then
 	}
 else
 	say_color() {
-		test -z "$1" && test -n "$quiet" && return
 		shift
 		echo "* $*"
 	}
