@@ -73,6 +73,18 @@ For example, to add a todo item, you can do:
 ```shell
 todo.sh add "THING I NEED TO DO +project @context"
 ```
+### `replace`
+Replaces task on line ITEM# with UPDATED TODO.
+
+```shell
+todo.sh replace ITEM# "UPDATED TODO"
+```
+### `report`
+Adds the number of open tasks and done tasks to report.txt.
+
+```shell
+todo.sh report
+```
 
 Read about all the possible commands in the [USAGE][USAGE] file.
 
