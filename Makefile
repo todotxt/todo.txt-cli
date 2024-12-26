@@ -137,5 +137,5 @@ help:                            ## list public targets
 	@echo todo.txt Makefile
 	@echo
 	@sed -ne '/^[a-z%-]\+:.*##/ s/:.*##/\t/p' $(word 1, $(MAKEFILE_LIST)) \
-	 | column -t -s $$'\t'
+	 | column -t -s '	'
 	@echo
