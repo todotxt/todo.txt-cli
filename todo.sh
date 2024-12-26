@@ -1172,11 +1172,16 @@ case $action in
 "archive" )
     # defragment blank lines
     sed -i.bak -e '/./!d' "$TODO_FILE"
-    [ "$TODOTXT_VERBOSE" -gt 0 ] && grep "^x " "$TODO_FILE"
-    grep "^x " "$TODO_FILE" >> "$DONE_FILE"
-    sed -i.bak '/^x /d' "$TODO_FILE"
-    if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-        echo "TODO: $TODO_FILE archived."
+    if grep "^x " "$TODO_FILE" >> "$DONE_FILE"; then
+	[ "$TODOTXT_VERBOSE" -gt 0 ] && grep "^x " "$TODO_FILE"   
+        sed -i.bak '/^x /d' "$TODO_FILE"
+        if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+            echo "TODO: $TODO_FILE archived."
+        fi
+    else
+	if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+       	    echo "TODO: $TODO_FILE does not contain any done tasks."
+	fi
     fi
     ;;
 

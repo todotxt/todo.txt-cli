@@ -32,4 +32,9 @@ test_todo_session 'list after archive' <<EOF
 TODO: 5 of 5 tasks shown
 EOF
 
+test_todo_session 'archive warning message' <<EOF
+>>> todo.sh archive
+TODO: $HOME/todo.txt does not contain any done tasks.
+EOF
+
 test_done
