@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- `TODOTXT_DEFAULT_ACTION` now also allows action parameters ([#159], [#407])
+
 ## [2.13.0] - 2024-12-25
 
 ### Added
@@ -513,6 +516,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#8]: https://github.com/todotxt/todo.txt-cli/pull/8
 [#148]: https://github.com/todotxt/todo.txt-cli/pull/148
 [#156]: https://github.com/todotxt/todo.txt-cli/pull/156
+[#159]: https://github.com/todotxt/todo.txt-cli/pull/159
 [#160]: https://github.com/todotxt/todo.txt-cli/pull/160
 [#169]: https://github.com/todotxt/todo.txt-cli/pull/169
 [#217]: https://github.com/todotxt/todo.txt-cli/pull/217
@@ -536,3 +540,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#354]: https://github.com/todotxt/todo.txt-cli/pull/354
 [#359]: https://github.com/todotxt/todo.txt-cli/pull/359
 [#386]: https://github.com/todotxt/todo.txt-cli/pull/386
+[#407]: https://github.com/todotxt/todo.txt-cli/pull/407

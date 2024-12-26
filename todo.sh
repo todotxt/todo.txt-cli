@@ -779,7 +779,13 @@ if [ -n "$OVR_TODOTXT_FINAL_FILTER" ] ; then
   TODOTXT_FINAL_FILTER="$OVR_TODOTXT_FINAL_FILTER"
 fi
 
-ACTION=${1:-$TODOTXT_DEFAULT_ACTION}
+isDefaultAction=
+if [ -n "$1" ]; then
+    ACTION=$1
+else
+    ACTION=$TODOTXT_DEFAULT_ACTION
+    isDefaultAction=t
+fi
 
 [ -z "$ACTION" ]    && usage
 [ -d "$TODO_DIR" ]  || mkdir -p "$TODO_DIR" 2> /dev/null || dieWithHelp "$1" "Fatal Error: $TODO_DIR is not a directory"
@@ -1080,6 +1086,10 @@ elif hasCustomAction "$TODO_ACTIONS_DIR" "$action"
 then
     "$TODO_ACTIONS_DIR/$action" "$@"
     exit $?
+elif [ "$isDefaultAction" ] && [ -n "$TODOTXT_DEFAULT_ACTION" ]; then
+    # Recursive invocation with the contents of the default action parsed as a
+    # command-line.
+    eval "exec \"\${BASH_SOURCE[0]}\" $TODOTXT_DEFAULT_ACTION"
 fi
 
 ## Only run if $action isn't found in .todo.actions.d
