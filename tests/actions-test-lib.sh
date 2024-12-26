@@ -7,7 +7,7 @@ make_action()
     cat > ".todo.actions.d/$1" <<EOF
 #!/bin/bash
 [ "\$1" = "usage" ] && {
-    echo "    $1 ITEM#[, ITEM#, ...] [TERM...]"
+    echo "    $1 NR [NR ...] [TERM...]"
     echo "      This custom action does $1."
     echo ""
     exit
@@ -25,7 +25,7 @@ make_action_in_folder()
     cat > ".todo.actions.d/$1/$1" <<EOF
 #!/bin/bash
 [ "\$1" = "usage" ] && {
-    echo "    $1 ITEM#[, ITEM#, ...] [TERM...]"
+    echo "    $1 NR [NR ...] [TERM...]"
     echo "      This custom action does $1."
     echo ""
     exit

@@ -87,7 +87,7 @@ todo.sh dp NR [NR ...]
 ```
 
 ### `do`
-Marks task(s) on line ITEM# as done in todo.txt.
+Marks task(s) on line NR as done in todo.txt.
 
 ```shell
 todo.sh do NR [NR ...]
