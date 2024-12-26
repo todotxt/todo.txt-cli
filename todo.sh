@@ -30,7 +30,9 @@ oneline_usage="$TODO_SH [-fhpantvV] [-d todo_config] action [task_number] [task_
 # Assumption: The in-place argument is the first
 # Assumption: Only a single file is processed with sed
 sed() {
-    if command -v gsed &>/dev/null; then
+    if [ -n "$TODOTXT_SED_COMMAND" ]; then
+        command "$TODOTXT_SED_COMMAND" "$@"
+    elif command -v gsed &>/dev/null; then
         gsed "$@"
     elif [ "$1" = '-i.bak' ]; then
         shift
