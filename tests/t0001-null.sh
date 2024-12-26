@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='todo.sh basic null functionality test.
 
@@ -58,7 +58,6 @@ test_expect_success 'null list' '
 test_expect_success 'null list filter' '
     todo.sh listall filter > output && test_cmp expect output
 '
-
 
 #
 # lsc|listcon

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='custom actions help functionality
 
@@ -20,22 +20,22 @@ make_action "quux"
 
 test_todo_session 'custom action help' <<'EOF'
 >>> todo.sh help foo
-    foo ITEM#[, ITEM#, ...] [TERM...]
+    foo NR [NR ...] [TERM...]
       This custom action does foo.
 \
 
 >>> todo.sh help bar
-    bar ITEM#[, ITEM#, ...] [TERM...]
+    bar NR [NR ...] [TERM...]
       This custom action does bar.
 \
 EOF
 
 test_todo_session 'multiple custom actions help' <<'EOF'
 >>> todo.sh help foo bar
-    foo ITEM#[, ITEM#, ...] [TERM...]
+    foo NR [NR ...] [TERM...]
       This custom action does foo.
 \
-    bar ITEM#[, ITEM#, ...] [TERM...]
+    bar NR [NR ...] [TERM...]
       This custom action does bar.
 \
 EOF
@@ -46,7 +46,7 @@ TODO: No action "doesnotexist" exists.
 === 1
 
 >>> todo.sh help foo doesnotexist bar
-    foo ITEM#[, ITEM#, ...] [TERM...]
+    foo NR [NR ...] [TERM...]
       This custom action does foo.
 \
 TODO: No action "doesnotexist" exists.
@@ -55,20 +55,20 @@ EOF
 
 test_todo_session 'mixed built-in and custom actions help' <<'EOF'
 >>> todo.sh help foo shorthelp bar
-    foo ITEM#[, ITEM#, ...] [TERM...]
+    foo NR [NR ...] [TERM...]
       This custom action does foo.
 \
     shorthelp
       List the one-line usage of all built-in and add-on actions.
 \
-    bar ITEM#[, ITEM#, ...] [TERM...]
+    bar NR [NR ...] [TERM...]
       This custom action does bar.
 \
 EOF
 
 test_todo_session 'custom override of built-in action help' <<'EOF'
 >>> todo.sh help ls
-    ls ITEM#[, ITEM#, ...] [TERM...]
+    ls NR [NR ...] [TERM...]
       This custom action does ls.
 \
 EOF

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='do functionality
 '
@@ -8,13 +8,13 @@ test_description='do functionality
 
 test_todo_session 'do usage' <<EOF
 >>> todo.sh do B B
-usage: todo.sh do ITEM#[, ITEM#, ITEM#, ...]
+usage: todo.sh do NR [NR ...]
 === 1
 EOF
 
-test_todo_session 'do missing ITEM#' <<EOF
+test_todo_session 'do missing NR' <<EOF
 >>> todo.sh do
-usage: todo.sh do ITEM#[, ITEM#, ITEM#, ...]
+usage: todo.sh do NR [NR ...]
 === 1
 EOF
 
@@ -81,6 +81,8 @@ test_todo_session 'fail multiple do attempts' <<EOF
 TODO: 3 marked as done.
 
 >>> todo.sh -a do 3
+=== 1
 TODO: 3 is already marked done.
 EOF
+
 test_done

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='basic tests imported from previous framework
 '
@@ -90,7 +90,7 @@ TODO: $HOME/todo.txt archived.
 TODO: Report file updated.
 
 >>> todo.sh append g a
-usage: todo.sh append ITEM# "TEXT TO APPEND"
+usage: todo.sh append NR "TEXT TO APPEND"
 === 1
 
 >>> todo.sh append 2 and think

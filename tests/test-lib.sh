@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright (c) 2005 Junio C Hamano
 #
@@ -172,12 +172,12 @@ test_set_editor () {
 # the text_expect_* functions instead.
 
 test_ok_ () {
-	test_success=$(($test_success + 1))
+	test_success=$((test_success + 1))
 	say_color "" "  ok $test_count: $@"
 }
 
 test_failure_ () {
-	test_failure=$(($test_failure + 1))
+	test_failure=$((test_failure + 1))
 	say_color error "FAIL $test_count: $1"
 	shift
 	echo "$@"
@@ -185,12 +185,12 @@ test_failure_ () {
 }
 
 test_known_broken_ok_ () {
-	test_fixed=$(($test_fixed+1))
+	test_fixed=$((test_fixed + 1))
 	say_color "" "  FIXED $test_count: $@"
 }
 
 test_known_broken_failure_ () {
-	test_broken=$(($test_broken+1))
+	test_broken=$((test_broken + 1))
 	say_color skip "  still broken $test_count: $@"
 }
 
@@ -206,7 +206,7 @@ test_run_ () {
 }
 
 test_skip () {
-	test_count=$(($test_count+1))
+	test_count=$((test_count + 1))
 	to_skip=
 	for skp in $SKIP_TESTS
 	do
@@ -316,64 +316,6 @@ expected exit code $1, actual ${eval_ret}"
 	echo >&3 ""
 }
 
-# test_external runs external test scripts that provide continuous
-# test output about their progress, and succeeds/fails on
-# zero/non-zero exit code.  It outputs the test output on stdout even
-# in non-verbose mode, and announces the external script with "* run
-# <n>: ..." before running it.  When providing relative paths, keep in
-# mind that all scripts run in "trash directory".
-# Usage: test_external description command arguments...
-# Example: test_external 'Perl API' perl ../path/to/test.pl
-test_external () {
-	test "$#" -eq 3 ||
-	error >&5 "bug in the test script: not 3 parameters to test_external"
-	descr="$1"
-	shift
-	if ! test_skip "$descr" "$@"
-	then
-		# Announce the script to reduce confusion about the
-		# test output that follows.
-		say_color "" " run $test_count: $descr ($*)"
-		# Run command; redirect its stderr to &4 as in
-		# test_run_, but keep its stdout on our stdout even in
-		# non-verbose mode.
-		"$@" 2>&4
-		if [ "$?" = 0 ]
-		then
-			test_ok_ "$descr"
-		else
-			test_failure_ "$descr" "$@"
-		fi
-	fi
-}
-
-# Like test_external, but in addition tests that the command generated
-# no output on stderr.
-test_external_without_stderr () {
-	# The temporary file has no (and must have no) security
-	# implications.
-	tmp="$TMPDIR"; if [ -z "$tmp" ]; then tmp=/tmp; fi
-	stderr="$tmp/todotxt-external-stderr.$$.tmp"
-	test_external "$@" 4> "$stderr"
-	[ -f "$stderr" ] || error "Internal error: $stderr disappeared."
-	descr="no stderr: $1"
-	shift
-	say >&3 "expecting no stderr from previous command"
-	if [ ! -s "$stderr" ]; then
-		rm "$stderr"
-		test_ok_ "$descr"
-	else
-		if [ "$verbose" = t ]; then
-			output=`echo; echo Stderr is:; cat "$stderr"`
-		else
-			output=
-		fi
-		# rm first in case test_failure exits.
-		rm "$stderr"
-		test_failure_ "$descr" "$@" "$output"
-	fi
-}
-
 # This is not among top-level (test_expect_success | test_expect_failure)
 # but is a prefix that can be used in the test script, like:
 #
@@ -414,12 +356,12 @@ test_done () {
 	mkdir -p "$test_results_dir"
 	test_results_path="$test_results_dir/${0%.sh}-$$"
 
-	echo "total $test_count" >> $test_results_path
-	echo "success $test_success" >> $test_results_path
-	echo "fixed $test_fixed" >> $test_results_path
-	echo "broken $test_broken" >> $test_results_path
-	echo "failed $test_failure" >> $test_results_path
-	echo "" >> $test_results_path
+	echo "total $test_count" >> "$test_results_path"
+	echo "success $test_success" >> "$test_results_path"
+	echo "fixed $test_fixed" >> "$test_results_path"
+	echo "broken $test_broken" >> "$test_results_path"
+	echo "failed $test_failure" >> "$test_results_path"
+	echo "" >> "$test_results_path"
 
 	if test "$test_fixed" != 0
 	then
@@ -428,7 +370,7 @@ test_done () {
 	if test "$test_broken" != 0
 	then
 		say_color error "still have $test_broken known breakage(s)"
-		msg="remaining $(($test_count-$test_broken)) test(s)"
+		msg="remaining $((test_count - test_broken)) test(s)"
 	else
 		msg="$test_count test(s)"
 	fi
@@ -471,12 +413,12 @@ rm -fr "$test" || {
 test_init_todo () {
 	test "$#" = 1 ||
 	error "bug in the test script: not 1 parameter to test_init_todo"
-	owd=`pwd`
+	owd=$(pwd)
 	root="$1"
 	mkdir -p "$root"
 	cd "$root" || error "Cannot setup todo dir in $root"
 	# Initialize the configuration file. Carefully quoted.
-	sed -e 's|TODO_DIR=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' $TEST_DIRECTORY/../todo.cfg > todo.cfg
+	sed -e 's|TODO_DIR=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' "$TEST_DIRECTORY/../todo.cfg" > todo.cfg
 
 	# Install latest todo.sh
 	mkdir bin
@@ -499,8 +441,8 @@ test_init_todo () {
 	#date --version
 	#date: illegal option -- -
 	#usage: date [-jnu] [-d dst] [-r seconds] [-t west] [-v[+|-]val[ymwdHMS]] ...
-	#[-f fmt date | [[[mm]dd]HH]MM[[cc]yy][.ss]] [+format]
-	elif date --version 2>&1 | grep -q -e "-jnu"; then
+	#            [-f fmt date | [[[mm]dd]HH]MM[[cc]yy][.ss]] [+format]
+	elif date --version 2>&1 | grep -q -e "-jnR\?u"; then
 		DATE_STYLE=Mac10.5
 	# on Mac OS X 10.4:
 	#date --version
@@ -548,7 +490,7 @@ test_init_todo () {
 
 # Usage: test_tick [increment]
 test_tick () {
-	TODO_TEST_TIME=$(($TODO_TEST_TIME + ${1:-86400}))
+	TODO_TEST_TIME=$((TODO_TEST_TIME + ${1:-86400}))
 }
 
 # Generate and run a series of tests based on a transcript.
@@ -581,14 +523,14 @@ test_todo_session () {
 	    status=${line#=== }
 	    ;;
 	"")
-	    if [ ! -z "$cmd" ]; then
-		if [ $status = 0 ]; then
+	    if [ -n "$cmd" ]; then
+		if [ "$status" = 0 ]; then
 		    test_expect_output "$1 $subnum" "$cmd"
 		else
 		    test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
 		fi
 
-		subnum=$(($subnum + 1))
+		subnum=$((subnum + 1))
 		cmd=""
 		status=0
 		> expect
@@ -602,8 +544,8 @@ test_todo_session () {
 	    ;;
 	esac
     done
-    if [ ! -z "$cmd" ]; then
-	if [ $status = 0 ]; then
+    if [ -n "$cmd" ]; then
+	if [ "$status" = 0 ]; then
 	    test_expect_output "$1 $subnum" "$cmd"
 	else
 	    test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
@@ -645,7 +587,7 @@ test_todo_custom_completion () {
 		SAVEIFS=$IFS
 		IFS=' ' set -- $2
 		COMP_WORDS=("$@")
-		COMP_CWORD=$(($# - $offset))
+		COMP_CWORD=$(($# - offset))
 		IFS=' ' eval "set -- $expected"
 		EXPECT=("$@")
 
@@ -693,6 +635,13 @@ cd -P "$test" || exit 1
 # but use something specified by the framework.
 HOME=$(pwd)
 export HOME
+# Unset XDG_CONFIG_HOME as that is used as a config alternative.
+unset XDG_CONFIG_HOME
+# User add-ons may override built-in commands; these could have incompatible
+# behavior that makes the tests fail. Avoid picking up user add-ons by
+# explicitly configuring the first default location (which with the redirected
+# HOME lies within the test directory and usually does not exist).
+export TODO_ACTIONS_DIR="$HOME/.todo/actions"
 
 this_test=${0##*/}
 this_test=${this_test%%-*}

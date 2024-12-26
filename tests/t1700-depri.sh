@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='basic depriority functionality
 '
@@ -6,7 +6,7 @@ test_description='basic depriority functionality
 
 test_todo_session 'depriority usage' <<EOF
 >>> todo.sh depri B B
-usage: todo.sh depri ITEM#[, ITEM#, ITEM#, ...]
+usage: todo.sh depri NR [NR ...]
 === 1
 EOF
 
@@ -82,6 +82,7 @@ test_todo_session 'depriority of unprioritized task' <<EOF
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh depri 3 2
+=== 1
 TODO: 3 is not prioritized.
 2 notice the sunflowers
 TODO: 2 deprioritized.

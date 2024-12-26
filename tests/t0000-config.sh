@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='todo.sh configuration file location
 
@@ -20,12 +20,12 @@ test_expect_success 'no config file' '
 '
 
 # All the below tests will output the usage message.
-cat > expect << EOF
+cat > expect <<EOF
 Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
 Try 'todo.sh -h' for more information.
 EOF
 
-cat > test.cfg << EOF
+cat > test.cfg <<EOF
 export TODO_DIR=.
 export TODO_FILE="\$TODO_DIR/todo.txt"
 export DONE_FILE="\$TODO_DIR/done.txt"
@@ -77,6 +77,20 @@ rm -f used_config
 test_expect_success 'config file (env variable)' '
     TODOTXT_CFG_FILE=test.cfg todo.sh > output;
     test_cmp expect output && test -f used_config
+'
+
+cat > minimal.cfg <<EOF
+export TODO_DIR=.
+touch used_config
+EOF
+
+rm -f used_config
+test_expect_success 'config file (minimal)' '
+    mkdir .todo
+    cp minimal.cfg .todo/config
+    todo.sh > output;
+    test_cmp expect output && test -f used_config &&
+        rm -rf .todo
 '
 
 test_done

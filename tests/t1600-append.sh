@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='basic append functionality
 
@@ -14,10 +14,10 @@ todo.sh add notice the daisies > /dev/null
 test_todo_session 'append usage' <<EOF
 >>> todo.sh append adf asdfa
 === 1
-usage: todo.sh append ITEM# "TEXT TO APPEND"
+usage: todo.sh append NR "TEXT TO APPEND"
 EOF
 
-test_todo_session 'append error' << EOF
+test_todo_session 'append error' <<EOF
 >>> todo.sh append 10 "hej!"
 === 1
 TODO: No task 10.
