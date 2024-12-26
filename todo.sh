@@ -43,6 +43,8 @@ sed() {
         command sed "$@"
     fi
 }
+[ "$TODOTXT_SED_EXPORT_FOR_ADDONS" = 1 ] \
+    && export -f sed
 
 usage()
 {
