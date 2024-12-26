@@ -33,10 +33,7 @@ sed() {
     if command -v gsed &>/dev/null; then
         gsed "$@"
     elif [ "$1" = '-i.bak' ]; then
-        if ! shift; then
-            die "Failed to shift"
-        fi
-
+        shift
         filepath=${!#}
         filepath_temp=/tmp/todo.sh-sed.$RANDOM.$$
         command sed "$@" > "$filepath_temp" && mv "$filepath_temp" "$filepath"
