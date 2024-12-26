@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 [ "x$TERM" != "xdumb" ] && (
 		export TERM &&
@@ -18,12 +18,11 @@ if test -n "$color"; then
 	say_color() {
 		(
 		export TERM
-		case "$1" in
+		case "${1:?}" in
 			error) tput bold; tput setaf 1;; # bold red
 			skip)  tput bold; tput setaf 2;; # bold green
 			pass)  tput setaf 2;;            # green
 			info)  tput setaf 3;;            # brown
-			*) test -n "$quiet" && return;;
 		esac
 		shift
 		printf "* %s" "$*"
@@ -33,7 +32,6 @@ if test -n "$color"; then
 	}
 else
 	say_color() {
-		test -z "$1" && test -n "$quiet" && return
 		shift
 		echo "* $*"
 	}
@@ -44,7 +42,7 @@ get_color()
 	# Only use the supplied color if there are actually instances of that
 	# type, so that a clean test run does not distract the user by the
 	# appearance of the error highlighting.
-	if [ ${1:?} -eq 0 ]
+	if [ "${1:?}" -eq 0 ]
 	then
 		echo 'info'
 	else
@@ -61,21 +59,21 @@ total=0
 
 for file
 do
-	while read type value
+	while read -r type value
 	do
 		case $type in
 		'')
 			continue ;;
 		fixed)
-			fixed=$((fixed + $value)) ;;
+			fixed=$((fixed + value)) ;;
 		success)
-			success=$((success + $value)) ;;
+			success=$((success + value)) ;;
 		failed)
-			failed=$((failed + $value)) ;;
+			failed=$((failed + value)) ;;
 		broken)
-			broken=$((broken + $value)) ;;
+			broken=$((broken + value)) ;;
 		total)
-			total=$((total + $value)) ;;
+			total=$((total + value)) ;;
 		esac
 	done <"$file"
 done
@@ -85,3 +83,5 @@ say_color "$(get_color "$success" 'pass')" "$(printf "%-8s%d\n" success $success
 say_color "$(get_color "$failed" 'error')" "$(printf "%-8s%d\n" failed $failed)"
 say_color "$(get_color "$broken" 'error')" "$(printf "%-8s%d\n" broken $broken)"
 say_color 'info'                           "$(printf "%-8s%d\n" total $total)"
+
+[ $broken -eq 0 ] && [ $failed -eq 0 ]

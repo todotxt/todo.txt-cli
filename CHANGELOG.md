@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.13.0] - 2024-12-25
+
+### Added
+- listpri action allows concatenation of multiple priorities [-ranges]
+- replace action completely merges any combination of priority / date with existing ([#386])
+- Check for broken symlinks to custom actions and complain ([#359])
+
+### Changed
+
+- Add .sh extension to completion script
+- Reuse the todo.sh alias for completion
+- Return from user prompt without requiring Enter ([#354])
+- Default to user writable directory in config ([#148])
+
+### Fixed
+- Fix problem with spaces in directory path ([#276])
+- pri action takes multiple items + priorities on single run ([#346])
+
 ## [2.12.0] - 2020-08-11
 
 ### Added
@@ -461,7 +479,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Consolidated into one master script with usage notes and released.
 
-[Unreleased]: https://github.com/todotxt/todo.txt-cli/compare/v2.12.0...HEAD
+[Unreleased]: https://github.com/todotxt/todo.txt-cli/compare/v2.13.0...HEAD
+[2.13.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.12.0...v2.13.0
 [2.12.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.9.0...v2.10.0
@@ -492,6 +511,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [1.2.0]: https://github.com/todotxt/todo.txt-cli/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/todotxt/todo.txt-cli/compare/v1.0.0...v1.1.0
 [#8]: https://github.com/todotxt/todo.txt-cli/pull/8
+[#148]: https://github.com/todotxt/todo.txt-cli/pull/148
 [#156]: https://github.com/todotxt/todo.txt-cli/pull/156
 [#160]: https://github.com/todotxt/todo.txt-cli/pull/160
 [#169]: https://github.com/todotxt/todo.txt-cli/pull/169
@@ -501,11 +521,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#228]: https://github.com/todotxt/todo.txt-cli/pull/228
 [#230]: https://github.com/todotxt/todo.txt-cli/pull/230
 [#246]: https://github.com/todotxt/todo.txt-cli/pull/246
+[#246]: https://github.com/todotxt/todo.txt-cli/pull/246
 [#249]: https://github.com/todotxt/todo.txt-cli/pull/249
+[#254]: https://github.com/todotxt/todo.txt-cli/pull/254
 [#264]: https://github.com/todotxt/todo.txt-cli/pull/264
 [#270]: https://github.com/todotxt/todo.txt-cli/pull/270
 [#271]: https://github.com/todotxt/todo.txt-cli/pull/271
+[#276]: https://github.com/todotxt/todo.txt-cli/pull/276
 [#289]: https://github.com/todotxt/todo.txt-cli/pull/289
 [#295]: https://github.com/todotxt/todo.txt-cli/pull/295
 [#300]: https://github.com/todotxt/todo.txt-cli/pull/300
 [#301]: https://github.com/todotxt/todo.txt-cli/pull/301
+[#346]: https://github.com/todotxt/todo.txt-cli/pull/346
+[#354]: https://github.com/todotxt/todo.txt-cli/pull/354
+[#359]: https://github.com/todotxt/todo.txt-cli/pull/359
+[#386]: https://github.com/todotxt/todo.txt-cli/pull/386

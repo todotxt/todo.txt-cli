@@ -1,23 +1,13 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Based on git's GIT-VERSION-GEN.
 
 VF=VERSION-FILE
-DEF_VER=v2.2
-
-LF='
-'
+DEF_VER=v0.0
 
 if test -d .git -o -f .git &&
-	VN=$(git describe --abbrev=0 --tags 2>/dev/null) &&
-	case "$VN" in
-	*$LF*) (exit 1) ;;
-	v[0-9]*)
-		git update-index -q --refresh
-		test -z "$(git diff-index --name-only HEAD --)" ||
-		VN="$VN-dirty" ;;
-	esac
+	VN=$(git describe --dirty --tags 2>/dev/null)
 then
-	VN=$(echo "$VN" | sed -e 's/-/./g');
+	VN=${VN//-/.}
 else
 	VN="$DEF_VER"
 fi

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='basic priority functionality
 '
@@ -90,6 +90,7 @@ TODO: 2 re-prioritized from (C) to (A).
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 a
+=== 1
 2 (A) notice the sunflowers
 TODO: 2 already prioritized (A).
 
