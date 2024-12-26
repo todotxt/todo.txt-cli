@@ -354,6 +354,7 @@ dieWithHelp()
 
     die "$@"
 }
+
 die()
 {
     echo >&2 "$*"
@@ -878,7 +879,7 @@ _list() {
     local FILE="$1"
     ## If the file starts with a "/" use absolute path. Otherwise,
     ## try to find it in either $TODO_DIR or using a relative path
-    if [ "${1:0:1}" == / ]; then
+    if [ "${1:0:1}" == / ] && [ -f "$FILE" ]; then
         ## Absolute path
         src="$FILE"
     elif [ -f "$TODO_DIR/$FILE" ]; then
@@ -1523,14 +1524,27 @@ note: PRIORITY must be anywhere from A to Z."
 "listaddons" )
     if [ -d "$TODO_ACTIONS_DIR" ]; then
         cd "$TODO_ACTIONS_DIR" || exit $?
+        actionsCnt=0
         for action in *
         do
             if [ -f "$action" ] && [ -x "$action" ]; then
                 echo "$action"
+                ((actionsCnt+=1))
             elif [ -d "$action" ] && [ -x "$action/$action" ]; then
                 echo "$action"
+                ((actionsCnt+=1))
             fi
         done
+        if ! [ "$actionsCnt" -gt 0 ]; then
+             die "TODO: '$TODO_ACTIONS_DIR' does not contain valid actions."
+        else
+            if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+                echo "--"
+                echo "TODO: $actionsCnt valid addon actions found."
+            fi
+        fi 
+    else
+        die "TODO: '$TODO_ACTIONS_DIR' does not exist." 
     fi
     ;;
 
