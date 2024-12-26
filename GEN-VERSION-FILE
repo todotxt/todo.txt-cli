@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Based on git's GIT-VERSION-GEN.
 
 VF=VERSION-FILE
@@ -7,7 +7,7 @@ DEF_VER=v0.0
 if test -d .git -o -f .git &&
 	VN=$(git describe --dirty --tags 2>/dev/null)
 then
-	VN=$(echo "$VN" | sed -e 's/-/./g');
+	VN=${VN//-/.}
 else
 	VN="$DEF_VER"
 fi
