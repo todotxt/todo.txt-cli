@@ -6,7 +6,7 @@ make_dummy_action()
     cat > "$1" <<EOF
 #!/bin/bash
 [ "\$1" = "usage" ] && {
-    echo "    $actionName ITEM#[, ITEM#, ...] [TERM...]"
+    echo "    $actionName NR [NR ...] [TERM...]"
     echo "      This custom action does $actionName."
     echo ""
     exit

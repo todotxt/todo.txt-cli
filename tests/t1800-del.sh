@@ -8,7 +8,7 @@ SPACE=' '
 
 test_todo_session 'del usage' <<EOF
 >>> todo.sh del B
-usage: todo.sh del ITEM# [TERM]
+usage: todo.sh del NR [TERM]
 === 1
 EOF
 

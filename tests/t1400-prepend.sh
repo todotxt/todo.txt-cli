@@ -6,7 +6,7 @@ test_description='basic prepend functionality
 
 test_todo_session 'prepend usage' <<EOF
 >>> todo.sh prepend B B
-usage: todo.sh prepend ITEM# "TEXT TO PREPEND"
+usage: todo.sh prepend NR "TEXT TO PREPEND"
 === 1
 EOF
 

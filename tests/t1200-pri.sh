@@ -6,7 +6,7 @@ test_description='basic priority functionality
 
 test_todo_session 'priority usage' <<EOF
 >>> todo.sh pri B B
-usage: todo.sh pri ITEM# PRIORITY[, ITEM# PRIORITY, ...]
+usage: todo.sh pri NR PRIORITY [NR PRIORITY ...]
 note: PRIORITY must be anywhere from A to Z.
 === 1
 EOF

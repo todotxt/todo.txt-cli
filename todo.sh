@@ -45,13 +45,13 @@ shorthelp()
 		    addm "THINGS I NEED TO DO
 		          MORE THINGS I NEED TO DO"
 		    addto DEST "TEXT TO ADD"
-		    append|app ITEM# "TEXT TO APPEND"
+		    append|app NR "TEXT TO APPEND"
 		    archive
 		    command [ACTIONS]
 		    deduplicate
-		    del|rm ITEM# [TERM]
-		    depri|dp ITEM#[, ITEM#, ITEM#, ...]
-		    done|do ITEM#[, ITEM#, ITEM#, ...]
+		    del|rm NR [TERM]
+		    depri|dp NR [NR ...]
+		    done|do NR [NR ...]
 		    help [ACTION...]
 		    list|ls [TERM...]
 		    listall|lsa [TERM...]
@@ -60,10 +60,10 @@ shorthelp()
 		    listfile|lf [SRC [TERM...]]
 		    listpri|lsp [PRIORITIES] [TERM...]
 		    listproj|lsprj [TERM...]
-		    move|mv ITEM# DEST [SRC]
-		    prepend|prep ITEM# "TEXT TO PREPEND"
-		    pri|p ITEM# PRIORITY[, ITEM# PRIORITY, ...]
-		    replace ITEM# "UPDATED TODO"
+		    move|mv NR DEST [SRC]
+		    prepend|prep NR "TEXT TO PREPEND"
+		    pri|p NR PRIORITY [NR PRIORITY ...]
+		    replace NR "UPDATED TODO"
 		    report
 		    shorthelp
 
@@ -180,9 +180,9 @@ actionsHelp()
 		      Adds a line of text to any file located in the todo.txt directory.
 		      For example, addto inbox.txt "decide about vacation"
 
-		    append ITEM# "TEXT TO APPEND"
-		    app ITEM# "TEXT TO APPEND"
-		      Adds TEXT TO APPEND to the end of the task on line ITEM#.
+		    append NR "TEXT TO APPEND"
+		    app NR "TEXT TO APPEND"
+		      Adds TEXT TO APPEND to the end of the task on line NR.
 		      Quotes optional.
 
 		    archive
@@ -195,19 +195,19 @@ actionsHelp()
 		    deduplicate
 		      Removes duplicate lines from todo.txt.
 
-		    del ITEM# [TERM]
-		    rm ITEM# [TERM]
-		      Deletes the task on line ITEM# in todo.txt.
+		    del NR [TERM]
+		    rm NR [TERM]
+		      Deletes the task on line NR in todo.txt.
 		      If TERM specified, deletes only TERM from the task.
 
-		    depri ITEM#[, ITEM#, ITEM#, ...]
-		    dp ITEM#[, ITEM#, ITEM#, ...]
+		    depri NR [NR ...]
+		    dp NR [NR ...]
 		      Deprioritizes (removes the priority) from the task(s)
-		      on line ITEM# in todo.txt.
+		      on line NR in todo.txt.
 
-		    done ITEM#[, ITEM#, ITEM#, ...]
-		    do ITEM#[, ITEM#, ITEM#, ...]
-		      Marks task(s) on line ITEM# as done in todo.txt.
+		    done NR [NR ...]
+		    do NR [NR ...]
+		      Marks task(s) on line NR as done in todo.txt.
 
 		    help [ACTION...]
 		      Display help about usage, options, built-in and add-on actions,
@@ -266,26 +266,26 @@ actionsHelp()
 		      todo.txt.
 		      If TERM specified, considers only tasks that contain TERM(s).
 
-		    move ITEM# DEST [SRC]
-		    mv ITEM# DEST [SRC]
-		      Moves a line from source text file (SRC) to destination text file (DEST).
+		    move NR DEST [SRC]
+		    mv NR DEST [SRC]
+		      Moves the line NR from source text file (SRC) to destination text file (DEST).
 		      Both source and destination file must be located in the directory defined
 		      in the configuration directory.  When SRC is not defined
 		      it's by default todo.txt.
 
-		    prepend ITEM# "TEXT TO PREPEND"
-		    prep ITEM# "TEXT TO PREPEND"
-		      Adds TEXT TO PREPEND to the beginning of the task on line ITEM#.
+		    prepend NR "TEXT TO PREPEND"
+		    prep NR "TEXT TO PREPEND"
+		      Adds TEXT TO PREPEND to the beginning of the task on line NR.
 		      Quotes optional.
 
-		    pri ITEM# PRIORITY
-		    p ITEM# PRIORITY
-		      Adds PRIORITY to task on line ITEM#.  If the task is already
+		    pri NR PRIORITY
+		    p NR PRIORITY
+		      Adds PRIORITY to task on line NR.  If the task is already
 		      prioritized, replaces current priority with new PRIORITY.
 		      PRIORITY must be a letter between A and Z.
 
-		    replace ITEM# "UPDATED TODO"
-		      Replaces task on line ITEM# with UPDATED TODO.
+		    replace NR "UPDATED TODO"
+		      Replaces task on line NR with UPDATED TODO.
 
 		    report
 		      Adds the number of open tasks and done tasks to report.txt.
@@ -495,6 +495,7 @@ replaceOrPrepend()
         echo "$item $newtodo"
         ;;
     esac
+    
   fi
 }
 
@@ -906,7 +907,7 @@ getPadding()
 _format()
 {
     # Parameters:    $1: todo input file; when empty formats stdin
-    #                $2: ITEM# number width; if empty auto-detects from $1 / $TODO_FILE.
+    #                $2: NR number width; if empty auto-detects from $1 / $TODO_FILE.
     # Precondition:  None
     # Postcondition: $NUMTASKS and $TOTALTASKS contain statistics (unless $TODOTXT_VERBOSE=0).
 
@@ -1116,9 +1117,10 @@ case $action in
     ;;
 
 "addto" )
-    [ -z "$2" ] && die "usage: $TODO_SH addto DEST \"TODO ITEM\""
+    errmsg="usage: $TODO_SH addto DEST \"TODO ITEM\""
+    [ -z "$2" ] && die "$errmsg"
     dest="$TODO_DIR/$2"
-    [ -z "$3" ] && die "usage: $TODO_SH addto DEST \"TODO ITEM\""
+    [ -z "$3" ] && die "$errmsg"
     shift
     shift
     input=$*
@@ -1131,7 +1133,7 @@ case $action in
     ;;
 
 "append" | "app" )
-    errmsg="usage: $TODO_SH append ITEM# \"TEXT TO APPEND\""
+    errmsg="usage: $TODO_SH append NR \"TEXT TO APPEND\""
     shift; item=$1; shift
     getTodo "$item"
 
@@ -1169,7 +1171,7 @@ case $action in
 
 "del" | "rm" )
     # replace deleted line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
-    errmsg="usage: $TODO_SH del ITEM# [TERM]"
+    errmsg="usage: $TODO_SH del NR [TERM]"
     item=$2
     getTodo "$item"
 
@@ -1211,7 +1213,7 @@ case $action in
     ;;
 
 "depri" | "dp" )
-    errmsg="usage: $TODO_SH depri ITEM#[, ITEM#, ITEM#, ...]"
+    errmsg="usage: $TODO_SH depri NR [NR ...]"
     shift;
     [ $# -eq 0 ] && die "$errmsg"
 
@@ -1237,7 +1239,7 @@ case $action in
     ;;
 
 "do" | "done" )
-    errmsg="usage: $TODO_SH do ITEM#[, ITEM#, ITEM#, ...]"
+    errmsg="usage: $TODO_SH do NR [NR ...]"
     # shift so we get arguments to the do request
     shift;
     [ "$#" -eq 0 ] && die "$errmsg"
@@ -1357,7 +1359,7 @@ case $action in
 
 "move" | "mv" )
     # replace moved line with a blank line when TODOTXT_PRESERVE_LINE_NUMBERS is 1
-    errmsg="usage: $TODO_SH mv ITEM# DEST [SRC]"
+    errmsg="usage: $TODO_SH mv NR DEST [SRC]"
     item=$2
     dest="$TODO_DIR/$3"
     src="$TODO_DIR/$4"
@@ -1391,7 +1393,7 @@ case $action in
     ;;
 
 "prepend" | "prep" )
-    errmsg="usage: $TODO_SH prepend ITEM# \"TEXT TO PREPEND\""
+    errmsg="usage: $TODO_SH prepend NR \"TEXT TO PREPEND\""
     replaceOrPrepend 'prepend' "$@"
     ;;
 
@@ -1402,7 +1404,7 @@ case $action in
         item=$1
         newpri=$( printf "%s\n" "$2" | tr '[:lower:]' '[:upper:]' )
 
-        errmsg="usage: $TODO_SH pri ITEM# PRIORITY[, ITEM# PRIORITY, ...]
+        errmsg="usage: $TODO_SH pri NR PRIORITY [NR PRIORITY ...]
 note: PRIORITY must be anywhere from A to Z."
 
         [ "$#" -lt 2 ] && die "$errmsg"
@@ -1438,7 +1440,7 @@ note: PRIORITY must be anywhere from A to Z."
     ;;
 
 "replace" )
-    errmsg="usage: $TODO_SH replace ITEM# \"UPDATED ITEM\""
+    errmsg="usage: $TODO_SH replace NR \"UPDATED ITEM\""
     replaceOrPrepend 'replace' "$@"
     ;;
 

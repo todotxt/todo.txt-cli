@@ -25,7 +25,7 @@ _todo()
     elif [[ $COMP_CWORD -gt 2 && ( \
         "${COMP_WORDS[COMP_CWORD-2]}" =~ ^($MOVE_COMMAND_PATTERN${_todo_file2_actions:+|${_todo_file2_actions}})$ || \
         "${COMP_WORDS[COMP_CWORD-3]}" =~ ^($MOVE_COMMAND_PATTERN${_todo_file3_actions:+|${_todo_file3_actions}})$ ) ]]; then
-        # "move ITEM# DEST [SRC]" has file arguments on positions 2 and 3.
+        # "move NR DEST [SRC]" has file arguments on positions 2 and 3.
         completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listfile 2>/dev/null)
     else
         case "$prev" in
