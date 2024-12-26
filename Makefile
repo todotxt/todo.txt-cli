@@ -33,6 +33,19 @@ else
 	datarootdir = $(prefix)/share/bash_completion.d
 endif
 
+# generate list of targets from this Makefile
+# looks for any lowercase target with a double hash mark (##) on the same line
+# and uses the inline comment as the target description
+.PHONY: help
+.DEFAULT: help
+help:                            ## list public targets
+	@echo
+	@echo todo.txt Makefile
+	@echo
+	@sed -ne '/^[a-z%-]\+:.*##/ s/:.*##/\t/p' $(word 1, $(MAKEFILE_LIST)) \
+	 | column -t -s '	'
+	@echo
+
 # Dynamically detect/generate version file as necessary
 # This file will define a variable called VERSION used in
 # both todo.sh and this Makefile.
@@ -126,16 +139,3 @@ test: aggregate-results   ## run tests
 
 # Force tests to get run every time
 .PHONY: test test-pre-clean aggregate-results $(TESTS)
-
-# generate list of targets from this Makefile
-# looks for any lowercase target with a double hash mark (##) on the same line
-# and uses the inline comment as the target description
-.PHONY: help
-.DEFAULT: help
-help:                            ## list public targets
-	@echo
-	@echo todo.txt Makefile
-	@echo
-	@sed -ne '/^[a-z%-]\+:.*##/ s/:.*##/\t/p' $(word 1, $(MAKEFILE_LIST)) \
-	 | column -t -s '	'
-	@echo
