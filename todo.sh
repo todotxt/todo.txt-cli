@@ -1105,6 +1105,18 @@ case $action in
         shift
         input=$*
     fi
+"renameproj")
+    if [ -z "$2" ]; then
+        die "usage: $TODO_SH renameproj +oldproject +newproject"
+    fi
+    old_project=$1
+    new_project=$2
+    if ! grep -q "$old_project" "$TODO_FILE"; then
+        die "Project $old_project not found in $TODO_FILE"
+    fi
+    sed -i.bak "s/$old_project/$new_project/g" "$TODO_FILE"
+    echo "Renamed project $old_project to $new_project in $TODO_FILE"
+    ;;
 
     # Set Internal Field Seperator as newline so we can
     # loop across multiple lines
