@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='report functionality
 
@@ -16,7 +16,7 @@ EOF
 
 test_todo_session 'create new report' <<EOF
 >>> todo.sh report
-TODO: $HOME/todo.txt archived.
+TODO: $HOME/todo.txt does not contain any done tasks.
 2009-02-13T04:40:00 5 0
 TODO: Report file updated.
 
@@ -38,7 +38,7 @@ x 2009-02-13 smell the coffee +wakeup
 TODO: $HOME/todo.txt archived.
 
 >>> todo.sh report
-TODO: $HOME/todo.txt archived.
+TODO: $HOME/todo.txt does not contain any done tasks.
 2009-02-13T04:40:00 4 1
 TODO: Report file updated.
 
@@ -83,7 +83,7 @@ test_todo_session 'report is unchanged when no changes' <<EOF
 2009-02-13T04:40:00 3 2
 
 >>> todo.sh report
-TODO: $HOME/todo.txt archived.
+TODO: $HOME/todo.txt does not contain any done tasks.
 2009-02-13T04:40:00 3 2
 TODO: Report file is up-to-date.
 

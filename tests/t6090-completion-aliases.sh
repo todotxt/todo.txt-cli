@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='Bash completion with different aliases functionality
 
@@ -46,15 +46,22 @@ test_todo_session 'todo 1 and 2 contexts' <<EOF
 EOF
 
 # Define a second completion function that injects the different configuration
-# file. In real use, this would be installed via
+# file and uppercases all output. (This is a silly behavior change that still
+# requires a completion function override.)
+# In real use, this would be installed via
 #   complete -F _todo2 todo2
+_uppercase_todo()
+{
+    todo.sh "$@" | tr '[:lower:]' '[:upper:]'
+}
 _todo2()
 {
-    local _todo_sh='todo.sh -d "$HOME/todo2.cfg"'
+    local _todo_sh='_uppercase_todo -d "$HOME/todo2.cfg"'
     _todo "$@"
 }
 
 test_todo_completion               'all todo1 contexts' 'todo1 list @' '@garden @outdoor @outside'
-test_todo_custom_completion _todo2 'all todo2 contexts' 'todo2 list @' '@home @oriental'
+test_todo_completion               'all todo2 contexts' 'todo2 list @' '@home @oriental'
+test_todo_custom_completion _todo2 'all uppercased todo2 contexts' 'doesNotMatter list @' '@HOME @ORIENTAL'
 
 test_done

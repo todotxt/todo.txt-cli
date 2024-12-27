@@ -33,42 +33,75 @@ else
 	datarootdir = $(prefix)/share/bash_completion.d
 endif
 
+# generate list of targets from this Makefile
+# looks for any lowercase target with a double hash mark (##) on the same line
+# and uses the inline comment as the target description
+.PHONY: help
+.DEFAULT: help
+help:                            ## list public targets
+	@echo
+	@echo todo.txt Makefile
+	@echo
+	@sed -ne '/^[a-z%-]\+:.*##/ s/:.*##/\t/p' $(word 1, $(MAKEFILE_LIST)) \
+	 | column -t -s '	'
+	@echo
+
 # Dynamically detect/generate version file as necessary
-# This file will define a variable called VERSION.
-.PHONY: .FORCE-VERSION-FILE
-VERSION-FILE: .FORCE-VERSION-FILE
+# This file will define a variable called VERSION used in
+# both todo.sh and this Makefile.
+VERSION-FILE:
 	@./GEN-VERSION-FILE
 -include VERSION-FILE
 
-# Maybe this will include the version in it.
-todo.sh: VERSION-FILE
-
-# For packaging
-DISTFILES := todo.cfg todo_completion
-
+# dist/build directory name
 DISTNAME=todo.txt_cli-$(VERSION)
-dist: $(DISTFILES) todo.sh
+
+# files to copy unmodified into the dist directory
+SRC_FILES := todo.cfg todo_completion
+
+# path of SRC_FILES in the dist directory
+OUTPUT_FILES := $(patsubst %, $(DISTNAME)/%, $(SRC_FILES))
+
+# all dist files
+DISTFILES := $(OUTPUT_FILES) $(DISTNAME)/todo.sh
+
+# create the dist directory
+$(DISTNAME): VERSION-FILE
 	mkdir -p $(DISTNAME)
-	cp -f $(DISTFILES) $(DISTNAME)/
+
+# copy SRC_FILES to the dist directory
+$(OUTPUT_FILES): $(DISTNAME)/%: %
+	cp -f $(*) $(DISTNAME)/
+
+# generate todo.sh
+$(DISTNAME)/todo.sh: VERSION-FILE
 	sed -e 's/@DEV_VERSION@/'$(VERSION)'/' todo.sh > $(DISTNAME)/todo.sh
 	chmod +x $(DISTNAME)/todo.sh
+
+.PHONY: build
+build: $(DISTNAME) $(DISTFILES)  ## create the dist directory and files
+
+.PHONY: dist
+dist: build   ## create the compressed release files
 	tar cf $(DISTNAME).tar $(DISTNAME)
 	gzip -f -9 $(DISTNAME).tar
 	zip -r -9 $(DISTNAME).zip $(DISTNAME)
 	rm -r $(DISTNAME)
 
 .PHONY: clean
-clean: test-pre-clean
+clean: test-pre-clean VERSION-FILE   ## remove dist directory and all release files
+	rm -rf $(DISTNAME)
 	rm -f $(DISTNAME).tar.gz $(DISTNAME).zip
-	rm VERSION-FILE
 
-install: installdirs
-	$(INSTALL_PROGRAM) todo.sh $(DESTDIR)$(bindir)/todo.sh
-	$(INSTALL_DATA) todo_completion $(DESTDIR)$(datarootdir)/todo
+.PHONY: install
+install: build installdirs   ## local package install
+	$(INSTALL_PROGRAM) $(DISTNAME)/todo.sh $(DESTDIR)$(bindir)/todo.sh
+	$(INSTALL_DATA) $(DISTNAME)/todo_completion $(DESTDIR)$(datarootdir)/todo.sh
 	[ -e $(DESTDIR)$(sysconfdir)/todo/config ] || \
-	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" todo.cfg > $(DESTDIR)$(sysconfdir)/todo/config
+	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" $(DISTNAME)/todo.cfg > $(DESTDIR)$(sysconfdir)/todo/config
 
-uninstall:
+.PHONY: uninstall
+uninstall:   ## uninstall package
 	rm -f $(DESTDIR)$(bindir)/todo.sh
 	rm -f $(DESTDIR)$(datarootdir)/todo
 	rm -f $(DESTDIR)$(sysconfdir)/todo/config
@@ -76,6 +109,8 @@ uninstall:
 	rmdir $(DESTDIR)$(datarootdir)
 	rmdir $(DESTDIR)$(sysconfdir)/todo
 
+# create local installation directories
+.PHONY: installdirs
 installdirs:
 	mkdir -p $(DESTDIR)$(bindir) \
 	         $(DESTDIR)$(sysconfdir)/todo \
@@ -87,18 +122,20 @@ installdirs:
 TESTS = $(wildcard tests/t[0-9][0-9][0-9][0-9]-*.sh)
 #TEST_OPTIONS=--verbose
 
+# remove test detritus
 test-pre-clean:
 	rm -rf tests/test-results "tests/trash directory"*
 
+# run tests and generate test result files
 aggregate-results: $(TESTS)
 
 $(TESTS): test-pre-clean
 	cd tests && ./$(notdir $@) $(TEST_OPTIONS)
 
-test: aggregate-results
+# run tests, print a test result summary, and remove generated test results
+test: aggregate-results   ## run tests
 	tests/aggregate-results.sh tests/test-results/t*-*
 	rm -rf tests/test-results
 
 # Force tests to get run every time
 .PHONY: test test-pre-clean aggregate-results $(TESTS)
-

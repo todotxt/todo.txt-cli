@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='deduplicate functionality
 
@@ -32,6 +32,7 @@ EOF
 
 test_todo_session 'deduplicate without duplicates' <<EOF
 >>> todo.sh deduplicate
+=== 1
 TODO: No duplicate tasks found
 EOF
 

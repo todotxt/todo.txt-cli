@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='basic tests imported from previous framework
 '
@@ -85,12 +85,12 @@ TODO: $HOME/todo.txt archived.
 TODO: 5 of 5 tasks shown
 
 >>> todo.sh report
-TODO: $HOME/todo.txt archived.
+TODO: $HOME/todo.txt does not contain any done tasks.
 2009-02-13T04:40:00 5 1
 TODO: Report file updated.
 
 >>> todo.sh append g a
-usage: todo.sh append ITEM# "TEXT TO APPEND"
+usage: todo.sh append NR "TEXT TO APPEND"
 === 1
 
 >>> todo.sh append 2 and think

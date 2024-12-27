@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='listaddons functionality
 
@@ -9,12 +9,16 @@ This test checks listing of custom actions.
 
 test_todo_session 'no custom actions' <<EOF
 >>> todo.sh listaddons
+TODO: '$TODO_ACTIONS_DIR' does not exist.
+=== 1
 EOF
 
 make_action "foo"
 test_todo_session 'one custom action' <<EOF
 >>> todo.sh listaddons
 foo
+--
+TODO: 1 valid addon actions found.
 EOF
 
 make_action "bar"
@@ -26,19 +30,18 @@ bar
 foo
 ls
 quux
+--
+TODO: 4 valid addon actions found.
 EOF
 
-chmod -x .todo.actions.d/foo
-# On Cygwin, clearing the executable flag may have no effect, as the Windows ACL
-# may still grant execution rights. In this case, we skip the test.
-if [ -x .todo.actions.d/foo ]; then
-    SKIP_TESTS="${SKIP_TESTS}${SKIP_TESTS+ }t8010.4"
-fi
+invalidate_action .todo.actions.d/foo t8010.4
 test_todo_session 'nonexecutable action' <<EOF
 >>> todo.sh listaddons
 bar
 ls
 quux
+--
+TODO: 3 valid addon actions found.
 EOF
 
 make_action_in_folder "chuck"
@@ -64,21 +67,19 @@ chuck
 ls
 norris
 quux
+--
+TODO: 5 valid addon actions found.
 EOF
 
-# nthorne: shamelessly stolen from above..
-chmod -x .todo.actions.d/norris/norris
-# On Cygwin, clearing the executable flag may have no effect, as the Windows ACL
-# may still grant execution rights. In this case, we skip the test.
-if [ -x .todo.actions.d/norris/norris ]; then
-    SKIP_TESTS="${SKIP_TESTS}${SKIP_TESTS+ }t8010.8"
-fi
+invalidate_action .todo.actions.d/norris/norris t8010.8
 test_todo_session 'nonexecutable action in subfolder' <<EOF
 >>> todo.sh listaddons
 bar
 chuck
 ls
 quux
+--
+TODO: 4 valid addon actions found.
 EOF
 
 test_done

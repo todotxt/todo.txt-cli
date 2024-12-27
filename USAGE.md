@@ -38,13 +38,13 @@ todo.sh addto DEST "TEXT TO ADD"
 ```
 
 ### `append`
-Adds TEXT TO APPEND to the end of the task on line ITEM#.
+Adds TEXT TO APPEND to the end of the task on line NR.
 
 Quotes optional.
 
 ```shell
-todo.sh append ITEM# "TEXT TO APPEND"
-todo.sh app ITEM# "TEXT TO APPEND"
+todo.sh append NR "TEXT TO APPEND"
+todo.sh app NR "TEXT TO APPEND"
 ```
 
 ### `archive`
@@ -71,26 +71,26 @@ todo.sh deduplicate
 ```
 
 ### `del`
-Deletes the task on line ITEM# in todo.txt. If TERM specified, deletes only TERM from the task.
+Deletes the task on line NR in todo.txt. If TERM specified, deletes only TERM from the task.
 
 ```shell
-todo.sh del ITEM# [TERM]
-todo.sh rm ITEM# [TERM]
+todo.sh del NR [TERM]
+todo.sh rm NR [TERM]
 ```
 
 ### `depri`
-Deprioritizes (removes the priority) from the task(s) on line ITEM# in todo.txt.
+Deprioritizes (removes the priority) from the task(s) on line NR in todo.txt.
 
 ```shell
-todo.sh depri ITEM#[, ITEM#, ITEM#, ...]
-todo.sh dp ITEM#[, ITEM#, ITEM#, ...]
+todo.sh depri NR [NR ...]
+todo.sh dp NR [NR ...]
 ```
 
 ### `do`
-Marks task(s) on line ITEM# as done in todo.txt.
+Marks task(s) on line NR as done in todo.txt.
 
 ```shell
-todo.sh do ITEM#[, ITEM#, ITEM#, ...]
+todo.sh do NR [NR ...]
 ```
 
 ### `help`
@@ -164,34 +164,34 @@ todo.sh lsprj [TERM...]
 ```
 
 ### `move`
-Moves a line from source text file (SRC) to destination text file (DEST). Both source and destination file must be located in the directory defined in the configuration directory. When SRC is not defined it's by default todo.txt.
+Moves line NR from source text file (SRC) to destination text file (DEST). Both source and destination file must be located in the directory defined in the configuration directory. When SRC is not defined it's by default todo.txt.
 
 ```shell
-todo.sh move ITEM# DEST [SRC]
-todo.sh mv ITEM# DEST [SRC]
+todo.sh move NR DEST [SRC]
+todo.sh mv NR DEST [SRC]
 ```
 
 ### `prepend`
-Adds TEXT TO PREPEND to the beginning of the task on line ITEM#. Quotes optional.
+Adds TEXT TO PREPEND to the beginning of the task on line NR. Quotes optional.
 
 ```shell
-todo.sh prepend ITEM# "TEXT TO PREPEND"
-todo.sh prep ITEM# "TEXT TO PREPEND"
+todo.sh prepend NR "TEXT TO PREPEND"
+todo.sh prep NR"TEXT TO PREPEND"
 ```
 
 ### `pri`
-Adds PRIORITY to task on line ITEM#.  If the task is already prioritized, replaces current priority with new PRIORITY. PRIORITY must be a letter between A and Z.
+Adds PRIORITY to task on line NR.  If the task is already prioritized, replaces current priority with new PRIORITY. PRIORITY must be a letter between A and Z.
 
 ```shell
-todo.sh pri ITEM# PRIORITY
-todo.sh p ITEM# PRIORITY
+todo.sh pri NR PRIORITY
+todo.sh p NR PRIORITY
 ```
 
 ### `replace`
-Replaces task on line ITEM# with UPDATED TODO.
+Replaces task on line NR with UPDATED TODO.
 
 ```shell
-todo.sh replace ITEM# "UPDATED TODO"
+todo.sh replace NR "UPDATED TODO"
 ```
 
 ### `report`

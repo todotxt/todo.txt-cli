@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='todo.sh configuration with a sole todo.txt data file.
 
@@ -38,7 +38,7 @@ test_expect_success 'no done file has been created by the archiving' '[ ! -e don
 
 test_todo_session 'perform report' <<EOF
 >>> todo.sh -d test.cfg report
-TODO: ./todo.txt archived.
+TODO: ./todo.txt does not contain any done tasks.
 2009-02-13T04:40:00 0 0
 TODO: Report file updated.
 EOF

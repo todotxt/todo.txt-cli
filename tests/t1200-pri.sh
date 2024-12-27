@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='basic priority functionality
 '
@@ -6,7 +6,7 @@ test_description='basic priority functionality
 
 test_todo_session 'priority usage' <<EOF
 >>> todo.sh pri B B
-usage: todo.sh pri ITEM# PRIORITY[, ITEM# PRIORITY, ...]
+usage: todo.sh pri NR PRIORITY [NR PRIORITY ...]
 note: PRIORITY must be anywhere from A to Z.
 === 1
 EOF
@@ -90,6 +90,7 @@ TODO: 2 re-prioritized from (C) to (A).
 TODO: 3 of 3 tasks shown
 
 >>> todo.sh pri 2 a
+=== 1
 2 (A) notice the sunflowers
 TODO: 2 already prioritized (A).
 

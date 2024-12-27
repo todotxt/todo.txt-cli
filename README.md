@@ -23,7 +23,8 @@ Download the latest stable [release][release] for use on your desktop or server.
 
 ```shell
 brew install todo-txt
-cp -n /usr/local/opt/todo-txt/todo.cfg ~/.todo.cfg
+
+cp -n $(brew --prefix)/opt/todo-txt/todo.cfg ~/.todo.cfg
 ```
 
 **Note**: The `-n` flag for `cp` makes sure you do not overwrite an existing file.
@@ -41,7 +42,7 @@ make test
 *NOTE:* Makefile defaults to several default paths for installed files. Adjust to your system:
 
 - `INSTALL_DIR`: PATH for executables (default /usr/local/bin)
-- `CONFIG_DIR`: PATH for todo.txt config
+- `CONFIG_DIR`: PATH for the todo.txt configuration template
 - `BASH_COMPLETION`: PATH for autocompletion scripts (default to /etc/bash_completion.d)
 
 ```shell
@@ -53,6 +54,11 @@ make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION=/usr/share/bas
 https://aur.archlinux.org/packages/todotxt/
 
 
+## Configuration
+
+No configuration is required; however, most users tweak the default settings (e.g. relocating the todo.txt directory to a subdirectory of the user's home directory, or onto a cloud drive (via the `TODO_DIR` variable)), modify the colors, add additional highlighting of projects, contexts, dates, and so on. A configuration template with a commented-out list of all available options is included.
+It is recommended to _copy_ that template into one of the locations listed by `todo.sh help` on `-d CONFIG_FILE`, even if it is installed in the global configuration location (`/etc/todo/config`).
+
 ## Usage
 ```shell
 todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
@@ -62,6 +68,18 @@ For example, to add a todo item, you can do:
 
 ```shell
 todo.sh add "THING I NEED TO DO +project @context"
+```
+### `replace`
+Replaces task on line NR with UPDATED TODO.
+
+```shell
+todo.sh replace NR "UPDATED TODO"
+```
+### `report`
+Adds the number of open tasks and done tasks to report.txt.
+
+```shell
+todo.sh report
 ```
 
 Read about all the possible commands in the [USAGE][USAGE] file.

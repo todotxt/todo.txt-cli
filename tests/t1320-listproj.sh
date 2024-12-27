@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 test_description='listproj functionality
 
@@ -72,6 +72,24 @@ test_todo_session 'listproj with context' <<EOF
 +landscape
 +shared
 +sunflowers
+EOF
+
+cat > todo.txt <<EOF
++roses +flowers
++roses and only +flowers
+(B) +roses prioritized +flowers
+(B) 2024-02-21 +roses prioritized +flowers
+x 2024-02-21 2024-02-19 +roses done +flowers
++roses +flowers at the front
+  +roses +flowers at the front with leading space
+my +flowers are +roses in the middle
+at the back pick the +roses +flowers
+at the back with trailing space +flowers +roses 
+EOF
+test_todo_session 'listproj of projects at various positions' <<EOF
+>>> todo.sh listproj
++flowers
++roses
 EOF
 
 cat > todo.txt <<EOF
