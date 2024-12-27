@@ -1089,6 +1089,13 @@ case $action in
     fi
     _addto "$TODO_FILE" "$input"
     ;;
+"search")
+        shift
+        if [ -z "$1" ]; then
+            die "usage: $TODO_SH search [KEYWORD...]"
+        fi
+        grep -i "$@" "$TODO_FILE"
+        ;;
 
 "addm")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
