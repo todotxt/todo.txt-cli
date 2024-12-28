@@ -109,7 +109,7 @@ uninstall:   ## uninstall package
 	rm -f $(DEST_COMPLETION)
 	rm -f $(DEST_CONFIG)
 
-	rmdir $(DESTDIR)$(datarootdir)
+	rmdir $(DESTDIR)$(datarootdir) 2>/dev/null || :
 	rmdir $(DESTDIR)$(sysconfdir)/todo
 
 # create local installation directories
