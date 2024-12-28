@@ -19,6 +19,7 @@ ifdef INSTALL_DIR
 else
 	bindir = $(prefix)/bin
 endif
+DEST_COMMAND = $(DESTDIR)$(bindir)/todo.sh
 
 # The directory to install the config file in.
 ifdef CONFIG_DIR
@@ -26,12 +27,14 @@ ifdef CONFIG_DIR
 else
 	sysconfdir = $(prefix)/etc
 endif
+DEST_CONFIG = $(DESTDIR)$(sysconfdir)/todo/config
 
 ifdef BASH_COMPLETION
 	datarootdir = $(BASH_COMPLETION)
 else
 	datarootdir = $(prefix)/share/bash_completion.d
 endif
+DEST_COMPLETION = $(DESTDIR)$(datarootdir)/todo.sh
 
 # generate list of targets from this Makefile
 # looks for any lowercase target with a double hash mark (##) on the same line
@@ -95,16 +98,16 @@ clean: test-pre-clean VERSION-FILE   ## remove dist directory and all release fi
 
 .PHONY: install
 install: build installdirs   ## local package install
-	$(INSTALL_PROGRAM) $(DISTNAME)/todo.sh $(DESTDIR)$(bindir)/todo.sh
-	$(INSTALL_DATA) $(DISTNAME)/todo_completion $(DESTDIR)$(datarootdir)/todo.sh
-	[ -e $(DESTDIR)$(sysconfdir)/todo/config ] || \
-	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" $(DISTNAME)/todo.cfg > $(DESTDIR)$(sysconfdir)/todo/config
+	$(INSTALL_PROGRAM) $(DISTNAME)/todo.sh $(DEST_COMMAND)
+	$(INSTALL_DATA) $(DISTNAME)/todo_completion $(DEST_COMPLETION)
+	[ -e $(DEST_CONFIG) ] || \
+	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" $(DISTNAME)/todo.cfg > $(DEST_CONFIG)
 
 .PHONY: uninstall
 uninstall:   ## uninstall package
-	rm -f $(DESTDIR)$(bindir)/todo.sh
-	rm -f $(DESTDIR)$(datarootdir)/todo.sh
-	rm -f $(DESTDIR)$(sysconfdir)/todo/config
+	rm -f $(DEST_COMMAND)
+	rm -f $(DEST_COMPLETION)
+	rm -f $(DEST_CONFIG)
 
 	rmdir $(DESTDIR)$(datarootdir)
 	rmdir $(DESTDIR)$(sysconfdir)/todo
