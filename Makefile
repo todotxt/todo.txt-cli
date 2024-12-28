@@ -103,7 +103,7 @@ install: build installdirs   ## local package install
 .PHONY: uninstall
 uninstall:   ## uninstall package
 	rm -f $(DESTDIR)$(bindir)/todo.sh
-	rm -f $(DESTDIR)$(datarootdir)/todo
+	rm -f $(DESTDIR)$(datarootdir)/todo.sh
 	rm -f $(DESTDIR)$(sysconfdir)/todo/config
 
 	rmdir $(DESTDIR)$(datarootdir)
