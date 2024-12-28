@@ -43,7 +43,7 @@ make test
 
 - `INSTALL_DIR`: PATH for executables (default /usr/local/bin)
 - `CONFIG_DIR`: PATH for the todo.txt configuration template
-- `BASH_COMPLETION`: PATH for autocompletion scripts (default to /etc/bash_completion.d)
+- `BASH_COMPLETION`: PATH for autocompletion scripts (default to `/usr/local/share/bash-completion/completions`)
 
 ```shell
 make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION=/usr/share/bash-completion/completions

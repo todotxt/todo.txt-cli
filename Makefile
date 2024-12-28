@@ -32,7 +32,7 @@ DEST_CONFIG = $(DESTDIR)$(sysconfdir)/todo/config
 ifdef BASH_COMPLETION
 	datarootdir = $(BASH_COMPLETION)
 else
-	datarootdir = $(prefix)/share/bash_completion.d
+	datarootdir = $(prefix)/share/bash-completion/completions
 endif
 DEST_COMPLETION = $(DESTDIR)$(datarootdir)/todo.sh
 
