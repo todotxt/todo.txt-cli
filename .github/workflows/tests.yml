@@ -18,4 +18,6 @@ jobs:
     - run: make
     - run: make dist
     - run: make test
-
+    - run: sudo make install
+    - run: sudo make uninstall
+    - run: sudo make clean

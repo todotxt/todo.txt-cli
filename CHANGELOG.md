@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - `TODOTXT_DEFAULT_ACTION` now also allows action parameters ([#159], [#407])
 
+### Fixed
+- `make install` installed the Bash completion in the wrong directory ([#452])
+- `make uninstall` fails ([#451])
+
 ## [2.13.0] - 2024-12-25
 
 ### Added
@@ -541,3 +545,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#359]: https://github.com/todotxt/todo.txt-cli/pull/359
 [#386]: https://github.com/todotxt/todo.txt-cli/pull/386
 [#407]: https://github.com/todotxt/todo.txt-cli/pull/407
+[#451]: https://github.com/todotxt/todo.txt-cli/pull/451
+[#452]: https://github.com/todotxt/todo.txt-cli/pull/452
