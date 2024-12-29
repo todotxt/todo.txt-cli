@@ -100,8 +100,15 @@ clean: test-pre-clean VERSION-FILE   ## remove dist directory and all release fi
 install: build installdirs   ## local package install
 	$(INSTALL_PROGRAM) $(DISTNAME)/todo.sh $(DEST_COMMAND)
 	$(INSTALL_DATA) $(DISTNAME)/todo_completion $(DEST_COMPLETION)
-	[ -e $(DEST_CONFIG) ] || \
-	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" $(DISTNAME)/todo.cfg > $(DEST_CONFIG)
+	if [ ! -e $(DEST_CONFIG) ]; then \
+	    sed 's@^\(export TODO_DIR=\).*@\1~/.todo@' $(DISTNAME)/todo.cfg > $(DEST_CONFIG); \
+	    if sed -i.bak 's@^# \(export TODOTXT_SED_COMMAND=sed\)$$@\1@' $(DEST_CONFIG) 2>/dev/null; then \
+	        rm -f $(DEST_CONFIG).bak; \
+	        echo 'This sed supports in-place editing.'; \
+	    else \
+	        echo 'Need sed in-place emulation here.'; \
+	    fi; \
+	fi
 
 .PHONY: uninstall
 uninstall:   ## uninstall package
