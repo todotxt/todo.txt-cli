@@ -37,7 +37,7 @@ sed() {
     elif [ "$1" = '-i.bak' ]; then
         shift
         filepath=${!#}
-        filepath_temp=/tmp/todo.sh-sed.$RANDOM.$$
+        filepath_temp=${TMPDIR-/tmp}/todo.sh-sed.$RANDOM.$$
         command sed "$@" > "$filepath_temp" && mv "$filepath_temp" "$filepath"
     else
         command sed "$@"
