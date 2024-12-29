@@ -100,8 +100,9 @@ clean: test-pre-clean VERSION-FILE   ## remove dist directory and all release fi
 install: build installdirs   ## local package install
 	$(INSTALL_PROGRAM) $(DISTNAME)/todo.sh $(DEST_COMMAND)
 	$(INSTALL_DATA) $(DISTNAME)/todo_completion $(DEST_COMPLETION)
-	[ -e $(DEST_CONFIG) ] || \
-	    sed "s/^\(export[ \t]*TODO_DIR=\).*/\1~\/.todo/" $(DISTNAME)/todo.cfg > $(DEST_CONFIG)
+	if [ ! -e $(DEST_CONFIG) ]; then \
+	    sed 's@^\(export TODO_DIR=\).*@\1~/.todo@' $(DISTNAME)/todo.cfg > $(DEST_CONFIG); \
+	fi
 
 .PHONY: uninstall
 uninstall:   ## uninstall package
