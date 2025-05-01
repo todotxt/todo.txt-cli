@@ -45,6 +45,7 @@ shorthelp()
 		    add|a "THING I NEED TO DO +project @context"
 		    addm "THINGS I NEED TO DO
 		          MORE THINGS I NEED TO DO"
+            addr "THING I NEED TO DO +latestproject @latestcontext"
 		    addto DEST "TEXT TO ADD"
 		    append|app NR "TEXT TO APPEND"
 		    archive
@@ -176,6 +177,10 @@ actionsHelp()
 		      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and
 		      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
 		      Project and context notation optional.
+
+            addr "THING I NEED TO DO +latestproject @latestcontext"
+		      Append the project and context of the most recently
+              added item to this item.
 
 		    addto DEST "TEXT TO ADD"
 		      Adds a line of text to any file located in the todo.txt directory.
@@ -1118,6 +1123,29 @@ case $action in
         _addto "$TODO_FILE" "$line"
     done
     IFS=$SAVEIFS
+    ;;
+
+"addr")
+    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
+        echo -n "Add: "
+        read input
+    else
+        [ -z "$2" ] && die "usage: $TODO_SH addr \"TODO ITEM\""
+        shift
+        input=$*
+    fi
+
+	# get the last line added and its content
+	lastitem=$(sed -n '$ =' "$TODO_FILE")
+    getNewtodo "$lastitem"
+
+    contexts="$(listWordsWithSigil '@' "$newtodo")"
+    projects="$(listWordsWithSigil '+' "$newtodo")"
+    # remove duplicates
+    to_append="$(echo "$projects $contexts" | sed 's/^[ \t]*//;s/[ \t]*$//')"
+
+    newitem="$input $to_append"
+    _addto "$TODO_FILE" "$newitem"
     ;;
 
 "addto" )
