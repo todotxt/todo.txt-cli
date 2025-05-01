@@ -28,6 +28,15 @@ todo.sh addm "FIRST THING I NEED TO DO +project1 @context
 SECOND THING I NEED TO DO +project2 @context"
 ```
 
+### `addr`
+Adds THING I NEED TO DO to your todo.txt file on its own line plus the contexts and projects from the last item.
+
+Quotes optional.
+
+```shell
+todo.sh addr "THING I NEED TO DO"
+```
+
 ### `addto`
 Adds a line of text to any file located in the todo.txt directory.
 
