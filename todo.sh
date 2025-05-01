@@ -1139,11 +1139,15 @@ case $action in
 
     contexts="$(listWordsWithSigil '@' "$newtodo")"
     projects="$(listWordsWithSigil '+' "$newtodo")"
+
     # remove duplicates
     to_append="$(echo "$projects $contexts" | sed 's/^[ \t]*//;s/[ \t]*$//')"
+    
+    if [ -n "$to_append" ]; then
+        input="$input $to_append"
+    fi
 
-    newitem="$input $to_append"
-    _addto "$TODO_FILE" "$newitem"
+    _addto "$TODO_FILE" "$input"
     ;;
 
 "addto" )
