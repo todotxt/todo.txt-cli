@@ -179,8 +179,7 @@ actionsHelp()
 		      Project and context notation optional.
 
             addr "THING I NEED TO DO +latestproject @latestcontext"
-		      Append the project and context of the most recently
-              added item to this item.
+              Add an item appending the projects and contexts from the latest item.
 
 		    addto DEST "TEXT TO ADD"
 		      Adds a line of text to any file located in the todo.txt directory.
@@ -1127,8 +1126,7 @@ case $action in
 
 "addr")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
-        echo -n "Add: "
-        read input
+        read -p "Add: " -e -r input
     else
         [ -z "$2" ] && die "usage: $TODO_SH addr \"TODO ITEM\""
         shift
