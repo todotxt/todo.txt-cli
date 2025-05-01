@@ -1133,8 +1133,8 @@ case $action in
         input=$*
     fi
 
-	# get the last line added and its content
-	lastitem=$(sed -n '$ =' "$TODO_FILE")
+    # get the last line added and its content
+    lastitem=$(sed -n '$ =' "$TODO_FILE")
     getNewtodo "$lastitem"
 
     contexts="$(listWordsWithSigil '@' "$newtodo")"
