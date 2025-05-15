@@ -93,4 +93,11 @@ TODO: Report file is up-to-date.
 2009-02-13T04:40:00 3 2
 EOF
 
+test_todo_session 'report with override' <<EOF
+>>> REPORT_FILE="$HOME/specialreport.txt" todo.sh report
+TODO: $HOME/todo.txt does not contain any done tasks.
+2009-02-13T04:40:00 3 2
+TODO: Report file updated.
+EOF
+
 test_done
