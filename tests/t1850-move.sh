@@ -15,7 +15,7 @@ EOF
 test_todo_session 'basic move with implicit source' <<EOF
 >>> todo.sh -f move 1 done.txt | sed "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g"
 1 (B) smell the uppercase Roses +flowers @outside
-TODO: 1 moved to DONE.
+TODO: 1 moved to 3 in DONE.
 
 >>> todo.sh -p ls
 2 (A) notice the sunflowers
@@ -42,7 +42,7 @@ test_todo_session 'basic move with confirmation' <<EOF
 >>> printf y | todo.sh move 1 done.txt 2>&1 | sed -e "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g" -e 's#from .\{1,\}/\([^/]\{1,\}\) to .\{1,\}/\([^/]\{1,\}\)?#from \1 to \2?#g'
 \\
 1 (B) smell the uppercase Roses +flowers @outside
-TODO: 1 moved to DONE.
+TODO: 1 moved to 3 in DONE.
 
 >>> todo.sh -p ls
 2 (A) notice the sunflowers
@@ -60,7 +60,7 @@ EOF
 test_todo_session 'basic move with passed source' <<EOF
 >>> todo.sh -f move 2 todo.txt done.txt | sed "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g"
 2 x 2009-02-13 smell the coffee +wakeup
-DONE: 2 moved to TODO.
+DONE: 2 moved to 3 in TODO.
 
 >>> todo.sh -p ls
 2 (A) notice the sunflowers
@@ -83,7 +83,7 @@ EOF
 test_todo_session 'move to destination without EOL' <<EOF
 >>> todo.sh -f move 2 todo.txt done.txt | sed "s#'[^']\{1,\}/\([^/']\{1,\}\)'#'\1'#g"
 2 x 2009-02-13 smell the coffee +wakeup
-DONE: 2 moved to TODO.
+DONE: 2 moved to 2 in TODO.
 
 >>> todo.sh -p ls
 1 this is a first task without newline

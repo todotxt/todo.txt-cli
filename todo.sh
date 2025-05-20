@@ -1393,8 +1393,9 @@ case $action in
         echo "$todo" >> "$dest"
 
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+            destNum=$(sed -n '$ =' "$dest")
             echo "$item $todo"
-            echo "$(getPrefix "$src"): $item moved to $(getPrefix "$dest")."
+            echo "$(getPrefix "$src"): $item moved to $destNum in $(getPrefix "$dest")."
         fi
     else
         die "$(getPrefix "$src"): No tasks moved."
