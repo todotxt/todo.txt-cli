@@ -1394,10 +1394,10 @@ case $action in
 
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
             echo "$item $todo"
-            echo "TODO: $item moved from '$src' to '$dest'."
+            echo "$(getPrefix "$src"): $item moved to $(getPrefix "$dest")."
         fi
     else
-        die "TODO: No tasks moved."
+        die "$(getPrefix "$src"): No tasks moved."
     fi
     ;;
 
