@@ -28,6 +28,22 @@ todo.sh addm "FIRST THING I NEED TO DO +project1 @context
 SECOND THING I NEED TO DO +project2 @context"
 ```
 
+### `addp`
+Adds TEXT TO ADD to your todo.txt file on its own line with the specified PRIORITY (A-Z) at the beginning.
+
+The priority letter is automatically converted to uppercase and formatted as `(PRIORITY)`.
+
+```shell
+todo.sh addp A "Important high-priority task"
+todo.sh addp e "Medium priority task"
+```
+
+Example output:
+```
+(A) Important high-priority task
+(E) Medium priority task
+```
+
 ### `addto`
 Adds a line of text to any file located in the todo.txt directory.
 
