@@ -45,7 +45,7 @@ shorthelp()
 		    add|a "THING I NEED TO DO +project @context"
 		    addm "THINGS I NEED TO DO
 		          MORE THINGS I NEED TO DO"
-		    addp PRIORITY "TEXT TO ADD"
+		    addpri|ap PRIORITY "TEXT TO ADD"
 		    addto DEST "TEXT TO ADD"
 		    append|app NR "TEXT TO APPEND"
 		    archive
@@ -178,10 +178,11 @@ actionsHelp()
 		      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
 		      Project and context notation optional.
 
-		    addp PRIORITY "TEXT TO ADD"
+		    addpri PRIORITY "TEXT TO ADD"
+		    ap PRIORITY "TEXT TO ADD"
 		      Adds TEXT TO ADD to your todo.txt file on its own line with
 		      the specified PRIORITY (A-Z) at the beginning.
-		      For example, addp A "Important task" creates "(A) Important task".
+		      For example, addpri A "Important task" creates "(A) Important task".
 
 		    addto DEST "TEXT TO ADD"
 		      Adds a line of text to any file located in the todo.txt directory.
@@ -1126,14 +1127,14 @@ case $action in
     IFS=$SAVEIFS
     ;;
 
-"addp")
-    errmsg="usage: $TODO_SH addp PRIORITY \"TODO ITEM\""
+"addpri" | "ap")
+    errmsg="usage: $TODO_SH addpri PRIORITY \"TODO ITEM\""
     [ -z "$2" ] && die "$errmsg"
     priority="$2"
     [ -z "$3" ] && die "$errmsg"
     
     # Validate priority is a single letter A-Z
-    if ! echo "$priority" | grep -q '^[A-Za-z]$'; then
+    if [[ "$priority" != @([A-Za-z]) ]]; then
         die "TODO: Priority must be a letter from A to Z (got: $priority)"
     fi
     
