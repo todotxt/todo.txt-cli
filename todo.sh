@@ -6,7 +6,7 @@ shopt -s extglob extquote
 # NOTE: Todo.sh requires a configuration file to run.
 # Place it in one of the default locations or use the -d option for a custom location.
 
-[ -f VERSION-FILE ] && . VERSION-FILE || VERSION="@DEV_VERSION@"
+[ -f "$(dirname "$0")/VERSION-FILE" ] && . "$(dirname "$0")/VERSION-FILE" || VERSION="@DEV_VERSION@"
 version()
 {
     cat <<-EndVersion
