@@ -78,7 +78,7 @@ $(OUTPUT_FILES): $(DISTNAME)/%: %
 
 # generate todo.sh
 $(DISTNAME)/todo.sh: VERSION-FILE
-	sed -e 's/@DEV_VERSION@/'$(VERSION)'/' todo.sh > $(DISTNAME)/todo.sh
+	sed -e 's/.*@DEV_VERSION@.*/VERSION="'$(VERSION)'"/' todo.sh > $(DISTNAME)/todo.sh
 	chmod +x $(DISTNAME)/todo.sh
 
 .PHONY: build
