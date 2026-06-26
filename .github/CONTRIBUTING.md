@@ -20,7 +20,7 @@ Please, don't use the issue tracker for support questions. Check whether our [Gi
 - Ensure cross-platform compatibility for every change that's accepted. Windows, Mac, Linux.
 - Create issues for any major changes and enhancements that you wish to make. Discuss things transparently and get community feedback.
 - Don't add any new features to the `todo.sh` main script unless they are core functionality. Most extensions and additions are better implemented as separate add-ons. Only essential stuff used by everyone should be added to the main script.
-- Keep feature versions as small as possible, preferably one new feature per version.
+- Keep pull requests as small as possible, preferably one new feature per pull request.
 
 # Your First Contribution
 
