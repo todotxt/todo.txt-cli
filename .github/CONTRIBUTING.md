@@ -2,7 +2,7 @@
 
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
-It's people like you that make todo.txt such a great tool.
+It's people like you who make todo.txt such a great tool.
 
 The following is a set of guidelines for contributing to todo.txt and its packages. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
@@ -28,7 +28,7 @@ Unsure where to begin contributing? You can start by looking through these issue
 
 - [Help wanted issues](https://github.com/todotxt/todo.txt-cli/issues?q=%20is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22%20sort%3Acomments-desc) - issues which should be a bit more involved than beginner issues.
 
-The issue lists are sorted by total number of comments. While not perfect, number of comments is a reasonable proxy for impact a given change will have.
+The issue lists are sorted by total number of comments. While not perfect, the number of comments is a reasonable proxy for impact a given change will have.
 
 At this point, you're ready to make your changes! Feel free to ask for help; everyone is a beginner at first :smile_cat:
 

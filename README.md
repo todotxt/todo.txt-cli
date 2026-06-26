@@ -80,7 +80,7 @@ See [CHANGELOG.md][CHANGELOG]
 
 ## Support
 
-- [Github Discussions](https://github.com/todotxt/todo.txt-cli/discussions): questions, troubleshooting, ideas and suggestions
+- [GitHub Discussions](https://github.com/todotxt/todo.txt-cli/discussions): questions, troubleshooting, ideas and suggestions
 - [GitHub Issues](https://github.com/todotxt/todo.txt-cli/issues): report bugs and request features here (after positive feedback in the chat or discussions)
 
 ## Community
