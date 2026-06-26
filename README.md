@@ -102,13 +102,9 @@ See [CHANGELOG.md][CHANGELOG]
 - [Reddit](https://www.reddit.com/r/todotxt/): posts and discussions around the todo.txt philosophy and tools
 - [Twitter](https://twitter.com/todotxt): official announcements and news
 
-## Code of Conduct
-
-[Contributor Code of Conduct][CODE_OF_CONDUCT]. By participating in this project you agree to abide by its terms.
-
 ## Contributing
 
-We welcome all contributions. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started [contributing][CONTRIBUTING].
+We welcome all contributions. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started [contributing][CONTRIBUTING]. By participating in this project you agree to abide by its terms.
 
 ## License
 
