@@ -7,11 +7,11 @@ Older versions may no longer be supported and may have known vulnerabilities.
 
 ## Reporting a Vulnerability
 
-If you find a security vulnerability, do **NOT** open an issue. Get ahold of the maintainers personally.
+If you find a security vulnerability, do **NOT** open an issue. Get ahold of the [maintainers](https://github.com/orgs/todotxt/teams/core) personally (i.e. email or private chat - you can use the [discussions](https://github.com/todotxt/todo.txt-cli/discussions/categories/general) to ask for preferred security contact information).
 
 In order to determine whether you are dealing with a security issue, ask yourself these two questions:
 
 - Can I access something that's not mine, or something I shouldn't have access to?
 - Can I disable something for other people?
 
-If the answer to either of those two questions are "yes", then you're probably dealing with a security issue. Note that even if you answer "no" to both questions, you may still be dealing with a security issue, so if you're unsure, just email us directly.
+If the answer to either of those two questions are "yes", then you're probably dealing with a security issue. Note that even if you answer "no" to both questions, you may still be dealing with a security issue, so if you're unsure, just contact us directly.
