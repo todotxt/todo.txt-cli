@@ -69,13 +69,7 @@ If the answer to either of those two questions are "yes", then you're probably d
 
 ## Bug
 
-When filing an issue, make sure to answer these five questions:
-
-1. What version of shell are you using (`echo $0` or `$(echo $SHELL) --version)`)?
-1. What operating system and processor architecture are you using?
-1. What did you do?
-1. What did you expect to see?
-1. What did you see instead?
+Please fill out the entire form when [filing an issue](https://github.com/todotxt/todo.txt-cli/issues/new/choose).
 
 # How to suggest a feature or enhancement
 
