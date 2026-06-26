@@ -19,7 +19,7 @@ Please, don't use the issue tracker for support questions. Check whether our [Gi
 - Be welcoming to newcomers and encourage diverse new contributors from all backgrounds. See our [Code of Conduct].
 - Ensure cross-platform compatibility for every change that's accepted. Windows, Mac, Linux.
 - Create issues for any major changes and enhancements that you wish to make. Discuss things transparently and get community feedback.
-- Don't add any classes to the codebase unless absolutely needed. Err on the side of using functions.
+- Don't add any new features to the `todo.sh` main script unless they are core functionality. Most extensions and additions are better implemented as separate add-ons. Only essential stuff used by everyone should be added to the main script.
 - Keep feature versions as small as possible, preferably one new feature per version.
 
 # Your First Contribution
