@@ -151,6 +151,7 @@ $indentedJoinedConfigFileLocations
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
+		    TODOTXT_DATE_FORMAT="%Y-%m-%d"  customize creation/completion date format
 		    TODOTXT_SOURCEVAR=\$DONE_FILE   use another source for listcon, listproj
 		    TODOTXT_SIGIL_BEFORE_PATTERN="" optionally allow chars preceding +p / @c
 		    TODOTXT_SIGIL_VALID_PATTERN=.*  tweak the allowed chars for +p and @c
@@ -524,6 +525,7 @@ OVR_TODOTXT_AUTO_ARCHIVE="$TODOTXT_AUTO_ARCHIVE"
 OVR_TODOTXT_FORCE="$TODOTXT_FORCE"
 OVR_TODOTXT_PRESERVE_LINE_NUMBERS="$TODOTXT_PRESERVE_LINE_NUMBERS"
 OVR_TODOTXT_PLAIN="$TODOTXT_PLAIN"
+OVR_TODOTXT_DATE_FORMAT="$TODOTXT_DATE_FORMAT"
 OVR_TODOTXT_DATE_ON_ADD="$TODOTXT_DATE_ON_ADD"
 OVR_TODOTXT_PRIORITY_ON_ADD="$TODOTXT_PRIORITY_ON_ADD"
 OVR_TODOTXT_DISABLE_FILTER="$TODOTXT_DISABLE_FILTER"
@@ -642,6 +644,7 @@ TODOTXT_PLAIN=${TODOTXT_PLAIN:-0}
 TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
+TODOTXT_DATE_FORMAT=${TODOTXT_DATE_FORMAT:-%Y-%m-%d}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_PRIORITY_ON_ADD=${TODOTXT_PRIORITY_ON_ADD:-}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
@@ -747,6 +750,9 @@ fi
 if [ -n "$OVR_TODOTXT_PLAIN" ]; then
     TODOTXT_PLAIN="$OVR_TODOTXT_PLAIN"
 fi
+if [ -n "$OVR_TODOTXT_DATE_FORMAT" ]; then
+    TODOTXT_DATE_FORMAT="$OVR_TODOTXT_DATE_FORMAT"
+fi
 if [ -n "$OVR_TODOTXT_DATE_ON_ADD" ]; then
     TODOTXT_DATE_ON_ADD="$OVR_TODOTXT_DATE_ON_ADD"
 fi
@@ -818,7 +824,7 @@ _addto()
 
     if [[ "$TODOTXT_DATE_ON_ADD" -eq 1 ]]; then
         local now
-        now=$(date '+%Y-%m-%d')
+        now=$(date "+$TODOTXT_DATE_FORMAT")
         input=$(echo "$input" | sed -e 's/^\(([A-Z]) \)\{0,1\}/\1'"$now /")
     fi
     if [[ -n "$TODOTXT_PRIORITY_ON_ADD" ]]; then
@@ -1261,7 +1267,7 @@ case $action in
 
         # Check if this item has already been done
         if [ "${todo:0:2}" != "x " ]; then
-            now=$(date '+%Y-%m-%d')
+            now=$(date "+$TODOTXT_DATE_FORMAT")
             # remove priority once item is done
             sed -i.bak "${item}s/^(.) //" "$TODO_FILE"
             sed -i.bak "${item}s|^|x $now |" "$TODO_FILE"
