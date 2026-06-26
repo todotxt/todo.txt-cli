@@ -24,12 +24,11 @@ Please, don't use the issue tracker for support questions. Check whether our [Gi
 
 # Your First Contribution
 
-Unsure where to begin contributing? You can start by looking through these beginner and help-wanted issues:
+Unsure where to begin contributing? You can start by looking through these issues:
 
-- Beginner issues - issues which should only require a few lines of code, and a test or two.
-- Help wanted issues - issues which should be a bit more involved than beginner issues.
+- [Help wanted issues](https://github.com/todotxt/todo.txt-cli/issues?q=%20is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22%20sort%3Acomments-desc) - issues which should be a bit more involved than beginner issues.
 
-Both issue lists are sorted by total number of comments. While not perfect, number of comments is a reasonable proxy for impact a given change will have.
+The issue lists are sorted by total number of comments. While not perfect, number of comments is a reasonable proxy for impact a given change will have.
 
 At this point, you're ready to make your changes! Feel free to ask for help; everyone is a beginner at first :smile_cat:
 
