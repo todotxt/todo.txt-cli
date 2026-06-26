@@ -93,10 +93,14 @@ See [CHANGELOG.md][CHANGELOG]
 
 ## Support
 
-- [Github Discussions](https://github.com/todotxt/todo.txt-cli/discussions)
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/todotxt)
-- [Twitter](https://twitter.com/todotxt)
+- [Github Discussions](https://github.com/todotxt/todo.txt-cli/discussions): questions, troubleshooting, ideas and suggestions
+- [GitHub Issues](https://github.com/todotxt/todo.txt-cli/issues): report bugs and request features here (after positive feedback in the chat or discussions)
 
+## Community
+
+- [Gitter.im](https://gitter.im/todotxt/): chat with the core team and interested users
+- [Reddit](https://www.reddit.com/r/todotxt/): posts and discussions around the todo.txt philosophy and tools
+- [Twitter](https://twitter.com/todotxt): official announcements and news
 
 ## Code of Conduct
 
