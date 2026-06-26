@@ -10,7 +10,7 @@ Following these guidelines helps to communicate that you respect the time of the
 
 todo.txt is an open source project and we love to receive contributions from our community — you! There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into todo.txt itself.
 
-Please, don't use the issue tracker for support questions. Check whether our [Gitter.im] channel can help with your issue. Stack Overflow is also worth considering.
+Please, don't use the issue tracker for support questions. Check whether our [Gitter.im] channel can help with your issue, or add a [discussion under Q&A](https://github.com/todotxt/todo.txt-cli/discussions/categories/q-a).
 
 # Ground Rules
 
