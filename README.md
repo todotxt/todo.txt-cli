@@ -70,20 +70,7 @@ For example, to add a todo item, you can do:
 ```shell
 todo.sh add "THING I NEED TO DO +project @context"
 ```
-### `replace`
-Replaces task on line NR with UPDATED TODO.
-
-```shell
-todo.sh replace NR "UPDATED TODO"
-```
-### `report`
-Adds the number of open tasks and done tasks to report.txt.
-
-```shell
-todo.sh report
-```
-
-Read about all the possible commands in the [USAGE][USAGE] file.
+Read about all the possible commands in the [USAGE][USAGE].
 
 
 ## Release History
@@ -93,18 +80,18 @@ See [CHANGELOG.md][CHANGELOG]
 
 ## Support
 
-- [Github Discussions](https://github.com/todotxt/todo.txt-cli/discussions)
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/todotxt)
-- [Twitter](https://twitter.com/todotxt)
+- [GitHub Discussions](https://github.com/todotxt/todo.txt-cli/discussions): questions, troubleshooting, ideas and suggestions
+- [GitHub Issues](https://github.com/todotxt/todo.txt-cli/issues): report bugs and request features here (after positive feedback in the chat or discussions)
 
+## Community
 
-## Code of Conduct
-
-[Contributor Code of Conduct][CODE_OF_CONDUCT]. By participating in this project you agree to abide by its terms.
+- [Gitter.im](https://gitter.im/todotxt/): chat with the core team and interested users
+- [Reddit](https://www.reddit.com/r/todotxt/): posts and discussions around the todo.txt philosophy and tools
+- [Twitter](https://twitter.com/todotxt): official announcements and news
 
 ## Contributing
 
-We welcome all contributions. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started [contributing][CONTRIBUTING].
+We welcome all contributions. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started [contributing][CONTRIBUTING]. By participating in this project you agree to abide by its terms.
 
 ## License
 
