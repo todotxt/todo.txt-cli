@@ -288,10 +288,9 @@ actionsHelp()
 
 		    move NR DEST [SRC]
 		    mv NR DEST [SRC]
-		      Moves the line NR from source text file (SRC) to destination text file (DEST).
-		      Both source and destination file must be located in the directory defined
-		      in the configuration directory.  When SRC is not defined
-		      it's by default todo.txt.
+		      Moves the line NR from source file (SRC) to destination file (DEST).
+		      Both files must be located in the todo.txt directory. SRC defaults to
+		      todo.txt.
 
 		    prepend NR "TEXT TO PREPEND"
 		    prep NR "TEXT TO PREPEND"
