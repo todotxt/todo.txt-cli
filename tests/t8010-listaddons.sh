@@ -34,8 +34,8 @@ quux
 TODO: 4 valid addon actions found.
 EOF
 
-invalidate_action .todo.actions.d/foo t8010.4
-test_todo_session 'nonexecutable action' <<EOF
+invalidate_action .todo.actions.d/foo \
+    && test_todo_session 'nonexecutable action' <<EOF
 >>> todo.sh listaddons
 bar
 ls
@@ -71,8 +71,8 @@ quux
 TODO: 5 valid addon actions found.
 EOF
 
-invalidate_action .todo.actions.d/norris/norris t8010.8
-test_todo_session 'nonexecutable action in subfolder' <<EOF
+invalidate_action .todo.actions.d/norris/norris \
+    && test_todo_session 'nonexecutable action in subfolder' <<EOF
 >>> todo.sh listaddons
 bar
 chuck
