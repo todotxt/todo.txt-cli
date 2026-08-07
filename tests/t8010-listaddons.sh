@@ -44,7 +44,7 @@ quux
 TODO: 3 valid addon actions found.
 EOF
 
-make_action_in_folder "chuck"
+make_action_in_folder "chuck" "chuck"
 # Add a bit of cruft in the action folders in order to ensure that we only
 # care about the executables with the same name as the folder in which they
 # reside.
@@ -52,7 +52,7 @@ touch .todo.actions.d/chuck/mc_hammer     # can't touch this
 chmod u+x .todo.actions.d/chuck/mc_hammer # better run, better run run
 touch .todo.actions.d/chuck/README
 
-make_action_in_folder "norris"
+make_action_in_folder "norris" "norris"
 
 test_todo_session 'custom actions in subfolders' <<EOF
 >>> test -f .todo.actions.d/chuck/README
