@@ -30,7 +30,7 @@ make_action_in_folder()
 
 invalidate_action()
 {
-    local customActionFilespec="${1:?}"; shift
+    local customActionFilespec="$TODO_ACTIONS_DIR/${1:?}"; shift
 
     chmod -x "$customActionFilespec"
     # On Cygwin, clearing the executable flag may have no effect, as the Windows

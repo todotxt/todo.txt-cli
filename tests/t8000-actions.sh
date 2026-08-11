@@ -13,7 +13,7 @@ test_todo_session 'executable action' <<EOF
 custom action foo
 EOF
 
-invalidate_action "$TODO_ACTIONS_DIR/foo" \
+invalidate_action "foo" \
     && test_todo_session 'nonexecutable action' <<EOF
 >>> todo.sh foo
 Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
@@ -41,7 +41,7 @@ EOF
 
 make_action
 ln -s /actionsdir/doesnotexist/badlink "$TODO_ACTIONS_DIR/badlink"
-invalidate_action "$TODO_ACTIONS_DIR/badlink" 2>/dev/null \
+invalidate_action "badlink" 2>/dev/null \
     && test_todo_session 'broken symlink' <<EOF
 >>> todo.sh badlink
 === 1
@@ -51,7 +51,7 @@ EOF
 make_action
 mkdir "$TODO_ACTIONS_DIR/badfolderlink"
 ln -s /actionsdir/doesnotexist/badfolderlink "$TODO_ACTIONS_DIR/badfolderlink/badfolderlink"
-invalidate_action "$TODO_ACTIONS_DIR/badfolderlink/badfolderlink" 2>/dev/null \
+invalidate_action "badfolderlink/badfolderlink" 2>/dev/null \
     && test_todo_session 'broken symlink in folder' <<EOF
 >>> todo.sh badfolderlink
 === 1
@@ -60,7 +60,7 @@ EOF
 
 make_action
 ln -s /actionsdir/doesnotexist/do "$TODO_ACTIONS_DIR/do"
-invalidate_action "$TODO_ACTIONS_DIR/do" 2>/dev/null \
+invalidate_action "do" 2>/dev/null \
     && test_todo_session 'broken symlink overrides built-in action' <<EOF
 >>> todo.sh do
 === 1

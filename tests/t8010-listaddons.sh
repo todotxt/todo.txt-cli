@@ -34,7 +34,7 @@ quux
 TODO: 4 valid addon actions found.
 EOF
 
-invalidate_action "$TODO_ACTIONS_DIR/foo" \
+invalidate_action "foo" \
     && test_todo_session 'nonexecutable action' <<EOF
 >>> todo.sh listaddons
 bar
@@ -71,7 +71,7 @@ quux
 TODO: 5 valid addon actions found.
 EOF
 
-invalidate_action "$TODO_ACTIONS_DIR/norris/norris" \
+invalidate_action "norris/norris" \
     && test_todo_session 'nonexecutable action in subfolder' <<EOF
 >>> todo.sh listaddons
 bar
