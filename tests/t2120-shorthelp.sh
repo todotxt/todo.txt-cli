@@ -40,7 +40,7 @@ EOF
 # our custom action there. The help output should mention the "Add-On Actions".
 set -o pipefail # So that the sed filter doesn't swallow todo.sh's exit code.
 mv todo.cfg custom.cfg
-mv .todo.actions.d custom.actions
+mv "$TODO_ACTIONS_DIR" custom.actions
 echo 'export TODO_ACTIONS_DIR=$HOME/custom.actions' >> custom.cfg
 
 # Avoid the use of global config file, if it exists

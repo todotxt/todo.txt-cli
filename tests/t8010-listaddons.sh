@@ -34,7 +34,7 @@ quux
 TODO: 4 valid addon actions found.
 EOF
 
-invalidate_action .todo.actions.d/foo \
+invalidate_action "$TODO_ACTIONS_DIR/foo" \
     && test_todo_session 'nonexecutable action' <<EOF
 >>> todo.sh listaddons
 bar
@@ -48,17 +48,17 @@ make_action_in_folder "chuck" "chuck"
 # Add a bit of cruft in the action folders in order to ensure that we only
 # care about the executables with the same name as the folder in which they
 # reside.
-touch .todo.actions.d/chuck/mc_hammer     # can't touch this
-chmod u+x .todo.actions.d/chuck/mc_hammer # better run, better run run
-touch .todo.actions.d/chuck/README
+touch "$TODO_ACTIONS_DIR/chuck/mc_hammer"     # can't touch this
+chmod u+x "$TODO_ACTIONS_DIR/chuck/mc_hammer" # better run, better run run
+touch "$TODO_ACTIONS_DIR/chuck/README"
 
 make_action_in_folder "norris" "norris"
 
 test_todo_session 'custom actions in subfolders' <<EOF
->>> test -f .todo.actions.d/chuck/README
+>>> test -f "$TODO_ACTIONS_DIR/chuck/README"
 === 0
 
->>> test -x .todo.actions.d/chuck/mc_hammer
+>>> test -x "$TODO_ACTIONS_DIR/chuck/mc_hammer"
 === 0
 
 >>> todo.sh listaddons
@@ -71,7 +71,7 @@ quux
 TODO: 5 valid addon actions found.
 EOF
 
-invalidate_action .todo.actions.d/norris/norris \
+invalidate_action "$TODO_ACTIONS_DIR/norris/norris" \
     && test_todo_session 'nonexecutable action in subfolder' <<EOF
 >>> todo.sh listaddons
 bar

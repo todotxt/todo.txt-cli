@@ -13,7 +13,7 @@ test_todo_session 'executable action' <<EOF
 custom action foo
 EOF
 
-invalidate_action .todo.actions.d/foo \
+invalidate_action "$TODO_ACTIONS_DIR/foo" \
     && test_todo_session 'nonexecutable action' <<EOF
 >>> todo.sh foo
 Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
@@ -32,7 +32,7 @@ TODO: 0 of 0 tasks shown
 EOF
 
 make_action "bad"
-echo "exit 42" >> .todo.actions.d/bad
+echo "exit 42" >> "$TODO_ACTIONS_DIR/bad"
 test_todo_session 'failing action' <<EOF
 >>> todo.sh bad
 custom action bad
@@ -40,37 +40,31 @@ custom action bad
 EOF
 
 make_action
-ln -s /actionsdir/doesnotexist/badlink .todo.actions.d/badlink
-invalidate_action .todo.actions.d/badlink 2>/dev/null \
+ln -s /actionsdir/doesnotexist/badlink "$TODO_ACTIONS_DIR/badlink"
+invalidate_action "$TODO_ACTIONS_DIR/badlink" 2>/dev/null \
     && test_todo_session 'broken symlink' <<EOF
->>> todo.sh badlink 2>&1 | sed "s#'[^']*\(\\.todo\\.actions\\.d/[^']\{1,\}\)'#'\1'#g"
-Fatal Error: Broken link to custom action: '.todo.actions.d/badlink'
-
->>> todo.sh do 2>/dev/null
+>>> todo.sh badlink
 === 1
+Fatal Error: Broken link to custom action: '$TODO_ACTIONS_DIR/badlink'
 EOF
 
 make_action
-mkdir .todo.actions.d/badfolderlink
-ln -s /actionsdir/doesnotexist/badfolderlink .todo.actions.d/badfolderlink/badfolderlink
-invalidate_action .todo.actions.d/badfolderlink/badfolderlink 2>/dev/null \
+mkdir "$TODO_ACTIONS_DIR/badfolderlink"
+ln -s /actionsdir/doesnotexist/badfolderlink "$TODO_ACTIONS_DIR/badfolderlink/badfolderlink"
+invalidate_action "$TODO_ACTIONS_DIR/badfolderlink/badfolderlink" 2>/dev/null \
     && test_todo_session 'broken symlink in folder' <<EOF
->>> todo.sh badfolderlink 2>&1 | sed "s#'[^']*\(\\.todo\\.actions\\.d/[^']\{1,\}\)'#'\1'#g"
-Fatal Error: Broken link to custom action: '.todo.actions.d/badfolderlink/badfolderlink'
-
->>> todo.sh do 2>/dev/null
+>>> todo.sh badfolderlink
 === 1
+Fatal Error: Broken link to custom action: '$TODO_ACTIONS_DIR/badfolderlink/badfolderlink'
 EOF
 
 make_action
-ln -s /actionsdir/doesnotexist/do .todo.actions.d/do
-invalidate_action .todo.actions.d/do 2>/dev/null \
+ln -s /actionsdir/doesnotexist/do "$TODO_ACTIONS_DIR/do"
+invalidate_action "$TODO_ACTIONS_DIR/do" 2>/dev/null \
     && test_todo_session 'broken symlink overrides built-in action' <<EOF
->>> todo.sh do 2>&1 | sed "s#'[^']*\(\\.todo\\.actions\\.d/[^']\{1,\}\)'#'\1'#g"
-Fatal Error: Broken link to custom action: '.todo.actions.d/do'
-
->>> todo.sh do 2>/dev/null
+>>> todo.sh do
 === 1
+Fatal Error: Broken link to custom action: '$TODO_ACTIONS_DIR/do'
 EOF
 
 test_done
