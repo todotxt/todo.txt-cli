@@ -45,22 +45,18 @@ TODO: 3 valid addon actions found.
 EOF
 
 make_action_in_folder chuck chuck
+make_action_in_folder chuck mc_hammer   # can't touch this
 # Add a bit of cruft in the action folders in order to ensure that we only
 # care about the executables with the same name as the folder in which they
 # reside.
-touch "$TODO_ACTIONS_DIR/chuck/mc_hammer"     # can't touch this
-chmod u+x "$TODO_ACTIONS_DIR/chuck/mc_hammer" # better run, better run run
-touch "$TODO_ACTIONS_DIR/chuck/README"
+make_action_in_folder chuck README
+invalidate_action chuck/README
+make_action_in_folder chuck datafile
+invalidate_action chuck/datafile
 
 make_action_in_folder norris norris
 
 test_todo_session 'custom actions in subfolders' <<EOF
->>> test -f "$TODO_ACTIONS_DIR/chuck/README"
-=== 0
-
->>> test -x "$TODO_ACTIONS_DIR/chuck/mc_hammer"
-=== 0
-
 >>> todo.sh listaddons
 bar
 chuck
