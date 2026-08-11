@@ -13,10 +13,10 @@ TODO: No action "foo" exists.
 === 1
 EOF
 
-make_action "foo"
-make_action "bar"
-make_action "ls"
-make_action "quux"
+make_action foo
+make_action bar
+make_action ls
+make_action quux
 
 test_todo_session 'custom action help' <<'EOF'
 >>> todo.sh help foo

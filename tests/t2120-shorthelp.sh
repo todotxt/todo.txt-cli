@@ -25,7 +25,7 @@ test_todo_session 'shorthelp output' <<EOF
   See "help" for more details.
 EOF
 
-make_action "foo"
+make_action foo
 test_todo_session 'shorthelp output with custom action' <<EOF
 >>> todo.sh -v shorthelp | sed '/^  [A-Z]/!d'
   Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]

@@ -31,7 +31,7 @@ test_todo_session 'very verbose help output' <<EOF
   Built-in Actions:
 EOF
 
-make_action "foo"
+make_action foo
 test_todo_session 'help output with custom action' <<EOF
 >>> todo.sh -v help | sed '/^  [A-Z]/!d'
   Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]

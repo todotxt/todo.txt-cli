@@ -8,8 +8,8 @@ This test checks todo_completion of actions for usage help.
 . ./completion-test-lib.sh
 . ./test-lib.sh
 
-make_action "zany"
-make_action "aardvark"
+make_action zany
+make_action aardvark
 readonly ADDONS='aardvark zany'
 
 test_todo_completion 'all actions after help' 'todo.sh help ' "$ACTIONS $ADDONS"
