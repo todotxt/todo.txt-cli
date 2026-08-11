@@ -7,11 +7,11 @@ make_dummy_action()
 #!/bin/bash
 [ "\$1" = "usage" ] && {
     echo "    $actionName NR [NR ...] [TERM...]"
-    echo "      This custom action does $actionName."
+    echo "      This custom action${2:+ }$2 does $actionName."
     echo ""
     exit
 }
-echo "custom action $actionName$2"
+echo "custom action $actionName${2:+ }$2"
 EOF
 chmod +x "$1"
 }

@@ -10,7 +10,9 @@ This test checks todo_completion of actions for usage help.
 
 make_action zany
 make_action aardvark
-readonly ADDONS='aardvark zany'
+make_action_in_folder chuck chuck
+make_action_in_folder norris norris
+readonly ADDONS='aardvark chuck norris zany'
 
 test_todo_completion 'all actions after help' 'todo.sh help ' "$ACTIONS $ADDONS"
 test_todo_completion 'all actions after command help' 'todo.sh command help ' "$ACTIONS $ADDONS"

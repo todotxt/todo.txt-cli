@@ -31,6 +31,16 @@ custom action ls
 TODO: 0 of 0 tasks shown
 EOF
 
+make_action_in_folder chuck chuck
+make_action_in_folder norris norris
+test_todo_session 'executable actions in subfolders' <<EOF
+>>> todo.sh chuck
+custom action chuck in folder chuck
+
+>>> todo.sh norris
+custom action norris in folder norris
+EOF
+
 make_action bad
 echo "exit 42" >> "$TODO_ACTIONS_DIR/bad"
 test_todo_session 'failing action' <<EOF
