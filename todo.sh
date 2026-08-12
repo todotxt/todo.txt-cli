@@ -1072,6 +1072,21 @@ hasCustomAction()
     return 1
 }
 
+handleCustomAction()
+{
+    local action=${1:?}; shift
+    if hasCustomAction "$TODO_ACTIONS_DIR/$action" "$action"
+    then
+        "$TODO_ACTIONS_DIR/$action/$action" "$@"
+        exit $?
+    elif hasCustomAction "$TODO_ACTIONS_DIR" "$action"
+    then
+        "$TODO_ACTIONS_DIR/$action" "$@"
+        exit $?
+    fi
+    return 1
+}
+
 export -f cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die
 
 # == HANDLE ACTION ==
@@ -1086,14 +1101,9 @@ if [ "$action" == "command" ]; then
     shift
     ## Reset action to new first argument
     action=$( printf "%s\n" "$1" | tr '[:upper:]' '[:lower:]' )
-elif hasCustomAction "$TODO_ACTIONS_DIR/$action" "$action"
+elif handleCustomAction "$action" "$@"
 then
-    "$TODO_ACTIONS_DIR/$action/$action" "$@"
-    exit $?
-elif hasCustomAction "$TODO_ACTIONS_DIR" "$action"
-then
-    "$TODO_ACTIONS_DIR/$action" "$@"
-    exit $?
+    :   # handleCustomAction will exit if it finds a custom action.
 elif [ "$isDefaultAction" ] && [ -n "$TODOTXT_DEFAULT_ACTION" ]; then
     # Recursive invocation with the contents of the default action parsed as a
     # command-line.
