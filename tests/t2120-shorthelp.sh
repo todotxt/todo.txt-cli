@@ -26,12 +26,47 @@ test_todo_session 'shorthelp output' <<EOF
 EOF
 
 make_action foo
+make_action bar
+make_action ls
+make_action quux
+make_action_in_folder check check
+make_action_in_folder check chuck
+make_action_in_folder norris actionhero
+make_action_in_folder norris chuck
+make_action_in_folder norris norris
 test_todo_session 'shorthelp output with custom action' <<EOF
 >>> todo.sh -v shorthelp | sed '/^  [A-Z]/!d'
   Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
   Actions:
   Actions can be added and overridden using scripts in the actions
   Add-on Actions:
+  See "help" for more details.
+EOF
+
+test_todo_session 'shorthelp output with custom action lists all available custom actions alphabetically' <<'EOF'
+>>> todo.sh listaddons
+actionhero
+bar
+check
+chuck
+foo
+ls
+norris
+quux
+--
+TODO: 8 valid addon actions found.
+
+>>> todo.sh -v shorthelp | sed -n '/^  Add-on Actions:/,/^  [A-Z]/p'
+  Add-on Actions:
+    actionhero NR [NR ...] [TERM...]
+    bar NR [NR ...] [TERM...]
+    check NR [NR ...] [TERM...]
+    chuck NR [NR ...] [TERM...]
+    foo NR [NR ...] [TERM...]
+    ls NR [NR ...] [TERM...]
+    norris NR [NR ...] [TERM...]
+    quux NR [NR ...] [TERM...]
+\
   See "help" for more details.
 EOF
 

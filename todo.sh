@@ -317,35 +317,19 @@ actionsHelp()
 
 addonHelp()
 {
-    if [ -d "$TODO_ACTIONS_DIR" ]; then
-        local didPrintAddonActionsHeader
-        for action in "$TODO_ACTIONS_DIR"/*; do
-            if [ -f "$action" ] && [ -x "$action" ]; then
-                if [ -z "$didPrintAddonActionsHeader" ]; then
-                    echo  '  Add-on Actions:'
-                    didPrintAddonActionsHeader=1
-                fi
-                "$action" usage
-            elif [ -d "$action" ] && [ -x "$action"/"$(basename "$action")" ]; then
-                if [ -z "$didPrintAddonActionsHeader" ]; then
-                    echo  '  Add-on Actions:'
-                    didPrintAddonActionsHeader=1
-                fi
-                "$action"/"$(basename "$action")" usage
-            fi
-        done
-    fi
+    local allCustomActions
+    readarray -t allCustomActions < <(listCustomActions)
+    local addonHelpHeader='  Add-on Actions:'
+    for action in "${allCustomActions[@]}"; do
+        handleCustomAction return "$addonHelpHeader" "$action" usage
+        addonHelpHeader=''
+    done
 }
 
 actionUsage()
 {
     for actionName; do
-        action="${TODO_ACTIONS_DIR}/${actionName}"
-        if [ -f "$action" ] && [ -x "$action" ]; then
-            "$action" usage
-        elif [ -d "$action" ] && [ -x "$action"/"$(basename "$action")" ]; then
-            "$action"/"$(basename "$action")" usage
-        else
+        if ! handleCustomAction return '' "$actionName" usage; then
             builtinActionUsage=$(actionsHelp | sed -n -e "/^    ${actionName//\//\\/} /,/^\$/p" -e "/^    ${actionName//\//\\/}$/,/^\$/p")
             if [ -n "$builtinActionUsage" ]; then
                 echo "$builtinActionUsage"
@@ -1065,8 +1049,7 @@ hasCustomAction()
 {
     [ -d "${1:?}" ] || return 1
     [ -x "$1/${2:?}" ] && return 0
-    if [ -h "$1/$2" ] && [ ! -e "$1/$2" ]
-    then
+    if [ -h "$1/$2" ] && [ ! -e "$1/$2" ]; then
         dieWithHelp "$2" "Fatal Error: Broken link to custom action: '$1/$2'"
     fi
     return 1
@@ -1074,17 +1057,30 @@ hasCustomAction()
 
 handleCustomAction()
 {
+    local onExists=${1:?}; shift
+    local prefixOutput=${1?}; shift
     local action=${1:?}; shift
-    if hasCustomAction "$TODO_ACTIONS_DIR/$action" "$action"
-    then
-        "$TODO_ACTIONS_DIR/$action/$action" "$@"
-        exit $?
-    elif hasCustomAction "$TODO_ACTIONS_DIR" "$action"
-    then
-        "$TODO_ACTIONS_DIR/$action" "$@"
-        exit $?
-    fi
+    local actionDir
+    for actionDir in "$TODO_ACTIONS_DIR"/* "$TODO_ACTIONS_DIR"
+    do
+        if hasCustomAction "$actionDir" "$action"; then
+            [ -z "$prefixOutput" ] || echo "$prefixOutput"
+            "$actionDir/$action" "$@"
+            $onExists $?
+        fi
+    done
     return 1
+}
+
+listCustomActions()
+{
+    cd -- "$TODO_ACTIONS_DIR" 2>/dev/null || return
+    for action in */* *
+    do
+        if [ -f "$action" ] && [ -x "$action" ]; then
+            echo "${action##*/}"
+        fi
+    done | sort -u
 }
 
 export -f cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die
@@ -1101,8 +1097,7 @@ if [ "$action" == "command" ]; then
     shift
     ## Reset action to new first argument
     action=$( printf "%s\n" "$1" | tr '[:upper:]' '[:lower:]' )
-elif handleCustomAction "$action" "$@"
-then
+elif handleCustomAction exit '' "$action" "$@"; then
     :   # handleCustomAction will exit if it finds a custom action.
 elif [ "$isDefaultAction" ] && [ -n "$TODOTXT_DEFAULT_ACTION" ]; then
     # Recursive invocation with the contents of the default action parsed as a
@@ -1546,22 +1541,13 @@ note: PRIORITY must be anywhere from A to Z."
 
 "listaddons")
     if [ -d "$TODO_ACTIONS_DIR" ]; then
-        cd -- "$TODO_ACTIONS_DIR" || exit $?
-        actionsCnt=0
-        for action in *
-        do
-            if [ -f "$action" ] && [ -x "$action" ]; then
-                echo "$action"
-                ((actionsCnt+=1))
-            elif [ -d "$action" ] && [ -x "$action/$action" ]; then
-                echo "$action"
-                ((actionsCnt+=1))
-            fi
-        done
-        if ! [ "$actionsCnt" -gt 0 ]; then
+        customActions=$(listCustomActions)
+        if [ -z "$customActions" ]; then
              die "TODO: '$TODO_ACTIONS_DIR' does not contain valid actions."
         else
+            printf '%s\n' "$customActions"
             if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+                actionsCnt=$(printf '%s\n' "$customActions" | sed -n '$ =')
                 echo "--"
                 echo "TODO: $actionsCnt valid addon actions found."
             fi
