@@ -48,7 +48,7 @@ sed() {
 
 usage()
 {
-    cat <<-EndUsage
+    cat >&2 <<-EndUsage
 		Usage: $oneline_usage
 		Try '$TODO_SH -h' for more information.
 	EndUsage
