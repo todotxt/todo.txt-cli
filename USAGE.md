@@ -57,7 +57,7 @@ todo.sh archive
 ### `command`
 Runs the remaining arguments using only todo.sh builtins.
 
-Will not call any `.todo.actions.d` scripts.
+Will not call any `$TODO_ACTIONS_DIR` scripts.
 
 ```shell
 todo.sh command [ACTIONS]

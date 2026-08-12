@@ -210,7 +210,7 @@ actionsHelp()
 
 		    command [ACTIONS]
 		      Runs the remaining arguments using only todo.sh builtins.
-		      Will not call any .todo.actions.d scripts.
+		      Will not call any TODO_ACTIONS_DIR ($TODO_ACTIONS_DIR) scripts.
 
 		    deduplicate
 		      Removes duplicate lines from todo.txt.
@@ -1105,7 +1105,7 @@ elif [ "$isDefaultAction" ] && [ -n "$TODOTXT_DEFAULT_ACTION" ]; then
     eval "exec \"\${BASH_SOURCE[0]}\" $TODOTXT_DEFAULT_ACTION"
 fi
 
-# Only run if $action isn't found in .todo.actions.d
+# Only run if $action isn't found in $TODO_ACTIONS_DIR
 case $action in
 "add" | "a")
     if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
