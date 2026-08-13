@@ -4,10 +4,8 @@ test_description='Bash add-on action completion functionality
 
 This test checks todo_completion of custom actions in .todo.actions.d
 '
+. ./completion-test-lib.sh
 . ./test-lib.sh
-
-readonly ACTIONS='add a addto addm append app archive command del rm depri dp do help list ls listaddons listall lsa listcon lsc listfile lf listpri lsp listproj lsprj move mv prepend prep pri p replace report shorthelp'
-readonly OPTIONS='-@ -@@ -+ -++ -d -f -h -p -P -PP -a -n -t -v -vv -V -x'
 
 readonly ADDONS='bar baz foobar'
 
