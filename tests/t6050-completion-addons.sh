@@ -57,13 +57,15 @@ removeCustomActions()
 #
 # Test resolution of the default location 1 TODO_ACTIONS_DIR.
 #
-makeCustomActions "$TODO_ACTIONS_DIR"
+defaultActionsDir="$TODO_ACTIONS_DIR"
+unset TODO_ACTIONS_DIR
+makeCustomActions "$defaultActionsDir"
 test_todo_completion 'all arguments' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 test_todo_completion 'all arguments after option' 'todo.sh -a ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 test_todo_completion 'all arguments beginning with b' 'todo.sh b' 'bar baz'
 test_todo_completion 'all arguments beginning with f after options' 'todo.sh -a -v f' 'foobar'
 test_todo_completion 'nothing after addon action' 'todo.sh foobar ' ''
-removeCustomActions "$TODO_ACTIONS_DIR"
+removeCustomActions "$defaultActionsDir"
 
 #
 # Test resolution of the default location 2 TODO_ACTIONS_DIR.
