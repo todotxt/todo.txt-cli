@@ -6,9 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
 ### Added
 - Custom actions can now be in any subdir, not just `action/action` ([#495])
+- `TODO_ACTIONS_DIR` now allows multiple colon-separated directories for when a
+  single subdirectory is not enough to distribute custom actions ([#496])
 
 ## [2.14.0] - 2026-09-01
 
@@ -563,3 +564,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#447]: https://github.com/todotxt/todo.txt-cli/pull/447
 [#460]: https://github.com/todotxt/todo.txt-cli/pull/460
 [#495]: https://github.com/todotxt/todo.txt-cli/pull/495
+[#496]: https://github.com/todotxt/todo.txt-cli/pull/496
