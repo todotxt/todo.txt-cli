@@ -322,17 +322,13 @@ addonHelp()
         for action in "$TODO_ACTIONS_DIR"/*; do
             if [ -f "$action" ] && [ -x "$action" ]; then
                 if [ -z "$didPrintAddonActionsHeader" ]; then
-                    cat <<-EndAddonActionsHeader
-					  Add-on Actions:
-					EndAddonActionsHeader
+                    echo  '  Add-on Actions:'
                     didPrintAddonActionsHeader=1
                 fi
                 "$action" usage
             elif [ -d "$action" ] && [ -x "$action"/"$(basename "$action")" ]; then
                 if [ -z "$didPrintAddonActionsHeader" ]; then
-                    cat <<-EndAddonActionsHeader
-					  Add-on Actions:
-					EndAddonActionsHeader
+                    echo  '  Add-on Actions:'
                     didPrintAddonActionsHeader=1
                 fi
                 "$action"/"$(basename "$action")" usage
