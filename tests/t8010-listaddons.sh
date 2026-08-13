@@ -81,4 +81,20 @@ quux
 TODO: 5 valid addon actions found.
 EOF
 
+TODO_ACTIONS_DIR="$HOME/addons-common" make_action simple
+TODO_ACTIONS_DIR="$HOME/addons-common" make_action_in_folder checker expirecheck
+TODO_ACTIONS_DIR="$HOME/addons-common" make_action_in_folder checker outdatedcheck
+TODO_ACTIONS_DIR="$HOME/addons-mine" make_action_in_folder wait-addon wait
+TODO_ACTIONS_DIR="$HOME/addons-mine" make_action_in_folder wait-addon unwait
+test_todo_session 'list custom actions from multiple actions directories' <<'EOF'
+>>> TODO_ACTIONS_DIR="$HOME/addons-common:$HOME/addons-mine" todo.sh listaddons
+expirecheck
+outdatedcheck
+simple
+unwait
+wait
+--
+TODO: 5 valid addon actions found.
+EOF
+
 test_done

@@ -9,8 +9,8 @@ This test checks todo_completion of custom actions in .todo.actions.d
 . ./test-lib.sh
 
 readonly ADDONS='bar baz foobar'
-
 readonly CONTAINED='xeno zoolander'
+
 makeCustomActions()
 {
     local actionsDir="${1:?}"
@@ -43,11 +43,13 @@ removeCustomActions()
     set -e
     rmdir "$actionsDir/subdir"
 
+    local hasContainer
     for contained in $CONTAINED
     do
         rm "$actionsDir/container/$contained"
+        hasContainer=t
     done
-    rmdir "$actionsDir/container"
+    [ "$hasContainer" ] && rmdir "$actionsDir/container"
 
     rm "$actionsDir/"*
     rmdir "$actionsDir"
@@ -83,5 +85,17 @@ export TODO_ACTIONS_DIR="$HOME/addons"
 EOF
 test_todo_completion 'all arguments with actions from addons/' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 removeCustomActions "$HOME/addons"
+
+#
+# Test resolution of multiple TODO_ACTIONS_DIR base directories.
+#
+CONTAINED='' makeCustomActions "$HOME/addons-direct"
+ACTIONS='' makeCustomActions "$HOME/addons-contained"
+cat >> todo.cfg <<'EOF'
+export TODO_ACTIONS_DIR="$HOME/addons-direct:$HOME/addons-contained"
+EOF
+test_todo_completion 'all arguments with actions from both addons-direct and addons-contained' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
+CONTAINED='' removeCustomActions "$HOME/addons-direct"
+ACTIONS='' removeCustomActions "$HOME/addons-contained"
 
 test_done

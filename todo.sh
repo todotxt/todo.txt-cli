@@ -1060,27 +1060,39 @@ handleCustomAction()
     local onExists=${1:?}; shift
     local prefixOutput=${1?}; shift
     local action=${1:?}; shift
-    local actionDir
-    for actionDir in "$TODO_ACTIONS_DIR"/* "$TODO_ACTIONS_DIR"
-    do
-        if hasCustomAction "$actionDir" "$action"; then
-            [ -z "$prefixOutput" ] || echo "$prefixOutput"
-            "$actionDir/$action" "$@"
-            $onExists $?
-        fi
+    local actionBaseDirs actionBaseDir actionDir
+
+    IFS=: read -r -a actionBaseDirs <<<"$TODO_ACTIONS_DIR"
+    for actionBaseDir in "${actionBaseDirs[@]}"; do
+        for actionDir in "$actionBaseDir"/* "$actionBaseDir"; do
+            if hasCustomAction "$actionDir" "$action"; then
+                [ -z "$prefixOutput" ] || echo "$prefixOutput"
+                "$actionDir/$action" "$@"
+                $onExists $?
+            fi
+        done
     done
     return 1
 }
 
 listCustomActions()
 {
-    cd -- "$TODO_ACTIONS_DIR" 2>/dev/null || return
-    for action in */* *
-    do
-        if [ -f "$action" ] && [ -x "$action" ]; then
-            echo "${action##*/}"
-        fi
-    done | sort -u
+    local actionBaseDirs actionBaseDir hasExistingActionDir action
+    IFS=: read -r -a actionBaseDirs <<<"$TODO_ACTIONS_DIR"
+    {
+        for actionBaseDir in "${actionBaseDirs[@]}"; do
+            cd -- "$actionBaseDir" 2>/dev/null || continue
+            hasExistingActionDir=1
+            for action in */* *
+            do
+                if [ -f "$action" ] && [ -x "$action" ]; then
+                    echo "${action##*/}"
+                fi
+            done
+        done
+        [ "$hasExistingActionDir" ]
+    } | sort -u
+    return "${PIPESTATUS[0]}"
 }
 
 export -f cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die
@@ -1540,10 +1552,9 @@ note: PRIORITY must be anywhere from A to Z."
     ;;
 
 "listaddons")
-    if [ -d "$TODO_ACTIONS_DIR" ]; then
-        customActions=$(listCustomActions)
+    if customActions=$(listCustomActions); then
         if [ -z "$customActions" ]; then
-             die "TODO: '$TODO_ACTIONS_DIR' does not contain valid actions."
+            die "TODO: '$TODO_ACTIONS_DIR' does not contain valid actions."
         else
             printf '%s\n' "$customActions"
             if [ "$TODOTXT_VERBOSE" -gt 0 ]; then

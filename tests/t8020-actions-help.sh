@@ -94,4 +94,20 @@ test_todo_session 'custom override of built-in action help' <<'EOF'
 \
 EOF
 
+TODO_ACTIONS_DIR="$HOME/projects/addons-wait" make_action wait
+TODO_ACTIONS_DIR="$HOME/projects/addons-wait" make_action unwait
+TODO_ACTIONS_DIR="$HOME/addons-common" make_action_in_folder checker expirecheck
+TODO_ACTIONS_DIR="$HOME/addons-common" make_action_in_folder checker outdatedcheck
+test_todo_session 'custom action help from multiple actions directories' <<'EOF'
+>>> TODO_ACTIONS_DIR="$HOME/addons-common:$HOME/projects/addons-wait" todo.sh help expirecheck
+    expirecheck NR [NR ...] [TERM...]
+      This custom action in folder checker does expirecheck.
+\
+
+>>> TODO_ACTIONS_DIR="$HOME/addons-common:$HOME/projects/addons-wait" todo.sh help unwait
+    unwait NR [NR ...] [TERM...]
+      This custom action does unwait.
+\
+EOF
+
 test_done

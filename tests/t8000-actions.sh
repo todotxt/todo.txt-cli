@@ -88,4 +88,22 @@ invalidate_action do 2>/dev/null \
 Fatal Error: Broken link to custom action: '$TODO_ACTIONS_DIR/do'
 EOF
 
+TODO_ACTIONS_DIR="$HOME/projects/addons-wait" make_action wait
+TODO_ACTIONS_DIR="$HOME/projects/addons-wait" make_action unwait
+TODO_ACTIONS_DIR="$HOME/addons-common" make_action_in_folder checker expirecheck
+TODO_ACTIONS_DIR="$HOME/addons-common" make_action_in_folder checker outdatedcheck
+test_todo_session 'actions from multiple actions directories' <<EOF
+>>> TODO_ACTIONS_DIR="$HOME/addons-common:$HOME/projects/addons-wait" todo.sh wait
+custom action wait
+
+>>> TODO_ACTIONS_DIR="$HOME/addons-common:$HOME/projects/addons-wait" todo.sh unwait
+custom action unwait
+
+>>> TODO_ACTIONS_DIR="$HOME/addons-common:$HOME/projects/addons-wait" todo.sh expirecheck
+custom action expirecheck in folder checker
+
+>>> TODO_ACTIONS_DIR="$HOME/addons-common:$HOME/projects/addons-wait" todo.sh outdatedcheck
+custom action outdatedcheck in folder checker
+EOF
+
 test_done
