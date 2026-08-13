@@ -24,15 +24,15 @@ EOF
 chmod +x foo2
 
 test_expect_success 'custom action (default location 1)' '
-    mkdir -p .todo.actions.d && cp foo .todo.actions.d/
-    todo.sh foo > output;
-    test_cmp expect output && rm -rf .todo.actions.d
-'
-
-test_expect_success 'custom action (default location 2)' '
     mkdir -p .todo/actions && cp foo .todo/actions/
     todo.sh foo > output;
     test_cmp expect output && rm -rf .todo/actions
+'
+
+test_expect_success 'custom action (default location 2)' '
+    mkdir -p .todo.actions.d && cp foo .todo.actions.d/
+    todo.sh foo > output;
+    test_cmp expect output && rm -rf .todo.actions.d
 '
 
 test_expect_success 'custom action (env variable)' '
@@ -42,9 +42,9 @@ test_expect_success 'custom action (env variable)' '
 '
 
 test_expect_success 'custom action (default action)' '
-    mkdir -p .todo.actions.d && cp foo2 .todo.actions.d/
+    mkdir -p .todo/actions && cp foo2 .todo/actions/
     TODOTXT_DEFAULT_ACTION="foo2 foo" todo.sh > output;
-    test_cmp expect output && rm -rf .todo.actions.d
+    test_cmp expect output && rm -rf .todo/actions
 '
 
 test_todo_session 'default built-in action with multiple arguments' <<EOF

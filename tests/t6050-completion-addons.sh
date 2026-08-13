@@ -55,23 +55,22 @@ removeCustomActions()
 }
 
 #
-# Test resolution of the default TODO_ACTIONS_DIR.
+# Test resolution of the default location 1 TODO_ACTIONS_DIR.
 #
-makeCustomActions "$HOME/.todo.actions.d"
+makeCustomActions "$TODO_ACTIONS_DIR"
 test_todo_completion 'all arguments' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 test_todo_completion 'all arguments after option' 'todo.sh -a ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 test_todo_completion 'all arguments beginning with b' 'todo.sh b' 'bar baz'
 test_todo_completion 'all arguments beginning with f after options' 'todo.sh -a -v f' 'foobar'
 test_todo_completion 'nothing after addon action' 'todo.sh foobar ' ''
-removeCustomActions "$HOME/.todo.actions.d"
+removeCustomActions "$TODO_ACTIONS_DIR"
 
 #
-# Test resolution of an alternative TODO_ACTIONS_DIR.
+# Test resolution of the default location 2 TODO_ACTIONS_DIR.
 #
-mkdir "$HOME/.todo"
-makeCustomActions "$HOME/.todo/actions"
+makeCustomActions "$HOME/.todo.actions.d"
 test_todo_completion 'all arguments with actions from .todo/actions/' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
-removeCustomActions "$HOME/.todo/actions"
+removeCustomActions "$HOME/.todo.actions.d"
 
 #
 # Test resolution of a configured TODO_ACTIONS_DIR.
