@@ -711,19 +711,20 @@ configFileLocations=(
     fi
 done
 
-if [ -z "$TODO_ACTIONS_DIR" ] || [ ! -d "$TODO_ACTIONS_DIR" ]; then
-    TODO_ACTIONS_DIR="$HOME/.todo/actions"
+readonly DEFAULT_ACTIONS_DIR="$HOME/.todo/actions"
+if [ -z "$TODO_ACTIONS_DIR" ]; then
+    for TODO_ACTIONS_DIR_ALT in \
+        "$DEFAULT_ACTIONS_DIR" \
+        "$HOME/.todo.actions.d" \
+        "${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"; do
+        if [ -d "$TODO_ACTIONS_DIR_ALT" ]; then
+            TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
+            break
+        fi
+    done
+    : ${TODO_ACTIONS_DIR:=$DEFAULT_ACTIONS_DIR}
     export TODO_ACTIONS_DIR
 fi
-
-[ -d "$TODO_ACTIONS_DIR" ] || for TODO_ACTIONS_DIR_ALT in \
-    "$HOME/.todo.actions.d" \
-    "${XDG_CONFIG_HOME:-$HOME/.config}/todo/actions"; do
-    if [ -d "$TODO_ACTIONS_DIR_ALT" ]; then
-        TODO_ACTIONS_DIR="$TODO_ACTIONS_DIR_ALT"
-        break
-    fi
-done
 
 # === SANITY CHECKS (thanks Karl!) ===
 [ -r "$TODOTXT_CFG_FILE" ] || dieWithHelp "$1" "Fatal Error: Cannot read configuration file ${TODOTXT_CFG_FILE:-${configFileLocations[0]}}"
