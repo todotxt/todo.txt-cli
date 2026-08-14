@@ -15,6 +15,11 @@ make_dummy_action()
 }
 echo "custom action $actionName${actionContext:+ }$actionContext"
 EOF
+    case $* in
+        '') ;;
+        -)  cat >> "$actionFilespec";;
+        *)  echo "$*" >> "$actionFilespec";;
+    esac
     chmod +x "$actionFilespec"
 }
 
@@ -22,7 +27,7 @@ make_action()
 {
     local actionName=$1; shift
     mkdir -p "$TODO_ACTIONS_DIR"
-    [ -z "$actionName" ] || make_dummy_action "$TODO_ACTIONS_DIR/$actionName"
+    [ -z "$actionName" ] || make_dummy_action "$TODO_ACTIONS_DIR/$actionName" "$@"
 }
 
 make_action_in_folder()
@@ -30,7 +35,7 @@ make_action_in_folder()
     local actionFolder=${1:?}; shift
     local actionName=$1; shift || :
     mkdir -p "$TODO_ACTIONS_DIR/$actionFolder"
-    [ -z "$actionName" ] || make_dummy_action "$TODO_ACTIONS_DIR/$actionFolder/$actionName" "in folder $actionFolder"
+    [ -z "$actionName" ] || make_dummy_action "$TODO_ACTIONS_DIR/$actionFolder/$actionName" "in folder $actionFolder" "$@"
 }
 
 invalidate_action()
