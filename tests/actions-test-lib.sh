@@ -2,30 +2,35 @@
 
 make_dummy_action()
 {
-    local actionName; actionName="$(basename "${1:?}")"
-    cat > "$1" <<EOF
+    local actionFilespec=${1:?}; shift
+    local actionName; actionName=$(basename "$actionFilespec")
+    local actionContext=$1; shift || :
+    cat > "$actionFilespec" <<EOF
 #!/bin/bash
 [ "\$1" = "usage" ] && {
     echo "    $actionName NR [NR ...] [TERM...]"
-    echo "      This custom action${2:+ }$2 does $actionName."
+    echo "      This custom action${actionContext:+ }$actionContext does $actionName."
     echo ""
     exit
 }
-echo "custom action $actionName${2:+ }$2"
+echo "custom action $actionName${actionContext:+ }$actionContext"
 EOF
-chmod +x "$1"
+    chmod +x "$actionFilespec"
 }
 
 make_action()
 {
+    local actionName=$1; shift
     mkdir -p "$TODO_ACTIONS_DIR"
-    [ -z "$1" ] || make_dummy_action "$TODO_ACTIONS_DIR/$1"
+    [ -z "$actionName" ] || make_dummy_action "$TODO_ACTIONS_DIR/$actionName"
 }
 
 make_action_in_folder()
 {
-    mkdir -p "$TODO_ACTIONS_DIR/$1"
-    [ -z "$1" ] || make_dummy_action "$TODO_ACTIONS_DIR/$1/$2" "in folder $1"
+    local actionFolder=${1:?}; shift
+    local actionName=$1; shift || :
+    mkdir -p "$TODO_ACTIONS_DIR/$actionFolder"
+    [ -z "$actionName" ] || make_dummy_action "$TODO_ACTIONS_DIR/$actionFolder/$actionName" "in folder $actionFolder"
 }
 
 invalidate_action()
