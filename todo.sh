@@ -317,13 +317,12 @@ actionsHelp()
 
 addonHelp()
 {
-    local allCustomActions
-    readarray -t allCustomActions < <(listCustomActions)
     local addonHelpHeader='  Add-on Actions:'
-    for action in "${allCustomActions[@]}"; do
+    local action
+    while IFS= read -r action; do
         handleCustomAction return "$addonHelpHeader" "$action" usage
         addonHelpHeader=''
-    done
+    done < <(listCustomActions)
 }
 
 actionUsage()
