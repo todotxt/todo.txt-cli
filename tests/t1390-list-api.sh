@@ -86,7 +86,7 @@ custom action testdriver-list-nonverbose
 EOF
 
 make_action testdriver-list-plain '' 'TODOTXT_PLAIN=1 _list "$TODO_FILE"'
-false && test_todo_session '_list() obeys TODOTXT_PLAIN' <<EOF
+test_todo_session '_list() obeys TODOTXT_PLAIN' <<EOF
 >>> todo.sh testdriver-list-plain
 custom action testdriver-list-plain
 01 (A) @con01 +prj01 -- Some project 01 task, pri A
