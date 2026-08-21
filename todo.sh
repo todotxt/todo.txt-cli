@@ -1195,6 +1195,7 @@ case $action in
 
     readinput 'Append' "$@" # Accept empty input here; it's harmless.
     case "$input" in
+      '')                       appendspace=;;
       [$SENTENCE_DELIMITERS]*)  appendspace=;;
       *)                        appendspace=" ";;
     esac
