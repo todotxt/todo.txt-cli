@@ -382,7 +382,7 @@ readinput()
     [ -n "${1?}" ] && readArgs=(-p "${1}: ")
     shift
 
-    if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
+    if [[ -z "$*" && $TODOTXT_FORCE = 0 ]]; then
         read -e -r "${readArgs[@]}" input
     else
         input=$*
