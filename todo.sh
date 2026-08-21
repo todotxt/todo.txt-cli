@@ -381,6 +381,10 @@ readinput()
     local readArgs=()
     [ -n "${1?}" ] && readArgs=(-p "${1}: ")
     shift
+    if [ "$1" = -i ]; then
+        readArgs+=("$1" "${2?}")
+        shift; shift
+    fi
 
     if [[ -z "$*" && $TODOTXT_FORCE = 0 ]]; then
         read -e -r "${readArgs[@]}" input
@@ -466,11 +470,7 @@ replaceOrPrepend()
   shift; item=$1; shift
   getTodo "$item"
 
-  if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
-    read -p "$querytext" -r -i "$todo" -e input
-  else
-    input=$*
-  fi
+  readinput "$querytext" -i "$todo" "$@"
 
   # Retrieve existing priority and prepended date
   local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
