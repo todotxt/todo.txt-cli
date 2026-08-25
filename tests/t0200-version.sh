@@ -8,7 +8,7 @@ on -V.
 '
 . ./test-lib.sh
 
-todoShFilespec="$(command -v todo.sh)"
+todoShFilespec=$(command -v todo.sh)
 isDevVersion() {
     grep --quiet --fixed-strings '@DEV_VERSION@' -- "$todoShFilespec"
 }
@@ -36,7 +36,7 @@ EOF
 rm -- "$versionFilespec"
 else
 test_expect_success 'distribution todo.sh -V displays an embedded version' '
-    todo.sh -V | head -n 1 | grep --line-regexp "^TODO.TXT Command Line Interface v[0-9]\\+\\.[0-9]\\+\\..*\$"
+    todo.sh -V | head -n 1 | grep --line-regexp "TODO.TXT Command Line Interface v[0-9]\\+\\.[0-9]\\+\\..*"
 '
 versionFilespec="$(dirname "$todoShFilespec")/VERSION-FILE"
 echo 'VERSION=A.B.C' > "$versionFilespec"
