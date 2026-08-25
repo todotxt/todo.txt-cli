@@ -16,8 +16,9 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - run: make
-    - run: make dist
     - run: make test
+    - run: make dist
+    - run: make disttest
     - run: sudo make install
     - run: sudo make uninstall
     - run: sudo make clean

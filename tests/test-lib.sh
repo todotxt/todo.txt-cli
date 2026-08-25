@@ -398,7 +398,7 @@ cd -P .
 
 # Record our location for reference.
 TEST_DIRECTORY=$(pwd)
-SRC_DIRECTORY=$TEST_DIRECTORY/..
+: ${SRC_DIRECTORY:=$TEST_DIRECTORY/..}
 
 # Test repository
 test="trash directory.$(basename "$0" .sh)"

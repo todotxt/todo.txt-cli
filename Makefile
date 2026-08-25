@@ -147,5 +147,8 @@ test: aggregate-results   ## run tests
 	tests/aggregate-results.sh tests/test-results/t*-*
 	rm -rf tests/test-results
 
+disttest: export SRC_DIRECTORY = $(CURDIR)/$(DISTNAME)
+disttest: build test
+
 # Force tests to get run every time
-.PHONY: test test-pre-clean aggregate-results $(TESTS)
+.PHONY: test disttest test-pre-clean aggregate-results $(TESTS)
