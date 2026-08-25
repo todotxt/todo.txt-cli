@@ -398,6 +398,7 @@ cd -P .
 
 # Record our location for reference.
 TEST_DIRECTORY=$(pwd)
+SRC_DIRECTORY=$TEST_DIRECTORY/..
 
 # Test repository
 test="trash directory.$(basename "$0" .sh)"
@@ -418,11 +419,11 @@ test_init_todo () {
 	mkdir -p "$root"
 	cd "$root" || error "Cannot setup todo dir in $root"
 	# Initialize the configuration file. Carefully quoted.
-	sed -e 's|TODO_DIR=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' "$TEST_DIRECTORY/../todo.cfg" > todo.cfg
+	sed -e 's|TODO_DIR=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' "$SRC_DIRECTORY/todo.cfg" > todo.cfg
 
 	# Install latest todo.sh
 	mkdir bin
-	ln -s "$TEST_DIRECTORY/../todo.sh" bin/todo.sh
+	ln -s "$SRC_DIRECTORY/todo.sh" bin/todo.sh
 
 	# Initialize a hack date script
 	TODO_TEST_REAL_DATE=$(which date)
@@ -591,7 +592,7 @@ test_todo_custom_completion () {
 		IFS=' ' eval "set -- $expected"
 		EXPECT=("$@")
 
-		source "$TEST_DIRECTORY/../todo_completion"
+		source "$SRC_DIRECTORY/todo_completion"
 		$completeFunc
 		ret=$?
 		if [ "$ret" = 0 ]
