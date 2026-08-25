@@ -34,6 +34,22 @@ test_todo_session 'source todo.sh -V ignores a version file in the current direc
 TODO.TXT Command Line Interface v@DEV_VERSION@
 EOF
 rm -- "$versionFilespec"
+else
+test_expect_success 'distribution todo.sh -V displays an embedded version' '
+    todo.sh -V | head -n 1 | grep --line-regexp "^TODO.TXT Command Line Interface v[0-9]\\+\\.[0-9]\\+\\..*\$"
+'
+versionFilespec="$(dirname "$todoShFilespec")/VERSION-FILE"
+echo 'VERSION=A.B.C' > "$versionFilespec"
+test_expect_success 'distribution todo.sh -V ignores an adjacent version file' '
+    ! todo.sh -V | head -n 1 | grep --fixed-strings --line-regexp "TODO.TXT Command Line Interface vA.B.C"
+'
+rm -- "$versionFilespec"
+versionFilespec=./VERSION-FILE
+echo 'VERSION=X.Y.Z' > "$versionFilespec"
+test_expect_success 'distribution todo.sh -V ignores a version file in the current directory' '
+    ! todo.sh -V | head -n 1 | grep --fixed-strings --line-regexp "TODO.TXT Command Line Interface vX.Y.Z"
+'
+rm -- "$versionFilespec"
 fi
 
 test_done
