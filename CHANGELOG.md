@@ -7,12 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.14.0] - 2026-09-01
+
 ### Added
 - `TODOTXT_DEFAULT_ACTION` now also allows action parameters ([#159], [#407])
+
+### Changed
+- Improve compatibility with non-GNU sed command on BSD/Busybox ([#447])
 
 ### Fixed
 - `make install` installed the Bash completion in the wrong directory ([#452])
 - `make uninstall` fails ([#451])
+- Configured file locations can now be overridden ([#460])
+
+### Security
+- todo.sh sources VERSION-FILE from CWD ([GHSA-pm3w-5f88-pwpq](https://github.com/todotxt/todo.txt-cli/security/advisories/GHSA-pm3w-5f88-pwpq))
 
 ## [2.13.0] - 2024-12-25
 
@@ -486,7 +495,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Consolidated into one master script with usage notes and released.
 
-[Unreleased]: https://github.com/todotxt/todo.txt-cli/compare/v2.13.0...HEAD
+[Unreleased]: https://github.com/todotxt/todo.txt-cli/compare/v2.14.0...HEAD
+[2.14.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.13.0...v2.14.0
 [2.13.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.12.0...v2.13.0
 [2.12.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/todotxt/todo.txt-cli/compare/v2.10.0...v2.11.0
@@ -547,3 +557,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#407]: https://github.com/todotxt/todo.txt-cli/pull/407
 [#451]: https://github.com/todotxt/todo.txt-cli/pull/451
 [#452]: https://github.com/todotxt/todo.txt-cli/pull/452
+[#447]: https://github.com/todotxt/todo.txt-cli/pull/447
+[#460]: https://github.com/todotxt/todo.txt-cli/pull/460
