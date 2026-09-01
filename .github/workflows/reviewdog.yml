@@ -1,0 +1,33 @@
+name: reviewdog
+on: [pull_request]
+jobs:
+  shellcheck:
+    name: runner / shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code.
+        uses: actions/checkout@v1
+      - name: shellcheck
+        uses: reviewdog/action-shellcheck@v1
+        env:
+          REVIEWDOG_VERSION: nightly
+        with:
+          reviewdog_flags: '-reviewdog_version=nightly'
+          reporter: github-pr-review # Change reporter.
+          level: 'info'
+          exclude: './.git/*'
+
+  # misspell:
+  #   name: runner / misspell
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out code.
+  #       uses: actions/checkout@v1
+  #     - name: misspell
+  #       uses: reviewdog/action-misspell@v1
+  #       with:
+  #         github_token: ${{ secrets.github_token }}
+  #         reporter: github-pr-review # Change reporter.
+  #         level: 'info'
+  #         locale: 'US'
+  #         exclude: './.git/*'
