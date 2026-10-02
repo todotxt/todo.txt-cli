@@ -4,6 +4,7 @@ test_description='Bash add-on action completion functionality
 
 This test checks todo_completion of custom actions in .todo.actions.d
 '
+. ./actions-test-lib.sh
 . ./completion-test-lib.sh
 . ./test-lib.sh
 
@@ -12,48 +13,44 @@ readonly ADDONS='bar baz foobar'
 readonly CONTAINED='xeno zoolander'
 makeCustomActions()
 {
+    local actionsDir="${1:?}"
+    local TODO_ACTIONS_DIR="$actionsDir"
     set -e
-    mkdir "${1:?}"
     for addon in $ADDONS
     do
-        addonFile="${1}/$addon"
-        > "$addonFile"
-        chmod +x "$addonFile"
+         make_action "$addon"
     done
 
     # Also create a subdirectory, to test that it is skipped.
-    mkdir "${1}/subdir"
+    mkdir "$actionsDir/subdir"
 
     # Also create a non-executable file, to test that it is skipped.
-    datafile="${1:?}/datafile"
-    > "$datafile"
-    chmod -x "$datafile"
-    [ -x "$datafile" ] && rm "$datafile"    # Some file systems may always make files executable; then, skip this check.
+    make_action datafile
+    invalidate_action datafile  # Note: Some file systems may always make files executable; then, the file is removed, effectively skipping this check.
 
     # Add an executable file in a folder with the same name as the file,
     # in order to ensure completion
     for contained in $CONTAINED
     do
-        mkdir "${1}/$contained"
-        > "${1}/$contained/$contained"
-        chmod u+x "${1}/$contained/$contained"
+        make_action_in_folder "$contained" "$contained"
     done
 
     set +e
 }
 removeCustomActions()
 {
+    local actionsDir="${1:?}"
     set -e
-    rmdir "${1}/subdir"
+    rmdir "$actionsDir/subdir"
 
     for contained in $CONTAINED
     do
-        rm "${1}/$contained/$contained"
-        rmdir "${1}/$contained"
+        rm "$actionsDir/$contained/$contained"
+        rmdir "$actionsDir/$contained"
     done
 
-    rm "${1:?}/"*
-    rmdir "$1"
+    rm "$actionsDir/"*
+    rmdir "$actionsDir"
     set +e
 }
 
