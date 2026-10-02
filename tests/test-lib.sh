@@ -435,8 +435,9 @@ test_init_todo () {
 	# on GNU systems (versions may vary):
 	#date --version
 	#date (GNU coreutils) 6.10
+	#date (uutils coreutils) 0.12.0
 	#...
-	if date --version 2>&1 | grep -q "GNU"; then
+	if date --version 2>&1 | grep -q -e "GNU" -e "uutils"; then
 		DATE_STYLE=GNU
 	# on Mac OS X 10.5:
 	#date --version
