@@ -31,14 +31,25 @@ custom action ls
 TODO: 0 of 0 tasks shown
 EOF
 
-make_action_in_folder chuck chuck
+make_action_in_folder check check
+make_action_in_folder check chuck
+make_action_in_folder norris chuck
 make_action_in_folder norris norris
-test_todo_session 'executable actions in subfolders' <<EOF
+test_todo_session 'executable actions in subfolders takes first folder' <<EOF
+>>> todo.sh check
+custom action check in folder check
+
 >>> todo.sh chuck
-custom action chuck in folder chuck
+custom action chuck in folder check
 
 >>> todo.sh norris
 custom action norris in folder norris
+EOF
+
+make_action chuck
+test_todo_session 'executable action in subfolder takes precendence over same action in actions dir' <<EOF
+>>> todo.sh chuck
+custom action chuck in folder check
 EOF
 
 make_action bad

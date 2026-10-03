@@ -17,8 +17,6 @@ make_action foo
 make_action bar
 make_action ls
 make_action quux
-make_action_in_folder chuck chuck
-make_action_in_folder norris norris
 
 test_todo_session 'custom action help' <<'EOF'
 >>> todo.sh help foo
@@ -32,10 +30,19 @@ test_todo_session 'custom action help' <<'EOF'
 \
 EOF
 
+make_action_in_folder check check
+make_action_in_folder check chuck
+make_action_in_folder norris chuck
+make_action_in_folder norris norris
 test_todo_session 'custom action in subfolders help' <<'EOF'
+>>> todo.sh help check
+    check NR [NR ...] [TERM...]
+      This custom action in folder check does check.
+\
+
 >>> todo.sh help chuck
     chuck NR [NR ...] [TERM...]
-      This custom action in folder chuck does chuck.
+      This custom action in folder check does chuck.
 \
 
 >>> todo.sh help norris

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Custom actions can now be in any subdir, not just `action/action` ([#495])
+
 ## [2.14.0] - 2026-09-01
 
 ### Added
@@ -559,3 +562,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#452]: https://github.com/todotxt/todo.txt-cli/pull/452
 [#447]: https://github.com/todotxt/todo.txt-cli/pull/447
 [#460]: https://github.com/todotxt/todo.txt-cli/pull/460
+[#495]: https://github.com/todotxt/todo.txt-cli/pull/495

@@ -44,38 +44,41 @@ quux
 TODO: 3 valid addon actions found.
 EOF
 
-make_action_in_folder chuck chuck
-make_action_in_folder chuck mc_hammer   # can't touch this
+make_action_in_folder check check
+make_action_in_folder check chuck
+make_action_in_folder norris chuck
 # Add a bit of cruft in the action folders in order to ensure that we only
 # care about the executables with the same name as the folder in which they
 # reside.
-make_action_in_folder chuck README
-invalidate_action chuck/README
-make_action_in_folder chuck datafile
-invalidate_action chuck/datafile
-
+make_action_in_folder check README
+invalidate_action check/README
+make_action_in_folder check datafile
+invalidate_action check/datafile
+make_action_in_folder norris chuck
 make_action_in_folder norris norris
 
 test_todo_session 'custom actions in subfolders' <<EOF
 >>> todo.sh listaddons
 bar
+check
 chuck
 ls
 norris
 quux
 --
-TODO: 5 valid addon actions found.
+TODO: 6 valid addon actions found.
 EOF
 
 invalidate_action norris/norris \
     && test_todo_session 'nonexecutable action in subfolder' <<EOF
 >>> todo.sh listaddons
 bar
+check
 chuck
 ls
 quux
 --
-TODO: 4 valid addon actions found.
+TODO: 5 valid addon actions found.
 EOF
 
 test_done
