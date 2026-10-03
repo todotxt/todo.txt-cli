@@ -1,0 +1,58 @@
+---
+name: Bug report
+description: Report a problem to help us improve todo.txt-cli
+labels: [bug]
+
+body:
+- type: markdown
+  attributes:
+    value: |
+      If you want to report a security issue, instead of reporting it here publicly,
+      use _Report a vulnerability_ (found under _Security and quality_) on this repository.
+      More on that in [SECURITY.md](../blob/master/SECURITY.md).
+
+      To make it easier for us to help you please fill out the following fields.
+- type: textarea
+  attributes:
+    label: Current behavior
+    placeholder: |
+      Invoking todo.sh with a number argument blocks and crashes.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Steps to reproduce
+    placeholder: |
+      1. I run `todo.sh 666`
+      2. The program blocks for 10 seconds
+      3. Then my whole system crashes
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Expected behavior
+    placeholder: |
+      The program should print a usage message and exit immediately.
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Version of todo.sh
+    description: >
+      Run "todo.sh -V"; it's in the first line of output.
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Version of Bash
+    description: >
+      Run "bash --version"; it's the first line of output.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Environment
+    description: >
+      Operating System, how you installed todo.sh; anything else that might matter
+  validations:
+    required: true

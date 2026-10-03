@@ -1,0 +1,41 @@
+---
+name: Feature request
+description: Suggest an enhancement for todo.txt-cli
+labels: [enhancement]
+
+body:
+- type: markdown
+  attributes:
+    value: |
+      Great that you have an idea for an improvement! Many advanced use cases are already possible through a particular configuration and/or add-ons.
+      Please first involve the todo.txt community in a [discussion](../discussions) to see if your idea is already possible or if it is something that would be useful for others.
+      _Only enter a feature request here if it's already been discussed and there is a consensus that it is a good idea._
+- type: textarea
+  attributes:
+    label: The problem
+    placeholder: |
+      It is very difficult to ... when ... and I cannot ... at all.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Proposed solution
+    placeholder: |
+      A new ... in the form of ... would allow me to ... and I could ...
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Alternatives considered
+    placeholder: |
+      Manually doing ... is possible but easy to forget and tedious.
+      An add-on could do .. but not ... and would require ...
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Additional context
+    placeholder: |
+      Add any other context or screenshots about the feature request here.
+  validations:
+    required: false
