@@ -90,12 +90,12 @@ removeCustomActions "$HOME/addons"
 # Test resolution of multiple TODO_ACTIONS_DIR base directories.
 #
 CONTAINED='' makeCustomActions "$HOME/addons-direct"
-ACTIONS='' makeCustomActions "$HOME/addons-contained"
+ADDONS='' makeCustomActions "$HOME/addons-contained"
 cat >> todo.cfg <<'EOF'
 export TODO_ACTIONS_DIR="$HOME/addons-direct:$HOME/addons-contained"
 EOF
 test_todo_completion 'all arguments with actions from both addons-direct and addons-contained' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 CONTAINED='' removeCustomActions "$HOME/addons-direct"
-ACTIONS='' removeCustomActions "$HOME/addons-contained"
+ADDONS='' removeCustomActions "$HOME/addons-contained"
 
 test_done
