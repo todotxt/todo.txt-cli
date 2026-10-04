@@ -1082,9 +1082,9 @@ listCustomActions()
     IFS=: read -r -a actionBaseDirs <<<"$TODO_ACTIONS_DIR"
     {
         for actionBaseDir in "${actionBaseDirs[@]}"; do
-            cd -- "$actionBaseDir" 2>/dev/null || continue
+            [ -d "$actionBaseDir" ] || continue
             hasExistingActionDir=1
-            for action in */* *
+            for action in "$actionBaseDir"/*/* "$actionBaseDir"/*
             do
                 if [ -f "$action" ] && [ -x "$action" ]; then
                     echo "${action##*/}"
