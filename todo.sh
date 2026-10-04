@@ -1064,6 +1064,7 @@ handleCustomAction()
 
     IFS=: read -r -a actionBaseDirs <<<"$TODO_ACTIONS_DIR"
     for actionBaseDir in "${actionBaseDirs[@]}"; do
+        [ -d "$actionBaseDir" ] || continue
         for actionDir in "$actionBaseDir"/* "$actionBaseDir"; do
             if hasCustomAction "$actionDir" "$action"; then
                 [ -z "$prefixOutput" ] || echo "$prefixOutput"
