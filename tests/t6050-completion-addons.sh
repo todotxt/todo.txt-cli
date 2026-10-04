@@ -8,8 +8,8 @@ This test checks todo_completion of custom actions in .todo.actions.d
 . ./completion-test-lib.sh
 . ./test-lib.sh
 
-readonly ADDONS='bar baz foobar'
-readonly CONTAINED='xeno zoolander'
+ADDONS='bar baz foobar'
+CONTAINED='xeno zoolander'
 
 makeCustomActions()
 {
@@ -22,7 +22,7 @@ makeCustomActions()
     done
 
     # Also create a subdirectory, to test that it is skipped.
-    mkdir "$actionsDir/subdir"
+    mkdir -p "$actionsDir/subdir"
 
     # Also create a non-executable file, to test that it is skipped.
     make_action datafile
