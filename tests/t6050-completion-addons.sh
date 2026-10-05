@@ -8,9 +8,9 @@ This test checks todo_completion of custom actions in .todo.actions.d
 . ./completion-test-lib.sh
 . ./test-lib.sh
 
-readonly ADDONS='bar baz foobar'
+ADDONS='bar baz foobar'
+CONTAINED='xeno zoolander'
 
-readonly CONTAINED='xeno zoolander'
 makeCustomActions()
 {
     local actionsDir="${1:?}"
@@ -22,7 +22,7 @@ makeCustomActions()
     done
 
     # Also create a subdirectory, to test that it is skipped.
-    mkdir "$actionsDir/subdir"
+    mkdir -p "$actionsDir/subdir"
 
     # Also create a non-executable file, to test that it is skipped.
     make_action datafile
@@ -43,11 +43,13 @@ removeCustomActions()
     set -e
     rmdir "$actionsDir/subdir"
 
+    local hasContainer
     for contained in $CONTAINED
     do
         rm "$actionsDir/container/$contained"
+        hasContainer=t
     done
-    rmdir "$actionsDir/container"
+    [ "$hasContainer" ] && rmdir "$actionsDir/container"
 
     rm "$actionsDir/"*
     rmdir "$actionsDir"
@@ -57,13 +59,15 @@ removeCustomActions()
 #
 # Test resolution of the default location 1 TODO_ACTIONS_DIR.
 #
-makeCustomActions "$TODO_ACTIONS_DIR"
+defaultActionsDir="$TODO_ACTIONS_DIR"
+unset TODO_ACTIONS_DIR
+makeCustomActions "$defaultActionsDir"
 test_todo_completion 'all arguments' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 test_todo_completion 'all arguments after option' 'todo.sh -a ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 test_todo_completion 'all arguments beginning with b' 'todo.sh b' 'bar baz'
 test_todo_completion 'all arguments beginning with f after options' 'todo.sh -a -v f' 'foobar'
 test_todo_completion 'nothing after addon action' 'todo.sh foobar ' ''
-removeCustomActions "$TODO_ACTIONS_DIR"
+removeCustomActions "$defaultActionsDir"
 
 #
 # Test resolution of the default location 2 TODO_ACTIONS_DIR.
@@ -81,5 +85,17 @@ export TODO_ACTIONS_DIR="$HOME/addons"
 EOF
 test_todo_completion 'all arguments with actions from addons/' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
 removeCustomActions "$HOME/addons"
+
+#
+# Test resolution of multiple TODO_ACTIONS_DIR base directories.
+#
+CONTAINED='' makeCustomActions "$HOME/addons-direct"
+ADDONS='' makeCustomActions "$HOME/addons-contained"
+cat >> todo.cfg <<'EOF'
+export TODO_ACTIONS_DIR="$HOME/addons-direct:$HOME/addons-contained"
+EOF
+test_todo_completion 'all arguments with actions from both addons-direct and addons-contained' 'todo.sh ' "$ACTIONS $ADDONS $CONTAINED $OPTIONS"
+CONTAINED='' removeCustomActions "$HOME/addons-direct"
+ADDONS='' removeCustomActions "$HOME/addons-contained"
 
 test_done

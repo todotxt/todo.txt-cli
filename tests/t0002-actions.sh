@@ -25,13 +25,13 @@ chmod +x foo2
 
 test_expect_success 'custom action (default location 1)' '
     mkdir -p .todo/actions && cp foo .todo/actions/
-    todo.sh foo > output;
+    unset TODO_ACTIONS_DIR; todo.sh foo > output;
     test_cmp expect output && rm -rf .todo/actions
 '
 
 test_expect_success 'custom action (default location 2)' '
     mkdir -p .todo.actions.d && cp foo .todo.actions.d/
-    todo.sh foo > output;
+    unset TODO_ACTIONS_DIR; todo.sh foo > output;
     test_cmp expect output && rm -rf .todo.actions.d
 '
 
