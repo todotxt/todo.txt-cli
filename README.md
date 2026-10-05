@@ -85,7 +85,8 @@ See [CHANGELOG.md][CHANGELOG]
 
 ## Community
 
-- [Gitter.im](https://gitter.im/todotxt/): chat with the core team and interested users
+- [todo.txt-cli at Gitter.im](https://gitter.im/todotxt/todo.txt-cli): chat with the core team and interested users about this CLI in particular
+- [todotxt lobby at Gitter.im](https://gitter.im/todotxt/Lobby): chat with interested users about todo.txt in general
 - [Reddit](https://www.reddit.com/r/todotxt/): posts and discussions around the todo.txt philosophy and tools
 - [Twitter](https://twitter.com/todotxt): official announcements and news
 
