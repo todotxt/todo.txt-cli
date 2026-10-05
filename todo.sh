@@ -1079,8 +1079,9 @@ handleCustomAction()
 # shellcheck disable=SC2120
 listCustomActions()
 {
-    local actionsGlob="$1"; shift
-    local actionBaseDirs actionBaseDir hasExistingActionDir action
+    local actionsGlob="${1-}"; shift || :
+    local actionBaseDirs actionBaseDir action
+    local hasExistingActionDir=''
     IFS=: read -r -a actionBaseDirs <<<"$TODO_ACTIONS_DIR"
     {
         for actionBaseDir in "${actionBaseDirs[@]}"; do
