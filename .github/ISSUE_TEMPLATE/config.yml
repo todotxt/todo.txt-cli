@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+- name: Discussions
+  url: //github.com/todotxt/todo.txt-cli/discussions
+  about: Post your feedback, questions, and ideas first in our discussions forum. Only enter a feature request here if it's already been discussed and there is a consensus that it is a good idea.
