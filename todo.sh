@@ -394,7 +394,7 @@ readinput()
     fi
     [ "$1" = '--' ] && shift
 
-    if [[ -z "$*" && $TODOTXT_FORCE = 0 ]]; then
+    if [[ $# -eq 0 && $TODOTXT_FORCE = 0 ]]; then
         read -e -r "${readArgs[@]}" input
     else
         input=$*
