@@ -474,11 +474,11 @@ replaceOrPrepend()
   case "$action" in
     replace)
       backref=
-      querytext="Replacement: "
+      querytext='Replacement'
       ;;
     prepend)
       backref=' &'
-      querytext="Prepend: "
+      querytext='Prepend'
       ;;
   esac
   shift; item=$1; shift
