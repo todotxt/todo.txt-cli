@@ -790,7 +790,9 @@ fi
 [ -f "$DONE_FILE" ] || [ -c "$DONE_FILE" ] || : > "$DONE_FILE"
 [ -f "$REPORT_FILE" ] || [ -c "$REPORT_FILE" ] || : > "$REPORT_FILE"
 
-if [ "$TODOTXT_PLAIN" = 1 ]; then
+_applyPlainMode()
+{
+    [ "$TODOTXT_PLAIN" = 1 ] || return 0
     for clr in ${!PRI_@}; do
         export "$clr"="$NONE"
     done
@@ -802,7 +804,7 @@ if [ "$TODOTXT_PLAIN" = 1 ]; then
     COLOR_DATE=$NONE
     COLOR_NUMBER=$NONE
     COLOR_META=$NONE
-fi
+}
 
 [[ -n "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
 [[ -n "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
@@ -946,6 +948,7 @@ _format()
         filtered_items=$items
     fi
     filtered_items=$(
+        _applyPlainMode
         echo -n "$filtered_items" \
         | sed '
             s/^     /00000/;
@@ -1067,6 +1070,7 @@ handleCustomAction()
         [ -d "$actionBaseDir" ] || continue
         for actionDir in "$actionBaseDir"/* "$actionBaseDir"; do
             if hasCustomAction "$actionDir" "$action"; then
+                _applyPlainMode # Add-ons may use the COLOR_* and PRI_* themselves, not just through _list() and _format().
                 [ -z "$prefixOutput" ] || echo "$prefixOutput"
                 "$actionDir/$action" "$@"
                 $onExists $?
@@ -1104,7 +1108,7 @@ listCustomActions()
     return "${PIPESTATUS[0]}"
 }
 
-export -f cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die listCustomActions
+export -f _applyPlainMode cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die listCustomActions
 
 # == HANDLE ACTION ==
 action=$(printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]')
