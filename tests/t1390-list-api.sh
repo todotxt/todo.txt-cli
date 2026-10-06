@@ -32,7 +32,7 @@ cat > todo.txt <<EOF
 EOF
 
 make_action testdriver-list '' '_list "$TODO_FILE"'
-test_todo_session '_list() all tasks' <<EOF
+test_todo_session '_list() all tasks' <<'EOF'
 >>> todo.sh testdriver-list
 custom action testdriver-list
 [1;33m01 (A) @con01 +prj01 -- Some project 01 task, pri A[0m
@@ -60,7 +60,7 @@ TODO: 20 of 20 tasks shown
 EOF
 
 make_action testdriver-list-nonverbose '' 'TODOTXT_VERBOSE=0 _list "$TODO_FILE"'
-test_todo_session '_list() obeys TODOTXT_VERBOSE' <<EOF
+test_todo_session '_list() obeys TODOTXT_VERBOSE' <<'EOF'
 >>> todo.sh testdriver-list-nonverbose
 custom action testdriver-list-nonverbose
 [1;33m01 (A) @con01 +prj01 -- Some project 01 task, pri A[0m
@@ -86,7 +86,7 @@ custom action testdriver-list-nonverbose
 EOF
 
 make_action testdriver-list-plain '' 'TODOTXT_PLAIN=1 _list "$TODO_FILE"'
-test_todo_session '_list() obeys TODOTXT_PLAIN' <<EOF
+test_todo_session '_list() obeys TODOTXT_PLAIN' <<'EOF'
 >>> todo.sh testdriver-list-plain
 custom action testdriver-list-plain
 01 (A) @con01 +prj01 -- Some project 01 task, pri A
@@ -111,6 +111,21 @@ custom action testdriver-list-plain
 20 @con02 +prj04 -- Some project 04 task, no priority
 --
 TODO: 20 of 20 tasks shown
+EOF
+
+make_action testdriver-plain-color-vars '' 'printf "COLOR_DONE=%q\\nDEFAULT=%q\\nPRI_A=%q\\n" "$COLOR_DONE" "$DEFAULT" "$PRI_A"'
+test_todo_session 'TODOTXT_PLAIN clears color definitions for custom add-ons' <<'EOF'
+>>> todo.sh testdriver-plain-color-vars
+custom action testdriver-plain-color-vars
+COLOR_DONE=\\\\033\[0\;37m
+DEFAULT=\\\\033\[0m
+PRI_A=\\\\033\[1\;33m
+
+>>> todo.sh -p testdriver-plain-color-vars
+custom action testdriver-plain-color-vars
+COLOR_DONE=''
+DEFAULT=''
+PRI_A=''
 EOF
 
 test_done
