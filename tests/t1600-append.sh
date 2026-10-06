@@ -49,6 +49,12 @@ test_todo_session 'append with spaces' <<EOF
 1 jump on hay and notice the   three   spaces
 EOF
 
+echo 'jump on hay' > todo.txt
+test_todo_session 'append nothing' <<EOF
+>>> todo.sh append 1 ""
+1 jump on hay
+EOF
+
 cat > todo.txt <<EOF
 smell the cows
 grow some corn

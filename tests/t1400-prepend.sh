@@ -63,6 +63,12 @@ test_todo_session 'prepend with spaces' <<EOF
 1 notice the   three   spaces and jump on hay
 EOF
 
+echo 'jump on hay' > todo.txt
+test_todo_session 'prepend nothing' <<EOF
+>>> todo.sh prepend 1 ""
+1 jump on hay
+EOF
+
 cat > todo.txt <<EOF
 smell the cows
 grow some corn

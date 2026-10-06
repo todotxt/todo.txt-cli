@@ -480,8 +480,11 @@ replaceOrPrepend()
       readinput 'Replacement' -i "$todo" -- "$@"
       ;;
     prepend)
-      backref=' &'
       readinput 'Prepend' -- "$@"
+      case "$input" in
+          '') backref='&';;
+          *)  backref=' &';;
+      esac
       ;;
   esac
 
