@@ -356,6 +356,7 @@ die()
     echo >&2 "$*"
     exit 1
 }
+export -f die
 
 getKeyFromUser()
 {
@@ -369,12 +370,14 @@ getKeyFromUser()
     echo >&2
     printf %s "$answer"
 }
+export -f getKeyFromUser
 
 confirm()
 {
     [ "$TODOTXT_FORCE" = 0 ] || return 0
     [ "$(getKeyFromUser "${1:?}? (y/n) ")" = 'y' ]
 }
+export -f confirm
 
 readinput()
 {
@@ -393,6 +396,8 @@ readinput()
     fi
     [ -n "$input" ]
 }
+export -f readinput
+
 cleaninput()
 {
     # Parameters:    When $1 = "for sed", performs additional escaping for use
@@ -413,6 +418,7 @@ cleaninput()
         input=${input//&/\\&}
     fi
 }
+export -f cleaninput
 
 getPrefix()
 {
@@ -423,6 +429,7 @@ getPrefix()
     base=$(basename "${1:-$TODO_FILE}")
     echo "${base%%.[^.]*}" | tr '[:lower:]' '[:upper:]'
 }
+export -f getPrefix
 
 getTodo()
 {
@@ -438,6 +445,7 @@ getTodo()
     todo=$(sed "$item!d" "${2:-$TODO_FILE}")
     [ -z "$todo" ] && die "$(getPrefix "$2"): No task $item."
 }
+export -f getTodo
 
 getNewtodo()
 {
@@ -453,6 +461,7 @@ getNewtodo()
     newtodo=$(sed "$item!d" "${2:-$TODO_FILE}")
     [ -z "$newtodo" ] && die "$(getPrefix "$2"): No updated task $item."
 }
+export -f getNewtodo
 
 replaceOrPrepend()
 {
@@ -823,6 +832,7 @@ _applyPlainMode()
     COLOR_NUMBER=$NONE
     COLOR_META=$NONE
 }
+export -f _applyPlainMode
 
 [[ -n "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
 [[ -n "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
@@ -883,6 +893,7 @@ filtercommand()
 
     printf %s "$filter"
 }
+export -f filtercommand
 
 _list()
 {
@@ -915,6 +926,7 @@ _list()
         echo "$(getPrefix "$src"): ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
     fi
 }
+export -f _list
 
 getPadding()
 {
@@ -922,6 +934,7 @@ getPadding()
     LINES=$(sed -n '$ =' "${1:-$TODO_FILE}")
     printf %s ${#LINES}
 }
+export -f getPadding
 
 _format()
 {
@@ -1049,6 +1062,7 @@ _format()
         echo "TODO DEBUG: Filter Command was: ${filter_command:-cat}"
     fi
 }
+export -f _format
 
 listWordsWithSigil()
 {
@@ -1065,6 +1079,7 @@ listWordsWithSigil()
             -e "/^${sigil}${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
         | sort -u
 }
+export -f listWordsWithSigil
 
 hasCustomAction()
 {
@@ -1125,8 +1140,7 @@ listCustomActions()
     } | sort -u
     return "${PIPESTATUS[0]}"
 }
-
-export -f getKeyFromUser confirm readinput _applyPlainMode cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die listCustomActions
+export -f listCustomActions
 
 # == HANDLE ACTION ==
 action=$(printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]')
