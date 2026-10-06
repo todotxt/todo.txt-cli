@@ -381,6 +381,10 @@ export -f confirm
 
 readinput()
 {
+    # Parameters:    $1: prompt text (can be empty)
+    #                $2 $3: -i initial_text (optional)
+    #                $4: -- separator of user input (optional)
+    #                $*: user input (optional); if given, skips the prompting
     local readArgs=()
     [ -n "${1?}" ] && readArgs=(-p "${1}: ")
     shift
@@ -388,6 +392,7 @@ readinput()
         readArgs+=("$1" "${2?}")
         shift; shift
     fi
+    [ "$1" = '--' ] && shift
 
     if [[ -z "$*" && $TODOTXT_FORCE = 0 ]]; then
         read -e -r "${readArgs[@]}" input
@@ -479,7 +484,7 @@ replaceOrPrepend()
   shift; item=$1; shift
   getTodo "$item"
 
-  readinput "$querytext" -i "$todo" "$@"
+  readinput "$querytext" -i "$todo" -- "$@"
 
   # Retrieve existing priority and prepended date
   local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
@@ -1166,13 +1171,13 @@ fi
 case $action in
 "add" | "a")
     shift
-    readinput 'Add' "$@" || die "usage: $TODO_SH add \"TODO ITEM\""
+    readinput 'Add' -- "$@" || die "usage: $TODO_SH add \"TODO ITEM\""
     _addto "$TODO_FILE" "$input"
     ;;
 
 "addm")
     shift
-    readinput 'Add' "$@" || die "usage: $TODO_SH addm \"TODO ITEM\""
+    readinput 'Add' -- "$@" || die "usage: $TODO_SH addm \"TODO ITEM\""
 
     # Set Internal Field Seperator as newline so we can
     # loop across multiple lines
@@ -1207,7 +1212,7 @@ case $action in
     shift; item=$1; shift
     getTodo "$item"
 
-    readinput 'Append' "$@" # Accept empty input here; it's harmless.
+    readinput 'Append' -- "$@" # Accept empty input here; it's harmless.
     case "$input" in
       '')                       appendspace=;;
       [$SENTENCE_DELIMITERS]*)  appendspace=;;
