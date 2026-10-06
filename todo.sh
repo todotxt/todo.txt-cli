@@ -471,20 +471,19 @@ export -f getNewtodo
 replaceOrPrepend()
 {
   action=$1; shift
-  case "$action" in
-    replace)
-      backref=
-      querytext='Replacement'
-      ;;
-    prepend)
-      backref=' &'
-      querytext='Prepend'
-      ;;
-  esac
   shift; item=$1; shift
   getTodo "$item"
 
-  readinput "$querytext" -i "$todo" -- "$@"
+  case "$action" in
+    replace)
+      backref=
+      readinput 'Replacement' -i "$todo" -- "$@"
+      ;;
+    prepend)
+      backref=' &'
+      readinput 'Prepend' -- "$@"
+      ;;
+  esac
 
   # Retrieve existing priority and prepended date
   local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
