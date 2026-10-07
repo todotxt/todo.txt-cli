@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+- name: Discussions
+  url: //github.com/todotxt/todo.txt-cli/discussions
+  about: Post your feedback, questions, and ideas first in our discussions forum. Only enter a feature request here if it's already been discussed and there is a consensus that it is a good idea.
+- name: Gitter IM dev chat
+  url: https://gitter.im/todotxt/todo.txt-cli
+  about: Want something more interactive? Chat with the core team and interested users about the CLI.
+- name: Gitter IM chat about todo.txt in general
+  url: https://gitter.im/todotxt/Lobby
+  about: If this isn't about the CLI specifically, but about todo.txt in general, this is the place to go.
