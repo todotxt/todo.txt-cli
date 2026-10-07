@@ -61,7 +61,7 @@ shorthelp()
 		  Usage: $oneline_usage
 
 		  Actions:
-		    add|a "THING I NEED TO DO +project @context"
+		    add|a "(B) THING I NEED TO DO +project @context"
 		    addm "THINGS I NEED TO DO
 		          MORE THINGS I NEED TO DO"
 		    addto DEST "TEXT TO ADD"
@@ -190,17 +190,17 @@ actionsHelp()
 {
     cat <<-EndActionsHelp
 		  Built-in Actions:
-		    add "THING I NEED TO DO +project @context"
-		    a "THING I NEED TO DO +project @context"
+		    add "(B) THING I NEED TO DO +project @context"
+		    a "(B) THING I NEED TO DO +project @context"
 		      Adds THING I NEED TO DO to your todo.txt file on its own line.
-		      Project and context notation optional.
+		      Priority (B), +project and @context notation optional.
 		      Quotes optional.
 
 		    addm "FIRST THING I NEED TO DO +project1 @context
-		    SECOND THING I NEED TO DO +project2 @context"
+		    (C) SECOND THING I NEED TO DO +project2 @context"
 		      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and
 		      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
-		      Project and context notation optional.
+		      Priority (C), +project and @context notation optional.
 
 		    addto DEST "TEXT TO ADD"
 		      Adds a line of text to any file located in the todo.txt directory.
