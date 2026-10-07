@@ -90,6 +90,9 @@ Note that some tests in the existing test suite rely on previous
 test item, so you cannot arbitrarily disable one and expect the
 remainder of test to check what the test originally was intended
 to check.
+Also, if the test itself relies on some preconditions that may not be
+universally true, put a condition around test_todo_session() to skip the
+test rather than manipulating SKIP_TESTS inside the test.
 
 
 Naming Tests
@@ -105,7 +108,9 @@ First digit tells the family:
 
     0 - the absolute basics and global stuff
     1 - basic every-day usage
-    2 - add ins
+    2 - help and special conditions
+    6 - completion
+    8 - custom actions
 
 Second digit tells the particular command we are testing.
 
@@ -125,18 +130,14 @@ Writing Tests
 -------------
 
 The test script is written as a shell script.  It should start
-with the standard "#!/usr/bin/env bash" with copyright notices, and an
-assignment to variable 'test_description', like this:
+with the standard "#!/usr/bin/env bash" and an assignment to variable
+'test_description', like this:
 
     #!/usr/bin/env bash
-    #
-    # Copyright (c) 2005 Junio C Hamano
-    #
 
-    test_description='xxx test (option --frotz)
+    test_description='xxx test
 
-    This test registers the following structure in the cache
-    and tries to run git-ls-files with option --frotz.'
+    This test invokes the xxx command.'
 
 
 Source 'test-lib.sh'
@@ -153,8 +154,9 @@ This test harness library does the following things:
    (or -h), it shows the test_description and exits.
 
  - Creates an empty test directory with an empty todo file
-   database and chdir(2) into it.  This directory is 't/trash directory'
-   if you must know, but I do not think you care.
+   database and chdir(2) into it.  This directory is
+   'tests/trash directory.<test name>' if you must know, but I do not
+   think you care.
 
  - Defines standard test helper functions for your scripts to
    use.  These functions are designed to make all scripts behave
