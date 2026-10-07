@@ -156,7 +156,7 @@ $indentedJoinedConfigFileLocations
 
 	EndOptionsHelp
 
-    [ "$TODOTXT_VERBOSE" -gt 1 ] && cat <<-'EndVerboseHelp'
+    [ "$TODOTXT_VERBOSE" -gt 1 ] && cat <<-EndVerboseHelp
 		  Environment variables:
 		    TODOTXT_AUTO_ARCHIVE            is same as option -a (0)/-A (1)
 		    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
@@ -170,11 +170,16 @@ $indentedJoinedConfigFileLocations
 		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
 		    TODOTXT_SORT_COMMAND="sort ..." customize list output
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
-		    TODOTXT_SOURCEVAR=\$DONE_FILE   use another source for listcon, listproj
-		    TODOTXT_SIGIL_BEFORE_PATTERN="" optionally allow chars preceding +p / @c
-		    TODOTXT_SIGIL_VALID_PATTERN='[^ ]\{1,\}'
+		    TODOTXT_DATE_FORMAT='$TODOTXT_DATE_FORMAT'  customize creation/completion date format
+		    TODOTXT_DATE_FORMAT_PATTERN='$TODOTXT_DATE_FORMAT_PATTERN'
+		                                    customize creation/completion date
+		                                    extraction format for prepend and
+		                                    replace actions
+		    TODOTXT_SOURCEVAR=\$DONE_FILE    use another source for listcon, listproj
+		    TODOTXT_SIGIL_BEFORE_PATTERN='$TODOTXT_SIGIL_BEFORE_PATTERN' optionally allow chars preceding +p / @c
+		    TODOTXT_SIGIL_VALID_PATTERN='$TODOTXT_SIGIL_VALID_PATTERN'
 		                                    tweak the allowed chars for +p and @c
-		    TODOTXT_SIGIL_AFTER_PATTERN=""  optionally allow chars after +p / @c
+		    TODOTXT_SIGIL_AFTER_PATTERN='$TODOTXT_SIGIL_AFTER_PATTERN'  optionally allow chars after +p / @c
 
 	EndVerboseHelp
     actionsHelp
@@ -490,7 +495,7 @@ replaceOrPrepend()
   esac
 
   # Retrieve existing priority and prepended date
-  local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
+  local -r priAndDateExpr='^\((.) \)\{0,1\}\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}'
   originalPriority=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\1/" "$TODO_FILE")
   priority="$originalPriority"
   originalPrepdate=$(sed -e "$item!d" -e "${item}s/${priAndDateExpr}.*/\\2/" "$TODO_FILE")
@@ -514,8 +519,10 @@ replaceOrPrepend()
   # Temporarily remove any existing priority and prepended date, perform the
   # change (replace/prepend) and re-insert the existing priority and prepended
   # date again.
+  input="${priority}${prepdate}${input}"
   cleaninput "for sed"
-  sed -i.bak -e "$item s/^${originalPriority}${originalPrepdate}//" -e "$item s|^.*|${priority}${prepdate}${input}${backref}|" "$TODO_FILE"
+  literalOriginalPriorityAndPrepdate="$(echo "${originalPriority}${originalPrepdate}" | sed -e 's/[][\$*.^|]/\\&/g')"
+  sed -i.bak -e "$item s|^${literalOriginalPriorityAndPrepdate}||" -e "$item s|^.*|${input}${backref}|" "$TODO_FILE"
   if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
     getNewtodo "$item"
     case "$action" in
@@ -556,6 +563,8 @@ OVR_TODOTXT_AUTO_ARCHIVE="$TODOTXT_AUTO_ARCHIVE"
 OVR_TODOTXT_FORCE="$TODOTXT_FORCE"
 OVR_TODOTXT_PRESERVE_LINE_NUMBERS="$TODOTXT_PRESERVE_LINE_NUMBERS"
 OVR_TODOTXT_PLAIN="$TODOTXT_PLAIN"
+OVR_TODOTXT_DATE_FORMAT="$TODOTXT_DATE_FORMAT"
+OVR_TODOTXT_DATE_FORMAT_PATTERN="$TODOTXT_DATE_FORMAT_PATTERN"
 OVR_TODOTXT_DATE_ON_ADD="$TODOTXT_DATE_ON_ADD"
 OVR_TODOTXT_PRIORITY_ON_ADD="$TODOTXT_PRIORITY_ON_ADD"
 OVR_TODOTXT_DISABLE_FILTER="$TODOTXT_DISABLE_FILTER"
@@ -674,6 +683,8 @@ TODOTXT_PLAIN=${TODOTXT_PLAIN:-0}
 TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
+TODOTXT_DATE_FORMAT=${TODOTXT_DATE_FORMAT:-%Y-%m-%d}
+TODOTXT_DATE_FORMAT_PATTERN=${TODOTXT_DATE_FORMAT_PATTERN:-'[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}'}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_PRIORITY_ON_ADD=${TODOTXT_PRIORITY_ON_ADD:-}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
@@ -780,6 +791,12 @@ fi
 if [ -n "$OVR_TODOTXT_PLAIN" ]; then
     TODOTXT_PLAIN="$OVR_TODOTXT_PLAIN"
 fi
+if [ -n "$OVR_TODOTXT_DATE_FORMAT" ]; then
+    TODOTXT_DATE_FORMAT="$OVR_TODOTXT_DATE_FORMAT"
+fi
+if [ -n "$OVR_TODOTXT_DATE_FORMAT_PATTERN" ]; then
+    TODOTXT_DATE_FORMAT_PATTERN="$OVR_TODOTXT_DATE_FORMAT_PATTERN"
+fi
 if [ -n "$OVR_TODOTXT_DATE_ON_ADD" ]; then
     TODOTXT_DATE_ON_ADD="$OVR_TODOTXT_DATE_ON_ADD"
 fi
@@ -847,26 +864,27 @@ export -f _applyPlainMode
 
 _addto()
 {
-    file="$1"
-    input="$2"
+    local file="$1"
+    local input="$2"
     cleaninput
     uppercasePriority
+    local newtodo="$input"
 
     if [[ "$TODOTXT_DATE_ON_ADD" -eq 1 ]]; then
-        local now
-        now=$(date '+%Y-%m-%d')
-        input=$(echo "$input" | sed -e 's/^\(([A-Z]) \)\{0,1\}/\1'"$now /")
+        input=$(date "+$TODOTXT_DATE_FORMAT")
+        cleaninput "for sed"
+        newtodo=$(echo "$newtodo" | sed -e 's|^\(([A-Z]) \)\{0,1\}|\1'"$input |")
     fi
     if [[ -n "$TODOTXT_PRIORITY_ON_ADD" ]]; then
-        if ! echo "$input" | grep -q '^([A-Z])'; then
-            input=$(echo -n "($TODOTXT_PRIORITY_ON_ADD) "; echo "$input")
+        if ! echo "$newtodo" | grep -q '^([A-Z])'; then
+            newtodo=$(echo -n "($TODOTXT_PRIORITY_ON_ADD) "; echo "$newtodo")
         fi
     fi
     fixMissingEndOfLine "$file"
-    echo "$input" >> "$file"
+    echo "$newtodo" >> "$file"
     if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
         TASKNUM=$(sed -n '$ =' "$file")
-        echo "$TASKNUM $input"
+        echo "$TASKNUM $newtodo"
         echo "$(getPrefix "$file"): $TASKNUM added."
     fi
 }
@@ -1332,10 +1350,11 @@ case $action in
 
         # Check if this item has already been done
         if [ "${todo:0:2}" != "x " ]; then
-            now=$(date '+%Y-%m-%d')
+            input=$(date "+$TODOTXT_DATE_FORMAT")
+            cleaninput "for sed"
             # remove priority once item is done
             sed -i.bak "${item}s/^(.) //" "$TODO_FILE"
-            sed -i.bak "${item}s|^|x $now |" "$TODO_FILE"
+            sed -i.bak "${item}s|^|x $input |" "$TODO_FILE"
             if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
                 getNewtodo "$item"
                 echo "$item $newtodo"

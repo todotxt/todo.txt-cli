@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Custom actions can now be in any subdir, not just `action/action` ([#495])
 - `TODO_ACTIONS_DIR` now allows multiple colon-separated directories for when a
   single subdirectory is not enough to distribute custom actions ([#496])
+- The new `TODOTXT_DATE_FORMAT` and `TODOTXT_DATE_FORMAT_PATTERN` configuration
+  allows to customize the format of creation and completion dates ([#457])
 
 ## [2.14.0] - 2026-09-01
 
@@ -561,6 +563,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#407]: https://github.com/todotxt/todo.txt-cli/pull/407
 [#451]: https://github.com/todotxt/todo.txt-cli/pull/451
 [#452]: https://github.com/todotxt/todo.txt-cli/pull/452
+[#457]: https://github.com/todotxt/todo.txt-cli/pull/457
 [#447]: https://github.com/todotxt/todo.txt-cli/pull/447
 [#460]: https://github.com/todotxt/todo.txt-cli/pull/460
 [#495]: https://github.com/todotxt/todo.txt-cli/pull/495
