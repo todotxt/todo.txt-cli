@@ -1613,13 +1613,13 @@ note: PRIORITY must be anywhere from A to Z."
 "listaddons")
     if customActions=$(listCustomActions); then
         if [ -z "$customActions" ]; then
-            die "TODO: '$TODO_ACTIONS_DIR' does not contain valid actions."
+            die "TODO: '$TODO_ACTIONS_DIR' does not contain add-on actions."
         else
             printf '%s\n' "$customActions"
             if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
                 actionsCnt=$(printf '%s\n' "$customActions" | sed -n '$ =')
                 echo "--"
-                echo "TODO: $actionsCnt valid addon actions found."
+                echo "TODO: $actionsCnt add-on actions found."
             fi
         fi 
     else

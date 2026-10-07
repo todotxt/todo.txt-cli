@@ -54,7 +54,7 @@ ls
 norris
 quux
 --
-TODO: 8 valid addon actions found.
+TODO: 8 add-on actions found.
 
 >>> todo.sh -v shorthelp | sed -n '/^  Add-on Actions:/,/^  [A-Z]/p'
   Add-on Actions:
