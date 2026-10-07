@@ -853,26 +853,27 @@ export -f _applyPlainMode
 
 _addto()
 {
-    file="$1"
-    input="$2"
+    local file="$1"
+    local input="$2"
     cleaninput
     uppercasePriority
+    local newtodo="$input"
 
     if [[ "$TODOTXT_DATE_ON_ADD" -eq 1 ]]; then
-        local now
-        now=$(date "+$TODOTXT_DATE_FORMAT")
-        input=$(echo "$input" | sed -e 's/^\(([A-Z]) \)\{0,1\}/\1'"$now /")
+        input=$(date "+$TODOTXT_DATE_FORMAT")
+        cleaninput "for sed"
+        newtodo=$(echo "$newtodo" | sed -e 's|^\(([A-Z]) \)\{0,1\}|\1'"$input |")
     fi
     if [[ -n "$TODOTXT_PRIORITY_ON_ADD" ]]; then
-        if ! echo "$input" | grep -q '^([A-Z])'; then
-            input=$(echo -n "($TODOTXT_PRIORITY_ON_ADD) "; echo "$input")
+        if ! echo "$newtodo" | grep -q '^([A-Z])'; then
+            newtodo=$(echo -n "($TODOTXT_PRIORITY_ON_ADD) "; echo "$newtodo")
         fi
     fi
     fixMissingEndOfLine "$file"
-    echo "$input" >> "$file"
+    echo "$newtodo" >> "$file"
     if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
         TASKNUM=$(sed -n '$ =' "$file")
-        echo "$TASKNUM $input"
+        echo "$TASKNUM $newtodo"
         echo "$(getPrefix "$file"): $TASKNUM added."
     fi
 }
@@ -1338,10 +1339,11 @@ case $action in
 
         # Check if this item has already been done
         if [ "${todo:0:2}" != "x " ]; then
-            now=$(date "+$TODOTXT_DATE_FORMAT")
+            input=$(date "+$TODOTXT_DATE_FORMAT")
+            cleaninput "for sed"
             # remove priority once item is done
             sed -i.bak "${item}s/^(.) //" "$TODO_FILE"
-            sed -i.bak "${item}s|^|x $now |" "$TODO_FILE"
+            sed -i.bak "${item}s|^|x $input |" "$TODO_FILE"
             if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
                 getNewtodo "$item"
                 echo "$item $newtodo"
