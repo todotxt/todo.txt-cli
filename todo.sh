@@ -172,10 +172,10 @@ $indentedJoinedConfigFileLocations
 		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
 		    TODOTXT_DATE_FORMAT='$TODOTXT_DATE_FORMAT'  customize creation/completion date format
 		    TODOTXT_SOURCEVAR=\$DONE_FILE    use another source for listcon, listproj
-		    TODOTXT_SIGIL_BEFORE_PATTERN="" optionally allow chars preceding +p / @c
-		    TODOTXT_SIGIL_VALID_PATTERN='[^ ]\{1,\}'
+		    TODOTXT_SIGIL_BEFORE_PATTERN='$TODOTXT_SIGIL_BEFORE_PATTERN' optionally allow chars preceding +p / @c
+		    TODOTXT_SIGIL_VALID_PATTERN='$TODOTXT_SIGIL_VALID_PATTERN'
 		                                    tweak the allowed chars for +p and @c
-		    TODOTXT_SIGIL_AFTER_PATTERN=""  optionally allow chars after +p / @c
+		    TODOTXT_SIGIL_AFTER_PATTERN='$TODOTXT_SIGIL_AFTER_PATTERN'  optionally allow chars after +p / @c
 
 	EndVerboseHelp
     actionsHelp
