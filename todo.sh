@@ -356,20 +356,52 @@ die()
     echo >&2 "$*"
     exit 1
 }
+export -f die
+
+getKeyFromUser()
+{
+    local readArgs=()
+    if [ -n "${BASH_VERSINFO:-}" ] && ((BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 1) )); then
+        readArgs+=(-N 1)    # Bash 4.1+ supports -N nchars
+    fi
+    [ $# -eq 0 ] || readArgs+=(-p "${1:?}")
+    local answer
+    read -e -r "${readArgs[@]}" answer
+    echo >&2
+    printf %s "$answer"
+}
+export -f getKeyFromUser
 
 confirm()
 {
     [ "$TODOTXT_FORCE" = 0 ] || return 0
-
-    local readArgs=(-e -r)
-    if [ -n "${BASH_VERSINFO:-}" ] && ((BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 1) )); then
-        readArgs+=(-N 1)    # Bash 4.1+ supports -N nchars
-    fi
-    local answer
-    read -rp "${1:?}? (y/n) " "${readArgs[@]}" answer
-    echo
-    [ "$answer" = "y" ]
+    [ "$(getKeyFromUser "${1:?}? (y/n) ")" = 'y' ]
 }
+export -f confirm
+
+readinput()
+{
+    # Parameters:    $1: prompt text (can be empty)
+    #                $2 $3: -i initial_text (optional)
+    #                $4: -- separator of user input (optional)
+    #                $*: user input (optional); if given, skips the prompting
+    local readArgs=()
+    [ -n "${1?}" ] && readArgs=(-p "${1}: ")
+    shift
+    if [ "$1" = -i ]; then
+        readArgs+=("$1" "${2?}")
+        shift; shift
+    fi
+    [ "$1" = '--' ] && shift
+
+    if [[ $# -eq 0 && $TODOTXT_FORCE = 0 ]]; then
+        read -e -r "${readArgs[@]}" input
+    else
+        input=$*
+    fi
+    [ -n "$input" ]
+}
+export -f readinput
 
 cleaninput()
 {
@@ -391,6 +423,7 @@ cleaninput()
         input=${input//&/\\&}
     fi
 }
+export -f cleaninput
 
 getPrefix()
 {
@@ -401,6 +434,7 @@ getPrefix()
     base=$(basename "${1:-$TODO_FILE}")
     echo "${base%%.[^.]*}" | tr '[:lower:]' '[:upper:]'
 }
+export -f getPrefix
 
 getTodo()
 {
@@ -416,6 +450,7 @@ getTodo()
     todo=$(sed "$item!d" "${2:-$TODO_FILE}")
     [ -z "$todo" ] && die "$(getPrefix "$2"): No task $item."
 }
+export -f getTodo
 
 getNewtodo()
 {
@@ -431,28 +466,27 @@ getNewtodo()
     newtodo=$(sed "$item!d" "${2:-$TODO_FILE}")
     [ -z "$newtodo" ] && die "$(getPrefix "$2"): No updated task $item."
 }
+export -f getNewtodo
 
 replaceOrPrepend()
 {
   action=$1; shift
-  case "$action" in
-    replace)
-      backref=
-      querytext="Replacement: "
-      ;;
-    prepend)
-      backref=' &'
-      querytext="Prepend: "
-      ;;
-  esac
   shift; item=$1; shift
   getTodo "$item"
 
-  if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
-    read -p "$querytext" -r -i "$todo" -e input
-  else
-    input=$*
-  fi
+  case "$action" in
+    replace)
+      backref=
+      readinput 'Replacement' -i "$todo" -- "$@"
+      ;;
+    prepend)
+      readinput 'Prepend' -- "$@"
+      case "$input" in
+          '') backref='&';;
+          *)  backref=' &';;
+      esac
+      ;;
+  esac
 
   # Retrieve existing priority and prepended date
   local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
@@ -805,6 +839,7 @@ _applyPlainMode()
     COLOR_NUMBER=$NONE
     COLOR_META=$NONE
 }
+export -f _applyPlainMode
 
 [[ -n "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
 [[ -n "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
@@ -865,6 +900,7 @@ filtercommand()
 
     printf %s "$filter"
 }
+export -f filtercommand
 
 _list()
 {
@@ -897,6 +933,7 @@ _list()
         echo "$(getPrefix "$src"): ${NUMTASKS:-0} of ${TOTALTASKS:-0} tasks shown"
     fi
 }
+export -f _list
 
 getPadding()
 {
@@ -904,6 +941,7 @@ getPadding()
     LINES=$(sed -n '$ =' "${1:-$TODO_FILE}")
     printf %s ${#LINES}
 }
+export -f getPadding
 
 _format()
 {
@@ -1031,6 +1069,7 @@ _format()
         echo "TODO DEBUG: Filter Command was: ${filter_command:-cat}"
     fi
 }
+export -f _format
 
 listWordsWithSigil()
 {
@@ -1047,6 +1086,7 @@ listWordsWithSigil()
             -e "/^${sigil}${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
         | sort -u
 }
+export -f listWordsWithSigil
 
 hasCustomAction()
 {
@@ -1107,8 +1147,7 @@ listCustomActions()
     } | sort -u
     return "${PIPESTATUS[0]}"
 }
-
-export -f _applyPlainMode cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die listCustomActions
+export -f listCustomActions
 
 # == HANDLE ACTION ==
 action=$(printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]')
@@ -1133,24 +1172,14 @@ fi
 # Only run if $action isn't found in $TODO_ACTIONS_DIR
 case $action in
 "add" | "a")
-    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
-        read -p "Add: " -e -r input
-    else
-        [ -z "$2" ] && die "usage: $TODO_SH add \"TODO ITEM\""
-        shift
-        input=$*
-    fi
+    shift
+    readinput 'Add' -- "$@" || die "usage: $TODO_SH add \"TODO ITEM\""
     _addto "$TODO_FILE" "$input"
     ;;
 
 "addm")
-    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
-        read -p "Add: " -e -r input
-    else
-        [ -z "$2" ] && die "usage: $TODO_SH addm \"TODO ITEM\""
-        shift
-        input=$*
-    fi
+    shift
+    readinput 'Add' -- "$@" || die "usage: $TODO_SH addm \"TODO ITEM\""
 
     # Set Internal Field Seperator as newline so we can
     # loop across multiple lines
@@ -1185,12 +1214,9 @@ case $action in
     shift; item=$1; shift
     getTodo "$item"
 
-    if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
-        read -p "Append: " -e -r input
-    else
-        input=$*
-    fi
+    readinput 'Append' -- "$@" # Accept empty input here; it's harmless.
     case "$input" in
+      '')                       appendspace=;;
       [$SENTENCE_DELIMITERS]*)  appendspace=;;
       *)                        appendspace=" ";;
     esac
@@ -1200,7 +1226,7 @@ case $action in
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
             getNewtodo "$item"
             echo "$item $newtodo"
-    fi
+        fi
     else
         die "TODO: Error appending task $item."
     fi
