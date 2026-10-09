@@ -8,11 +8,16 @@
 # Backslashes need to be escaped for Markdown.
 s/\\/\\\\/g
 # Format usage as code block.
-s/^  Usage: .*$/```\n&\n```/
+s/^  Usage: .*$/```\
+&\
+```/
 # Level 2 headings.
 s/^  \([[:alpha:]].*\):$/## \1/
 # Level 3 headings need more processing.
-/^    [^[:space:]]/{ N; b levelThree; }
+/^    [^[:space:]]/{
+    N
+    b levelThree
+}
 # Lists have an indent of 10 spaces.
 s/^ \{10\}\([^[:space:]].*\)/* \1/
 # Anything else with more than 4 spaces of indentation is plain text.
@@ -21,20 +26,44 @@ b
 
 :levelThree
 # Format options.
-s/^    \(-[^[:space:]]\+.*\)\n/### \1\n\n/
+s/^    \(-[^[:space:]]\{1,\}.*\)\n/### \1\
+\
+/
 t printAndRestartWithLastLine
 # Special handling of addm that has a single shell command over two lines.
-s/^    \([^[:space:]]\+\)\( "[^"]*\)\n    \([^[:space:]][^"]*"\)$/### \1\n\n```shell\n$ todo.sh \1\2\n\3\n```\n/
+s/^    \([^[:space:]]\{1,\}\)\( "[^"]*\)\n    \([^[:space:]][^"]*"\)$/### \1\
+\
+```shell\
+$ todo.sh \1\2\
+\3\
+```\
+/
 t
 # Handle actions (like add|a) that have a short alias.
-s/^    \([^[:space:]]\+\)\(.*\)\n    \([^[:space:]]\+\)\(.*\)$/### \1\n\n```shell\n$ todo.sh \1\2\n$ todo.sh \3\4\n```\n/
+s/^    \([^[:space:]]\{1,\}\)\(.*\)\n    \([^[:space:]]\{1,\}\)\(.*\)$/### \1\
+\
+```shell\
+$ todo.sh \1\2\
+$ todo.sh \3\4\
+```\
+/
 t printAndRestartWithLastLine
 # Normal actions.
-s/^    \([^[:space:]]\+\)\(.*\)\n/### \1\n\n```shell\n$ todo.sh \1\2\n```\n/
+s/^    \([^[:space:]]\{1,\}\)\(.*\)\n/### \1\
+\
+```shell\
+$ todo.sh \1\2\
+```\
+/
 
 # The lookahead line didn't belong to the action, so print all lines that render
 # the action and restart processing with the lookahead line in pattern space.
 :printAndRestartWithLastLine
 /\n/!b restart
-P; s/^[^\n]*\n//
+P
+# XXX: In POSIX sed, [^\n]* is ineffective and matches like .*; work around by
+# temporarily translating newlines to another unused character.
+y/\n//
+    s/^[^]*//
+y//\n/
 b printAndRestartWithLastLine
