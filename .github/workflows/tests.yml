@@ -20,11 +20,12 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - run: make
+    - run: make test
+    - run: make -B doc
     - run: |
-        make test
         modifiedFiles=$(git status --porcelain)
         if [ -n "$modifiedFiles" ]; then
-          printf >&2 'ERROR: The following files were modified during the test:\n%s\n' "$modifiedFiles"
+          printf >&2 'ERROR: The following checked-in files were modified during the build:\n%s\n' "$modifiedFiles"
           exit 1
         fi
     - run: make dist

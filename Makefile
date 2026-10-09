@@ -126,6 +126,8 @@ installdirs:
 	         $(DESTDIR)$(sysconfdir)/todo \
 	         $(DESTDIR)$(datarootdir)
 
+.PHONY: doc
+doc: USAGE.md  ## generate documentation (USAGE.md) from usage help
 USAGE.md: todo.sh todo.cfg usageToMarkdown
 	unset $${!TODOTXT_@}; HOME=$(CURDIR) XDG_CONFIG_HOME='' TODOTXT_VERBOSE=2 ./$< help | sed -e "s|$(CURDIR)|~|g" | ./usageToMarkdown > $@
 
