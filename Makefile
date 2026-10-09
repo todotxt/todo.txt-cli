@@ -2,7 +2,7 @@
 # Makefile for todo.txt
 #
 
-SHELL = /bin/sh
+SHELL = /bin/bash
 
 INSTALL = /usr/bin/install
 INSTALL_PROGRAM = $(INSTALL)
@@ -127,7 +127,7 @@ installdirs:
 	         $(DESTDIR)$(datarootdir)
 
 USAGE.md: todo.sh todo.cfg usageToMarkdown
-	HOME=$(CURDIR) XDG_CONFIG_HOME='' ./$< help | sed -e "s|$(CURDIR)|~|g" | ./usageToMarkdown > $@
+	unset $${!TODOTXT_@}; HOME=$(CURDIR) XDG_CONFIG_HOME='' ./$< help | sed -e "s|$(CURDIR)|~|g" | ./usageToMarkdown > $@
 
 #
 # Testing
