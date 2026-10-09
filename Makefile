@@ -82,7 +82,7 @@ $(DISTNAME)/todo.sh: VERSION-FILE
 	chmod +x $(DISTNAME)/todo.sh
 
 .PHONY: build
-build: $(DISTNAME) $(DISTFILES)  ## create the dist directory and files
+build: $(DISTNAME) $(DISTFILES) USAGE.md  ## create the dist directory and files
 
 .PHONY: dist
 dist: build   ## create the compressed release files
@@ -126,6 +126,9 @@ installdirs:
 	         $(DESTDIR)$(sysconfdir)/todo \
 	         $(DESTDIR)$(datarootdir)
 
+USAGE.md: todo.sh todo.cfg usageToMarkdown
+	HOME=$(CURDIR) XDG_CONFIG_HOME='' ./$< help | sed -e "s|$(CURDIR)|~|g" | ./usageToMarkdown > $@
+
 #
 # Testing
 #
@@ -143,7 +146,7 @@ $(TESTS): test-pre-clean
 	cd tests && ./$(notdir $@) $(TEST_OPTIONS)
 
 # run tests, print a test result summary, and remove generated test results
-test: aggregate-results   ## run tests on the development files
+test: aggregate-results USAGE.md   ## run tests on the development files
 	tests/aggregate-results.sh tests/test-results/t*-*
 	rm -rf tests/test-results
 
