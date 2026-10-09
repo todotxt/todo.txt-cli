@@ -21,7 +21,7 @@ cat > demo-usage.txt <<'EOF'
 
   Environment variables:
     TODOTXT_AUTO_COLOR              is same as option -c
-    TODOTXT_LONG_CONFIG="value is also long so description is on new line"
+    TODOTXT_LONG_CONFIG='value is also long so description is on new line'
                                     this configuration can do
                                     a lot of things
     TODOTXT_CONFIG_WITH_VALUE=xxx   default value xxx
@@ -67,7 +67,7 @@ is same as option -c
 ### TODOTXT\_LONG\_CONFIG
 \
 ```shell
-TODOTXT_LONG_CONFIG="value is also long so description is on new line"
+TODOTXT_LONG_CONFIG='value is also long so description is on new line'
 ```
 \
 \

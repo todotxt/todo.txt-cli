@@ -36,14 +36,25 @@ s/^    \(-[^[:space:]]\{1,\}.*\)\n/### \1\
 /
 t printAndRestartWithLastLine
 
-# Format environment variables with value and optional appended description.
-s/^    \(TODOTXT_[^[:space:]]\{1,\}\)\(=\('[^']*'\|"[^"]*"\|[^[:space:]]*\)\)\([[:space:]]\{1,\}\(.*\)\)\{0,1\}\n/### \1\
+# Format environment variables with single-quoted value and optional appended description.
+s/^    \(TODOTXT_[^[:space:]]\{1,\}\)\(='[^']*'\)\([[:space:]]\{1,\}\(.*\)\)\{0,1\}\n/### \1\
 \
 ```shell\
 \1\2\
 ```\
 \
-\5\
+\4\
+\
+/
+t printAndRestartWithLastLine
+# Format environment variables with single WORD value and optional appended description.
+s/^    \(TODOTXT_[^[:space:]]\{1,\}\)\(=[^[:space:]]*\)\([[:space:]]\{1,\}\(.*\)\)\{0,1\}\n/### \1\
+\
+```shell\
+\1\2\
+```\
+\
+\4\
 \
 /
 t printAndRestartWithLastLine

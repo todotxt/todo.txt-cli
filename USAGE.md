@@ -134,7 +134,7 @@ is same as option -x
 ### TODOTXT\_DEFAULT\_ACTION
 
 ```shell
-TODOTXT_DEFAULT_ACTION=""
+TODOTXT_DEFAULT_ACTION=''
 ```
 
 run this when called with no arguments
@@ -142,7 +142,7 @@ run this when called with no arguments
 ### TODOTXT\_SORT\_COMMAND
 
 ```shell
-TODOTXT_SORT_COMMAND="sort ..."
+TODOTXT_SORT_COMMAND='sort ...'
 ```
 
 customize list output
@@ -150,7 +150,7 @@ customize list output
 ### TODOTXT\_FINAL\_FILTER
 
 ```shell
-TODOTXT_FINAL_FILTER="sed ..."
+TODOTXT_FINAL_FILTER='sed ...'
 ```
 
 customize list after color, P@+ hiding

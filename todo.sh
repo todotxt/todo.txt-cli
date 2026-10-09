@@ -167,9 +167,9 @@ $indentedJoinedConfigFileLocations
 		    TODOTXT_PRIORITY_ON_ADD=pri     default priority A-Z
 		    TODOTXT_VERBOSE=1               is same as option -v
 		    TODOTXT_DISABLE_FILTER=1        is same as option -x
-		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
-		    TODOTXT_SORT_COMMAND="sort ..." customize list output
-		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
+		    TODOTXT_DEFAULT_ACTION=''       run this when called with no arguments
+		    TODOTXT_SORT_COMMAND='sort ...' customize list output
+		    TODOTXT_FINAL_FILTER='sed ...'  customize list after color, P@+ hiding
 		    TODOTXT_DATE_FORMAT='$TODOTXT_DATE_FORMAT'  customize creation/completion date format
 		    TODOTXT_DATE_FORMAT_PATTERN='$TODOTXT_DATE_FORMAT_PATTERN'
 		                                    customize creation/completion date
