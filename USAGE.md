@@ -16,7 +16,7 @@ names (default).
 ### -c
 
 Color mode
-### -d CONFIG_FILE
+### -d CONFIG\_FILE
 
 Use a configuration file other than one of the defaults:
 * ~/.todo/config
@@ -72,7 +72,7 @@ additional help text
 Displays version, license and credits
 ### -x
 
-Disables TODOTXT_FINAL_FILTER
+Disables TODOTXT\_FINAL\_FILTER
 
 ## Built-in Actions
 ### add
@@ -128,7 +128,7 @@ Moves all done tasks from todo.txt to done.txt and removes blank lines.
 $ todo.sh command [ACTIONS]
 ```
 Runs the remaining arguments using only todo.sh builtins.
-Will not call any TODO_ACTIONS_DIR (~/.todo/actions) scripts.
+Will not call any TODO\_ACTIONS\_DIR (~/.todo/actions) scripts.
 
 ### deduplicate
 
