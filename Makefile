@@ -127,7 +127,7 @@ installdirs:
 	         $(DESTDIR)$(datarootdir)
 
 USAGE.md: todo.sh todo.cfg usageToMarkdown
-	unset $${!TODOTXT_@}; HOME=$(CURDIR) XDG_CONFIG_HOME='' ./$< help | sed -e "s|$(CURDIR)|~|g" | ./usageToMarkdown > $@
+	unset $${!TODOTXT_@}; HOME=$(CURDIR) XDG_CONFIG_HOME='' TODOTXT_VERBOSE=2 ./$< help | sed -e "s|$(CURDIR)|~|g" | ./usageToMarkdown > $@
 
 #
 # Testing

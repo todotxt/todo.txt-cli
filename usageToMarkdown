@@ -35,6 +35,27 @@ s/^    \(-[^[:space:]]\{1,\}.*\)\n/### \1\
 \
 /
 t printAndRestartWithLastLine
+
+# Format environment variables with value and optional appended description.
+s/^    \(TODOTXT_[^[:space:]]\{1,\}\)\(=\('[^']*'\|"[^"]*"\|[^[:space:]]*\)\)\([[:space:]]\{1,\}\(.*\)\)\{0,1\}\n/### \1\
+\
+```shell\
+\1\2\
+```\
+\
+\5\
+\
+/
+t printAndRestartWithLastLine
+
+# Format environment variables without value and mandatory appended description.
+s/^    \(TODOTXT_[^[:space:]]\{1,\}\)[[:space:]]\{1,\}\(.*\)\n/### \1\
+\
+\2\
+\
+/
+t printAndRestartWithLastLine
+
 # Special handling of addm that has a single shell command over two lines.
 s/^    \([^[:space:]]\{1,\}\)\( "[^"]*\)\n    \([^[:space:]][^"]*"\)$/### \1\
 \

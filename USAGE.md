@@ -74,6 +74,140 @@ Displays version, license and credits
 
 Disables TODOTXT\_FINAL\_FILTER
 
+## Environment variables
+### TODOTXT\_AUTO\_ARCHIVE
+
+is same as option -a (0)/-A (1)
+
+### TODOTXT\_CFG\_FILE
+
+```shell
+TODOTXT_CFG_FILE=CONFIG_FILE
+```
+
+is same as option -d CONFIG_FILE
+
+### TODOTXT\_FORCE
+
+```shell
+TODOTXT_FORCE=1
+```
+
+is same as option -f
+
+### TODOTXT\_PRESERVE\_LINE\_NUMBERS
+
+is same as option -n (0)/-N (1)
+
+### TODOTXT\_PLAIN
+
+is same as option -p (1)/-c (0)
+
+### TODOTXT\_DATE\_ON\_ADD
+
+is same as option -t (1)/-T (0)
+
+### TODOTXT\_PRIORITY\_ON\_ADD
+
+```shell
+TODOTXT_PRIORITY_ON_ADD=pri
+```
+
+default priority A-Z
+
+### TODOTXT\_VERBOSE
+
+```shell
+TODOTXT_VERBOSE=1
+```
+
+is same as option -v
+
+### TODOTXT\_DISABLE\_FILTER
+
+```shell
+TODOTXT_DISABLE_FILTER=1
+```
+
+is same as option -x
+
+### TODOTXT\_DEFAULT\_ACTION
+
+```shell
+TODOTXT_DEFAULT_ACTION=""
+```
+
+run this when called with no arguments
+
+### TODOTXT\_SORT\_COMMAND
+
+```shell
+TODOTXT_SORT_COMMAND="sort ..."
+```
+
+customize list output
+
+### TODOTXT\_FINAL\_FILTER
+
+```shell
+TODOTXT_FINAL_FILTER="sed ..."
+```
+
+customize list after color, P@+ hiding
+
+### TODOTXT\_DATE\_FORMAT
+
+```shell
+TODOTXT_DATE_FORMAT='%Y-%m-%d'
+```
+
+customize creation/completion date format
+
+### TODOTXT\_DATE\_FORMAT\_PATTERN
+
+```shell
+TODOTXT_DATE_FORMAT_PATTERN='[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}'
+```
+
+
+
+customize creation/completion date
+extraction format for prepend and
+replace actions
+### TODOTXT\_SOURCEVAR
+
+```shell
+TODOTXT_SOURCEVAR=$DONE_FILE
+```
+
+use another source for listcon, listproj
+
+### TODOTXT\_SIGIL\_BEFORE\_PATTERN
+
+```shell
+TODOTXT_SIGIL_BEFORE_PATTERN=''
+```
+
+optionally allow chars preceding +p / @c
+
+### TODOTXT\_SIGIL\_VALID\_PATTERN
+
+```shell
+TODOTXT_SIGIL_VALID_PATTERN='[^ ]\{1,\}'
+```
+
+
+
+tweak the allowed chars for +p and @c
+### TODOTXT\_SIGIL\_AFTER\_PATTERN
+
+```shell
+TODOTXT_SIGIL_AFTER_PATTERN=''
+```
+
+optionally allow chars after +p / @c
+
+
 ## Built-in Actions
 ### add
 

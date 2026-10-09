@@ -19,6 +19,13 @@ cat > demo-usage.txt <<'EOF'
           two
           three
 
+  Environment variables:
+    TODOTXT_AUTO_COLOR              is same as option -c
+    TODOTXT_LONG_CONFIG="value is also long so description is on new line"
+                                    this configuration can do
+                                    a lot of things
+    TODOTXT_CONFIG_WITH_VALUE=xxx   default value xxx
+
   Built-in Actions:
     add "hello, world"
     a "hello, world"
@@ -51,6 +58,30 @@ Dummy, one of:
 * one
 * two
 * three
+\
+## Environment variables
+### TODOTXT\_AUTO\_COLOR
+\
+is same as option -c
+\
+### TODOTXT\_LONG\_CONFIG
+\
+```shell
+TODOTXT_LONG_CONFIG="value is also long so description is on new line"
+```
+\
+\
+\
+this configuration can do
+a lot of things
+### TODOTXT\_CONFIG\_WITH\_VALUE
+\
+```shell
+TODOTXT_CONFIG_WITH_VALUE=xxx
+```
+\
+default value xxx
+\
 \
 ## Built-in Actions
 ### add
