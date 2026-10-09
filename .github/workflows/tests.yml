@@ -20,7 +20,13 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - run: make
-    - run: make test
+    - run: |
+        make test
+        modifiedFiles=$(git status --porcelain)
+        if [ -n "$modifiedFiles" ]; then
+          printf >&2 'ERROR: The following files were modified during the test:\n%s\n' "$modifiedFiles"
+          exit 1
+        fi
     - run: make dist
     - run: make disttest
     - run: sudo make install
