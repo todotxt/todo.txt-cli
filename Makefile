@@ -143,12 +143,12 @@ $(TESTS): test-pre-clean
 	cd tests && ./$(notdir $@) $(TEST_OPTIONS)
 
 # run tests, print a test result summary, and remove generated test results
-test: aggregate-results   ## run tests
+test: aggregate-results   ## run tests on the development files
 	tests/aggregate-results.sh tests/test-results/t*-*
 	rm -rf tests/test-results
 
 disttest: export SRC_DIRECTORY = $(CURDIR)/$(DISTNAME)
-disttest: build test
+disttest: build test    ## run tests on the release files
 
 # Force tests to get run every time
 .PHONY: test disttest test-pre-clean aggregate-results $(TESTS)
