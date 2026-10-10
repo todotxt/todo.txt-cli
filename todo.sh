@@ -494,11 +494,18 @@ replaceOrPrepend()
       ;;
   esac
 
-  # Retrieve existing priority and prepended date
-  local -r firstTwoFieldsExpr='\((.) \)\{0,1\}\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}'
-  originalField1=$(echo "$todo" | sed -e "s/^${firstTwoFieldsExpr}.*/\\1/")
+  if [ "${todo:0:2}" = 'x ' ]; then
+    # Retrieve existing done date and date on add
+    local -r doneMarker='x '
+    local -r firstTwoFieldsExpr='\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}'
+  else
+    # Retrieve existing priority and prepended date
+    local -r doneMarker=''
+    local -r firstTwoFieldsExpr='\((.) \)\{0,1\}\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}'
+  fi
+  originalField1=$(echo "$todo" | sed -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\1/")
   field1="$originalField1"
-  originalField2=$(echo "$todo" | sed -e "s/^${firstTwoFieldsExpr}.*/\\2/")
+  originalField2=$(echo "$todo" | sed -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\2/")
   field2="$originalField2"
   if [ "$action" = "replace" ]; then
     replacementField2="$(echo "$input" | sed -e "s/^${firstTwoFieldsExpr}.*/\\2/")"
@@ -518,10 +525,10 @@ replaceOrPrepend()
 
   # Temporarily remove any existing first two fields, perform the change
   # (replace/prepend) and re-insert the existing fields again.
-  input="${field1}${field2}${input}"
+  input="${doneMarker}${field1}${field2}${input}"
   cleaninput "for sed"
   literalOriginalFirstTwoFields="$(echo "${originalField1}${originalField2}" | sed -e 's/[][\$*.^|]/\\&/g')"
-  sed -i.bak -e "$item s|^${literalOriginalFirstTwoFields}||" -e "$item s|^.*|${input}${backref}|" "$TODO_FILE"
+  sed -i.bak -e "$item s|^${doneMarker}${literalOriginalFirstTwoFields}||" -e "$item s|^.*|${input}${backref}|" "$TODO_FILE"
   if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
     getNewtodo "$item"
     case "$action" in
