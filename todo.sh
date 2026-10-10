@@ -495,34 +495,33 @@ replaceOrPrepend()
   esac
 
   # Retrieve existing priority and prepended date
-  local -r priAndDateExpr='\((.) \)\{0,1\}\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}'
-  originalPriority=$(echo "$todo" | sed -e "s/^${priAndDateExpr}.*/\\1/")
-  priority="$originalPriority"
-  originalPrepdate=$(echo "$todo" | sed -e "s/^${priAndDateExpr}.*/\\2/")
-  prepdate="$originalPrepdate"
+  local -r firstTwoFieldsExpr='\((.) \)\{0,1\}\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}'
+  originalField1=$(echo "$todo" | sed -e "s/^${firstTwoFieldsExpr}.*/\\1/")
+  field1="$originalField1"
+  originalField2=$(echo "$todo" | sed -e "s/^${firstTwoFieldsExpr}.*/\\2/")
+  field2="$originalField2"
   if [ "$action" = "replace" ]; then
-    replacementPrepdate="$(echo "$input" | sed -e "s/^${priAndDateExpr}.*/\\2/")"
-    if [ "$replacementPrepdate" ]; then
-      # If the replaced text starts with a [priority +] date, it will replace
-      # the existing date, too.
-      prepdate="$replacementPrepdate"
+    replacementField2="$(echo "$input" | sed -e "s/^${firstTwoFieldsExpr}.*/\\2/")"
+    if [ -n "$replacementField2" ]; then
+      # If the replaced text starts with a [field1 +] field2, it will replace
+      # the existing field2, too.
+      field2="$replacementField2"
     fi
-    replacementPriority="$(echo "$input" | sed -e "s/^${priAndDateExpr}.*/\\1/")"
-    if [ "$replacementPriority" ]; then
-      # If the replaced text starts with a priority, it will replace
-      # the existing priority, too.
-      priority="$replacementPriority"
+    replacementField1="$(echo "$input" | sed -e "s/^${firstTwoFieldsExpr}.*/\\1/")"
+    if [ -n "$replacementField1" ]; then
+      # If the replaced text starts with field1, it will replace
+      # the existing field1, too.
+      field1="$replacementField1"
     fi
-    input="$(echo "$input" | sed -e "s/^${priAndDateExpr}//")"
+    input="$(echo "$input" | sed -e "s/^${firstTwoFieldsExpr}//")"
   fi
 
-  # Temporarily remove any existing priority and prepended date, perform the
-  # change (replace/prepend) and re-insert the existing priority and prepended
-  # date again.
-  input="${priority}${prepdate}${input}"
+  # Temporarily remove any existing first two fields, perform the change
+  # (replace/prepend) and re-insert the existing fields again.
+  input="${field1}${field2}${input}"
   cleaninput "for sed"
-  literalOriginalPriorityAndPrepdate="$(echo "${originalPriority}${originalPrepdate}" | sed -e 's/[][\$*.^|]/\\&/g')"
-  sed -i.bak -e "$item s|^${literalOriginalPriorityAndPrepdate}||" -e "$item s|^.*|${input}${backref}|" "$TODO_FILE"
+  literalOriginalFirstTwoFields="$(echo "${originalField1}${originalField2}" | sed -e 's/[][\$*.^|]/\\&/g')"
+  sed -i.bak -e "$item s|^${literalOriginalFirstTwoFields}||" -e "$item s|^.*|${input}${backref}|" "$TODO_FILE"
   if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
     getNewtodo "$item"
     case "$action" in
