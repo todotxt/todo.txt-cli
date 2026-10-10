@@ -61,7 +61,7 @@ shorthelp()
 		  Usage: $oneline_usage
 
 		  Actions:
-		    add|a "THING I NEED TO DO +project @context"
+		    add|a "(B) THING I NEED TO DO +project @context"
 		    addm "THINGS I NEED TO DO
 		          MORE THINGS I NEED TO DO"
 		    addto DEST "TEXT TO ADD"
@@ -167,9 +167,9 @@ $indentedJoinedConfigFileLocations
 		    TODOTXT_PRIORITY_ON_ADD=pri     default priority A-Z
 		    TODOTXT_VERBOSE=1               is same as option -v
 		    TODOTXT_DISABLE_FILTER=1        is same as option -x
-		    TODOTXT_DEFAULT_ACTION=""       run this when called with no arguments
-		    TODOTXT_SORT_COMMAND="sort ..." customize list output
-		    TODOTXT_FINAL_FILTER="sed ..."  customize list after color, P@+ hiding
+		    TODOTXT_DEFAULT_ACTION=''       run this when called with no arguments
+		    TODOTXT_SORT_COMMAND='sort ...' customize list output
+		    TODOTXT_FINAL_FILTER='sed ...'  customize list after color, P@+ hiding
 		    TODOTXT_DATE_FORMAT='$TODOTXT_DATE_FORMAT'  customize creation/completion date format
 		    TODOTXT_DATE_FORMAT_PATTERN='$TODOTXT_DATE_FORMAT_PATTERN'
 		                                    customize creation/completion date
@@ -190,17 +190,17 @@ actionsHelp()
 {
     cat <<-EndActionsHelp
 		  Built-in Actions:
-		    add "THING I NEED TO DO +project @context"
-		    a "THING I NEED TO DO +project @context"
+		    add "(B) THING I NEED TO DO +project @context"
+		    a "(B) THING I NEED TO DO +project @context"
 		      Adds THING I NEED TO DO to your todo.txt file on its own line.
-		      Project and context notation optional.
+		      Priority (B), +project and @context notation optional.
 		      Quotes optional.
 
 		    addm "FIRST THING I NEED TO DO +project1 @context
-		    SECOND THING I NEED TO DO +project2 @context"
+		    (C) SECOND THING I NEED TO DO +project2 @context"
 		      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and
 		      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
-		      Project and context notation optional.
+		      Priority (C), +project and @context notation optional.
 
 		    addto DEST "TEXT TO ADD"
 		      Adds a line of text to any file located in the todo.txt directory.
@@ -1613,13 +1613,13 @@ note: PRIORITY must be anywhere from A to Z."
 "listaddons")
     if customActions=$(listCustomActions); then
         if [ -z "$customActions" ]; then
-            die "TODO: '$TODO_ACTIONS_DIR' does not contain valid actions."
+            die "TODO: '$TODO_ACTIONS_DIR' does not contain add-on actions."
         else
             printf '%s\n' "$customActions"
             if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
                 actionsCnt=$(printf '%s\n' "$customActions" | sed -n '$ =')
                 echo "--"
-                echo "TODO: $actionsCnt valid addon actions found."
+                echo "TODO: $actionsCnt add-on actions found."
             fi
         fi 
     else

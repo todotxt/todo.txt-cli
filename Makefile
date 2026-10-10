@@ -2,7 +2,7 @@
 # Makefile for todo.txt
 #
 
-SHELL = /bin/sh
+SHELL = /bin/bash
 
 INSTALL = /usr/bin/install
 INSTALL_PROGRAM = $(INSTALL)
@@ -82,7 +82,7 @@ $(DISTNAME)/todo.sh: VERSION-FILE
 	chmod +x $(DISTNAME)/todo.sh
 
 .PHONY: build
-build: $(DISTNAME) $(DISTFILES)  ## create the dist directory and files
+build: $(DISTNAME) $(DISTFILES) USAGE.md  ## create the dist directory and files
 
 .PHONY: dist
 dist: build   ## create the compressed release files
@@ -126,6 +126,11 @@ installdirs:
 	         $(DESTDIR)$(sysconfdir)/todo \
 	         $(DESTDIR)$(datarootdir)
 
+.PHONY: doc
+doc: USAGE.md  ## generate documentation (USAGE.md) from usage help
+USAGE.md: todo.sh todo.cfg usageToMarkdown
+	unset $${!TODO_@} $${!TODOTXT_@}; HOME=$(CURDIR) XDG_CONFIG_HOME='' TODOTXT_VERBOSE=2 ./$< help | sed -e "s|$(CURDIR)|~|g" | ./usageToMarkdown > $@
+
 #
 # Testing
 #
@@ -143,12 +148,12 @@ $(TESTS): test-pre-clean
 	cd tests && ./$(notdir $@) $(TEST_OPTIONS)
 
 # run tests, print a test result summary, and remove generated test results
-test: aggregate-results   ## run tests
+test: aggregate-results USAGE.md   ## run tests on the development files
 	tests/aggregate-results.sh tests/test-results/t*-*
 	rm -rf tests/test-results
 
 disttest: export SRC_DIRECTORY = $(CURDIR)/$(DISTNAME)
-disttest: build test
+disttest: build test    ## run tests on the release files
 
 # Force tests to get run every time
 .PHONY: test disttest test-pre-clean aggregate-results $(TESTS)

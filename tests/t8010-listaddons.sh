@@ -18,7 +18,7 @@ test_todo_session 'one custom action' <<EOF
 >>> todo.sh listaddons
 foo
 --
-TODO: 1 valid addon actions found.
+TODO: 1 add-on actions found.
 EOF
 
 make_action bar
@@ -31,7 +31,7 @@ foo
 ls
 quux
 --
-TODO: 4 valid addon actions found.
+TODO: 4 add-on actions found.
 EOF
 
 invalidate_action foo \
@@ -41,7 +41,7 @@ bar
 ls
 quux
 --
-TODO: 3 valid addon actions found.
+TODO: 3 add-on actions found.
 EOF
 
 make_action_in_folder check check
@@ -66,7 +66,7 @@ ls
 norris
 quux
 --
-TODO: 6 valid addon actions found.
+TODO: 6 add-on actions found.
 EOF
 
 invalidate_action norris/norris \
@@ -78,7 +78,7 @@ chuck
 ls
 quux
 --
-TODO: 5 valid addon actions found.
+TODO: 5 add-on actions found.
 EOF
 
 TODO_ACTIONS_DIR="$HOME/addons-common" make_action simple
@@ -94,7 +94,7 @@ simple
 unwait
 wait
 --
-TODO: 5 valid addon actions found.
+TODO: 5 add-on actions found.
 EOF
 
 test_done

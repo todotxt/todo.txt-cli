@@ -21,6 +21,13 @@ jobs:
     - uses: actions/checkout@v7
     - run: make
     - run: make test
+    - run: make -B doc
+    - run: |
+        modifiedFiles=$(git status --porcelain)
+        if [ -n "$modifiedFiles" ]; then
+          printf >&2 'ERROR: The following checked-in files were modified during the build:\n%s\n' "$modifiedFiles"
+          exit 1
+        fi
     - run: make dist
     - run: make disttest
     - run: sudo make install
