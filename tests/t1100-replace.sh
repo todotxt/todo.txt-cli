@@ -204,16 +204,44 @@ TODO: Replaced task with:
 EOF
 unset TODOTXT_DATE_FORMAT TODOTXT_DATE_FORMAT_PATTERN
 
-cat /dev/null > todo.txt
+cat > todo.txt <<EOF
+2009-02-13 new task
+EOF
 test_todo_session 'replace handling prepended priority and date on add' <<EOF
->>> todo.sh -t add "new task"
-1 2009-02-13 new task
-TODO: 1 added.
-
 >>> todo.sh replace 1 '(C) 2010-07-04 this also has a priority and new date'
 1 2009-02-13 new task
 TODO: Replaced task with:
 1 (C) 2010-07-04 this also has a priority and new date
+EOF
+
+cat > todo.txt <<EOF
+x 2009-02-15 done task
+EOF
+test_todo_session 'replace handling done marker and done date' <<EOF
+>>> todo.sh replace 1 "totally completed task"
+1 x 2009-02-15 done task
+TODO: Replaced task with:
+1 x 2009-02-15 totally completed task
+EOF
+
+cat > todo.txt <<EOF
+x 2009-02-15 2009-02-13 done task
+EOF
+test_todo_session 'replace handling done marker, dates on add and done' <<EOF
+>>> todo.sh replace 1 "totally completed task"
+1 x 2009-02-15 2009-02-13 done task
+TODO: Replaced task with:
+1 x 2009-02-15 2009-02-13 totally completed task
+EOF
+
+cat > todo.txt <<EOF
+x 2009-02-15 2009-02-13 done task
+EOF
+test_todo_session 'replace done task with prepended date replaces existing done date' <<EOF
+>>> todo.sh replace 1 "2010-07-04 totally completed task"
+1 x 2009-02-15 2009-02-13 done task
+TODO: Replaced task with:
+1 x 2010-07-04 2009-02-13 totally completed task
 EOF
 
 echo '(A) 2009-02-13 this is just a new one' > todo.txt
@@ -222,6 +250,16 @@ test_todo_session 'replace with prepended date replaces existing date' <<EOF
 1 (A) 2009-02-13 this is just a new one
 TODO: Replaced task with:
 1 (A) 2010-07-04 this also has a new date
+EOF
+
+cat > todo.txt <<EOF
+2009-02-13 new task
+EOF
+test_todo_session 'replace with text starting with x does not make the task done' <<EOF
+>>> todo.sh replace 1 "x this is a task"
+1 2009-02-13 new task
+TODO: Replaced task with:
+1 2009-02-13 x this is a task
 EOF
 
 echo '(A) 2009-02-13 this is just a new one' > todo.txt
