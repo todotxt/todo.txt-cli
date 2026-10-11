@@ -91,14 +91,36 @@ test_todo_session 'prepend with symbols' <<EOF
 TODO: 4 of 4 tasks shown
 EOF
 
-cat /dev/null > todo.txt
+cat > todo.txt <<EOF
+2009-02-13 new task
+EOF
 test_todo_session 'prepend handling prepended date on add' <<EOF
->>> todo.sh -t add "new task"
-1 2009-02-13 new task
-TODO: 1 added.
-
 >>> todo.sh prepend 1 "this is just a"
 1 2009-02-13 this is just a new task
+EOF
+
+cat > todo.txt <<EOF
+x 2009-02-15 done task
+EOF
+test_todo_session 'prepend handling done marker and done date' <<EOF
+>>> todo.sh prepend 1 "this is just a"
+1 x 2009-02-15 this is just a done task
+EOF
+
+cat > todo.txt <<EOF
+x 2009-02-15 2009-02-13 done task
+EOF
+test_todo_session 'prepend handling done marker, dates on add and done' <<EOF
+>>> todo.sh prepend 1 "this is just a"
+1 x 2009-02-15 2009-02-13 this is just a done task
+EOF
+
+cat > todo.txt <<EOF
+2009-02-13 new task
+EOF
+test_todo_session 'prepend text starting with x does not make the task done' <<EOF
+>>> todo.sh prepend 1 "x this is just a"
+1 2009-02-13 x this is just a new task
 EOF
 
 cat /dev/null > todo.txt
