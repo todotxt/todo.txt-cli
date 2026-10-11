@@ -168,6 +168,31 @@ TODO: Replaced task with:
 1 (A) 2009-02-13 this is just a new one
 EOF
 
+cat > todo.txt <<EOF
+neither prioritized nor dated
+(A) collect the eggs
+2009-02-13 new task
+(B) 2009-02-13 new task
+EOF
+test_todo_session 'replace with nothing is not allowed' <<EOF
+>>> todo.sh replace 1 ""
+usage: todo.sh replace NR "UPDATED ITEM"
+=== 1
+
+>>> todo.sh replace 2 ""
+usage: todo.sh replace NR "UPDATED ITEM"
+=== 1
+
+>>> todo.sh replace 3 ""
+usage: todo.sh replace NR "UPDATED ITEM"
+=== 1
+
+>>> todo.sh replace 4 ""
+usage: todo.sh replace NR "UPDATED ITEM"
+=== 1
+EOF
+
+
 cat /dev/null > todo.txt
 export TODOTXT_DATE_FORMAT='%D' TODOTXT_DATE_FORMAT_PATTERN='[0-9]\{2\}/[0-9]\{2\}/[0-9]\{2\}'
 test_todo_session 'replace handling priority and prepended date with custom date format (containing slashes) on add' <<EOF
