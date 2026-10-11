@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The new `TODOTXT_DATE_FORMAT` and `TODOTXT_DATE_FORMAT_PATTERN` configuration
   allows to customize the format of creation and completion dates ([#457])
 
+### Fixed
+- The `replace` doesn't allow an empty replacement any longer; use `del` / `rm`
+  instead ([#504])
+
 ## [2.14.0] - 2026-09-01
 
 ### Added
@@ -568,3 +572,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#460]: https://github.com/todotxt/todo.txt-cli/pull/460
 [#495]: https://github.com/todotxt/todo.txt-cli/pull/495
 [#496]: https://github.com/todotxt/todo.txt-cli/pull/496
+[#504]: https://github.com/todotxt/todo.txt-cli/pull/504

@@ -483,7 +483,7 @@ replaceOrPrepend()
   case "$action" in
     replace)
       backref=
-      readinput 'Replacement' -i "$todo" -- "$@"
+      readinput 'Replacement' -i "$todo" -- "$@" || die "$errmsg"
       ;;
     prepend)
       readinput 'Prepend' -- "$@"
