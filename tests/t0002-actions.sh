@@ -23,28 +23,28 @@ printf 'TODO: %s\n' "$*"
 EOF
 chmod +x foo2
 
-test_expect_success 'custom action (default location 1)' '
+test_expect_code_and_output 0 'custom action (default location 1)' '
     mkdir -p .todo/actions && cp foo .todo/actions/
-    unset TODO_ACTIONS_DIR; todo.sh foo > output;
-    test_cmp expect output && rm -rf .todo/actions
+    unset TODO_ACTIONS_DIR; todo.sh foo > output \
+        && rm -rf .todo/actions
 '
 
-test_expect_success 'custom action (default location 2)' '
+test_expect_code_and_output 0 'custom action (default location 2)' '
     mkdir -p .todo.actions.d && cp foo .todo.actions.d/
-    unset TODO_ACTIONS_DIR; todo.sh foo > output;
-    test_cmp expect output && rm -rf .todo.actions.d
+    unset TODO_ACTIONS_DIR; todo.sh foo > output \
+        && rm -rf .todo.actions.d
 '
 
-test_expect_success 'custom action (env variable)' '
+test_expect_code_and_output 0 'custom action (env variable)' '
     mkdir -p myactions && cp foo myactions/
-    TODO_ACTIONS_DIR=myactions todo.sh foo > output;
-    test_cmp expect output && rm -rf myactions
+    TODO_ACTIONS_DIR=myactions todo.sh foo > output \
+        && rm -rf myactions
 '
 
-test_expect_success 'custom action (default action)' '
+test_expect_code_and_output 0 'custom action (default action)' '
     mkdir -p .todo/actions && cp foo2 .todo/actions/
-    TODOTXT_DEFAULT_ACTION="foo2 foo" todo.sh > output;
-    test_cmp expect output && rm -rf .todo/actions
+    TODOTXT_DEFAULT_ACTION="foo2 foo" todo.sh > output \
+        && rm -rf .todo/actions
 '
 
 test_todo_session 'default built-in action with multiple arguments' <<EOF
