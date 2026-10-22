@@ -54,10 +54,6 @@ appropriately before running "make".
     This causes the test to immediately exit upon the first
     failed test.
 
---long-tests::
-    This causes additional long-running tests to be run (where
-    available), for more exhaustive testing.
-
 --tee::
     In addition to printing the test output to the terminal,
     write it to files named 't/test-results/$TEST_NAME.out'.
