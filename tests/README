@@ -38,7 +38,7 @@ this:
     * passed all 1 test(s)
 
 You can pass --verbose (or -v), --debug (or -d), and --immediate
-(or -i) command line argument to the test, or by setting GIT_TEST_OPTS
+(or -i) command line argument to the test, or by setting TEST_OPTIONS
 appropriately before running "make".
 
 --verbose::
