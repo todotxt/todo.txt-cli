@@ -31,6 +31,17 @@ cat > todo.txt <<EOF
 @con02 +prj04 -- Some project 04 task, no priority
 EOF
 
+make_action testdriver-plain-flag '' 'echo received $TODOTXT_PLAIN'
+test_todo_session 'add-ons receive TODOTXT_PLAIN flag' <<'EOF'
+>>> todo.sh testdriver-plain-flag
+custom action testdriver-plain-flag
+received 0
+
+>>> todo.sh -p testdriver-plain-flag
+custom action testdriver-plain-flag
+received 1
+EOF
+
 make_action testdriver-list '' '_list "$TODO_FILE"'
 test_todo_session '_list() all tasks' <<'EOF'
 >>> todo.sh testdriver-list
@@ -51,6 +62,106 @@ custom action testdriver-list
 [1;37m14 (D) @con01 +prj02 -- Some project 02 task, pri D[0m
 [1;37m15 (D) @con02 +prj03 -- Some project 03 task, pri D[0m
 [1;37m16 (D) @con02 +prj04 -- Some project 04 task, pri D[0m
+17 @con01 +prj01 -- Some project 01 task, no priority
+18 @con01 +prj02 -- Some project(S) 02 task, no priority
+19 @con02 +prj03 -- Some project 03 task, no priorty
+20 @con02 +prj04 -- Some project 04 task, no priority
+--
+TODO: 20 of 20 tasks shown
+
+>>> todo.sh -@ testdriver-list
+custom action testdriver-list
+[1;33m01 (A) +prj01 -- Some project 01 task, pri A[0m
+[1;33m02 (A) +prj02 -- Some project 02 task, pri A[0m
+[1;33m03 (A) +prj03 -- Some project 03 task, pri A[0m
+[1;33m04 (A) +prj04 -- Some project 04 task, pri A[0m
+[0;32m05 (B) +prj01 -- Some project 01 task, pri B[0m
+[0;32m06 (B) +prj02 -- Some project 02 task, pri B[0m
+[0;32m07 (B) +prj03 -- Some project 03 task, pri B[0m
+[0;32m08 (B) +prj04 -- Some project 04 task, pri B[0m
+[1;34m09 (C) +prj01 -- Some project 01 task, pri C[0m
+[1;34m10 (C) +prj02 -- Some project 02 task, pri C[0m
+[1;34m11 (C) +prj03 -- Some project 03 task, pri C[0m
+[1;34m12 (C) +prj04 -- Some project 04 task, pri C[0m
+[1;37m13 (D) +prj01 -- Some project 01 task, pri D[0m
+[1;37m14 (D) +prj02 -- Some project 02 task, pri D[0m
+[1;37m15 (D) +prj03 -- Some project 03 task, pri D[0m
+[1;37m16 (D) +prj04 -- Some project 04 task, pri D[0m
+17 +prj01 -- Some project 01 task, no priority
+18 +prj02 -- Some project(S) 02 task, no priority
+19 +prj03 -- Some project 03 task, no priorty
+20 +prj04 -- Some project 04 task, no priority
+--
+TODO: 20 of 20 tasks shown
+
+>>> todo.sh -+ testdriver-list
+custom action testdriver-list
+[1;33m01 (A) @con01 -- Some project 01 task, pri A[0m
+[1;33m02 (A) @con01 -- Some project 02 task, pri A[0m
+[1;33m03 (A) @con02 -- Some project 03 task, pri A[0m
+[1;33m04 (A) @con02 -- Some project 04 task, pri A[0m
+[0;32m05 (B) @con01 -- Some project 01 task, pri B[0m
+[0;32m06 (B) @con01 -- Some project 02 task, pri B[0m
+[0;32m07 (B) @con02 -- Some project 03 task, pri B[0m
+[0;32m08 (B) @con02 -- Some project 04 task, pri B[0m
+[1;34m09 (C) @con01 -- Some project 01 task, pri C[0m
+[1;34m10 (C) @con01 -- Some project 02 task, pri C[0m
+[1;34m11 (C) @con02 -- Some project 03 task, pri C[0m
+[1;34m12 (C) @con02 -- Some project 04 task, pri C[0m
+[1;37m13 (D) @con01 -- Some project 01 task, pri D[0m
+[1;37m14 (D) @con01 -- Some project 02 task, pri D[0m
+[1;37m15 (D) @con02 -- Some project 03 task, pri D[0m
+[1;37m16 (D) @con02 -- Some project 04 task, pri D[0m
+17 @con01 -- Some project 01 task, no priority
+18 @con01 -- Some project(S) 02 task, no priority
+19 @con02 -- Some project 03 task, no priorty
+20 @con02 -- Some project 04 task, no priority
+--
+TODO: 20 of 20 tasks shown
+
+>>> todo.sh -p testdriver-list
+custom action testdriver-list
+01 (A) @con01 +prj01 -- Some project 01 task, pri A
+02 (A) @con01 +prj02 -- Some project 02 task, pri A
+03 (A) @con02 +prj03 -- Some project 03 task, pri A
+04 (A) @con02 +prj04 -- Some project 04 task, pri A
+05 (B) @con01 +prj01 -- Some project 01 task, pri B
+06 (B) @con01 +prj02 -- Some project 02 task, pri B
+07 (B) @con02 +prj03 -- Some project 03 task, pri B
+08 (B) @con02 +prj04 -- Some project 04 task, pri B
+09 (C) @con01 +prj01 -- Some project 01 task, pri C
+10 (C) @con01 +prj02 -- Some project 02 task, pri C
+11 (C) @con02 +prj03 -- Some project 03 task, pri C
+12 (C) @con02 +prj04 -- Some project 04 task, pri C
+13 (D) @con01 +prj01 -- Some project 01 task, pri D
+14 (D) @con01 +prj02 -- Some project 02 task, pri D
+15 (D) @con02 +prj03 -- Some project 03 task, pri D
+16 (D) @con02 +prj04 -- Some project 04 task, pri D
+17 @con01 +prj01 -- Some project 01 task, no priority
+18 @con01 +prj02 -- Some project(S) 02 task, no priority
+19 @con02 +prj03 -- Some project 03 task, no priorty
+20 @con02 +prj04 -- Some project 04 task, no priority
+--
+TODO: 20 of 20 tasks shown
+
+>>> todo.sh -P testdriver-list
+custom action testdriver-list
+[1;33m01 @con01 +prj01 -- Some project 01 task, pri A[0m
+[1;33m02 @con01 +prj02 -- Some project 02 task, pri A[0m
+[1;33m03 @con02 +prj03 -- Some project 03 task, pri A[0m
+[1;33m04 @con02 +prj04 -- Some project 04 task, pri A[0m
+[0;32m05 @con01 +prj01 -- Some project 01 task, pri B[0m
+[0;32m06 @con01 +prj02 -- Some project 02 task, pri B[0m
+[0;32m07 @con02 +prj03 -- Some project 03 task, pri B[0m
+[0;32m08 @con02 +prj04 -- Some project 04 task, pri B[0m
+[1;34m09 @con01 +prj01 -- Some project 01 task, pri C[0m
+[1;34m10 @con01 +prj02 -- Some project 02 task, pri C[0m
+[1;34m11 @con02 +prj03 -- Some project 03 task, pri C[0m
+[1;34m12 @con02 +prj04 -- Some project 04 task, pri C[0m
+[1;37m13 @con01 +prj01 -- Some project 01 task, pri D[0m
+[1;37m14 @con01 +prj02 -- Some project 02 task, pri D[0m
+[1;37m15 @con02 +prj03 -- Some project 03 task, pri D[0m
+[1;37m16 @con02 +prj04 -- Some project 04 task, pri D[0m
 17 @con01 +prj01 -- Some project 01 task, no priority
 18 @con01 +prj02 -- Some project(S) 02 task, no priority
 19 @con02 +prj03 -- Some project 03 task, no priorty
