@@ -646,8 +646,8 @@ TODOTXT_SIGIL_BEFORE_PATTERN=${TODOTXT_SIGIL_BEFORE_PATTERN:-}    # Allow any ot
 TODOTXT_SIGIL_VALID_PATTERN=${TODOTXT_SIGIL_VALID_PATTERN:-[^ ]{1,\}}    # Limit the valid characters (from the default any non-whitespace sequence) for +project and @context; example: [a-zA-Z]{3,} to only allow alphabetic ones that are at least three characters long.
 TODOTXT_SIGIL_AFTER_PATTERN=${TODOTXT_SIGIL_AFTER_PATTERN:-}    # Allow any other non-whitespace entity after +project and @context; should be an optional match; example: \){0,1} to allow (with the corresponding TODOTXT_SIGIL_BEFORE_PATTERN) enclosing in parentheses.
 
-# Export all TODOTXT_* variables
-export "${!TODOTXT_@}"
+# Export all TODOTXT_* variables and the HIDE_* flags
+export "${!TODOTXT_@}" "${!HIDE_@}"
 
 # Default color map
 export NONE=''
