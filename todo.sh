@@ -997,6 +997,9 @@ _format()
                         afterWord = substr(word, RSTART, RLENGTH)
                         word = substr(word, 1, length(word) - length(afterWord))
                     }
+                    if (word !~ "^[" sigil "](" sigilValidPattern ")$") {
+                        return 0
+                    }
 
                     if (isHidden(hideSigilWord)) {
                         precedingWhitespace = ""
