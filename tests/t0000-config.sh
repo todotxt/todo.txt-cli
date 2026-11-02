@@ -15,8 +15,8 @@ export TODOTXT_GLOBAL_CFG_FILE=global.cfg
 # Remove the pre-created todo.cfg to test behavior in its absence
 rm -f todo.cfg
 echo "Fatal Error: Cannot read configuration file $HOME/.todo/config" > expect
-test_expect_success 'no config file' '
-    todo.sh > output 2>&1 || test_cmp expect output
+test_expect_code_and_output 1 'no config file' '
+    todo.sh > output 2>&1
 '
 
 # All the below tests will output the usage message.
@@ -35,48 +35,48 @@ touch used_config
 EOF
 
 rm -f used_config
-test_expect_success 'config file (default location 1)' '
+test_expect_code_and_output 0 'config file (default location 1)' '
     mkdir .todo
     cp test.cfg .todo/config
     todo.sh > output;
-    test_cmp expect output && test -f used_config &&
-        rm -rf .todo
+    rm -rf .todo
+    test -f used_config
 '
 
 rm -f used_config
-test_expect_success 'config file (default location 2)' '
+test_expect_code_and_output 0 'config file (default location 2)' '
     cp test.cfg todo.cfg
     todo.sh > output;
-    test_cmp expect output && test -f used_config &&
-        rm -f todo.cfg
+    rm -rf .todo
+    test -f used_config
 '
 
 rm -f used_config
-test_expect_success 'config file (default location 3)' '
+test_expect_code_and_output 0 'config file (default location 3)' '
     cp test.cfg .todo.cfg
     todo.sh > output;
-    test_cmp expect output && test -f used_config &&
-        rm -f .todo.cfg
+    rm -rf .todo
+    test -f used_config
 '
 
 rm -f used_config
-test_expect_success 'config file (global config file)' '
+test_expect_code_and_output 0 'config file (global config file)' '
     cp test.cfg "$TODOTXT_GLOBAL_CFG_FILE"
     todo.sh > output;
-    test_cmp expect output && test -f used_config &&
-        rm -f "$TODOTXT_GLOBAL_CFG_FILE"
+    rm -f "$TODOTXT_GLOBAL_CFG_FILE"
+    test -f used_config
 '
 
 rm -f used_config
-test_expect_success 'config file (command line)' '
+test_expect_code_and_output 0 'config file (command line)' '
     todo.sh -d test.cfg > output;
-    test_cmp expect output && test -f used_config
+    test -f used_config
 '
 
 rm -f used_config
-test_expect_success 'config file (env variable)' '
+test_expect_code_and_output 0 'config file (env variable)' '
     TODOTXT_CFG_FILE=test.cfg todo.sh > output;
-    test_cmp expect output && test -f used_config
+    test -f used_config
 '
 
 cat > minimal.cfg <<EOF
@@ -85,12 +85,12 @@ touch used_config
 EOF
 
 rm -f used_config
-test_expect_success 'config file (minimal)' '
+test_expect_code_and_output 0 'config file (minimal)' '
     mkdir .todo
     cp minimal.cfg .todo/config
     todo.sh > output;
-    test_cmp expect output && test -f used_config &&
-        rm -rf .todo
+    rm -rf .todo
+    test -f used_config
 '
 
 test_done

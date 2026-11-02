@@ -4,133 +4,81 @@ test_description='Multi-line functionality'
 
 . ./test-lib.sh
 
+setupTodo()
+{
+    cat > todo.txt <<EOF
+smell the cheese
+EOF
+}
+
 ## Replace test
-# Create the expected file
-echo "1 smell the cheese
+cat > expect <<EOF
+1 smell the cheese
 TODO: Replaced task with:
-1 eat apples eat oranges drink milk">"$HOME/expect.multi"
+1 eat apples eat oranges drink milk
+EOF
+setupTodo
 
-test_expect_success 'multiline squash item replace' '
-(
-# Prepare single line todo file
-cat /dev/null > "$HOME/todo.txt"
-"$HOME/bin/todo.sh" add smell the cheese
-
-# Run replace
-"$HOME/bin/todo.sh" replace 1 "eat apples
+test_expect_code_and_output 0 'multiline squash item replace' '
+todo.sh replace 1 "eat apples
 eat oranges
-drink milk" > "$HOME/output.multi"
-
-# Test output against expected
-diff "$HOME/output.multi" "$HOME/expect.multi"
-if [ $? -ne 0 ]; then
-  exit 1
-else
-  exit 0
-fi
-)
+drink milk"
 '
 
 ## Add test
-# Create the expected file
-echo "2 eat apples eat oranges drink milk
-TODO: 2 added.">"$HOME/expect.multi"
+cat > expect <<EOF
+2 eat apples eat oranges drink milk
+TODO: 2 added.
+EOF
+setupTodo
 
-test_expect_success 'multiline squash item add' '
-(
-# Prepare single line todo file
-cat /dev/null > "$HOME/todo.txt"
-"$HOME/bin/todo.sh" add smell the cheese
-
-# Run add
-"$HOME/bin/todo.sh" add "eat apples
+test_expect_code_and_output 0 'multiline squash item add' '
+todo.sh add "eat apples
 eat oranges
-drink milk" > "$HOME/output.multi"
-
-# Test output against expected
-diff "$HOME/output.multi" "$HOME/expect.multi"
-if [ $? -ne 0 ]; then
-  exit 1
-else
-  exit 0
-fi
-)
+drink milk"
 '
 
 ## Append test
-# Create the expected file
-echo "1 smell the cheese eat apples eat oranges drink milk">"$HOME/expect.multi"
+cat > expect <<EOF
+1 smell the cheese eat apples eat oranges drink milk
+EOF
+setupTodo
 
-test_expect_success 'multiline squash item append' '
-(
-# Prepare single line todo file
-cat /dev/null > "$HOME/todo.txt"
-"$HOME/bin/todo.sh" add smell the cheese
-
+test_expect_code_and_output 0 'multiline squash item append' '
 # Run append
-"$HOME/bin/todo.sh" append 1 "eat apples
+todo.sh append 1 "eat apples
 eat oranges
-drink milk" > "$HOME/output.multi"
-
-# Test output against expected
-diff "$HOME/output.multi" "$HOME/expect.multi"
-if [ $? -ne 0 ]; then
-  exit 1
-else
-  exit 0
-fi
-)
+drink milk"
 '
 
 ## Prepend test
-# Create the expected file
-echo "1 eat apples eat oranges drink milk smell the cheese">"$HOME/expect.multi"
+cat > expect <<EOF
+1 eat apples eat oranges drink milk smell the cheese
+EOF
+setupTodo
 
-test_expect_success 'multiline squash item prepend' '
-(
-# Prepare single line todo file
-cat /dev/null > "$HOME/todo.txt"
-"$HOME/bin/todo.sh" add smell the cheese
-
-# Run prepend
-"$HOME/bin/todo.sh" prepend 1 "eat apples
+test_expect_code_and_output 0 'multiline squash item prepend' '
+todo.sh prepend 1 "eat apples
 eat oranges
-drink milk" > "$HOME/output.multi"
-
-# Test output against expected
-diff "$HOME/output.multi" "$HOME/expect.multi"
-if [ $? -ne 0 ]; then
-  exit 1
-else
-  exit 0
-fi
-)
+drink milk"
 '
 
 ## Multiple line addition
-# Create the expected file
-echo "2 eat apples
-TODO: 2 added." > "$HOME/expect.multi"
-echo "3 eat oranges
-TODO: 3 added." >>"$HOME/expect.multi"
-echo "4 drink milk
-TODO: 4 added." >>"$HOME/expect.multi"
+cat > expect <<EOF
+2 eat apples
+TODO: 2 added.
+3 eat oranges
+TODO: 3 added.
+4 drink milk
+TODO: 4 added.
+EOF
+setupTodo
 
-test_expect_success 'actual multiline add' '
-(
+test_expect_code_and_output 0 'actual multiline add' '
 # Run addm
-"$HOME/bin/todo.sh" addm "eat apples
+todo.sh addm "eat apples
 eat oranges
-drink milk" > "$HOME/output.multi"
-
-# Test output against expected
-diff "$HOME/output.multi" "$HOME/expect.multi"
-if [ $? -ne 0 ]; then
-  exit 1
-else
-  exit 0
-fi
-)
+drink milk"
 '
 
 test_done

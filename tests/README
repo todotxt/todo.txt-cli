@@ -38,7 +38,7 @@ this:
     * passed all 1 test(s)
 
 You can pass --verbose (or -v), --debug (or -d), and --immediate
-(or -i) command line argument to the test, or by setting GIT_TEST_OPTS
+(or -i) command line argument to the test, or by setting TEST_OPTIONS
 appropriately before running "make".
 
 --verbose::
@@ -53,10 +53,6 @@ appropriately before running "make".
 --immediate::
     This causes the test to immediately exit upon the first
     failed test.
-
---long-tests::
-    This causes additional long-running tests to be run (where
-    available), for more exhaustive testing.
 
 --tee::
     In addition to printing the test output to the terminal,
