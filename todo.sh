@@ -1017,7 +1017,7 @@ _format()
                 if (match($0, /^[0-9]+ x /)) {
                     clr = highlight("COLOR_DONE")
                     dateOffset = 2
-                    hasDoneDate = 1
+                    hasDoneDate = ($3 ~ "^(" dateFormatPattern ")$")
                 } else if (match($0, /^[0-9]+ \([A-Z]\) /)) {
                     clr = highlight("PRI_" substr($0, RSTART + RLENGTH - 3, 1))
                     clr = (clr ? clr : highlight("PRI_X"))
