@@ -25,7 +25,9 @@ TODO_SH=$(basename "$0")
 TODO_FULL_SH="$0"
 export TODO_SH TODO_FULL_SH
 
-oneline_usage="$TODO_SH [-fhpantvV] [-d todo_config] action [task_number] [task_description]"
+readonly GETOPTS_OPTIONS='+@aAcd:DfhMnNpPtTvVx'
+readonly GETOPTS_NONARG_OPTIONS="${GETOPTS_OPTIONS//?:/}"   # Options followed by a colon have an argument.
+readonly oneline_usage="$TODO_SH [-${GETOPTS_NONARG_OPTIONS}] [-d todo_config] action [task_number] [task_description]"
 
 # Assumption: The in-place argument is the first
 # Assumption: Only a single file is processed with sed
@@ -120,6 +122,9 @@ help()
 		    -d CONFIG_FILE
 		        Use a configuration file other than one of the defaults:
 $indentedJoinedConfigFileLocations
+		    -D
+		        Hide added / done dates in list output.  Use twice to show
+		        dates (default).
 		    -f
 		        Forces actions without confirmation or interactive input
 		    -h
@@ -133,6 +138,9 @@ $indentedJoinedConfigFileLocations
 		        Don't auto-archive tasks automatically on completion
 		    -A
 		        Auto-archive tasks automatically on completion
+		    -M
+		        Hide metadata (key:value) in list output.  Use twice to
+		        show metadata (default).
 		    -n
 		        Don't preserve line numbers; automatically remove blank lines
 		        on task deletion
@@ -497,30 +505,30 @@ replaceOrPrepend()
   if [ "${todo:0:2}" = 'x ' ]; then
     # Retrieve existing done date and date on add
     local -r doneMarker='x '
-    local -r firstTwoFieldsExpr='\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}'
+    local -r firstTwoFieldsExpr='('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
   else
     # Retrieve existing priority and prepended date
     local -r doneMarker=''
-    local -r firstTwoFieldsExpr='\((.) \)\{0,1\}\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}'
+    local -r firstTwoFieldsExpr='(\(.\) ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
   fi
-  originalField1=$(echo "$todo" | sed -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\1/")
+  originalField1=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\1/")
   field1="$originalField1"
-  originalField2=$(echo "$todo" | sed -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\2/")
+  originalField2=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\2/")
   field2="$originalField2"
   if [ "$action" = "replace" ]; then
-    replacementField2="$(echo "$input" | sed -e "s/^${firstTwoFieldsExpr}.*/\\2/")"
+    replacementField2="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\2/")"
     if [ -n "$replacementField2" ]; then
       # If the replaced text starts with a [field1 +] field2, it will replace
       # the existing field2, too.
       field2="$replacementField2"
     fi
-    replacementField1="$(echo "$input" | sed -e "s/^${firstTwoFieldsExpr}.*/\\1/")"
+    replacementField1="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\1/")"
     if [ -n "$replacementField1" ]; then
       # If the replaced text starts with field1, it will replace
       # the existing field1, too.
       field1="$replacementField1"
     fi
-    input="$(echo "$input" | sed -e "s/^${firstTwoFieldsExpr}//")"
+    input="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}//")"
   fi
 
   # Temporarily remove any existing first two fields, perform the change
@@ -583,102 +591,38 @@ OVR_TODOTXT_FINAL_FILTER="$TODOTXT_FINAL_FILTER"
 export GREP_OPTIONS=""
 
 # == PROCESS OPTIONS ==
-while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
+while getopts ":$GETOPTS_OPTIONS" Option; do
+  # The HIDE_* flags start at zero (false); increment it to one
+  #   (true) the first time this flag is seen. Each time the flag
+  #   is seen after that, increment it again so that an even
+  #   number shows context names and an odd number hides context
+  #   names.
   case $Option in
-    '@')
-        # HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
-        #   (true) the first time this flag is seen. Each time the flag
-        #   is seen after that, increment it again so that an even
-        #   number shows context names and an odd number hides context
-        #   names.
-        : $(( HIDE_CONTEXT_NAMES++ ))
-        if (( HIDE_CONTEXT_NAMES % 2 == 0 )); then
-            # Zero or even value -- show context names
-            unset HIDE_CONTEXTS_SUBSTITUTION
-        else
-            # One or odd value -- hide context names
-            export HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[[:graph:]]\{1,\}'
-        fi
-        ;;
-    '+')
-        # HIDE_PROJECT_NAMES starts at zero (false); increment it to one
-        #   (true) the first time this flag is seen. Each time the flag
-        #   is seen after that, increment it again so that an even
-        #   number shows project names and an odd number hides project
-        #   names.
-        : $(( HIDE_PROJECT_NAMES++ ))
-        if (( HIDE_PROJECT_NAMES % 2 == 0 )); then
-            # Zero or even value -- show project names
-            unset HIDE_PROJECTS_SUBSTITUTION
-        else
-            # One or odd value -- hide project names
-            export HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][[:graph:]]\{1,\}'
-        fi
-        ;;
-    a)
-        OVR_TODOTXT_AUTO_ARCHIVE=0
-        ;;
-    A)
-        OVR_TODOTXT_AUTO_ARCHIVE=1
-        ;;
-    c)
-        OVR_TODOTXT_PLAIN=0
-        ;;
-    d)
-        TODOTXT_CFG_FILE=$OPTARG
-        ;;
-    f)
-        OVR_TODOTXT_FORCE=1
-        ;;
-    h)
-        # Short-circuit option parsing and forward to the action.
+    '+') : $(( HIDE_PROJECT_NAMES++ ));;
+    '@') : $(( HIDE_CONTEXT_NAMES++ ));;
+    a) OVR_TODOTXT_AUTO_ARCHIVE=0;;
+    A) OVR_TODOTXT_AUTO_ARCHIVE=1;;
+    c) OVR_TODOTXT_PLAIN=0;;
+    d) TODOTXT_CFG_FILE=$OPTARG;;
+    D) : $(( HIDE_DATES++ ));;
+    f) OVR_TODOTXT_FORCE=1;;
+    h)  # Short-circuit option parsing and forward to the action.
         # Cannot just invoke shorthelp() because we need the configuration
         # processed to locate the add-on actions directory.
         set -- '-h' 'shorthelp'
         OPTIND=2
         ;;
-    n)
-        OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
-        ;;
-    N)
-        OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1
-        ;;
-    p)
-        OVR_TODOTXT_PLAIN=1
-        ;;
-    P)
-        # HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
-        #   (true) the first time this flag is seen. Each time the flag
-        #   is seen after that, increment it again so that an even
-        #   number shows priority labels and an odd number hides priority
-        #   labels.
-        : $(( HIDE_PRIORITY_LABELS++ ))
-        if (( HIDE_PRIORITY_LABELS % 2 == 0 )); then
-            # Zero or even value -- show priority labels
-            unset HIDE_PRIORITY_SUBSTITUTION
-        else
-            # One or odd value -- hide priority labels
-            export HIDE_PRIORITY_SUBSTITUTION="([A-Z])[[:space:]]"
-        fi
-        ;;
-    t)
-        OVR_TODOTXT_DATE_ON_ADD=1
-        ;;
-    T)
-        OVR_TODOTXT_DATE_ON_ADD=0
-        ;;
-    v)
-        : $(( TODOTXT_VERBOSE++ ))
-        ;;
-    V)
-        version
-        ;;
-    x)
-        OVR_TODOTXT_DISABLE_FILTER=1
-        ;;
-    *)
-        usage
-        ;;
+    M) : $(( HIDE_META++ ));;
+    n) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0;;
+    N) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1;;
+    p) OVR_TODOTXT_PLAIN=1;;
+    P) : $(( HIDE_PRIORITY_LABELS++ ));;
+    t) OVR_TODOTXT_DATE_ON_ADD=1;;
+    T) OVR_TODOTXT_DATE_ON_ADD=0;;
+    v) : $(( TODOTXT_VERBOSE++ ));;
+    V) version;;
+    x) OVR_TODOTXT_DISABLE_FILTER=1;;
+    *) usage;;
   esac
 done
 shift $((OPTIND - 1))
@@ -690,7 +634,7 @@ TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
 TODOTXT_DATE_FORMAT=${TODOTXT_DATE_FORMAT:-%Y-%m-%d}
-TODOTXT_DATE_FORMAT_PATTERN=${TODOTXT_DATE_FORMAT_PATTERN:-'[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}'}
+TODOTXT_DATE_FORMAT_PATTERN=${TODOTXT_DATE_FORMAT_PATTERN:-'[0-9]{4}-[0-9]{2}-[0-9]{2}'}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_PRIORITY_ON_ADD=${TODOTXT_PRIORITY_ON_ADD:-}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}
@@ -698,9 +642,9 @@ TODOTXT_SORT_COMMAND=${TODOTXT_SORT_COMMAND:-env LC_COLLATE=C sort -f -k2}
 TODOTXT_DISABLE_FILTER=${TODOTXT_DISABLE_FILTER:-}
 TODOTXT_FINAL_FILTER=${TODOTXT_FINAL_FILTER:-cat}
 TODOTXT_GLOBAL_CFG_FILE=${TODOTXT_GLOBAL_CFG_FILE:-/etc/todo/config}
-TODOTXT_SIGIL_BEFORE_PATTERN=${TODOTXT_SIGIL_BEFORE_PATTERN:-}    # Allow any other non-whitespace entity before +project and @context; should be an optional match; example: \(w:\)\{0,1\} to allow w:@context.
-TODOTXT_SIGIL_VALID_PATTERN=${TODOTXT_SIGIL_VALID_PATTERN:-[^ ]\\{1,\\\}}    # Limit the valid characters (from the default any non-whitespace sequence) for +project and @context; example: [a-zA-Z]\{3,\} to only allow alphabetic ones that are at least three characters long.
-TODOTXT_SIGIL_AFTER_PATTERN=${TODOTXT_SIGIL_AFTER_PATTERN:-}    # Allow any other non-whitespace entity after +project and @context; should be an optional match; example: )\{0,1\} to allow (with the corresponding TODOTXT_SIGIL_BEFORE_PATTERN) enclosing in parentheses.
+TODOTXT_SIGIL_BEFORE_PATTERN=${TODOTXT_SIGIL_BEFORE_PATTERN:-}    # Allow any other non-whitespace entity before +project and @context; should be an optional match; example: (w:){0,1} to allow w:@context.
+TODOTXT_SIGIL_VALID_PATTERN=${TODOTXT_SIGIL_VALID_PATTERN:-[^ ]{1,\}}    # Limit the valid characters (from the default any non-whitespace sequence) for +project and @context; example: [a-zA-Z]{3,} to only allow alphabetic ones that are at least three characters long.
+TODOTXT_SIGIL_AFTER_PATTERN=${TODOTXT_SIGIL_AFTER_PATTERN:-}    # Allow any other non-whitespace entity after +project and @context; should be an optional match; example: \){0,1} to allow (with the corresponding TODOTXT_SIGIL_BEFORE_PATTERN) enclosing in parentheses.
 
 # Export all TODOTXT_* variables
 export "${!TODOTXT_@}"
@@ -865,8 +809,10 @@ _applyPlainMode()
 }
 export -f _applyPlainMode
 
-[[ -n "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
-[[ -n "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
+(( ${HIDE_PROJECTS_NAMES:-0} % 2 == 0 )) || COLOR_PROJECT="$NONE"
+(( ${HIDE_CONTEXT_NAMES:-0} % 2 == 0 )) || COLOR_CONTEXT="$NONE"
+(( ${HIDE_DATES:-0} % 2 == 0 )) || COLOR_DATE="$NONE"
+(( ${HIDE_META:-0} % 2 == 0 )) || COLOR_META="$NONE"
 
 _addto()
 {
@@ -1021,21 +967,64 @@ _format()
             s/^ /0/;
           ' \
         | eval "${TODOTXT_SORT_COMMAND}" \
-        | awk '
+        | awk \
+            -v "hidePriorityLabels=${HIDE_PRIORITY_LABELS:-0}" \
+            -v "hideContextNames=${HIDE_CONTEXT_NAMES:-0}" \
+            -v "hideProjectNames=${HIDE_PROJECT_NAMES:-0}" \
+            -v "hideDates=${HIDE_DATES:-0}" \
+            -v "hideMeta=${HIDE_META:-0}" \
+            -v "hideCustomSubstitution=${HIDE_CUSTOM_SUBSTITUTION//\\/\\\\}" \
+            -v "dateFormatPattern=${TODOTXT_DATE_FORMAT_PATTERN//\\/\\\\}" \
+            -v "sigilBeforePattern=${TODOTXT_SIGIL_BEFORE_PATTERN//\\/\\\\}" \
+            -v "sigilValidPattern=${TODOTXT_SIGIL_VALID_PATTERN//\\/\\\\}" \
+            -v "sigilAfterPattern=${TODOTXT_SIGIL_AFTER_PATTERN//\\/\\\\}" \
+          '
             function highlight(colorVar, color) {
                 color = ENVIRON[colorVar]
                 gsub(/\\+033/, "\033", color)
                 return color
             }
+            function isHidden(hideFlag) {
+                return (hideFlag % 2)
+            }
+            function highlightSigil(sigil, word, colorBegin, colorEnd, hideSigilWord,      a, beforeWord, afterWord) {
+                if (word ~ "^" sigilBeforePattern "[" sigil "]" sigilValidPattern sigilAfterPattern "$" \
+                        && match(word, "^" sigilBeforePattern "[" sigil "]")) \
+                {
+                    beforeWord = substr(word, RSTART, RLENGTH - length(sigil))
+                    word = substr(word, length(beforeWord) + 1)
+                    if (sigilAfterPattern != "" && match(word, sigilAfterPattern "$")) {
+                        afterWord = substr(word, RSTART, RLENGTH)
+                        word = substr(word, 1, length(word) - length(afterWord))
+                    }
+                    if (word !~ "^[" sigil "](" sigilValidPattern ")$") {
+                        return 0
+                    }
+
+                    if (isHidden(hideSigilWord)) {
+                        precedingWhitespace = ""
+                    } else {
+                        printf "%s", precedingWhitespace beforeWord colorBegin word colorEnd afterWord
+                    }
+                    return 1
+                }
+                return 0
+            }
             {
                 clr = ""
+                dateOffset = 0
+                hasDoneDate = 0
                 if (match($0, /^[0-9]+ x /)) {
                     clr = highlight("COLOR_DONE")
+                    dateOffset = 2
+                    hasDoneDate = ($3 ~ "^(" dateFormatPattern ")$")
                 } else if (match($0, /^[0-9]+ \([A-Z]\) /)) {
                     clr = highlight("PRI_" substr($0, RSTART + RLENGTH - 3, 1))
                     clr = (clr ? clr : highlight("PRI_X"))
-                    if (ENVIRON["HIDE_PRIORITY_SUBSTITUTION"] != "") {
+                    if (isHidden(hidePriorityLabels)) {
                         $0 = substr($0, 1, RLENGTH - 4) substr($0, RSTART + RLENGTH)
+                    } else {
+                        dateOffset = 2
                     }
                 }
                 end_clr = (clr ? highlight("DEFAULT") : "")
@@ -1058,30 +1047,41 @@ _format()
                 gsub(/[ \t][ \t]*/, "\n&\n")
                 len = split($0, words, /\n/)
 
+                precedingWhitespace = ""
                 printf "%s", clr
                 for (i = 1; i <= len; ++i) {
                     if (i == 1 && words[i] ~ /^[0-9]+$/ ) {
-                        printf "%s", num_beg words[i] num_end
-                    } else if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
-                        printf "%s", prj_beg words[i] prj_end
-                    } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
-                        printf "%s", ctx_beg words[i] ctx_end
-                    } else if (words[i] ~ /^(19|20)[0-9][0-9]-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/) {
-                        printf "%s", dat_beg words[i] dat_end
-                    } else if (words[i] ~ /^[A-Za-z0-9]+:[^ ]+$/) {
-                        printf "%s", met_beg words[i] met_end
+                        printf "%s", precedingWhitespace num_beg words[i] num_end
+                    } else if (hideCustomSubstitution != "" && words[i] ~ hideCustomSubstitution) {
+                        gsub(hideCustomSubstitution, "", words[i])
+                        if (words[i] == "") {
+                            precedingWhitespace = ""
+                        } else {
+                            printf "%s", precedingWhitespace words[i]
+                        }
+                    } else if (highlightSigil("+", words[i], prj_beg, prj_end, hideProjectNames)) {
+                    } else if (highlightSigil("@", words[i], ctx_beg, ctx_end, hideContextNames)) {
+                    } else if ((i == 3 + dateOffset || i == 3 + dateOffset + (hasDoneDate ? 2 : 0)) && words[i] ~ "^" dateFormatPattern "$") {
+                        if (isHidden(hideDates)) {
+                            precedingWhitespace = ""
+                        } else {
+                            printf "%s", precedingWhitespace dat_beg words[i] dat_end
+                        }
+                    } else if (words[i] ~ /^[^:[:space:]]+:[^:[:space:]]+$/) {
+                        if (isHidden(hideMeta)) {
+                            precedingWhitespace = ""
+                        } else {
+                            printf "%s", precedingWhitespace met_beg words[i] met_end
+                        }
+                    } else if (words[i] ~ /^[[:space:]]+$/) {
+                        precedingWhitespace = words[i]
                     } else {
-                        printf "%s", words[i]
+                        printf "%s", precedingWhitespace words[i]
                     }
                 }
                 printf "%s\n", end_clr
             }
           '  \
-        | sed '
-            s/'"${HIDE_PROJECTS_SUBSTITUTION:-^}"'//g
-            s/'"${HIDE_CONTEXTS_SUBSTITUTION:-^}"'//g
-            s/'"${HIDE_CUSTOM_SUBSTITUTION:-^}"'//g
-          '                                                   \
         | eval ${TODOTXT_FINAL_FILTER}                        \
     )
     [ -n "$filtered_items" ] && echo "$filtered_items"
@@ -1104,11 +1104,11 @@ listWordsWithSigil()
     FILE=$TODO_FILE
     [ -n "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
     eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" \
-        | grep -o "[^ ]*${sigil}[^ ]\\+" \
-        | sed -n \
+        | grep -o "[^ ]*[${sigil}][^ ]\\+" \
+        | sed -n -E \
             -e "s#^${TODOTXT_SIGIL_BEFORE_PATTERN//#/\\#}##" \
             -e "s#${TODOTXT_SIGIL_AFTER_PATTERN//#/\\#}\$##" \
-            -e "/^${sigil}${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
+            -e "/^[${sigil}]${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
         | sort -u
 }
 export -f listWordsWithSigil

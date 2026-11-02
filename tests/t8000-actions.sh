@@ -16,7 +16,7 @@ EOF
 invalidate_action foo \
     && test_todo_session 'nonexecutable action' <<EOF
 >>> todo.sh foo
-Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+$TODOTXT_ONELINE_USAGE
 Try 'todo.sh -h' for more information.
 === 1
 EOF

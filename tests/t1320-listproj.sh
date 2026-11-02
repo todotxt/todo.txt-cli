@@ -103,11 +103,11 @@ test_todo_session 'listproj with default configuration' <<EOF
 +sunflowers
 EOF
 test_todo_session 'listproj limiting to alphabetic characters' <<EOF
->>> TODOTXT_SIGIL_VALID_PATTERN='[a-zA-Z]\{1,\}' todo.sh listproj
+>>> TODOTXT_SIGIL_VALID_PATTERN='[a-zA-Z]{1,}' todo.sh listproj
 +sunflowers
 EOF
 test_todo_session 'listproj allowing brackets around projects' <<EOF
->>> TODOTXT_SIGIL_BEFORE_PATTERN='\[\{0,1\}' TODOTXT_SIGIL_AFTER_PATTERN='\]\{0,1\}' todo.sh listproj
+>>> TODOTXT_SIGIL_BEFORE_PATTERN='\[{0,1}' TODOTXT_SIGIL_AFTER_PATTERN='\]{0,1}' todo.sh listproj
 +1
 +gardening
 +landscape

@@ -645,6 +645,9 @@ unset XDG_CONFIG_HOME
 # HOME lies within the test directory and usually does not exist).
 export TODO_ACTIONS_DIR="$HOME/.todo/actions"
 
+# Common test data.
+readonly TODOTXT_ONELINE_USAGE='Usage: todo.sh [-+@aAcDfhMnNpPtTvVx] [-d todo_config] action [task_number] [task_description]'
+
 this_test=${0##*/}
 this_test=${this_test%%-*}
 for skp in $SKIP_TESTS

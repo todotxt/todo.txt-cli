@@ -62,7 +62,7 @@ It is recommended to _copy_ that template into one of the locations listed by `t
 
 ## Usage
 ```shell
-todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+todo.sh [-+@aAcDfhMnNpPtTvVx] [-d todo_config] action [task_number] [task_description]
 ```
 
 For example, to add a todo item, you can do:

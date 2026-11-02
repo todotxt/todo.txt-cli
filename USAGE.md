@@ -5,7 +5,7 @@
 # [todo.txt-cli](http://todotxt.org) Usage
 
 ```
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  Usage: todo.sh [-+@aAcDfhMnNpPtTvVx] [-d todo_config] action [task_number] [task_description]
 ```
 
 ## Options
@@ -30,6 +30,10 @@ Use a configuration file other than one of the defaults:
 * ./todo.cfg
 * /etc/todo/config
 
+### -D
+
+Hide added / done dates in list output.  Use twice to show
+dates (default).
 ### -f
 
 Forces actions without confirmation or interactive input
@@ -49,6 +53,10 @@ Don't auto-archive tasks automatically on completion
 ### -A
 
 Auto-archive tasks automatically on completion
+### -M
+
+Hide metadata (key:value) in list output.  Use twice to
+show metadata (default).
 ### -n
 
 Don't preserve line numbers; automatically remove blank lines
@@ -170,7 +178,7 @@ customize creation/completion date format
 ### TODOTXT\_DATE\_FORMAT\_PATTERN
 
 ```shell
-TODOTXT_DATE_FORMAT_PATTERN='[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}'
+TODOTXT_DATE_FORMAT_PATTERN='[0-9]{4}-[0-9]{2}-[0-9]{2}'
 ```
 
 
@@ -197,7 +205,7 @@ optionally allow chars preceding +p / @c
 ### TODOTXT\_SIGIL\_VALID\_PATTERN
 
 ```shell
-TODOTXT_SIGIL_VALID_PATTERN='[^ ]\{1,\}'
+TODOTXT_SIGIL_VALID_PATTERN='[^ ]{1,}'
 ```
 
 

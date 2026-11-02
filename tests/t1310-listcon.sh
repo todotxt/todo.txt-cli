@@ -77,12 +77,12 @@ test_todo_session 'listcon with default configuration' <<EOF
 @y
 EOF
 test_todo_session 'listcon limiting to multi-character sequences' <<EOF
->>> TODOTXT_SIGIL_VALID_PATTERN='.\{2,\}' todo.sh listcon
+>>> TODOTXT_SIGIL_VALID_PATTERN='.{2,}' todo.sh listcon
 @GinaTrapani
 @home)
 EOF
 test_todo_session 'listcon allowing w: marker before contexts' <<EOF
->>> TODOTXT_SIGIL_BEFORE_PATTERN='\(w:\)\{0,1\}' todo.sh listcon
+>>> TODOTXT_SIGIL_BEFORE_PATTERN='(w:){0,1}' todo.sh listcon
 @GinaTrapani
 @OtherContributors
 @home)
@@ -90,7 +90,7 @@ test_todo_session 'listcon allowing w: marker before contexts' <<EOF
 @y
 EOF
 test_todo_session 'listcon allowing parentheses around contexts' <<EOF
->>> TODOTXT_SIGIL_BEFORE_PATTERN='(\{0,1\}' TODOTXT_SIGIL_AFTER_PATTERN=')\{0,1\}' todo.sh listcon
+>>> TODOTXT_SIGIL_BEFORE_PATTERN='\({0,1}' TODOTXT_SIGIL_AFTER_PATTERN='\){0,1}' todo.sh listcon
 @GinaTrapani
 @home
 @school
@@ -98,7 +98,7 @@ test_todo_session 'listcon allowing parentheses around contexts' <<EOF
 @y
 EOF
 test_todo_session 'listcon with all customizations combined' <<EOF
->>> TODOTXT_SIGIL_VALID_PATTERN='.\{2,\}' TODOTXT_SIGIL_BEFORE_PATTERN='\(w:\)\{0,1\}\((\)\{0,1\}' TODOTXT_SIGIL_AFTER_PATTERN=')\{0,1\}' todo.sh listcon
+>>> TODOTXT_SIGIL_VALID_PATTERN='.{2,}' TODOTXT_SIGIL_BEFORE_PATTERN='(w:){0,1}(\(){0,1}' TODOTXT_SIGIL_AFTER_PATTERN='\){0,1}' todo.sh listcon
 @GinaTrapani
 @OtherContributors
 @home

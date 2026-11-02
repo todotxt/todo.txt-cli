@@ -62,6 +62,13 @@ test_todo_session 'checking HIDE_CUSTOM_SUBSTITUTION' <<EOF
 1 ccc xxx is line should be ird.
 --
 TODO: 3 of 3 tasks shown
+
+>>> HIDE_CUSTOM_SUBSTITUTION='[tT]his' todo.sh ls
+2 aaa zzz line should be first.
+3 bbb yyy line should be second.
+1 ccc xxx line should be third.
+--
+TODO: 3 of 3 tasks shown
 EOF
 
 #
@@ -410,6 +417,102 @@ TODO: 10 of 20 tasks shown
 18 -- Some project(S) 02 task, no priority
 --
 TODO: 10 of 20 tasks shown
+EOF
+
+#
+# check the D,M command line options
+#
+cat > todo.txt <<EOF
+(A) 2009-02-13 @con01 +prj01 due:2018-12-31 -- Some project 01 task with added date, pri A, due metadata
+(A) @con02 +prj01 -- Some project 01 task, pri A
+2009-02-13 @con01 +prj01 -- Some project 01 task with added date, no priority
+@con01 +prj02 -- Some project(S) 02 task, no priority
+x 2009-10-10 2009-02-13 @con01 +prj01 a:web w:@Gina -- Some project 01 task with added date, done, metadata
+x 2009-10-10 @con01 +prj01 -- Some project 01 task, done
+EOF
+test_todo_session 'date, metadata suppression' <<EOF
+>>> todo.sh ls
+[1;33m1 (A) 2009-02-13 @con01 +prj01 due:2018-12-31 -- Some project 01 task with added date, pri A, due metadata[0m
+[1;33m2 (A) @con02 +prj01 -- Some project 01 task, pri A[0m
+3 2009-02-13 @con01 +prj01 -- Some project 01 task with added date, no priority
+4 @con01 +prj02 -- Some project(S) 02 task, no priority
+[0;37m5 x 2009-10-10 2009-02-13 @con01 +prj01 a:web w:@Gina -- Some project 01 task with added date, done, metadata[0m
+[0;37m6 x 2009-10-10 @con01 +prj01 -- Some project 01 task, done[0m
+--
+TODO: 6 of 6 tasks shown
+
+>>> todo.sh ls +prj01
+[1;33m1 (A) 2009-02-13 @con01 +prj01 due:2018-12-31 -- Some project 01 task with added date, pri A, due metadata[0m
+[1;33m2 (A) @con02 +prj01 -- Some project 01 task, pri A[0m
+3 2009-02-13 @con01 +prj01 -- Some project 01 task with added date, no priority
+[0;37m5 x 2009-10-10 2009-02-13 @con01 +prj01 a:web w:@Gina -- Some project 01 task with added date, done, metadata[0m
+[0;37m6 x 2009-10-10 @con01 +prj01 -- Some project 01 task, done[0m
+--
+TODO: 5 of 6 tasks shown
+
+>>> todo.sh -D ls +prj01
+[1;33m1 (A) @con01 +prj01 due:2018-12-31 -- Some project 01 task with added date, pri A, due metadata[0m
+[1;33m2 (A) @con02 +prj01 -- Some project 01 task, pri A[0m
+3 @con01 +prj01 -- Some project 01 task with added date, no priority
+[0;37m5 x @con01 +prj01 a:web w:@Gina -- Some project 01 task with added date, done, metadata[0m
+[0;37m6 x @con01 +prj01 -- Some project 01 task, done[0m
+--
+TODO: 5 of 6 tasks shown
+
+>>> todo.sh -M ls +prj01
+[1;33m1 (A) 2009-02-13 @con01 +prj01 -- Some project 01 task with added date, pri A, due metadata[0m
+[1;33m2 (A) @con02 +prj01 -- Some project 01 task, pri A[0m
+3 2009-02-13 @con01 +prj01 -- Some project 01 task with added date, no priority
+[0;37m5 x 2009-10-10 2009-02-13 @con01 +prj01 -- Some project 01 task with added date, done, metadata[0m
+[0;37m6 x 2009-10-10 @con01 +prj01 -- Some project 01 task, done[0m
+--
+TODO: 5 of 6 tasks shown
+
+>>> todo.sh -+ -@ -D ls +prj01
+[1;33m1 (A) due:2018-12-31 -- Some project 01 task with added date, pri A, due metadata[0m
+[1;33m2 (A) -- Some project 01 task, pri A[0m
+3 -- Some project 01 task with added date, no priority
+[0;37m5 x a:web w:@Gina -- Some project 01 task with added date, done, metadata[0m
+[0;37m6 x -- Some project 01 task, done[0m
+--
+TODO: 5 of 6 tasks shown
+
+>>> todo.sh -+ -@ -D -P ls +prj01
+[1;33m1 due:2018-12-31 -- Some project 01 task with added date, pri A, due metadata[0m
+[1;33m2 -- Some project 01 task, pri A[0m
+3 -- Some project 01 task with added date, no priority
+[0;37m5 x a:web w:@Gina -- Some project 01 task with added date, done, metadata[0m
+[0;37m6 x -- Some project 01 task, done[0m
+--
+TODO: 5 of 6 tasks shown
+
+>>> todo.sh -+ -@ -M -P ls +prj01
+[1;33m1 2009-02-13 -- Some project 01 task with added date, pri A, due metadata[0m
+[1;33m2 -- Some project 01 task, pri A[0m
+3 2009-02-13 -- Some project 01 task with added date, no priority
+[0;37m5 x 2009-10-10 2009-02-13 -- Some project 01 task with added date, done, metadata[0m
+[0;37m6 x 2009-10-10 -- Some project 01 task, done[0m
+--
+TODO: 5 of 6 tasks shown
+
+>>> todo.sh -+ -@ -D -M -P ls
+[1;33m1 -- Some project 01 task with added date, pri A, due metadata[0m
+[1;33m2 -- Some project 01 task, pri A[0m
+3 -- Some project 01 task with added date, no priority
+4 -- Some project(S) 02 task, no priority
+[0;37m5 x -- Some project 01 task with added date, done, metadata[0m
+[0;37m6 x -- Some project 01 task, done[0m
+--
+TODO: 6 of 6 tasks shown
+
+>>> todo.sh -D -M -+ -D -M -@ -M -M ls +prj01
+[1;33m1 (A) 2009-02-13 due:2018-12-31 -- Some project 01 task with added date, pri A, due metadata[0m
+[1;33m2 (A) -- Some project 01 task, pri A[0m
+3 2009-02-13 -- Some project 01 task with added date, no priority
+[0;37m5 x 2009-10-10 2009-02-13 a:web w:@Gina -- Some project 01 task with added date, done, metadata[0m
+[0;37m6 x 2009-10-10 -- Some project 01 task, done[0m
+--
+TODO: 5 of 6 tasks shown
 EOF
 
 #

@@ -11,21 +11,21 @@ This test covers the help output.
 # slightly changes, only check for the section headers.
 test_todo_session 'help output' <<EOF
 >>> todo.sh help | sed '/^  [A-Z]/!d'
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  $TODOTXT_ONELINE_USAGE
   Options:
   Built-in Actions:
 EOF
 
 test_todo_session 'verbose help output' <<EOF
 >>> todo.sh -v help | sed '/^  [A-Z]/!d'
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  $TODOTXT_ONELINE_USAGE
   Options:
   Built-in Actions:
 EOF
 
 test_todo_session 'very verbose help output' <<EOF
 >>> todo.sh -vv help | sed '/^  [A-Z]/!d'
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  $TODOTXT_ONELINE_USAGE
   Options:
   Environment variables:
   Built-in Actions:
@@ -42,7 +42,7 @@ make_action_in_folder norris chuck
 make_action_in_folder norris norris
 test_todo_session 'help output with custom action' <<EOF
 >>> todo.sh -v help | sed '/^  [A-Z]/!d'
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  $TODOTXT_ONELINE_USAGE
   Options:
   Built-in Actions:
   Add-on Actions:

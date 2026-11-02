@@ -127,7 +127,14 @@ installdirs:
 	         $(DESTDIR)$(datarootdir)
 
 .PHONY: doc
-doc: USAGE.md  ## generate documentation (USAGE.md) from usage help
+doc: README.md USAGE.md  ## generate / update documentation from usage help
+README.md: todo.sh todo.cfg
+	ONELINE_USAGE=$$(unset $${!TODO_@} $${!TODOTXT_@}; HOME=$(CURDIR) XDG_CONFIG_HOME='' ./$< 2>&1 | sed -n -e 's/^Usage: //p') \
+		&& literalOnelineUsage="$$ONELINE_USAGE" \
+		&& literalOnelineUsage="$${literalOnelineUsage//\\/\\\\}" \
+		&& literalOnelineUsage="$${literalOnelineUsage//&/\\&}" \
+		&& sed -i.bak -e "s#^todo\.sh \[-.*\$$#$${literalOnelineUsage//#/\\#}#" README.md \
+		&& rm -f README.md.bak
 USAGE.md: todo.sh todo.cfg usageToMarkdown
 	unset $${!TODO_@} $${!TODOTXT_@}; HOME=$(CURDIR) XDG_CONFIG_HOME='' TODOTXT_VERBOSE=2 ./$< help | sed -e "s|$(CURDIR)|~|g" | ./usageToMarkdown > $@
 
@@ -148,7 +155,7 @@ $(TESTS): test-pre-clean
 	cd tests && ./$(notdir $@) $(TEST_OPTIONS)
 
 # run tests, print a test result summary, and remove generated test results
-test: aggregate-results USAGE.md   ## run tests on the development files
+test: aggregate-results   ## run tests on the development files
 	tests/aggregate-results.sh tests/test-results/t*-*
 	rm -rf tests/test-results
 

@@ -194,7 +194,7 @@ EOF
 
 
 cat /dev/null > todo.txt
-export TODOTXT_DATE_FORMAT='%D' TODOTXT_DATE_FORMAT_PATTERN='[0-9]\{2\}/[0-9]\{2\}/[0-9]\{2\}'
+export TODOTXT_DATE_FORMAT='%D' TODOTXT_DATE_FORMAT_PATTERN='[0-9]{2}/[0-9]{2}/[0-9]{2}'
 test_todo_session 'replace handling priority and prepended date with custom date format (containing slashes) on add' <<EOF
 >>> todo.sh -t add "new task"
 1 02/13/09 new task
@@ -212,7 +212,7 @@ EOF
 unset TODOTXT_DATE_FORMAT TODOTXT_DATE_FORMAT_PATTERN
 
 cat /dev/null > todo.txt
-export TODOTXT_DATE_FORMAT='%Y|%m|%d' TODOTXT_DATE_FORMAT_PATTERN='[0-9]\{4\}|[0-9]\{2\}|[0-9]\{2\}'
+export TODOTXT_DATE_FORMAT='%Y|%m|%d' TODOTXT_DATE_FORMAT_PATTERN='[0-9]{4}\|[0-9]{2}\|[0-9]{2}'
 test_todo_session 'replace handling priority and prepended date with custom date format (containing pipe delimiters) on add' <<EOF
 >>> todo.sh -t add "new task"
 1 2009|02|13 new task

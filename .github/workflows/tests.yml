@@ -23,9 +23,14 @@ jobs:
     - run: make test
     - run: make -B doc
     - run: |
-        modifiedFiles=$(git status --porcelain)
+        modifiedFiles=$(git status --porcelain --untracked-files=no)
         if [ -n "$modifiedFiles" ]; then
           printf >&2 'ERROR: The following checked-in files were modified during the build:\n%s\n' "$modifiedFiles"
+          exit 1
+        fi
+        untrackedFiles=$(git ls-files --others --exclude-standard)
+        if [ -n "$untrackedFiles" ]; then
+          printf >&2 'ERROR: The following files should be either ignored or checked in:\n%s\n' "$untrackedFiles"
           exit 1
         fi
     - run: make dist
