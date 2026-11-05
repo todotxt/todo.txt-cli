@@ -485,80 +485,80 @@ export -f getNewtodo
 
 replaceOrPrepend()
 {
-  action=$1; shift
-  shift; item=$1; shift
-  getTodo "$item"
+    action=$1; shift
+    shift; item=$1; shift
+    getTodo "$item"
 
-  case "$action" in
-    replace)
-      backref=
-      readinput 'Replacement' -i "$todo" -- "$@" || die "$errmsg"
-      ;;
-    prepend)
-      readinput 'Prepend' -- "$@"
-      case "$input" in
-          '') backref='&';;
-          *)  backref=' &';;
-      esac
-      ;;
-  esac
-
-  if [ "${todo:0:2}" = 'x ' ]; then
-    # Retrieve existing done date and date on add
-    local -r doneMarker='x '
-    local -r firstTwoFieldsExpr='('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
-  else
-    # Retrieve existing priority and prepended date
-    local -r doneMarker=''
-    local -r firstTwoFieldsExpr='(\(.\) ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
-  fi
-  originalField1=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\1/")
-  field1="$originalField1"
-  originalField2=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\2/")
-  field2="$originalField2"
-  if [ "$action" = "replace" ]; then
-    replacementField2="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\2/")"
-    if [ -n "$replacementField2" ]; then
-      # If the replaced text starts with a [field1 +] field2, it will replace
-      # the existing field2, too.
-      field2="$replacementField2"
-    fi
-    replacementField1="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\1/")"
-    if [ -n "$replacementField1" ]; then
-      # If the replaced text starts with field1, it will replace
-      # the existing field1, too.
-      field1="$replacementField1"
-    fi
-    input="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}//")"
-  fi
-
-  # Temporarily remove any existing first two fields, perform the change
-  # (replace/prepend) and re-insert the existing fields again.
-  input="${doneMarker}${field1}${field2}${input}"
-  cleaninput "for sed"
-  literalOriginalFirstTwoFields="$(echo "${originalField1}${originalField2}" | sed -e 's/[][\$*.^|]/\\&/g')"
-  sed -i.bak -e "$item s|^${doneMarker}${literalOriginalFirstTwoFields}||" -e "$item s|^.*|${input}${backref}|" "$TODO_FILE"
-  if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-    getNewtodo "$item"
     case "$action" in
-      replace)
-        echo "$item $todo"
-        echo "TODO: Replaced task with:"
-        echo "$item $newtodo"
-        ;;
-      prepend)
-        echo "$item $newtodo"
-        ;;
+        replace)
+            backref=
+            readinput 'Replacement' -i "$todo" -- "$@" || die "$errmsg"
+            ;;
+        prepend)
+            readinput 'Prepend' -- "$@"
+            case "$input" in
+                    '') backref='&';;
+                    *)  backref=' &';;
+            esac
+            ;;
     esac
 
-  fi
+    if [ "${todo:0:2}" = 'x ' ]; then
+        # Retrieve existing done date and date on add
+        local -r doneMarker='x '
+        local -r firstTwoFieldsExpr='('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
+    else
+        # Retrieve existing priority and prepended date
+        local -r doneMarker=''
+        local -r firstTwoFieldsExpr='(\(.\) ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
+    fi
+    originalField1=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\1/")
+    field1="$originalField1"
+    originalField2=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\2/")
+    field2="$originalField2"
+    if [ "$action" = "replace" ]; then
+        replacementField2="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\2/")"
+        if [ -n "$replacementField2" ]; then
+            # If the replaced text starts with a [field1 +] field2, it will replace
+            # the existing field2, too.
+            field2="$replacementField2"
+        fi
+        replacementField1="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\1/")"
+        if [ -n "$replacementField1" ]; then
+            # If the replaced text starts with field1, it will replace
+            # the existing field1, too.
+            field1="$replacementField1"
+        fi
+        input="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}//")"
+    fi
+
+    # Temporarily remove any existing first two fields, perform the change
+    # (replace/prepend) and re-insert the existing fields again.
+    input="${doneMarker}${field1}${field2}${input}"
+    cleaninput "for sed"
+    literalOriginalFirstTwoFields="$(echo "${originalField1}${originalField2}" | sed -e 's/[][\$*.^|]/\\&/g')"
+    sed -i.bak -e "$item s|^${doneMarker}${literalOriginalFirstTwoFields}||" -e "$item s|^.*|${input}${backref}|" "$TODO_FILE"
+    if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+        getNewtodo "$item"
+        case "$action" in
+            replace)
+                echo "$item $todo"
+                echo "TODO: Replaced task with:"
+                echo "$item $newtodo"
+                ;;
+            prepend)
+                echo "$item $newtodo"
+                ;;
+        esac
+
+    fi
 }
 
 fixMissingEndOfLine()
 {
     # Parameters:    $1: todo file; empty means $TODO_FILE.
     todo_path="${1:-$TODO_FILE}"
-    [[ -f $todo_path && $(tail -c1 "$todo_path") ]] && echo "" >> "$todo_path"    
+    [[ -f $todo_path && $(tail -c1 "$todo_path") ]] && echo "" >> "$todo_path"
 }
 
 uppercasePriority()
@@ -593,38 +593,38 @@ export GREP_OPTIONS=""
 
 # == PROCESS OPTIONS ==
 while getopts ":$GETOPTS_OPTIONS" Option; do
-  # The HIDE_* flags start at zero (false); increment it to one
-  #   (true) the first time this flag is seen. Each time the flag
-  #   is seen after that, increment it again so that an even
-  #   number shows context names and an odd number hides context
-  #   names.
-  case $Option in
-    '+') : $(( HIDE_PROJECT_NAMES++ ));;
-    '@') : $(( HIDE_CONTEXT_NAMES++ ));;
-    a) OVR_TODOTXT_AUTO_ARCHIVE=0;;
-    A) OVR_TODOTXT_AUTO_ARCHIVE=1;;
-    c) OVR_TODOTXT_PLAIN=0;;
-    d) TODOTXT_CFG_FILE=$OPTARG;;
-    D) : $(( HIDE_DATES++ ));;
-    f) OVR_TODOTXT_FORCE=1;;
-    h)  # Short-circuit option parsing and forward to the action.
-        # Cannot just invoke shorthelp() because we need the configuration
-        # processed to locate the add-on actions directory.
-        set -- '-h' 'shorthelp'
-        OPTIND=2
-        ;;
-    M) : $(( HIDE_META++ ));;
-    n) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0;;
-    N) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1;;
-    p) OVR_TODOTXT_PLAIN=1;;
-    P) : $(( HIDE_PRIORITY_LABELS++ ));;
-    t) OVR_TODOTXT_DATE_ON_ADD=1;;
-    T) OVR_TODOTXT_DATE_ON_ADD=0;;
-    v) : $(( TODOTXT_VERBOSE++ ));;
-    V) version;;
-    x) OVR_TODOTXT_DISABLE_FILTER=1;;
-    *) usage;;
-  esac
+    # The HIDE_* flags start at zero (false); increment it to one
+    #   (true) the first time this flag is seen. Each time the flag
+    #   is seen after that, increment it again so that an even
+    #   number shows context names and an odd number hides context
+    #   names.
+    case $Option in
+        '+') : $(( HIDE_PROJECT_NAMES++ ));;
+        '@') : $(( HIDE_CONTEXT_NAMES++ ));;
+        a) OVR_TODOTXT_AUTO_ARCHIVE=0;;
+        A) OVR_TODOTXT_AUTO_ARCHIVE=1;;
+        c) OVR_TODOTXT_PLAIN=0;;
+        d) TODOTXT_CFG_FILE=$OPTARG;;
+        D) : $(( HIDE_DATES++ ));;
+        f) OVR_TODOTXT_FORCE=1;;
+        h)  # Short-circuit option parsing and forward to the action.
+                # Cannot just invoke shorthelp() because we need the configuration
+                # processed to locate the add-on actions directory.
+                set -- '-h' 'shorthelp'
+                OPTIND=2
+                ;;
+        M) : $(( HIDE_META++ ));;
+        n) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0;;
+        N) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1;;
+        p) OVR_TODOTXT_PLAIN=1;;
+        P) : $(( HIDE_PRIORITY_LABELS++ ));;
+        t) OVR_TODOTXT_DATE_ON_ADD=1;;
+        T) OVR_TODOTXT_DATE_ON_ADD=0;;
+        v) : $(( TODOTXT_VERBOSE++ ));;
+        V) version;;
+        x) OVR_TODOTXT_DISABLE_FILTER=1;;
+        *) usage;;
+    esac
 done
 shift $((OPTIND - 1))
 
@@ -948,7 +948,7 @@ _format()
             s/^/     /
             s/ *\([ 0-9]\{'"$PADDING"',\}\)\n/\1 /
             /^[ 0-9]\{1,\} *$/d
-         '
+        '
     )
 
     # Build and apply the filter.
@@ -967,7 +967,7 @@ _format()
             s/^   /000/;
             s/^  /00/;
             s/^ /0/;
-          ' \
+        ' \
         | eval "${TODOTXT_SORT_COMMAND}" \
         | awk \
             -v "hidePriorityLabels=${HIDE_PRIORITY_LABELS:-0}" \
@@ -980,7 +980,7 @@ _format()
             -v "sigilBeforePattern=${TODOTXT_SIGIL_BEFORE_PATTERN//\\/\\\\}" \
             -v "sigilValidPattern=${TODOTXT_SIGIL_VALID_PATTERN//\\/\\\\}" \
             -v "sigilAfterPattern=${TODOTXT_SIGIL_AFTER_PATTERN//\\/\\\\}" \
-          '
+        '
             function highlight(colorVar, color) {
                 color = ENVIRON[colorVar]
                 gsub(/\\+033/, "\033", color)
@@ -1083,7 +1083,7 @@ _format()
                 }
                 printf "%s\n", end_clr
             }
-          '  \
+        '  \
         | eval "$TODOTXT_FINAL_FILTER"                        \
     )
     [ -n "$filtered_items" ] && echo "$filtered_items"
@@ -1244,9 +1244,9 @@ case $action in
 
     readinput 'Append' -- "$@" # Accept empty input here; it's harmless.
     case "$input" in
-      '')                       appendspace=;;
-      [$SENTENCE_DELIMITERS]*)  appendspace=;;
-      *)                        appendspace=" ";;
+        '')                       appendspace=;;
+        [$SENTENCE_DELIMITERS]*)  appendspace=;;
+        *)                        appendspace=" ";;
     esac
     cleaninput "for sed"
 
@@ -1264,15 +1264,15 @@ case $action in
     # defragment blank lines
     sed -i.bak -e '/./!d' "$TODO_FILE"
     if grep "^x " "$TODO_FILE" >> "$DONE_FILE"; then
-	[ "$TODOTXT_VERBOSE" -gt 0 ] && grep "^x " "$TODO_FILE"   
+        [ "$TODOTXT_VERBOSE" -gt 0 ] && grep "^x " "$TODO_FILE"
         sed -i.bak '/^x /d' "$TODO_FILE"
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
             echo "TODO: $TODO_FILE archived."
         fi
     else
-	if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-       	    echo "TODO: $TODO_FILE does not contain any done tasks."
-	fi
+        if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+            echo "TODO: $TODO_FILE does not contain any done tasks."
+        fi
     fi
     ;;
 
@@ -1331,17 +1331,17 @@ case $action in
     for item in ${*//,/ }; do
         getTodo "$item"
 
-	if [[ "$todo" = \(?\)\ * ]]; then
-	    sed -i.bak -e "${item}s/^(.) //" "$TODO_FILE"
-	    if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-		getNewtodo "$item"
-		echo "$item $newtodo"
-		echo "TODO: $item deprioritized."
-	    fi
-	else
-	    echo >&2 "TODO: $item is not prioritized."
-	    status=1
-	fi
+        if [[ "$todo" = \(?\)\ * ]]; then
+            sed -i.bak -e "${item}s/^(.) //" "$TODO_FILE"
+            if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+                getNewtodo "$item"
+                echo "$item $newtodo"
+                echo "TODO: $item deprioritized."
+            fi
+        else
+            echo >&2 "TODO: $item is not prioritized."
+            status=1
+        fi
     done
     exit $status
     ;;
@@ -1632,9 +1632,9 @@ note: PRIORITY must be anywhere from A to Z."
                 echo "--"
                 echo "TODO: $actionsCnt add-on actions found."
             fi
-        fi 
+        fi
     else
-        die "TODO: '$TODO_ACTIONS_DIR' does not exist." 
+        die "TODO: '$TODO_ACTIONS_DIR' does not exist."
     fi
     ;;
 
