@@ -16,9 +16,27 @@ jobs:
         - ubuntu-22.04
         - macos-latest
         - macos-15
+        - windows-latest
     runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash --noprofile --norc -eo pipefail ${{ startsWith(matrix.platform, 'windows-') && '-o igncr' || '' }} {0}  # igncr makes Bash handle Windows CR-LF line endings in workflow-generated scripts
     steps:
+    - name: Configure Git for Windows
+      if: runner.os == 'Windows'
+      run: git config --global core.autocrlf input  # Convert line endings on checkout
     - uses: actions/checkout@v7
+    - name: Install Cygwin on Windows
+      if: runner.os == 'Windows'
+      uses: cygwin/cygwin-install-action@v7
+      with:
+        packages: |
+          git
+          make
+          zip
+    - name: Configure Git for Windows, part 2
+      if: runner.os == 'Windows'
+      run: git config --global --add safe.directory "$PWD"  # Silence Git complains about file ownership mismatches under Cygwin
     - run: make
     - run: make test
     - run: make -B doc
@@ -35,6 +53,8 @@ jobs:
         fi
     - run: make dist
     - run: make disttest
-    - run: sudo make install
-    - run: sudo make uninstall
-    - run: sudo make clean
+    - name: Check if sudo is available
+      run: 'command -v sudo >/dev/null 2>&1 && echo SUDO=sudo >> "$GITHUB_ENV" || :'
+    - run: $SUDO make install
+    - run: $SUDO make uninstall
+    - run: $SUDO make clean
