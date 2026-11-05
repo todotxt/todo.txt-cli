@@ -6,6 +6,7 @@ shopt -s extglob extquote
 # NOTE: Todo.sh requires a configuration file to run.
 # Place it in one of the default locations or use the -d option for a custom location.
 
+# shellcheck disable=SC1091
 [ -f "$(dirname "$0")/VERSION-FILE" ] && . "$(dirname "$0")/VERSION-FILE" || VERSION="@DEV_VERSION@"
 version()
 {
@@ -825,6 +826,7 @@ _addto()
     if [[ "$TODOTXT_DATE_ON_ADD" -eq 1 ]]; then
         input=$(date "+$TODOTXT_DATE_FORMAT")
         cleaninput "for sed"
+        # shellcheck disable=SC2001
         newtodo=$(echo "$newtodo" | sed -e 's|^\(([A-Z]) \)\{0,1\}|\1'"$input |")
     fi
     if [[ -n "$TODOTXT_PRIORITY_ON_ADD" ]]; then
@@ -1082,7 +1084,7 @@ _format()
                 printf "%s\n", end_clr
             }
           '  \
-        | eval ${TODOTXT_FINAL_FILTER}                        \
+        | eval "$TODOTXT_FINAL_FILTER"                        \
     )
     [ -n "$filtered_items" ] && echo "$filtered_items"
 
@@ -1103,6 +1105,7 @@ listWordsWithSigil()
 
     FILE=$TODO_FILE
     [ -n "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
+    # shellcheck disable=SC2016
     eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" \
         | grep -o "[^ ]*[${sigil}][^ ]\\+" \
         | sed -n -E \
@@ -1324,6 +1327,7 @@ case $action in
     # Split multiple depri's, if comma separated change to whitespace separated
     # Loop the 'depri' function for each item
     status=0
+    # shellcheck disable=SC2048
     for item in ${*//,/ }; do
         getTodo "$item"
 
@@ -1351,6 +1355,7 @@ case $action in
     # Split multiple do's, if comma separated change to whitespace separated
     # Loop the 'do' function for each item
     status=0
+    # shellcheck disable=SC2048
     for item in ${*//,/ }; do
         getTodo "$item"
 
