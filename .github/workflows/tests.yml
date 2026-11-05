@@ -32,6 +32,7 @@ jobs:
       with:
         packages: |
           git
+          make
           zip
     - name: Configure Git for Windows, part 2
       if: runner.os == 'Windows'
