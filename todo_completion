@@ -8,7 +8,11 @@ _todo_complete_wordlist()
 {
     local wordlist="${1?}"; shift
     local cur="${1?}"; shift
-    readarray -t COMPREPLY < <(compgen -W "$wordlist" -- "$cur")
+    local candidate
+    while IFS=$'\n' read -r candidate
+    do
+        COMPREPLY+=("$candidate")
+    done < <(compgen -W "$wordlist" -- "$cur")
 }
 _todo()
 {
