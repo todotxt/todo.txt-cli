@@ -1,0 +1,27 @@
+name: Quality
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - name: shellcheck
+      uses: reviewdog/action-shellcheck@v1.34.1
+      with:
+        reporter: ${{ github.event_name == 'pull_request' && 'github-pr-review' || 'github-check' }}
+        pattern: |
+          todo.sh
+          todo_completion
+          GEN-VERSION-FILE
