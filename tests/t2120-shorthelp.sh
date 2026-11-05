@@ -9,6 +9,7 @@ This test covers the output of the -h option and the shorthelp action.
 
 # Note: To avoid having to adapt the test whenever the actions change, only
 # check for the section headers.
+# editorconfig-checker-disable
 test_todo_session '-h output' <<EOF
 >>> todo.sh -h | sed '/^  [A-Z]/!d'
   $TODOTXT_ONELINE_USAGE
@@ -16,7 +17,9 @@ test_todo_session '-h output' <<EOF
   Actions can be added and overridden using scripts in the actions
   See "help" for more details.
 EOF
+# editorconfig-checker-enable
 
+# editorconfig-checker-disable
 test_todo_session 'shorthelp output' <<EOF
 >>> todo.sh shorthelp | sed '/^  [A-Z]/!d'
   $TODOTXT_ONELINE_USAGE
@@ -24,6 +27,7 @@ test_todo_session 'shorthelp output' <<EOF
   Actions can be added and overridden using scripts in the actions
   See "help" for more details.
 EOF
+# editorconfig-checker-enable
 
 make_action foo
 make_action bar
@@ -34,6 +38,7 @@ make_action_in_folder check chuck
 make_action_in_folder norris actionhero
 make_action_in_folder norris chuck
 make_action_in_folder norris norris
+# editorconfig-checker-disable
 test_todo_session 'shorthelp output with custom action' <<EOF
 >>> todo.sh -v shorthelp | sed '/^  [A-Z]/!d'
   $TODOTXT_ONELINE_USAGE
@@ -69,6 +74,7 @@ TODO: 8 add-on actions found.
 \
   See "help" for more details.
 EOF
+# editorconfig-checker-enable
 
 # Verify that custom configuration is actually processed (when the -d option
 # precedes the -h option) by specifying a different actions directory and moving
@@ -81,6 +87,7 @@ echo 'export TODO_ACTIONS_DIR=$HOME/custom.actions' >> custom.cfg
 # Avoid the use of global config file, if it exists
 export TODOTXT_GLOBAL_CFG_FILE=global.cfg
 
+# editorconfig-checker-disable
 test_todo_session '-h and fatal error without config' <<EOF
 >>> todo.sh -h 2>&1 | sed '/^ \\{0,2\\}[A-Z]/!d'
   $TODOTXT_ONELINE_USAGE
@@ -90,8 +97,10 @@ test_todo_session '-h and fatal error without config' <<EOF
 Fatal Error: Cannot read configuration file $HOME/.todo/config
 === 1
 EOF
+# editorconfig-checker-enable
 
 # Config option comes too late; "Add-on Actions" is *not* mentioned here.
+# editorconfig-checker-disable
 test_todo_session '-h and fatal error with trailing custom config' <<EOF
 >>> todo.sh -h -d custom.cfg 2>&1 | sed '/^ \\{0,2\\}[A-Z]/!d'
   $TODOTXT_ONELINE_USAGE
@@ -101,8 +110,10 @@ test_todo_session '-h and fatal error with trailing custom config' <<EOF
 Fatal Error: Cannot read configuration file $HOME/.todo/config
 === 1
 EOF
+# editorconfig-checker-enable
 
 # Config option processed; "Add-on Actions" is mentioned here.
+# editorconfig-checker-disable
 test_todo_session '-h output with preceding custom config' <<EOF
 >>> todo.sh -d custom.cfg -h 2>&1 | sed '/^ \\{0,2\\}[A-Z]/!d'
   $TODOTXT_ONELINE_USAGE
@@ -111,5 +122,6 @@ test_todo_session '-h output with preceding custom config' <<EOF
   Add-on Actions:
   See "help" for more details.
 EOF
+# editorconfig-checker-enable
 
 test_done

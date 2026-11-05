@@ -74,6 +74,7 @@ test_todo_session 'listproj with context' <<EOF
 +sunflowers
 EOF
 
+# editorconfig-checker-disable
 cat > todo.txt <<EOF
 +roses +flowers
 +roses and only +flowers
@@ -86,6 +87,7 @@ my +flowers are +roses in the middle
 at the back pick the +roses +flowers
 at the back with trailing space +flowers +roses 
 EOF
+# editorconfig-checker-enable
 test_todo_session 'listproj of projects at various positions' <<EOF
 >>> todo.sh listproj
 +flowers

@@ -98,9 +98,10 @@ TODO: 2 added.
 TODO: 2 of 2 tasks shown
 EOF
 
+printf -v CR '\r'
 cat /dev/null > todo.txt
 test_todo_session 'add with CR' <<EOF
->>> todo.sh add "smell theCarriage Return"
+>>> todo.sh add "smell the${CR}Carriage Return"
 1 smell the Carriage Return
 TODO: 1 added.
 

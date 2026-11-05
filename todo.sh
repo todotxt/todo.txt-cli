@@ -60,6 +60,7 @@ EndUsage
 
 shorthelp()
 {
+    # editorconfig-checker-disable
     cat <<EndHelp
   Usage: $oneline_usage
 
@@ -93,21 +94,25 @@ shorthelp()
   Actions can be added and overridden using scripts in the actions
   directory.
 EndHelp
+    # editorconfig-checker-enable
 
     # Only list the one-line usage from the add-on actions. This assumes that
     # add-ons use the same usage indentation structure as todo.sh.
     addonHelp | grep -e '^  Add-on Actions:' -e '^    [[:alpha:]]'
 
+    # editorconfig-checker-disable
     cat <<EndHelpFooter
 
   See "help" for more details.
 EndHelpFooter
 }
+    # editorconfig-checker-enable
 
 help()
 {
     local indentedJoinedConfigFileLocations
     printf -v indentedJoinedConfigFileLocations '          %s\n' "${configFileLocations[@]}"
+    # editorconfig-checker-disable
     cat <<EndOptionsHelp
   Usage: $oneline_usage
 
@@ -165,6 +170,7 @@ $indentedJoinedConfigFileLocations
 
 EndOptionsHelp
 
+    # editorconfig-checker-disable
     [ "$TODOTXT_VERBOSE" -gt 1 ] && cat <<EndVerboseHelp
   Environment variables:
     TODOTXT_AUTO_ARCHIVE            is same as option -a (0)/-A (1)
@@ -191,12 +197,14 @@ EndOptionsHelp
     TODOTXT_SIGIL_AFTER_PATTERN='$TODOTXT_SIGIL_AFTER_PATTERN'  optionally allow chars after +p / @c
 
 EndVerboseHelp
+    # editorconfig-checker-enable
     actionsHelp
     addonHelp
 }
 
 actionsHelp()
 {
+    # editorconfig-checker-disable
     cat <<EndActionsHelp
   Built-in Actions:
     add "(B) THING I NEED TO DO +project @context"
@@ -328,6 +336,7 @@ actionsHelp()
       List the one-line usage of all built-in and add-on actions.
 
 EndActionsHelp
+    # editorconfig-checker-enable
 }
 
 addonHelp()

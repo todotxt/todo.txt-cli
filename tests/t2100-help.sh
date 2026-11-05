@@ -9,6 +9,7 @@ This test covers the help output.
 
 # Note: To avoid having to adapt the test whenever the help documentation
 # slightly changes, only check for the section headers.
+# editorconfig-checker-disable
 test_todo_session 'help output' <<EOF
 >>> todo.sh help | sed '/^  [A-Z]/!d'
   $TODOTXT_ONELINE_USAGE
@@ -30,6 +31,7 @@ test_todo_session 'very verbose help output' <<EOF
   Environment variables:
   Built-in Actions:
 EOF
+# editorconfig-checker-enable
 
 make_action foo
 make_action bar
@@ -40,6 +42,7 @@ make_action_in_folder check chuck
 make_action_in_folder norris actionhero
 make_action_in_folder norris chuck
 make_action_in_folder norris norris
+# editorconfig-checker-disable
 test_todo_session 'help output with custom action' <<EOF
 >>> todo.sh -v help | sed '/^  [A-Z]/!d'
   $TODOTXT_ONELINE_USAGE
@@ -88,5 +91,6 @@ TODO: 8 add-on actions found.
       This custom action does quux.
 \
 EOF
+# editorconfig-checker-enable
 
 test_done
