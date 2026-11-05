@@ -1,3 +1,4 @@
+#!/bin/bash source-this-script
 # bash completion for todo.txt-cli
 
 # Check for bash
@@ -5,7 +6,7 @@
 
 _todo()
 {
-    local cur prev opts
+    local cur prev
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
@@ -26,7 +27,7 @@ _todo()
         "${COMP_WORDS[COMP_CWORD-2]}" =~ ^($MOVE_COMMAND_PATTERN${_todo_file2_actions:+|${_todo_file2_actions}})$ || \
         "${COMP_WORDS[COMP_CWORD-3]}" =~ ^($MOVE_COMMAND_PATTERN${_todo_file3_actions:+|${_todo_file3_actions}})$ ) ]]; then
         # "move NR DEST [SRC]" has file arguments on positions 2 and 3.
-        completions=$(eval TODOTXT_VERBOSE=0 $_todo_sh command listfile 2>/dev/null)
+        completions=$(eval TODOTXT_VERBOSE=0 "$_todo_sh" command listfile 2>/dev/null)
     else
         case "$prev" in
             command)
@@ -39,13 +40,13 @@ _todo()
                 else
                     case "$cur" in
                         +*) completions=$(eval TODOTXT_VERBOSE=0 "$_todo_sh" command listproj 2>/dev/null)
-                            COMPREPLY=( $(compgen -W "$completions" -- "$cur"))
+                            readarray -t COMPREPLY < <(compgen -W "$completions" -- "$cur")
                             [ ${#COMPREPLY[@]} -gt 0 ] && return 0
                             # Fall back to projects extracted from done tasks.
                             completions=$(eval 'TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE' "$_todo_sh" command listproj 2>/dev/null)
                             ;;
                         @*) completions=$(eval TODOTXT_VERBOSE=0 "$_todo_sh" command listcon 2>/dev/null)
-                            COMPREPLY=( $(compgen -W "$completions" -- "$cur"))
+                            readarray -t COMPREPLY < <(compgen -W "$completions" -- "$cur")
                             [ ${#COMPREPLY[@]} -gt 0 ] && return 0
                             # Fall back to contexts extracted from done tasks.
                             completions=$(eval 'TODOTXT_VERBOSE=0 TODOTXT_SOURCEVAR=\$DONE_FILE' "$_todo_sh" command listcon 2>/dev/null)
@@ -90,7 +91,7 @@ _todo()
         esac
     fi
 
-    COMPREPLY=( $(compgen -W "$completions" -- "$cur"))
+    readarray -t COMPREPLY < <(compgen -W "$completions" -- "$cur")
     return 0
 }
 complete -F _todo todo.sh
