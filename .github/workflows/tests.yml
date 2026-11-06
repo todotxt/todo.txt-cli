@@ -2,10 +2,15 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+
+concurrency:
+  # Cancel outdated runs:
+  # - Cancels an older push run when another push arrives on the same branch.
+  # - Cancels an older PR run when another commit is pushed to that PR.
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   linter:
