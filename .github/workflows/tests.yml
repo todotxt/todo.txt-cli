@@ -51,6 +51,20 @@ jobs:
           todo_completion
           GEN-VERSION-FILE
 
+    - name: markdownlint
+      uses: reviewdog/action-markdownlint@v0.32.0
+      with:
+        reporter: ${{ env.REVIEWDOG_REPORTER }}
+        filter_mode: ${{ env.REVIEWDOG_FILTER_MODE }}
+        fail_level: ${{ env.REVIEWDOG_FAIL_LEVEL }}
+
+    - name: actionlint  # checker for GitHub Actions workflow files
+      uses: reviewdog/action-actionlint@v1.81.2
+      with:
+        reporter: ${{ env.REVIEWDOG_REPORTER }}
+        filter_mode: ${{ env.REVIEWDOG_FILTER_MODE }}
+        fail_level: ${{ env.REVIEWDOG_FAIL_LEVEL }}
+
   test:
     strategy:
       matrix:
