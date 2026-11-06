@@ -9,14 +9,19 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
   checks: write
 
+env:
+  REVIEWDOG_FILTER_MODE: file
+  REVIEWDOG_FAIL_LEVEL: error
+  REVIEWDOG_REPORTER: github-check  # github-pr-review would be nice for PRs, but doesn't support PRs from forks
+
 jobs:
-  editorconfig:
+  linter:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
+
     - name: Set up editorconfig-checker
       uses: editorconfig-checker/action-editorconfig-checker@v3.0.0
     - uses: reviewdog/action-setup@v1
@@ -28,16 +33,16 @@ jobs:
           | reviewdog \
             -efm='%f:%l:%c: %m' \
             -name=editorconfig-checker \
-            -reporter=${{ github.event_name == 'pull_request' && 'github-pr-review' || 'github-check' }}
+            -reporter="$REVIEWDOG_REPORTER" \
+            -filter-mode="$REVIEWDOG_FILTER_MODE" \
+            -fail-level="$REVIEWDOG_FAIL_LEVEL"
 
-  linter:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v7
     - name: shellcheck
       uses: reviewdog/action-shellcheck@v1.34.1
       with:
-        reporter: ${{ github.event_name == 'pull_request' && 'github-pr-review' || 'github-check' }}
+        reporter: ${{ env.REVIEWDOG_REPORTER }}
+        filter_mode: ${{ env.REVIEWDOG_FILTER_MODE }}
+        fail_level: ${{ env.REVIEWDOG_FAIL_LEVEL }}
         pattern: |
           todo.sh
           todo_completion
