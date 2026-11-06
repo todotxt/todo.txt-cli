@@ -2,12 +2,55 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
 
+concurrency:
+  # Cancel outdated runs:
+  # - Cancels an older push run when another push arrives on the same branch.
+  # - Cancels an older PR run when another commit is pushed to that PR.
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  linter:
+    runs-on: ubuntu-latest
+    env:
+      REVIEWDOG_FILTER_MODE: file # Only process problems from files added/modified by the PR (when combined with the "github-check" reporter). Note: Not supported for pushes; it falls back to "nofilter" there, reporting all problems.
+      REVIEWDOG_FAIL_LEVEL: error
+      REVIEWDOG_REPORTER: github-check  # github-pr-review would be nice for PRs, but doesn't support PRs from forks
+    permissions:
+      contents: read
+      checks: write
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Set up editorconfig-checker
+      uses: editorconfig-checker/action-editorconfig-checker@v3.0.0
+    - uses: reviewdog/action-setup@v1
+    - name: Run editorconfig-checker
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        editorconfig-checker -no-color -f=gcc \
+          | reviewdog \
+            -efm='%f:%l:%c: %m' \
+            -name=editorconfig-checker \
+            -reporter="$REVIEWDOG_REPORTER" \
+            -filter-mode="$REVIEWDOG_FILTER_MODE" \
+            -fail-level="$REVIEWDOG_FAIL_LEVEL"
+
+    - name: shellcheck
+      uses: reviewdog/action-shellcheck@v1.34.1
+      with:
+        reporter: ${{ env.REVIEWDOG_REPORTER }}
+        filter_mode: ${{ env.REVIEWDOG_FILTER_MODE }}
+        fail_level: ${{ env.REVIEWDOG_FAIL_LEVEL }}
+        pattern: |
+          todo.sh
+          todo_completion
+          GEN-VERSION-FILE
+
   test:
     strategy:
       matrix:

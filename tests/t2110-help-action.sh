@@ -20,6 +20,7 @@ TODO: No action "h" exists.
 === 1
 EOF
 
+# editorconfig-checker-disable
 test_todo_session 'single action help' <<'EOF'
 >>> todo.sh help shorthelp
     shorthelp
@@ -62,5 +63,6 @@ test_todo_session 'mixed existing and nonexisting action help' <<'EOF'
 TODO: No action "doesnotexist" exists.
 === 1
 EOF
+# editorconfig-checker-enable
 
 test_done

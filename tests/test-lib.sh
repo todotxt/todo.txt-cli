@@ -13,8 +13,8 @@ done,*)
 	mkdir -p test-results
 	BASE=test-results/$(basename "$0" .sh)
 	(
-	    TEST_TEE_STARTED=done ${SHELL-sh} "$0" "$@" 2>&1;
-	    echo $? > $BASE.exit
+		TEST_TEE_STARTED=done ${SHELL-sh} "$0" "$@" 2>&1;
+		echo $? > $BASE.exit
 	) | tee $BASE.out
 	test "$(cat $BASE.exit)" = 0
 	exit
@@ -236,7 +236,7 @@ test_expect_failure () {
 		then
 			test_known_broken_ok_ "$1"
 		else
-		    test_known_broken_failure_ "$1"
+			test_known_broken_failure_ "$1"
 		fi
 	fi
 	echo >&3 ""
@@ -506,51 +506,51 @@ test_tick () {
 # output5
 # EOF
 test_todo_session () {
-    test "$#" = 1 ||
-    error "bug in the test script: extra args to test_todo_session"
-    subnum=1
-    cmd=""
-    status=0
-    > expect
-    while IFS= read -r line
-    do
-	case $line in
-	">>> "*)
-	    test -z "$cmd" || error "bug in the test script: missing blank line separator in test_todo_session"
-	    cmd=${line#>>> }
-	    ;;
-	"=== "*)
-	    status=${line#=== }
-	    ;;
-	"")
-	    if [ -n "$cmd" ]; then
-		if [ "$status" = 0 ]; then
-		    test_expect_output "$1 $subnum" "$cmd"
-		else
-		    test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
-		fi
+	test "$#" = 1 ||
+	error "bug in the test script: extra args to test_todo_session"
+	subnum=1
+	cmd=""
+	status=0
+	> expect
+	while IFS= read -r line
+	do
+		case $line in
+		">>> "*)
+			test -z "$cmd" || error "bug in the test script: missing blank line separator in test_todo_session"
+			cmd=${line#>>> }
+			;;
+		"=== "*)
+			status=${line#=== }
+			;;
+		"")
+			if [ -n "$cmd" ]; then
+				if [ "$status" = 0 ]; then
+					test_expect_output "$1 $subnum" "$cmd"
+				else
+					test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
+				fi
 
-		subnum=$((subnum + 1))
-		cmd=""
-		status=0
-		> expect
-	    fi
-	    ;;
-	\\)
-	    echo "" >> expect
-	    ;;
-	*)
-	    echo "$line" >> expect
-	    ;;
-	esac
-    done
-    if [ -n "$cmd" ]; then
-	if [ "$status" = 0 ]; then
-	    test_expect_output "$1 $subnum" "$cmd"
-	else
-	    test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
+				subnum=$((subnum + 1))
+				cmd=""
+				status=0
+				> expect
+			fi
+			;;
+		\\)
+			echo "" >> expect
+			;;
+		*)
+			echo "$line" >> expect
+			;;
+		esac
+	done
+	if [ -n "$cmd" ]; then
+		if [ "$status" = 0 ]; then
+			test_expect_output "$1 $subnum" "$cmd"
+		else
+			test_expect_code_and_output "$status" "$1 $subnum" "$cmd"
+		fi
 	fi
-    fi
 }
 
 test_shell () {

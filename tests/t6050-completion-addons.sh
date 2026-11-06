@@ -18,7 +18,7 @@ makeCustomActions()
     set -e
     for addon in $ADDONS
     do
-         make_action "$addon"
+        make_action "$addon"
     done
 
     # Also create a subdirectory, to test that it is skipped.

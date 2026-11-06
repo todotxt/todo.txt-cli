@@ -18,6 +18,7 @@ make_action bar
 make_action ls
 make_action quux
 
+# editorconfig-checker-disable
 test_todo_session 'custom action help' <<'EOF'
 >>> todo.sh help foo
     foo NR [NR ...] [TERM...]
@@ -93,11 +94,13 @@ test_todo_session 'custom override of built-in action help' <<'EOF'
       This custom action does ls.
 \
 EOF
+# editorconfig-checker-enable
 
 TODO_ACTIONS_DIR="$HOME/projects/addons-wait" make_action wait
 TODO_ACTIONS_DIR="$HOME/projects/addons-wait" make_action unwait
 TODO_ACTIONS_DIR="$HOME/addons-common" make_action_in_folder checker expirecheck
 TODO_ACTIONS_DIR="$HOME/addons-common" make_action_in_folder checker outdatedcheck
+# editorconfig-checker-disable
 test_todo_session 'custom action help from multiple actions directories' <<'EOF'
 >>> TODO_ACTIONS_DIR="$HOME/addons-common:$HOME/projects/addons-wait" todo.sh help expirecheck
     expirecheck NR [NR ...] [TERM...]
@@ -109,5 +112,6 @@ test_todo_session 'custom action help from multiple actions directories' <<'EOF'
       This custom action does unwait.
 \
 EOF
+# editorconfig-checker-enable
 
 test_done

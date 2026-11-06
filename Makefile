@@ -46,7 +46,7 @@ help:                            ## list public targets
 	@echo todo.txt Makefile
 	@echo
 	@sed -ne '/^[a-z%-]\+:.*##/ s/:.*##/\t/p' $(word 1, $(MAKEFILE_LIST)) \
-	 | column -t -s '	'
+	| column -t -s '	'
 	@echo
 
 # Dynamically detect/generate version file as necessary
@@ -101,13 +101,13 @@ install: build installdirs   ## local package install
 	$(INSTALL_PROGRAM) $(DISTNAME)/todo.sh $(DEST_COMMAND)
 	$(INSTALL_DATA) $(DISTNAME)/todo_completion $(DEST_COMPLETION)
 	if [ ! -e $(DEST_CONFIG) ]; then \
-	    sed 's@^\(export TODO_DIR=\).*@\1~/.todo@' $(DISTNAME)/todo.cfg > $(DEST_CONFIG); \
-	    if sed -i.bak 's@^# \(export TODOTXT_SED_COMMAND=sed\)$$@\1@' $(DEST_CONFIG) 2>/dev/null; then \
-	        rm -f $(DEST_CONFIG).bak; \
-	        echo 'This sed supports in-place editing.'; \
-	    else \
-	        echo 'Need sed in-place emulation here.'; \
-	    fi; \
+		sed 's@^\(export TODO_DIR=\).*@\1~/.todo@' $(DISTNAME)/todo.cfg > $(DEST_CONFIG); \
+		if sed -i.bak 's@^# \(export TODOTXT_SED_COMMAND=sed\)$$@\1@' $(DEST_CONFIG) 2>/dev/null; then \
+			rm -f $(DEST_CONFIG).bak; \
+			echo 'This sed supports in-place editing.'; \
+		else \
+			echo 'Need sed in-place emulation here.'; \
+		fi; \
 	fi
 
 .PHONY: uninstall
@@ -122,9 +122,10 @@ uninstall:   ## uninstall package
 # create local installation directories
 .PHONY: installdirs
 installdirs:
-	mkdir -p $(DESTDIR)$(bindir) \
-	         $(DESTDIR)$(sysconfdir)/todo \
-	         $(DESTDIR)$(datarootdir)
+	mkdir -p \
+		$(DESTDIR)$(bindir) \
+		$(DESTDIR)$(sysconfdir)/todo \
+		$(DESTDIR)$(datarootdir)
 
 .PHONY: doc
 doc: README.md USAGE.md  ## generate / update documentation from usage help

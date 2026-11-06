@@ -10,14 +10,14 @@ shopt -s extglob extquote
 [ -f "$(dirname "$0")/VERSION-FILE" ] && . "$(dirname "$0")/VERSION-FILE" || VERSION="@DEV_VERSION@"
 version()
 {
-    cat <<-EndVersion
-		TODO.TXT Command Line Interface v$VERSION
+    cat <<EndVersion
+TODO.TXT Command Line Interface v$VERSION
 
-		Homepage: http://todotxt.org/
-		Code repository: https://github.com/todotxt/todo.txt-cli
-		Contributors: https://github.com/todotxt/todo.txt-cli/graphs/contributors
-		License: https://github.com/todotxt/todo.txt-cli/blob/master/LICENSE
-	EndVersion
+Homepage: http://todotxt.org/
+Code repository: https://github.com/todotxt/todo.txt-cli
+Contributors: https://github.com/todotxt/todo.txt-cli/graphs/contributors
+License: https://github.com/todotxt/todo.txt-cli/blob/master/LICENSE
+EndVersion
     exit 0
 }
 
@@ -51,283 +51,292 @@ sed() {
 
 usage()
 {
-    cat >&2 <<-EndUsage
-		Usage: $oneline_usage
-		Try '$TODO_SH -h' for more information.
-	EndUsage
+    cat >&2 <<EndUsage
+Usage: $oneline_usage
+Try '$TODO_SH -h' for more information.
+EndUsage
     exit 1
 }
 
 shorthelp()
 {
-    cat <<-EndHelp
-		  Usage: $oneline_usage
+    # editorconfig-checker-disable
+    cat <<EndHelp
+  Usage: $oneline_usage
 
-		  Actions:
-		    add|a "(B) THING I NEED TO DO +project @context"
-		    addm "THINGS I NEED TO DO
-		          MORE THINGS I NEED TO DO"
-		    addto DEST "TEXT TO ADD"
-		    append|app NR "TEXT TO APPEND"
-		    archive
-		    command [ACTIONS]
-		    deduplicate
-		    del|rm NR [TERM]
-		    depri|dp NR [NR ...]
-		    done|do NR [NR ...]
-		    help [ACTION...]
-		    list|ls [TERM...]
-		    listall|lsa [TERM...]
-		    listaddons
-		    listcon|lsc [TERM...]
-		    listfile|lf [SRC [TERM...]]
-		    listpri|lsp [PRIORITIES] [TERM...]
-		    listproj|lsprj [TERM...]
-		    move|mv NR DEST [SRC]
-		    prepend|prep NR "TEXT TO PREPEND"
-		    pri|p NR PRIORITY [NR PRIORITY ...]
-		    replace NR "UPDATED TODO"
-		    report
-		    shorthelp
+  Actions:
+    add|a "(B) THING I NEED TO DO +project @context"
+    addm "THINGS I NEED TO DO
+          MORE THINGS I NEED TO DO"
+    addto DEST "TEXT TO ADD"
+    append|app NR "TEXT TO APPEND"
+    archive
+    command [ACTIONS]
+    deduplicate
+    del|rm NR [TERM]
+    depri|dp NR [NR ...]
+    done|do NR [NR ...]
+    help [ACTION...]
+    list|ls [TERM...]
+    listall|lsa [TERM...]
+    listaddons
+    listcon|lsc [TERM...]
+    listfile|lf [SRC [TERM...]]
+    listpri|lsp [PRIORITIES] [TERM...]
+    listproj|lsprj [TERM...]
+    move|mv NR DEST [SRC]
+    prepend|prep NR "TEXT TO PREPEND"
+    pri|p NR PRIORITY [NR PRIORITY ...]
+    replace NR "UPDATED TODO"
+    report
+    shorthelp
 
-		  Actions can be added and overridden using scripts in the actions
-		  directory.
-	EndHelp
+  Actions can be added and overridden using scripts in the actions
+  directory.
+EndHelp
+    # editorconfig-checker-enable
 
     # Only list the one-line usage from the add-on actions. This assumes that
     # add-ons use the same usage indentation structure as todo.sh.
     addonHelp | grep -e '^  Add-on Actions:' -e '^    [[:alpha:]]'
 
-    cat <<-EndHelpFooter
+    # editorconfig-checker-disable
+    cat <<EndHelpFooter
 
-		  See "help" for more details.
-	EndHelpFooter
+  See "help" for more details.
+EndHelpFooter
 }
+    # editorconfig-checker-enable
 
 help()
 {
     local indentedJoinedConfigFileLocations
     printf -v indentedJoinedConfigFileLocations '          %s\n' "${configFileLocations[@]}"
-    cat <<-EndOptionsHelp
-		  Usage: $oneline_usage
+    # editorconfig-checker-disable
+    cat <<EndOptionsHelp
+  Usage: $oneline_usage
 
-		  Options:
-		    -@
-		        Hide context names in list output.  Use twice to show context
-		        names (default).
-		    -+
-		        Hide project names in list output.  Use twice to show project
-		        names (default).
-		    -c
-		        Color mode
-		    -d CONFIG_FILE
-		        Use a configuration file other than one of the defaults:
+  Options:
+    -@
+        Hide context names in list output.  Use twice to show context
+        names (default).
+    -+
+        Hide project names in list output.  Use twice to show project
+        names (default).
+    -c
+        Color mode
+    -d CONFIG_FILE
+        Use a configuration file other than one of the defaults:
 $indentedJoinedConfigFileLocations
-		    -D
-		        Hide added / done dates in list output.  Use twice to show
-		        dates (default).
-		    -f
-		        Forces actions without confirmation or interactive input
-		    -h
-		        Display a short help message; same as action "shorthelp"
-		    -p
-		        Plain mode turns off colors
-		    -P
-		        Hide priority labels in list output.  Use twice to show
-		        priority labels (default).
-		    -a
-		        Don't auto-archive tasks automatically on completion
-		    -A
-		        Auto-archive tasks automatically on completion
-		    -M
-		        Hide metadata (key:value) in list output.  Use twice to
-		        show metadata (default).
-		    -n
-		        Don't preserve line numbers; automatically remove blank lines
-		        on task deletion
-		    -N
-		        Preserve line numbers
-		    -t
-		        Prepend the current date to a task automatically
-		        when it's added.
-		    -T
-		        Do not prepend the current date to a task automatically
-		        when it's added.
-		    -v
-		        Verbose mode turns on confirmation messages
-		    -vv
-		        Extra verbose mode prints some debugging information and
-		        additional help text
-		    -V
-		        Displays version, license and credits
-		    -x
-		        Disables TODOTXT_FINAL_FILTER
+    -D
+        Hide added / done dates in list output.  Use twice to show
+        dates (default).
+    -f
+        Forces actions without confirmation or interactive input
+    -h
+        Display a short help message; same as action "shorthelp"
+    -p
+        Plain mode turns off colors
+    -P
+        Hide priority labels in list output.  Use twice to show
+        priority labels (default).
+    -a
+        Don't auto-archive tasks automatically on completion
+    -A
+        Auto-archive tasks automatically on completion
+    -M
+        Hide metadata (key:value) in list output.  Use twice to
+        show metadata (default).
+    -n
+        Don't preserve line numbers; automatically remove blank lines
+        on task deletion
+    -N
+        Preserve line numbers
+    -t
+        Prepend the current date to a task automatically
+        when it's added.
+    -T
+        Do not prepend the current date to a task automatically
+        when it's added.
+    -v
+        Verbose mode turns on confirmation messages
+    -vv
+        Extra verbose mode prints some debugging information and
+        additional help text
+    -V
+        Displays version, license and credits
+    -x
+        Disables TODOTXT_FINAL_FILTER
 
-	EndOptionsHelp
+EndOptionsHelp
 
-    [ "$TODOTXT_VERBOSE" -gt 1 ] && cat <<-EndVerboseHelp
-		  Environment variables:
-		    TODOTXT_AUTO_ARCHIVE            is same as option -a (0)/-A (1)
-		    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
-		    TODOTXT_FORCE=1                 is same as option -f
-		    TODOTXT_PRESERVE_LINE_NUMBERS   is same as option -n (0)/-N (1)
-		    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
-		    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
-		    TODOTXT_PRIORITY_ON_ADD=pri     default priority A-Z
-		    TODOTXT_VERBOSE=1               is same as option -v
-		    TODOTXT_DISABLE_FILTER=1        is same as option -x
-		    TODOTXT_DEFAULT_ACTION=''       run this when called with no arguments
-		    TODOTXT_SORT_COMMAND='sort ...' customize list output
-		    TODOTXT_FINAL_FILTER='sed ...'  customize list after color, P@+ hiding
-		    TODOTXT_DATE_FORMAT='$TODOTXT_DATE_FORMAT'  customize creation/completion date format
-		    TODOTXT_DATE_FORMAT_PATTERN='$TODOTXT_DATE_FORMAT_PATTERN'
-		                                    customize creation/completion date
-		                                    extraction format for prepend and
-		                                    replace actions
-		    TODOTXT_SOURCEVAR=\$DONE_FILE    use another source for listcon, listproj
-		    TODOTXT_SIGIL_BEFORE_PATTERN='$TODOTXT_SIGIL_BEFORE_PATTERN' optionally allow chars preceding +p / @c
-		    TODOTXT_SIGIL_VALID_PATTERN='$TODOTXT_SIGIL_VALID_PATTERN'
-		                                    tweak the allowed chars for +p and @c
-		    TODOTXT_SIGIL_AFTER_PATTERN='$TODOTXT_SIGIL_AFTER_PATTERN'  optionally allow chars after +p / @c
+    # editorconfig-checker-disable
+    [ "$TODOTXT_VERBOSE" -gt 1 ] && cat <<EndVerboseHelp
+  Environment variables:
+    TODOTXT_AUTO_ARCHIVE            is same as option -a (0)/-A (1)
+    TODOTXT_CFG_FILE=CONFIG_FILE    is same as option -d CONFIG_FILE
+    TODOTXT_FORCE=1                 is same as option -f
+    TODOTXT_PRESERVE_LINE_NUMBERS   is same as option -n (0)/-N (1)
+    TODOTXT_PLAIN                   is same as option -p (1)/-c (0)
+    TODOTXT_DATE_ON_ADD             is same as option -t (1)/-T (0)
+    TODOTXT_PRIORITY_ON_ADD=pri     default priority A-Z
+    TODOTXT_VERBOSE=1               is same as option -v
+    TODOTXT_DISABLE_FILTER=1        is same as option -x
+    TODOTXT_DEFAULT_ACTION=''       run this when called with no arguments
+    TODOTXT_SORT_COMMAND='sort ...' customize list output
+    TODOTXT_FINAL_FILTER='sed ...'  customize list after color, P@+ hiding
+    TODOTXT_DATE_FORMAT='$TODOTXT_DATE_FORMAT'  customize creation/completion date format
+    TODOTXT_DATE_FORMAT_PATTERN='$TODOTXT_DATE_FORMAT_PATTERN'
+                                    customize creation/completion date
+                                    extraction format for prepend and
+                                    replace actions
+    TODOTXT_SOURCEVAR=\$DONE_FILE    use another source for listcon, listproj
+    TODOTXT_SIGIL_BEFORE_PATTERN='$TODOTXT_SIGIL_BEFORE_PATTERN' optionally allow chars preceding +p / @c
+    TODOTXT_SIGIL_VALID_PATTERN='$TODOTXT_SIGIL_VALID_PATTERN'
+                                    tweak the allowed chars for +p and @c
+    TODOTXT_SIGIL_AFTER_PATTERN='$TODOTXT_SIGIL_AFTER_PATTERN'  optionally allow chars after +p / @c
 
-	EndVerboseHelp
+EndVerboseHelp
+    # editorconfig-checker-enable
     actionsHelp
     addonHelp
 }
 
 actionsHelp()
 {
-    cat <<-EndActionsHelp
-		  Built-in Actions:
-		    add "(B) THING I NEED TO DO +project @context"
-		    a "(B) THING I NEED TO DO +project @context"
-		      Adds THING I NEED TO DO to your todo.txt file on its own line.
-		      Priority (B), +project and @context notation optional.
-		      Quotes optional.
+    # editorconfig-checker-disable
+    cat <<EndActionsHelp
+  Built-in Actions:
+    add "(B) THING I NEED TO DO +project @context"
+    a "(B) THING I NEED TO DO +project @context"
+      Adds THING I NEED TO DO to your todo.txt file on its own line.
+      Priority (B), +project and @context notation optional.
+      Quotes optional.
 
-		    addm "FIRST THING I NEED TO DO +project1 @context
-		    (C) SECOND THING I NEED TO DO +project2 @context"
-		      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and
-		      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
-		      Priority (C), +project and @context notation optional.
+    addm "FIRST THING I NEED TO DO +project1 @context
+    (C) SECOND THING I NEED TO DO +project2 @context"
+      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and
+      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
+      Priority (C), +project and @context notation optional.
 
-		    addto DEST "TEXT TO ADD"
-		      Adds a line of text to any file located in the todo.txt directory.
-		      For example, addto inbox.txt "decide about vacation"
+    addto DEST "TEXT TO ADD"
+      Adds a line of text to any file located in the todo.txt directory.
+      For example, addto inbox.txt "decide about vacation"
 
-		    append NR "TEXT TO APPEND"
-		    app NR "TEXT TO APPEND"
-		      Adds TEXT TO APPEND to the end of the task on line NR.
-		      Quotes optional.
+    append NR "TEXT TO APPEND"
+    app NR "TEXT TO APPEND"
+      Adds TEXT TO APPEND to the end of the task on line NR.
+      Quotes optional.
 
-		    archive
-		      Moves all done tasks from todo.txt to done.txt and removes blank lines.
+    archive
+      Moves all done tasks from todo.txt to done.txt and removes blank lines.
 
-		    command [ACTIONS]
-		      Runs the remaining arguments using only todo.sh builtins.
-		      Will not call any TODO_ACTIONS_DIR ($TODO_ACTIONS_DIR) scripts.
+    command [ACTIONS]
+      Runs the remaining arguments using only todo.sh builtins.
+      Will not call any TODO_ACTIONS_DIR ($TODO_ACTIONS_DIR) scripts.
 
-		    deduplicate
-		      Removes duplicate lines from todo.txt.
+    deduplicate
+      Removes duplicate lines from todo.txt.
 
-		    del NR [TERM]
-		    rm NR [TERM]
-		      Deletes the task on line NR in todo.txt.
-		      If TERM specified, deletes only TERM from the task.
+    del NR [TERM]
+    rm NR [TERM]
+      Deletes the task on line NR in todo.txt.
+      If TERM specified, deletes only TERM from the task.
 
-		    depri NR [NR ...]
-		    dp NR [NR ...]
-		      Deprioritizes (removes the priority) from the task(s)
-		      on line NR in todo.txt.
+    depri NR [NR ...]
+    dp NR [NR ...]
+      Deprioritizes (removes the priority) from the task(s)
+      on line NR in todo.txt.
 
-		    done NR [NR ...]
-		    do NR [NR ...]
-		      Marks task(s) on line NR as done in todo.txt.
+    done NR [NR ...]
+    do NR [NR ...]
+      Marks task(s) on line NR as done in todo.txt.
 
-		    help [ACTION...]
-		      Display help about usage, options, built-in and add-on actions,
-		      or just the usage help for the passed ACTION(s).
+    help [ACTION...]
+      Display help about usage, options, built-in and add-on actions,
+      or just the usage help for the passed ACTION(s).
 
-		    list [TERM...]
-		    ls [TERM...]
-		      Displays all tasks that contain TERM(s) sorted by priority with line
-		      numbers.  Each task must match all TERM(s) (logical AND); to display
-		      tasks that contain any TERM (logical OR), use
-		      'TERM1\\|TERM2\\|...' (with quotes), or TERM1\\\\\\|TERM2 (unquoted).
-		      Hides all tasks that contain TERM(s) preceded by a
-		      minus sign (i.e. -TERM).
-		      TERM(s) are grep-style basic regular expressions; for literal matching,
-		      put a single backslash before any [ ] \\ \$ * . ^ and enclose the entire
-		      TERM in single quotes, or use double backslashes and extra shell-quoting.
-		      If no TERM specified, lists entire todo.txt.
+    list [TERM...]
+    ls [TERM...]
+      Displays all tasks that contain TERM(s) sorted by priority with line
+      numbers.  Each task must match all TERM(s) (logical AND); to display
+      tasks that contain any TERM (logical OR), use
+      'TERM1\\|TERM2\\|...' (with quotes), or TERM1\\\\\\|TERM2 (unquoted).
+      Hides all tasks that contain TERM(s) preceded by a
+      minus sign (i.e. -TERM).
+      TERM(s) are grep-style basic regular expressions; for literal matching,
+      put a single backslash before any [ ] \\ \$ * . ^ and enclose the entire
+      TERM in single quotes, or use double backslashes and extra shell-quoting.
+      If no TERM specified, lists entire todo.txt.
 
-		    listall [TERM...]
-		    lsa [TERM...]
-		      Displays all the lines in todo.txt AND done.txt that contain TERM(s)
-		      sorted by priority with line numbers.  Hides all tasks that
-		      contain TERM(s) preceded by a minus sign (i.e. -TERM).  If no
-		      TERM specified, lists entire todo.txt AND done.txt
-		      concatenated and sorted.
+    listall [TERM...]
+    lsa [TERM...]
+      Displays all the lines in todo.txt AND done.txt that contain TERM(s)
+      sorted by priority with line numbers.  Hides all tasks that
+      contain TERM(s) preceded by a minus sign (i.e. -TERM).  If no
+      TERM specified, lists entire todo.txt AND done.txt
+      concatenated and sorted.
 
-		    listaddons
-		      Lists all added and overridden actions in the actions directory.
+    listaddons
+      Lists all added and overridden actions in the actions directory.
 
-		    listcon [TERM...]
-		    lsc [TERM...]
-		      Lists all the task contexts that start with the @ sign in todo.txt.
-		      If TERM specified, considers only tasks that contain TERM(s).
+    listcon [TERM...]
+    lsc [TERM...]
+      Lists all the task contexts that start with the @ sign in todo.txt.
+      If TERM specified, considers only tasks that contain TERM(s).
 
-		    listfile [SRC [TERM...]]
-		    lf [SRC [TERM...]]
-		      Displays all the lines in SRC file located in the todo.txt directory,
-		      sorted by priority with line numbers.  If TERM specified, lists
-		      all lines that contain TERM(s) in SRC file.  Hides all tasks that
-		      contain TERM(s) preceded by a minus sign (i.e. -TERM).
-		      Without any arguments, the names of all text files in the todo.txt
-		      directory are listed.
+    listfile [SRC [TERM...]]
+    lf [SRC [TERM...]]
+      Displays all the lines in SRC file located in the todo.txt directory,
+      sorted by priority with line numbers.  If TERM specified, lists
+      all lines that contain TERM(s) in SRC file.  Hides all tasks that
+      contain TERM(s) preceded by a minus sign (i.e. -TERM).
+      Without any arguments, the names of all text files in the todo.txt
+      directory are listed.
 
-		    listpri [PRIORITIES] [TERM...]
-		    lsp [PRIORITIES] [TERM...]
-		      Displays all tasks prioritized PRIORITIES.
-		      PRIORITIES can be a [concatenation of] single (A) or range (A-C).
-		      If no PRIORITIES specified, lists all prioritized tasks.
-		      If TERM specified, lists only prioritized tasks that contain TERM(s).
-		      Hides all tasks that contain TERM(s) preceded by a minus sign
-		      (i.e. -TERM).
+    listpri [PRIORITIES] [TERM...]
+    lsp [PRIORITIES] [TERM...]
+      Displays all tasks prioritized PRIORITIES.
+      PRIORITIES can be a [concatenation of] single (A) or range (A-C).
+      If no PRIORITIES specified, lists all prioritized tasks.
+      If TERM specified, lists only prioritized tasks that contain TERM(s).
+      Hides all tasks that contain TERM(s) preceded by a minus sign
+      (i.e. -TERM).
 
-		    listproj [TERM...]
-		    lsprj [TERM...]
-		      Lists all the projects (terms that start with a + sign) in
-		      todo.txt.
-		      If TERM specified, considers only tasks that contain TERM(s).
+    listproj [TERM...]
+    lsprj [TERM...]
+      Lists all the projects (terms that start with a + sign) in
+      todo.txt.
+      If TERM specified, considers only tasks that contain TERM(s).
 
-		    move NR DEST [SRC]
-		    mv NR DEST [SRC]
-		      Moves the line NR from source file (SRC) to destination file (DEST).
-		      Both files must be located in the todo.txt directory. SRC defaults to
-		      todo.txt.
+    move NR DEST [SRC]
+    mv NR DEST [SRC]
+      Moves the line NR from source file (SRC) to destination file (DEST).
+      Both files must be located in the todo.txt directory. SRC defaults to
+      todo.txt.
 
-		    prepend NR "TEXT TO PREPEND"
-		    prep NR "TEXT TO PREPEND"
-		      Adds TEXT TO PREPEND to the beginning of the task on line NR.
-		      Quotes optional.
+    prepend NR "TEXT TO PREPEND"
+    prep NR "TEXT TO PREPEND"
+      Adds TEXT TO PREPEND to the beginning of the task on line NR.
+      Quotes optional.
 
-		    pri NR PRIORITY
-		    p NR PRIORITY
-		      Adds PRIORITY to task on line NR.  If the task is already
-		      prioritized, replaces current priority with new PRIORITY.
-		      PRIORITY must be a letter between A and Z.
+    pri NR PRIORITY
+    p NR PRIORITY
+      Adds PRIORITY to task on line NR.  If the task is already
+      prioritized, replaces current priority with new PRIORITY.
+      PRIORITY must be a letter between A and Z.
 
-		    replace NR "UPDATED TODO"
-		      Replaces task on line NR with UPDATED TODO.
+    replace NR "UPDATED TODO"
+      Replaces task on line NR with UPDATED TODO.
 
-		    report
-		      Adds the number of open tasks and done tasks to report.txt.
+    report
+      Adds the number of open tasks and done tasks to report.txt.
 
-		    shorthelp
-		      List the one-line usage of all built-in and add-on actions.
+    shorthelp
+      List the one-line usage of all built-in and add-on actions.
 
-	EndActionsHelp
+EndActionsHelp
+    # editorconfig-checker-enable
 }
 
 addonHelp()
@@ -485,80 +494,80 @@ export -f getNewtodo
 
 replaceOrPrepend()
 {
-  action=$1; shift
-  shift; item=$1; shift
-  getTodo "$item"
+    action=$1; shift
+    shift; item=$1; shift
+    getTodo "$item"
 
-  case "$action" in
-    replace)
-      backref=
-      readinput 'Replacement' -i "$todo" -- "$@" || die "$errmsg"
-      ;;
-    prepend)
-      readinput 'Prepend' -- "$@"
-      case "$input" in
-          '') backref='&';;
-          *)  backref=' &';;
-      esac
-      ;;
-  esac
-
-  if [ "${todo:0:2}" = 'x ' ]; then
-    # Retrieve existing done date and date on add
-    local -r doneMarker='x '
-    local -r firstTwoFieldsExpr='('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
-  else
-    # Retrieve existing priority and prepended date
-    local -r doneMarker=''
-    local -r firstTwoFieldsExpr='(\(.\) ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
-  fi
-  originalField1=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\1/")
-  field1="$originalField1"
-  originalField2=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\2/")
-  field2="$originalField2"
-  if [ "$action" = "replace" ]; then
-    replacementField2="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\2/")"
-    if [ -n "$replacementField2" ]; then
-      # If the replaced text starts with a [field1 +] field2, it will replace
-      # the existing field2, too.
-      field2="$replacementField2"
-    fi
-    replacementField1="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\1/")"
-    if [ -n "$replacementField1" ]; then
-      # If the replaced text starts with field1, it will replace
-      # the existing field1, too.
-      field1="$replacementField1"
-    fi
-    input="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}//")"
-  fi
-
-  # Temporarily remove any existing first two fields, perform the change
-  # (replace/prepend) and re-insert the existing fields again.
-  input="${doneMarker}${field1}${field2}${input}"
-  cleaninput "for sed"
-  literalOriginalFirstTwoFields="$(echo "${originalField1}${originalField2}" | sed -e 's/[][\$*.^|]/\\&/g')"
-  sed -i.bak -e "$item s|^${doneMarker}${literalOriginalFirstTwoFields}||" -e "$item s|^.*|${input}${backref}|" "$TODO_FILE"
-  if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-    getNewtodo "$item"
     case "$action" in
-      replace)
-        echo "$item $todo"
-        echo "TODO: Replaced task with:"
-        echo "$item $newtodo"
-        ;;
-      prepend)
-        echo "$item $newtodo"
-        ;;
+        replace)
+            backref=
+            readinput 'Replacement' -i "$todo" -- "$@" || die "$errmsg"
+            ;;
+        prepend)
+            readinput 'Prepend' -- "$@"
+            case "$input" in
+                    '') backref='&';;
+                    *)  backref=' &';;
+            esac
+            ;;
     esac
 
-  fi
+    if [ "${todo:0:2}" = 'x ' ]; then
+        # Retrieve existing done date and date on add
+        local -r doneMarker='x '
+        local -r firstTwoFieldsExpr='('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
+    else
+        # Retrieve existing priority and prepended date
+        local -r doneMarker=''
+        local -r firstTwoFieldsExpr='(\(.\) ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
+    fi
+    originalField1=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\1/")
+    field1="$originalField1"
+    originalField2=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\2/")
+    field2="$originalField2"
+    if [ "$action" = "replace" ]; then
+        replacementField2="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\2/")"
+        if [ -n "$replacementField2" ]; then
+            # If the replaced text starts with a [field1 +] field2, it will replace
+            # the existing field2, too.
+            field2="$replacementField2"
+        fi
+        replacementField1="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\1/")"
+        if [ -n "$replacementField1" ]; then
+            # If the replaced text starts with field1, it will replace
+            # the existing field1, too.
+            field1="$replacementField1"
+        fi
+        input="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}//")"
+    fi
+
+    # Temporarily remove any existing first two fields, perform the change
+    # (replace/prepend) and re-insert the existing fields again.
+    input="${doneMarker}${field1}${field2}${input}"
+    cleaninput "for sed"
+    literalOriginalFirstTwoFields="$(echo "${originalField1}${originalField2}" | sed -e 's/[][\$*.^|]/\\&/g')"
+    sed -i.bak -e "$item s|^${doneMarker}${literalOriginalFirstTwoFields}||" -e "$item s|^.*|${input}${backref}|" "$TODO_FILE"
+    if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+        getNewtodo "$item"
+        case "$action" in
+            replace)
+                echo "$item $todo"
+                echo "TODO: Replaced task with:"
+                echo "$item $newtodo"
+                ;;
+            prepend)
+                echo "$item $newtodo"
+                ;;
+        esac
+
+    fi
 }
 
 fixMissingEndOfLine()
 {
     # Parameters:    $1: todo file; empty means $TODO_FILE.
     todo_path="${1:-$TODO_FILE}"
-    [[ -f $todo_path && $(tail -c1 "$todo_path") ]] && echo "" >> "$todo_path"    
+    [[ -f $todo_path && $(tail -c1 "$todo_path") ]] && echo "" >> "$todo_path"
 }
 
 uppercasePriority()
@@ -593,38 +602,38 @@ export GREP_OPTIONS=""
 
 # == PROCESS OPTIONS ==
 while getopts ":$GETOPTS_OPTIONS" Option; do
-  # The HIDE_* flags start at zero (false); increment it to one
-  #   (true) the first time this flag is seen. Each time the flag
-  #   is seen after that, increment it again so that an even
-  #   number shows context names and an odd number hides context
-  #   names.
-  case $Option in
-    '+') : $(( HIDE_PROJECT_NAMES++ ));;
-    '@') : $(( HIDE_CONTEXT_NAMES++ ));;
-    a) OVR_TODOTXT_AUTO_ARCHIVE=0;;
-    A) OVR_TODOTXT_AUTO_ARCHIVE=1;;
-    c) OVR_TODOTXT_PLAIN=0;;
-    d) TODOTXT_CFG_FILE=$OPTARG;;
-    D) : $(( HIDE_DATES++ ));;
-    f) OVR_TODOTXT_FORCE=1;;
-    h)  # Short-circuit option parsing and forward to the action.
-        # Cannot just invoke shorthelp() because we need the configuration
-        # processed to locate the add-on actions directory.
-        set -- '-h' 'shorthelp'
-        OPTIND=2
-        ;;
-    M) : $(( HIDE_META++ ));;
-    n) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0;;
-    N) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1;;
-    p) OVR_TODOTXT_PLAIN=1;;
-    P) : $(( HIDE_PRIORITY_LABELS++ ));;
-    t) OVR_TODOTXT_DATE_ON_ADD=1;;
-    T) OVR_TODOTXT_DATE_ON_ADD=0;;
-    v) : $(( TODOTXT_VERBOSE++ ));;
-    V) version;;
-    x) OVR_TODOTXT_DISABLE_FILTER=1;;
-    *) usage;;
-  esac
+    # The HIDE_* flags start at zero (false); increment it to one
+    #   (true) the first time this flag is seen. Each time the flag
+    #   is seen after that, increment it again so that an even
+    #   number shows context names and an odd number hides context
+    #   names.
+    case $Option in
+        '+') : $(( HIDE_PROJECT_NAMES++ ));;
+        '@') : $(( HIDE_CONTEXT_NAMES++ ));;
+        a) OVR_TODOTXT_AUTO_ARCHIVE=0;;
+        A) OVR_TODOTXT_AUTO_ARCHIVE=1;;
+        c) OVR_TODOTXT_PLAIN=0;;
+        d) TODOTXT_CFG_FILE=$OPTARG;;
+        D) : $(( HIDE_DATES++ ));;
+        f) OVR_TODOTXT_FORCE=1;;
+        h)  # Short-circuit option parsing and forward to the action.
+                # Cannot just invoke shorthelp() because we need the configuration
+                # processed to locate the add-on actions directory.
+                set -- '-h' 'shorthelp'
+                OPTIND=2
+                ;;
+        M) : $(( HIDE_META++ ));;
+        n) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0;;
+        N) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1;;
+        p) OVR_TODOTXT_PLAIN=1;;
+        P) : $(( HIDE_PRIORITY_LABELS++ ));;
+        t) OVR_TODOTXT_DATE_ON_ADD=1;;
+        T) OVR_TODOTXT_DATE_ON_ADD=0;;
+        v) : $(( TODOTXT_VERBOSE++ ));;
+        V) version;;
+        x) OVR_TODOTXT_DISABLE_FILTER=1;;
+        *) usage;;
+    esac
 done
 shift $((OPTIND - 1))
 
@@ -948,7 +957,7 @@ _format()
             s/^/     /
             s/ *\([ 0-9]\{'"$PADDING"',\}\)\n/\1 /
             /^[ 0-9]\{1,\} *$/d
-         '
+        '
     )
 
     # Build and apply the filter.
@@ -967,7 +976,7 @@ _format()
             s/^   /000/;
             s/^  /00/;
             s/^ /0/;
-          ' \
+        ' \
         | eval "${TODOTXT_SORT_COMMAND}" \
         | awk \
             -v "hidePriorityLabels=${HIDE_PRIORITY_LABELS:-0}" \
@@ -980,7 +989,7 @@ _format()
             -v "sigilBeforePattern=${TODOTXT_SIGIL_BEFORE_PATTERN//\\/\\\\}" \
             -v "sigilValidPattern=${TODOTXT_SIGIL_VALID_PATTERN//\\/\\\\}" \
             -v "sigilAfterPattern=${TODOTXT_SIGIL_AFTER_PATTERN//\\/\\\\}" \
-          '
+        '
             function highlight(colorVar, color) {
                 color = ENVIRON[colorVar]
                 gsub(/\\+033/, "\033", color)
@@ -1083,7 +1092,7 @@ _format()
                 }
                 printf "%s\n", end_clr
             }
-          '  \
+        '  \
         | eval "$TODOTXT_FINAL_FILTER"                        \
     )
     [ -n "$filtered_items" ] && echo "$filtered_items"
@@ -1244,9 +1253,9 @@ case $action in
 
     readinput 'Append' -- "$@" # Accept empty input here; it's harmless.
     case "$input" in
-      '')                       appendspace=;;
-      [$SENTENCE_DELIMITERS]*)  appendspace=;;
-      *)                        appendspace=" ";;
+        '')                       appendspace=;;
+        [$SENTENCE_DELIMITERS]*)  appendspace=;;
+        *)                        appendspace=" ";;
     esac
     cleaninput "for sed"
 
@@ -1264,15 +1273,15 @@ case $action in
     # defragment blank lines
     sed -i.bak -e '/./!d' "$TODO_FILE"
     if grep "^x " "$TODO_FILE" >> "$DONE_FILE"; then
-	[ "$TODOTXT_VERBOSE" -gt 0 ] && grep "^x " "$TODO_FILE"   
+        [ "$TODOTXT_VERBOSE" -gt 0 ] && grep "^x " "$TODO_FILE"
         sed -i.bak '/^x /d' "$TODO_FILE"
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
             echo "TODO: $TODO_FILE archived."
         fi
     else
-	if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-       	    echo "TODO: $TODO_FILE does not contain any done tasks."
-	fi
+        if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+            echo "TODO: $TODO_FILE does not contain any done tasks."
+        fi
     fi
     ;;
 
@@ -1331,17 +1340,17 @@ case $action in
     for item in ${*//,/ }; do
         getTodo "$item"
 
-	if [[ "$todo" = \(?\)\ * ]]; then
-	    sed -i.bak -e "${item}s/^(.) //" "$TODO_FILE"
-	    if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
-		getNewtodo "$item"
-		echo "$item $newtodo"
-		echo "TODO: $item deprioritized."
-	    fi
-	else
-	    echo >&2 "TODO: $item is not prioritized."
-	    status=1
-	fi
+        if [[ "$todo" = \(?\)\ * ]]; then
+            sed -i.bak -e "${item}s/^(.) //" "$TODO_FILE"
+            if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
+                getNewtodo "$item"
+                echo "$item $newtodo"
+                echo "TODO: $item deprioritized."
+            fi
+        else
+            echo >&2 "TODO: $item is not prioritized."
+            status=1
+        fi
     done
     exit $status
     ;;
@@ -1632,9 +1641,9 @@ note: PRIORITY must be anywhere from A to Z."
                 echo "--"
                 echo "TODO: $actionsCnt add-on actions found."
             fi
-        fi 
+        fi
     else
-        die "TODO: '$TODO_ACTIONS_DIR' does not exist." 
+        die "TODO: '$TODO_ACTIONS_DIR' does not exist."
     fi
     ;;
 
