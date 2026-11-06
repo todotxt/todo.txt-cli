@@ -13,6 +13,14 @@ permissions:
   checks: write
 
 jobs:
+  editorconfig:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - name: Set up editorconfig-checker
+      uses: editorconfig-checker/action-editorconfig-checker@v3.0.0
+    - run: editorconfig-checker
+
   linter:
     runs-on: ubuntu-latest
     steps:
