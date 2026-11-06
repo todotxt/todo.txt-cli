@@ -13,10 +13,10 @@
 
 *Read our [contributing guide][CONTRIBUTING] if you're looking to contribute (issues/PRs/etc).*
 
-
 ## Installation
 
 ### Download
+
 Download the latest stable [release][release] for use on your desktop or server.
 
 ### OS X / macOS
@@ -39,7 +39,8 @@ make install
 make test
 ```
 
-*NOTE:* Makefile defaults to several default paths for installed files. Adjust to your system:
+*NOTE:* Makefile defaults to several default paths for installed files.
+Adjust to your system:
 
 - `INSTALL_DIR`: PATH for executables (default `/usr/local/bin`)
 - `CONFIG_DIR`: PATH for the `todo/config` configuration template (default `/usr/local/etc`)
@@ -50,17 +51,24 @@ make test
 make install CONFIG_DIR=/etc INSTALL_DIR=/usr/bin BASH_COMPLETION=/etc/bash_completion.d
 ```
 
-#### Arch Linux (AUR)
+#### Arch Linux
 
-https://aur.archlinux.org/packages/todotxt/
-
+[Package todotxt in AUR](https://aur.archlinux.org/packages/todotxt/)
 
 ## Configuration
 
-No configuration is required; however, most users tweak the default settings (e.g. relocating the todo.txt directory to a subdirectory of the user's home directory, or onto a cloud drive (via the `TODO_DIR` variable)), modify the colors, add additional highlighting of projects, contexts, dates, and so on. A configuration template with a commented-out list of all available options is included.
-It is recommended to _copy_ that template into one of the locations listed by `todo.sh help` on `-d CONFIG_FILE`, even if it is installed in the global configuration location (`/etc/todo/config`).
+No configuration is required; however, most users tweak the default settings
+(e.g. relocating the todo.txt directory to a subdirectory of the user's home
+directory, or onto a cloud drive (via the `TODO_DIR` variable)), modify the
+colors, add additional highlighting of projects, contexts, dates, and so on. A
+configuration template with a commented-out list of all available options is
+included.
+It is recommended to *copy* that template into one of the locations listed by
+`todo.sh help` on `-d CONFIG_FILE`, even if it is installed in the global
+configuration location (`/etc/todo/config`).
 
 ## Usage
+
 ```shell
 todo.sh [-+@aAcDfhMnNpPtTvVx] [-d todo_config] action [task_number] [task_description]
 ```
@@ -70,35 +78,42 @@ For example, to add a todo item, you can do:
 ```shell
 todo.sh add "THING I NEED TO DO +project @context"
 ```
-Read about all the possible commands in the [USAGE][USAGE].
 
+Read about all the possible commands in the [USAGE][USAGE].
 
 ## Release History
 
 See [CHANGELOG.md][CHANGELOG]
 
-
 ## Support
 
-- [GitHub Discussions](https://github.com/todotxt/todo.txt-cli/discussions): questions, troubleshooting, ideas and suggestions
-- [GitHub Issues](https://github.com/todotxt/todo.txt-cli/issues): report bugs and request features here (after positive feedback in the chat or discussions)
+- [GitHub Discussions](https://github.com/todotxt/todo.txt-cli/discussions):
+  questions, troubleshooting, ideas and suggestions
+- [GitHub Issues](https://github.com/todotxt/todo.txt-cli/issues):
+  report bugs and request features here (after positive feedback in the chat or
+  discussions)
 
 ## Community
 
-- [todo.txt-cli at Gitter.im](https://gitter.im/todotxt/todo.txt-cli): chat with the core team and interested users about this CLI in particular
-- [todotxt lobby at Gitter.im](https://gitter.im/todotxt/Lobby): chat with interested users about todo.txt in general
-- [Reddit](https://www.reddit.com/r/todotxt/): posts and discussions around the todo.txt philosophy and tools
-- [Twitter](https://twitter.com/todotxt): official announcements and news
+- [todo.txt-cli at Gitter.im](https://gitter.im/todotxt/todo.txt-cli):
+  chat with the core team and interested users about this CLI in particular
+- [todotxt lobby at Gitter.im](https://gitter.im/todotxt/Lobby):
+  chat with interested users about todo.txt in general
+- [Reddit](https://www.reddit.com/r/todotxt/):
+  posts and discussions around the todo.txt philosophy and tools
+- [Twitter](https://twitter.com/todotxt):
+  official announcements and news
 
 ## Contributing
 
-We welcome all contributions. First read our [Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started [contributing][CONTRIBUTING]. By participating in this project you agree to abide by its terms.
+We welcome all contributions. First read our
+[Contributor Code of Conduct][CODE_OF_CONDUCT] and then get started
+[contributing][CONTRIBUTING]. By participating in this project you agree to
+abide by its terms.
 
 ## License
 
 GNU General Public License v3.0 © [todo.txt org][github]
-
-
 
 [release]: https://github.com/todotxt/todo.txt-cli/releases
 [website]: http://todotxt.org/
