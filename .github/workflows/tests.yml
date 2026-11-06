@@ -16,7 +16,7 @@ jobs:
   linter:
     runs-on: ubuntu-latest
     env:
-      REVIEWDOG_FILTER_MODE: file
+      REVIEWDOG_FILTER_MODE: file # Only process problems from files added/modified by the PR (when combined with the "github-check" reporter). Note: Not supported for pushes; it falls back to "nofilter" there, reporting all problems.
       REVIEWDOG_FAIL_LEVEL: error
       REVIEWDOG_REPORTER: github-check  # github-pr-review would be nice for PRs, but doesn't support PRs from forks
     permissions:
