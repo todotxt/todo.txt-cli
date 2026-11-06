@@ -19,7 +19,16 @@ jobs:
     - uses: actions/checkout@v7
     - name: Set up editorconfig-checker
       uses: editorconfig-checker/action-editorconfig-checker@v3.0.0
-    - run: editorconfig-checker
+    - uses: reviewdog/action-setup@v1
+    - name: Run editorconfig-checker
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        editorconfig-checker -no-color -f=gcc \
+          | reviewdog \
+            -efm='%f:%l:%c: %m' \
+            -name=editorconfig-checker \
+            -reporter=${{ github.event_name == 'pull_request' && 'github-pr-review' || 'github-check' }}
 
   linter:
     runs-on: ubuntu-latest
