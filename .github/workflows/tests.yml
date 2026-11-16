@@ -41,7 +41,7 @@ jobs:
             -fail-level="$REVIEWDOG_FAIL_LEVEL"
 
     - name: shellcheck
-      uses: reviewdog/action-shellcheck@v1.34.1
+      uses: reviewdog/action-shellcheck@v1.35.1
       with:
         reporter: ${{ env.REVIEWDOG_REPORTER }}
         filter_mode: ${{ env.REVIEWDOG_FILTER_MODE }}
