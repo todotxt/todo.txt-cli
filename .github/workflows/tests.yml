@@ -41,7 +41,7 @@ jobs:
             -fail-level="$REVIEWDOG_FAIL_LEVEL"
 
     - name: shellcheck
-      uses: reviewdog/action-shellcheck@v1.34.1
+      uses: reviewdog/action-shellcheck@v1.35.1
       with:
         reporter: ${{ env.REVIEWDOG_REPORTER }}
         filter_mode: ${{ env.REVIEWDOG_FILTER_MODE }}
@@ -52,14 +52,14 @@ jobs:
           GEN-VERSION-FILE
 
     - name: markdownlint
-      uses: reviewdog/action-markdownlint@v0.32.0
+      uses: reviewdog/action-markdownlint@v0.33.1
       with:
         reporter: ${{ env.REVIEWDOG_REPORTER }}
         filter_mode: ${{ env.REVIEWDOG_FILTER_MODE }}
         fail_level: ${{ env.REVIEWDOG_FAIL_LEVEL }}
 
     - name: actionlint  # checker for GitHub Actions workflow files
-      uses: reviewdog/action-actionlint@v1.81.2
+      uses: reviewdog/action-actionlint@v1.84.1
       with:
         reporter: ${{ env.REVIEWDOG_REPORTER }}
         filter_mode: ${{ env.REVIEWDOG_FILTER_MODE }}
