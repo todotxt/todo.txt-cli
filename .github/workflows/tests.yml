@@ -52,7 +52,7 @@ jobs:
           GEN-VERSION-FILE
 
     - name: markdownlint
-      uses: reviewdog/action-markdownlint@v0.32.0
+      uses: reviewdog/action-markdownlint@v0.33.1
       with:
         reporter: ${{ env.REVIEWDOG_REPORTER }}
         filter_mode: ${{ env.REVIEWDOG_FILTER_MODE }}
