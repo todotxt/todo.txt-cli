@@ -1,6 +1,13 @@
 version: 2
 updates:
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: weekly
+  groups:
+    combine-minor-actions-updates:
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
