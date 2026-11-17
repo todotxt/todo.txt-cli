@@ -120,5 +120,5 @@ GNU General Public License v3.0 © [todo.txt org][github]
 [github]: https://github.com/todotxt
 [USAGE]: ./USAGE.md
 [CHANGELOG]: ./CHANGELOG.md
-[CODE_OF_CONDUCT]: .github/CODE_OF_CONDUCT.md
+[CODE_OF_CONDUCT]: https://github.com/todotxt/.github/blob/HEAD/CODE_OF_CONDUCT.md
 [CONTRIBUTING]: .github/CONTRIBUTING.md
