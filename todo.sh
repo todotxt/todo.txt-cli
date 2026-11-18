@@ -1083,7 +1083,7 @@ _format()
                         } else {
                             printf "%s", precedingWhitespace dat_beg words[i] dat_end
                         }
-                    } else if (words[i] ~ "^" metadataValidPattern "$") {
+                    } else if (words[i] ~ "^(" metadataValidPattern ")$") {
                         if (isHidden(hideMeta)) {
                             precedingWhitespace = ""
                         } else {
