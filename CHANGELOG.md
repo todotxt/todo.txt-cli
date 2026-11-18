@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Dates and metadata can now be suppressed via new `-D` / `-M` flags,
   complementing the existing `-@` / `-+` / `-P` flags for context names /
   project names / priority labels. ([#505])
+- The allowed metadata syntax for `COLOR_META` highlighting can now be
+  customized via the `TODOTXT_METADATA_VALID_PATTERN` configuration variable,
+  to avoid erroneous highlighting by the very generic default syntax. ([#518])
 
 ### Changed
 
@@ -25,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   `listWordsWithSigil()` now needs to be escaped as `\+` ([#505])
 - `HIDE_CUSTOM_SUBSTITUTION` is now in extended regexp format and matches
   (parts of) individual words instead of the whole line ([#505])
+- `COLOR_META` now also highlights metadata with empty values and values
+  containing colons, as per the revised todo.txt spec ([#518])
 
 ### Fixed
 
@@ -644,3 +649,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#496]: https://github.com/todotxt/todo.txt-cli/pull/496
 [#504]: https://github.com/todotxt/todo.txt-cli/pull/504
 [#505]: https://github.com/todotxt/todo.txt-cli/pull/505
+[#518]: https://github.com/todotxt/todo.txt-cli/pull/518
