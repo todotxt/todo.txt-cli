@@ -195,6 +195,9 @@ EndOptionsHelp
     TODOTXT_SIGIL_VALID_PATTERN='$TODOTXT_SIGIL_VALID_PATTERN'
                                     tweak the allowed chars for +p and @c
     TODOTXT_SIGIL_AFTER_PATTERN='$TODOTXT_SIGIL_AFTER_PATTERN'  optionally allow chars after +p / @c
+    TODOTXT_METADATA_VALID_PATTERN='$TODOTXT_METADATA_VALID_PATTERN'
+                                    tweak the allowed chars for key:value
+                                    metadata
 
 EndVerboseHelp
     # editorconfig-checker-enable
@@ -655,6 +658,7 @@ TODOTXT_GLOBAL_CFG_FILE=${TODOTXT_GLOBAL_CFG_FILE:-/etc/todo/config}
 TODOTXT_SIGIL_BEFORE_PATTERN=${TODOTXT_SIGIL_BEFORE_PATTERN:-}    # Allow any other non-whitespace entity before +project and @context; should be an optional match; example: (w:){0,1} to allow w:@context.
 TODOTXT_SIGIL_VALID_PATTERN=${TODOTXT_SIGIL_VALID_PATTERN:-[^ ]{1,\}}    # Limit the valid characters (from the default any non-whitespace sequence) for +project and @context; example: [a-zA-Z]{3,} to only allow alphabetic ones that are at least three characters long.
 TODOTXT_SIGIL_AFTER_PATTERN=${TODOTXT_SIGIL_AFTER_PATTERN:-}    # Allow any other non-whitespace entity after +project and @context; should be an optional match; example: \){0,1} to allow (with the corresponding TODOTXT_SIGIL_BEFORE_PATTERN) enclosing in parentheses.
+TODOTXT_METADATA_VALID_PATTERN=${TODOTXT_METADATA_VALID_PATTERN:-[^:[:space:]]{1,\}:[^:[:space:]]{1,\}}    # Limit the valid characters (from the default one or more non-whitespace characters which are not colons, single colon, non-whitespace characters that are not colons) for key:value metadata; example: [a-z]:[^:[:space:]]{1,\} to only single-letter lowercase keys.
 
 # Export all TODOTXT_* variables and the HIDE_* flags
 export "${!TODOTXT_@}" "${!HIDE_@}"
@@ -989,6 +993,7 @@ _format()
             -v "sigilBeforePattern=${TODOTXT_SIGIL_BEFORE_PATTERN//\\/\\\\}" \
             -v "sigilValidPattern=${TODOTXT_SIGIL_VALID_PATTERN//\\/\\\\}" \
             -v "sigilAfterPattern=${TODOTXT_SIGIL_AFTER_PATTERN//\\/\\\\}" \
+            -v "metadataValidPattern=${TODOTXT_METADATA_VALID_PATTERN//\\/\\\\}" \
         '
             function highlight(colorVar, color) {
                 color = ENVIRON[colorVar]
@@ -1078,7 +1083,7 @@ _format()
                         } else {
                             printf "%s", precedingWhitespace dat_beg words[i] dat_end
                         }
-                    } else if (words[i] ~ /^[^:[:space:]]+:[^:[:space:]]+$/) {
+                    } else if (words[i] ~ "^" metadataValidPattern "$") {
                         if (isHidden(hideMeta)) {
                             precedingWhitespace = ""
                         } else {

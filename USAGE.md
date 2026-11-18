@@ -241,6 +241,16 @@ TODOTXT_SIGIL_AFTER_PATTERN=''
 
 optionally allow chars after +p / @c
 
+### TODOTXT\_METADATA\_VALID\_PATTERN
+
+```shell
+TODOTXT_METADATA_VALID_PATTERN='[^:[:space:]]{1,}:[^:[:space:]]{1,}'
+```
+
+
+tweak the allowed chars for key:value
+metadata
+
 ## Built-in Actions
 
 ### add
