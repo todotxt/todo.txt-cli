@@ -1004,7 +1004,7 @@ _format()
                 return (hideFlag % 2)
             }
             function highlightSigil(sigil, word, colorBegin, colorEnd, hideSigilWord,      a, beforeWord, afterWord) {
-                if (word ~ "^" sigilBeforePattern "[" sigil "]" sigilValidPattern sigilAfterPattern "$" \
+                if (word ~ "^" sigilBeforePattern "[" sigil "](" sigilValidPattern ")" sigilAfterPattern "$" \
                         && match(word, "^" sigilBeforePattern "[" sigil "]")) \
                 {
                     beforeWord = substr(word, RSTART, RLENGTH - length(sigil))
@@ -1077,7 +1077,7 @@ _format()
                         }
                     } else if (highlightSigil("+", words[i], prj_beg, prj_end, hideProjectNames)) {
                     } else if (highlightSigil("@", words[i], ctx_beg, ctx_end, hideContextNames)) {
-                    } else if ((i == 3 + dateOffset || i == 3 + dateOffset + (hasDoneDate ? 2 : 0)) && words[i] ~ "^" dateFormatPattern "$") {
+                    } else if ((i == 3 + dateOffset || i == 3 + dateOffset + (hasDoneDate ? 2 : 0)) && words[i] ~ "^(" dateFormatPattern ")$") {
                         if (isHidden(hideDates)) {
                             precedingWhitespace = ""
                         } else {
@@ -1125,7 +1125,7 @@ listWordsWithSigil()
         | sed -n -E \
             -e "s#^${TODOTXT_SIGIL_BEFORE_PATTERN//#/\\#}##" \
             -e "s#${TODOTXT_SIGIL_AFTER_PATTERN//#/\\#}\$##" \
-            -e "/^[${sigil}]${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
+            -e "/^[${sigil}](${TODOTXT_SIGIL_VALID_PATTERN//\//\\/})$/p" \
         | sort -u
 }
 export -f listWordsWithSigil
