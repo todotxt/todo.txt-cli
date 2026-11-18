@@ -658,7 +658,7 @@ TODOTXT_GLOBAL_CFG_FILE=${TODOTXT_GLOBAL_CFG_FILE:-/etc/todo/config}
 TODOTXT_SIGIL_BEFORE_PATTERN=${TODOTXT_SIGIL_BEFORE_PATTERN:-}    # Allow any other non-whitespace entity before +project and @context; should be an optional match; example: (w:){0,1} to allow w:@context.
 TODOTXT_SIGIL_VALID_PATTERN=${TODOTXT_SIGIL_VALID_PATTERN:-[^ ]{1,\}}    # Limit the valid characters (from the default any non-whitespace sequence) for +project and @context; example: [a-zA-Z]{3,} to only allow alphabetic ones that are at least three characters long.
 TODOTXT_SIGIL_AFTER_PATTERN=${TODOTXT_SIGIL_AFTER_PATTERN:-}    # Allow any other non-whitespace entity after +project and @context; should be an optional match; example: \){0,1} to allow (with the corresponding TODOTXT_SIGIL_BEFORE_PATTERN) enclosing in parentheses.
-TODOTXT_METADATA_VALID_PATTERN=${TODOTXT_METADATA_VALID_PATTERN:-[^:[:space:]]{1,\}:[^:[:space:]]{1,\}}    # Limit the valid characters (from the default one or more non-whitespace characters which are not colons, single colon, non-whitespace characters that are not colons) for key:value metadata; example: [a-z]:[^:[:space:]]{1,\} to only single-letter lowercase keys.
+TODOTXT_METADATA_VALID_PATTERN=${TODOTXT_METADATA_VALID_PATTERN:-[^:[:space:]]{1,\}:[^[:space:]]{0,\}}    # Limit the valid characters (from the default one or more non-whitespace characters which are not colons, single colon, non-whitespace characters) for key:value metadata; example: [a-z]:[^[:space:]]{0,\} to only single-letter lowercase keys.
 
 # Export all TODOTXT_* variables and the HIDE_* flags
 export "${!TODOTXT_@}" "${!HIDE_@}"

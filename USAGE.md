@@ -244,7 +244,7 @@ optionally allow chars after +p / @c
 ### TODOTXT\_METADATA\_VALID\_PATTERN
 
 ```shell
-TODOTXT_METADATA_VALID_PATTERN='[^:[:space:]]{1,}:[^:[:space:]]{1,}'
+TODOTXT_METADATA_VALID_PATTERN='[^:[:space:]]{1,}:[^[:space:]]{0,}'
 ```
 
 
